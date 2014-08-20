@@ -18,8 +18,8 @@ def main():
         s.connect(addr)
         ans = s.recv(1024)
         print ans
-    except:
-        print "Error, can't connect"
+    except Exception, e:
+        print "Error, can't connect: " + str(e)
 
 # main program
 if __name__ == "__main__":
