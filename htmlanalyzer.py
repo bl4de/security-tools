@@ -6,7 +6,7 @@
 def main():
     _file = open("index.html", "r")
 
-    while (_line = _file.readline()):
+    for _line in _file:
         print _line
         
 # main program
