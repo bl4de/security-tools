@@ -20,7 +20,8 @@ def _analyzeLine(_line, i):
         print "comment found at line %d: %s" % (i, _line)
     if "admin" in _line:
         print "'admin' string found at line: %d" % (i)
-    
+    if "debug" in _line:
+        print "debug information found at line %d" % (i)
     
 # main program
 if __name__ == "__main__":
