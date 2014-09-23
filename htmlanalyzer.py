@@ -16,12 +16,15 @@ def main():
         
 # find interesting string(s)
 def _analyzeLine(_line, i):
+    
     if "<!--" in _line:
-        print "comment found at line %d: %s" % (i, _line)
+        print "comment found at line %d: %s" % (i, _line.rstrip())
     if "admin" in _line:
         print "'admin' string found at line: %d" % (i)
     if "debug" in _line:
         print "debug information found at line %d" % (i)
+    if "\"/" in _line:
+        print "possible directory path found at line %d: %s" % (i, _line.rstrip())
     
 # main program
 if __name__ == "__main__":
