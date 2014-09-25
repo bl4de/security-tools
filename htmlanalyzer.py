@@ -23,6 +23,8 @@ def _analyzeLine(_line, i):
         print "'admin' string found at line: %d" % (i)
     if "debug" in _line:
         print "debug information found at line %d" % (i)
+    if "<script>" in _line:
+        print "inline JavaScript found at line %d" % (i)
     if "\"/" in _line:
         print "possible directory path found at line %d: %s" % (i, _line.rstrip())
     
