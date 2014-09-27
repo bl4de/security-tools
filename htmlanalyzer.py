@@ -4,6 +4,8 @@
 #
 import sys
 
+_ident = "unknown"
+
 def main():
     _file = open(sys.argv[1], "r")
     i = 0
@@ -12,21 +14,28 @@ def main():
     print
     for _line in _file:
         i = i + 1
-        _analyzeLine(_line, i)
-        
+        analyzeLine(_line, i)
+        identify(_line)
     showStats(_file, i)
     
+
+# using osftare recognition
+def identify(_line):
+    if "Jommla" in _line:
+        _ident = "Joomla CMS"
+    if "wp-content" in _line:
+        _ident = "WordPress CMS"
+        
     
 def showStats(_file, i):
     print "\n------ SUMMARY -------\n"
     print "total lines of code: %d" % (i)
-    
+    print "identified software: %s" %(_ident)
     # end of summary
     print "\n"
     
 # find interesting string(s)
-def _analyzeLine(_line, i):
-    
+def analyzeLine(_line, i):
     if "<!--" in _line:
         print "comment found at line %d: %s" % (i, _line.rstrip())
     if "admin" in _line:
