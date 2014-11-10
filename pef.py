@@ -5,7 +5,7 @@
 #
 import sys
 
-class colors:
+class Colors:
     Black = '\33[30m'
     Red = '\33[31m'
     Green = '\33[32m'
@@ -32,19 +32,20 @@ def main():
             if _fn in _line:
                 total = total + 1
                 print "line %d : \33[33;1m%s()\33[0m found " % (i,_fn)
-                print colors.Blue + _line + colors._endline
+                print Colors.Blue + _line + Colors._endline
         
         
     if total < 1:
-        print colors.Green + "No exploitable functions found" + colors._endline
+        print Colors.Green + "No exploitable functions found" + Colors._endline
     else:
-        print colors.Red + "Found %d exploitable functions total" % (total) + colors._endline
+        print Colors.Red + "Found %d exploitable functions total" % (total) + Colors._endline
 
 # main program
 if __name__ == "__main__":
     if len(sys.argv) == 2:
         print
-        print colors.Green + "------ PHP Exploitable functions scanner"
+        print
+        print Colors.Green + "------ PHP Exploitable functions scanner"
         print "------ GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com"
         print
         print "------ file: \33[33m%s\33[0m " % (sys.argv[1])
