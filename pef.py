@@ -18,8 +18,13 @@ class Colors:
 
 exploitableFunctions = ["system","exec","popen","backtick operator""pcntl_exec",
 "eval","preg_replace","create_function", "include","require","passthru","shell_exec","`","popen","proc_open","pcntl_exec","asset","extract","parse_str","putenv","ini_set","mail","header"]
-    
 
+globalVars = ["$_POST", "$_GET", "$_COOKIE", "$_REQUEST", "$_SERVER"];
+
+def printSrcCodeLine(_line, i, _fn):
+    print "line %d : \33[33;1m%s\33[0m found " % (i,_fn)
+    print Colors.Blue + _line + Colors._endline
+    
 def main():
     # open file to analyse
     _file = open(sys.argv[1], "r")
@@ -29,15 +34,19 @@ def main():
     for _line in _file:
         i = i + 1
         for _fn in exploitableFunctions:
-            if _fn in _line:
+            if _fn + '(' in _line or _fn + ' (' in _line:
                 total = total + 1
-                print "line %d : \33[33;1m%s()\33[0m found " % (i,_fn)
-                print Colors.Blue + _line + Colors._endline
-        
+                printSrcCodeLine(_line, i, _fn + '()')
+        for _global in globalVars:
+            if _global in _line:
+                total = total + 1
+                printSrcCodeLine(_line, i, _global)
         
     if total < 1:
+        print
         print Colors.Green + "No exploitable functions found" + Colors._endline
     else:
+        print
         print Colors.Red + "Found %d exploitable functions total" % (total) + Colors._endline
 
 # main program
