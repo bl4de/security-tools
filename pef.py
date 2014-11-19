@@ -21,8 +21,9 @@ class _PefOutput:
     efMsgGlobalFound = "global variable explicit call"
 
 # exploitable functions
-exploitableFunctions = ["system","exec","popen","backtick operator""pcntl_exec",
-"eval","preg_replace","create_function", "include","require","passthru","shell_exec","`","popen","proc_open","pcntl_exec","asset","extract","parse_str","putenv","ini_set","mail","header"]
+exploitableFunctions = [" system"," exec"," popen", " pcntl_exec",
+" eval"," preg_replace"," create_function", " include"," require"," passthru"," shell_exec"," popen"," proc_open",
+" pcntl_exec"," asset"," extract"," parse_str"," putenv"," ini_set"," mail"," header"]
 
 # dangerous global(s)
 globalVars = ["$_POST", "$_GET", "$_COOKIE", "$_REQUEST", "$_SERVER"];
@@ -44,6 +45,10 @@ def main(__fileToAnalise):
     i = 0
     total = 0
     
+    print
+    print "#################################################################################################"
+    print "------ file: \33[33m%s\33[0m " % (__fileToAnalise)
+    
     for _line in _file:
         i = i + 1
         for _fn in exploitableFunctions:
@@ -58,10 +63,13 @@ def main(__fileToAnalise):
     if total < 1:
         print
         print _PefOutput.Green + "No exploitable functions found" + _PefOutput._endline
+        print
+        print
     else:
         print
         print _PefOutput.Red + "Found %d exploitable functions total" % (total) + _PefOutput._endline
-
+        print
+        print    
 
 
 # main program
@@ -72,8 +80,6 @@ if __name__ == "__main__":
         print _PefOutput.Green + "------ PHP Exploitable functions scanner"
         print "------ GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com"
         print
-        print "------ file: \33[33m%s\33[0m " % (sys.argv[1])
-        
         
         
         # main program loop
