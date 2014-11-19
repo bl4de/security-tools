@@ -4,6 +4,7 @@
 # bl4de | bloorq@gmail.com | Twitter: @_bl4de
 #
 import sys
+import os
 
 class _PefOutput:
     Black = '\33[30m'
@@ -35,9 +36,11 @@ def printSrcCodeLine(_line, i, _fn, _message):
     
     
 # performs code analysis, line by line
-def main():
+def main(__fileToAnalise):
+    
+    
     # open file to analyse
-    _file = open(sys.argv[1], "r")
+    _file = open(__fileToAnalise, "r")
     i = 0
     total = 0
     
@@ -63,7 +66,7 @@ def main():
 
 # main program
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
+    if len(sys.argv) >= 2:
         print
         print
         print _PefOutput.Green + "------ PHP Exploitable functions scanner"
@@ -71,7 +74,19 @@ if __name__ == "__main__":
         print
         print "------ file: \33[33m%s\33[0m " % (sys.argv[1])
         
-        main()
+        
+        
+        # main program loop
+        if len(sys.argv) == 3 and sys.argv[1] == "-R":
+            file_list = os.listdir(sys.argv[2])
+            for __file in file_list:
+                main(__file)
+        else:
+            main(sys.argv[1])
+            
+            
         print
     else:
-        print "Enter PHP file to analyse"
+        print "Enter PHP or directory name with file(s) to analyse"
+        print "single file: pef filename.php"
+        print "directory: pef -R dirname"
