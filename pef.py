@@ -45,8 +45,7 @@ def main(__fileToAnalise):
     i = 0
     total = 0
     
-    print
-    print "#################################################################################################"
+    print "\n#################################################################################################\n\n"
     print "------ file: \33[33m%s\33[0m " % (__fileToAnalise)
     
     for _line in _file:
@@ -75,18 +74,16 @@ def main(__fileToAnalise):
 # main program
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
-        print
-        print
-        print _PefOutput.Green + "------ PHP Exploitable functions scanner"
-        print "------ GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com"
-        print
+        print _PefOutput.Green + "\n\n------ PHP Exploitable functions scanner"
+        print "------ GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com\n"
         
         
         # main program loop
         if len(sys.argv) == 3 and sys.argv[1] == "-R":
             file_list = os.listdir(sys.argv[2])
             for __file in file_list:
-                main(__file)
+                if os.path.isfile(__file) and '.php' in __file:
+                    main(__file)
         else:
             main(sys.argv[1])
             
