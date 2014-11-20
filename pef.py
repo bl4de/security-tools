@@ -32,7 +32,7 @@ globalVars = ["$_POST", "$_GET", "$_COOKIE", "$_REQUEST", "$_SERVER"];
 
 # prints formated output line
 def printSrcCodeLine(_line, i, _fn, _message):
-    print "line %d : \33[33;1m%s\33[0m %s found " % (i, _fn, _message)
+    print "::  line %d :: \33[33;1m%s\33[0m %s found " % (i, _fn, _message)
     print _PefOutput.Blue + _line + _PefOutput._endline
     
     
@@ -45,8 +45,7 @@ def main(__fileToAnalise):
     i = 0
     total = 0
     
-    print "\n#################################################################################################\n\n"
-    print "------ file: \33[33m%s\33[0m " % (__fileToAnalise)
+    print "#### ---- FILE: \33[33m%s\33[0m ----  #######################################################\n" % (__fileToAnalise)
     
     for _line in _file:
         i = i + 1
@@ -60,22 +59,17 @@ def main(__fileToAnalise):
                 printSrcCodeLine(_line, i, _global, _PefOutput.efMsgGlobalFound)
         
     if total < 1:
-        print
-        print _PefOutput.Green + "No exploitable functions found" + _PefOutput._endline
-        print
-        print
+        print _PefOutput.Green + "No exploitable functions found\n" + _PefOutput._endline
     else:
-        print
-        print _PefOutput.Red + "Found %d exploitable functions total" % (total) + _PefOutput._endline
-        print
-        print    
-
+        print _PefOutput.Red + "Found %d exploitable functions total\n" % (total) + _PefOutput._endline
 
 # main program
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
-        print _PefOutput.Green + "\n\n------ PHP Exploitable functions scanner"
-        print "------ GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com\n"
+        print _PefOutput.Green + "\n\n----------------------------------------------------------------------------------------------------"
+        print "------ PHP Exploitable functions scanner                                          ------------------"
+        print "------ GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com                        ------------------"
+        print "----------------------------------------------------------------------------------------------------\33[0m\n"
         
         
         # main program loop
