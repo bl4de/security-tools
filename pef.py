@@ -44,9 +44,11 @@ def main(__fileToAnalise):
     _file = open(__fileToAnalise, "r")
     i = 0
     total = 0
+    fileNameLength = len(__fileToAnalise)
+    lineLength = 97
     
-    print "#### ---- FILE: \33[33m%s\33[0m ----  #######################################################\n" % (__fileToAnalise)
-    
+    print "-" * 14," FILE: \33[33m%s\33[0m " % (__fileToAnalise), "-" * (lineLength - fileNameLength - 21)  , "\n"
+
     for _line in _file:
         i = i + 1
         for _fn in exploitableFunctions:
@@ -66,10 +68,10 @@ def main(__fileToAnalise):
 # main program
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
-        print _PefOutput.Green + "\n\n----------------------------------------------------------------------------------------------------"
-        print "------ PHP Exploitable functions scanner                                          ------------------"
-        print "------ GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com                        ------------------"
-        print "----------------------------------------------------------------------------------------------------\33[0m\n"
+        print _PefOutput.Green + "\n\n", "-" * 100
+        print "-" * 6, " PHP Exploitable functions scanner", " " * 41, "-" * 16
+        print "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", " " * 22, "-" * 16
+        print "-" * 100, "\33[0m\n"
         
         
         # main program loop
