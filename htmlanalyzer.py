@@ -55,15 +55,15 @@ def showStats(_file, i):
 # find interesting string(s)
 def analyzeLine(_line, i):
     if "<!--" in _line:
-        print _PefOutput.Yellow, "comment found at line %d: %s" % (i, _line.rstrip()), _PefOutput._endline
+        print _PefOutput.White, "line %d:" % (i), _PefOutput.Yellow, "comment found at line %d: %s" % (i, _line.rstrip()), _PefOutput._endline
     if "admin" in _line:
-        print _PefOutput.Red, "'admin' string found at line: %d" % (i), _PefOutput._endline
+        print _PefOutput.White, "line %d:" % (i), _PefOutput.Red, "'admin' string found at line: %d" % (i), _PefOutput._endline
     if "debug" in _line:
-        print _PefOutput.Red, "debug information found at line %d" % (i), _PefOutput._endline
+        print _PefOutput.White, "line %d:" % (i), _PefOutput.Red, "debug information found at line %d" % (i), _PefOutput._endline
     if "<script>" in _line:
-        print _PefOutput.Cyan, "inline JavaScript found at line %d" % (i), _PefOutput._endline
+        print _PefOutput.White, "line %d:" % (i), _PefOutput.Cyan, "inline JavaScript found at line %d" % (i), _PefOutput._endline
     if "\"/" in _line:
-        print _PefOutput.Magenta, "possible directory path found at line %d" % (i), _PefOutput._endline
+        print _PefOutput.White, "line %d:" % (i), _PefOutput.Magenta, "possible directory path found at line %d" % (i), _PefOutput._endline
     
 # main program
 if __name__ == "__main__":
