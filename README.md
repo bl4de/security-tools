@@ -1,7 +1,7 @@
 security-tools
 ==============
 
-Collection of simple security tools created while learning Python.
+Collection of simple security tools created while learning Python. Nothing special, just some Python playground and just-for-security-skills-improvements work.
 
 **htmlanalyzer.py** - Analyse HTML source (comments, login/pass informations etc.)
 
