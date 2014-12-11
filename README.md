@@ -5,4 +5,6 @@ Collection of simple security tools created while learning Python. Nothing speci
 
 **htmlanalyzer.py** - Analyse HTML source (comments, login/pass informations etc.)
 
-**pef.py** - Analyse PHP file for dangerous function(s) and globl variables occurence(s)
+**pef.py** - Analyse PHP file for dangerous function(s) and global variables occurence(s)
+
+**htmlencoder.py** - Encode special chars in HTML strings (<, >, ', ", \)
