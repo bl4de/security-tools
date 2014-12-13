@@ -8,3 +8,5 @@ Collection of simple security tools created while learning Python. Nothing speci
 **pef.py** - Analyse PHP file for dangerous function(s) and global variables occurence(s)
 
 **htmlencoder.py** - Encode special chars in HTML strings (<, >, ', ", \)
+
+**dirscan.py** - Web server directory discover tool (now supports wordlist, bruteforce TBD)
