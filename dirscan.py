@@ -50,7 +50,7 @@ def scan(__server, __port, __path, __wordlist):
             if _counter % _step == 0:
                 print "\33[32m scanned %d of %d so far, continue...\33[0m" % ( _counter, len(__wordlist))
 
-            _url = __server + ':' + __port + __path
+            _url = __server + ':' + __port + '/' + __path + '/'
             _found = scan_directory(_url, _directory)
             if _found:
                 # scan for files using the same wordlist
