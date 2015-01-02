@@ -67,6 +67,8 @@ def main(__fileToAnalise):
     else:
         print _PefOutput.Red + "Found %d exploitable functions total\n" % (total) + _PefOutput._endline
 
+    print _PefOutput.White + "-" * 100
+
 # main program
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
