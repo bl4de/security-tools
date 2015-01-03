@@ -35,32 +35,32 @@ globalVars = ["$_POST", "$_GET", "$_COOKIE", "$_REQUEST", "$_SERVER"]
 
 
 # prints formated output line
-def printSrcCodeLine(_line, i, _fn, _message):
+def printcodeline(_line, i, _fn, _message):
     print "::  line %d :: \33[33;1m%s\33[0m %s found " % (i, _fn, _message)
     print _PefOutput.Blue + _line + _PefOutput._endline
 
 
 # performs code analysis, line by line
-def main(__fileToAnalise):
+def main(srcfile):
     # open file to analyse
-    _file = open(__fileToAnalise, "r")
+    _file = open(srcfile, "r")
     i = 0
     total = 0
-    filenamelength = len(__fileToAnalise)
+    filenamelength = len(srcfile)
     linelength = 97
 
-    print "-" * 14, " FILE: \33[33m%s\33[0m " % __fileToAnalise, "-" * (linelength - filenamelength - 21), "\n"
+    print "-" * 14, " FILE: \33[33m%s\33[0m " % srcfile, "-" * (linelength - filenamelength - 21), "\n"
 
     for _line in _file:
         i += 1
         for _fn in exploitableFunctions:
             if _fn + '(' in _line or _fn + ' (' in _line:
                 total += 1
-                printSrcCodeLine(_line, i, _fn + '()', _PefOutput.efMsgFound)
+                printcodeline(_line, i, _fn + '()', _PefOutput.efMsgFound)
         for _global in globalVars:
             if _global in _line:
                 total += 1
-                printSrcCodeLine(_line, i, _global, _PefOutput.efMsgGlobalFound)
+                printcodeline(_line, i, _global, _PefOutput.efMsgGlobalFound)
 
     if total < 1:
         print _PefOutput.Green + "No exploitable functions found\n" + _PefOutput._endline
