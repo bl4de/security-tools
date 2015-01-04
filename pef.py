@@ -73,7 +73,7 @@ def main(srcfile):
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
         print _PefOutput.Green + "\n\n", "-" * 100
-        print "-" * 6, " PHP Exploitable functions scanner", " " * 41, "-" * 16
+        print "-" * 6, " PEF | PHP Exploitable Functions scanner", " " * 35, "-" * 16
         print "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", " " * 22, "-" * 16
         print "-" * 100, "\33[0m\n"
 
