@@ -4,23 +4,12 @@
 #
 
 # module imports
-import socket
+import httplib
+conn = httplib.HTTPConnection("localhost")
+conn.request("GET", "/")
+r1 = conn.getresponse()
 
-addr = ('127.0.0.1', 80)
+print r1.getheaders()
 
-# function definitons
-
-
-def main():
-    socket.setdefaulttimeout(2)
-    s = socket.socket()
-    try:
-        s.connect(addr)
-        ans = s.recv(1024)
-        print ans
-    except Exception, e:
-        print "Error, can't connect: " + str(e)
-
-# main program
-if __name__ == "__main__":
-    main()
+# for i in dir(r1):
+    # print i
