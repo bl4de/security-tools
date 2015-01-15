@@ -4,6 +4,7 @@
 #
 
 # module imports
+# http://docs.python-requests.org/en/latest/user/quickstart/
 import requests
 import sys
 
