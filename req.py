@@ -9,15 +9,21 @@ import requests
 import sys
 
 
-def main(url):
+def main():
+    url = sys.argv[1]
+    rep = sys.argv[2]
+    
     if 'http://' not in url:
         url = 'http://' + url
-
-    req = requests.get(url)
-    print req.headers
-
+        
+    if rep > 0:
+        print rep
+        while rep > 0:
+            print "Request %d" % int(rep)
+            req = requests.get(url)
+            print req.headers
+            rep=int(rep)-1
+    
 
 if __name__ == '__main__':
-    url = sys.argv[1]
-
-    main(url)
+    main()
