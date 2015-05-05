@@ -7,25 +7,7 @@ import sys
 import os
 
 import pefdefs
-
-
-class _PefOutput:
-    def __init__(self):
-        pass
-
-    Black = '\33[30m'
-    Red = '\33[31m'
-    Green = '\33[32m'
-    Yellow = '\33[33m'
-    Blue = '\33[34m'
-    Magenta = '\33[35m'
-    Cyan = '\33[36m'
-    White = '\33[37m'
-    _endline = '\33[0m'
-
-    efMsgFound = "exploitable function call"
-    efMsgGlobalFound = "global variable explicit call"
-    fiMsgFound = "file include pattern found; potential LFI/RFI detected"
+import cco
 
 
 # prints formated output line
@@ -70,6 +52,8 @@ def main(srcfile):
 
 # main program
 if __name__ == "__main__":
+    _PefOutput = cco._PefOutput
+
     if len(sys.argv) >= 2:
         print _PefOutput.Green + "\n\n", "-" * 100
         print "-" * 6, " PEF | PHP Exploitable Functions scanner", " " * 35, "-" * 16

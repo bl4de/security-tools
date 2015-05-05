@@ -1,5 +1,4 @@
-__author__ = 'admin'
-
+# Definitions for pef.py
 
 # exploitable functions
 exploitableFunctions = [" system", " exec", " popen", " pcntl_exec",
