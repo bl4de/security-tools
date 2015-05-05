@@ -6,6 +6,8 @@
 import sys
 import os
 
+import pefdefs
+
 
 class _PefOutput:
     def __init__(self):
@@ -24,18 +26,6 @@ class _PefOutput:
     efMsgFound = "exploitable function call"
     efMsgGlobalFound = "global variable explicit call"
     fiMsgFound = "file include pattern found; potential LFI/RFI detected"
-
-# exploitable functions
-exploitableFunctions = [" system", " exec", " popen", " pcntl_exec",
-                        " eval", " preg_replace", " create_function", " include", " require", " passthru",
-                        " shell_exec", " popen", " proc_open",
-                        " pcntl_exec", " asset", " extract", " parse_str", " putenv", " ini_set", " mail", " header"]
-
-# dangerous global(s)
-globalVars = ["$_POST", "$_GET", "$_COOKIE", "$_REQUEST", "$_SERVER"]
-
-# dangerous patterns - LFI/RFI
-fileInclude = ["include($_GET", "require($_GET", "include_once($_GET", "require_once($_GET"]
 
 
 # prints formated output line
@@ -57,16 +47,16 @@ def main(srcfile):
 
     for _line in _file:
         i += 1
-        __line = _line.replace(" ","")
-        for _fn in exploitableFunctions:
+        __line = _line.replace(" ", "")
+        for _fn in pefdefs.exploitableFunctions:
             if _fn + '(' in __line or _fn + ' (' in __line:
                 total += 1
                 printcodeline(_line, i, _fn + '()', _PefOutput.efMsgFound)
-        for _dp in fileInclude:
+        for _dp in pefdefs.fileInclude:
             if _dp in __line:
                 total += 1
                 printcodeline(_line, i, _dp + '()', _PefOutput.fiMsgFound)
-        for _global in globalVars:
+        for _global in pefdefs.globalVars:
             if _global in __line:
                 total += 1
                 printcodeline(_line, i, _global, _PefOutput.efMsgGlobalFound)
