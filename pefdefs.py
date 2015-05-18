@@ -10,4 +10,6 @@ exploitableFunctions = [" system", " exec", " popen", " pcntl_exec",
 globalVars = ["$_POST", "$_GET", "$_COOKIE", "$_REQUEST", "$_SERVER"]
 
 # dangerous patterns - LFI/RFI
-fileInclude = ["include($_GET", "require($_GET", "include_once($_GET", "require_once($_GET"]
+fileInclude = ["include($_GET", "require($_GET", 
+"include_once($_GET", "require_once($_GET",
+"include($_REQUEST", "require($_REQUEST","include_once($_REQUEST","require_once($_REQUEST"]
