@@ -6,9 +6,8 @@
 import sys
 import os
 
-import pefdefs
-import cco
-
+from imports import pefdefs
+from imports import cco
 
 # prints formated output line
 def printcodeline(_line, i, _fn, _message):
