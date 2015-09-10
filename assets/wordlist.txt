@@ -3,8 +3,10 @@ ascii
 test
 tmp
 temp
-#register
+register
 bb
 sampleapp
 wordpress
 index
+strona
+portal
