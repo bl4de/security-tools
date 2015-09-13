@@ -9,6 +9,7 @@ import os
 from imports import pefdefs
 from imports import cco
 
+
 # prints formated output line
 def printcodeline(_line, i, _fn, _message):
     print "::  line %d :: \33[33;1m%s\33[0m %s found " % (i, _fn, _message)
@@ -48,6 +49,7 @@ def main(srcfile):
         print _PefOutput.Red + "Found %d exploitable functions total\n" % (total) + _PefOutput._endline
 
     print _PefOutput.White + "-" * 100
+
 
 # main program
 if __name__ == "__main__":
