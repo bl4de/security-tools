@@ -11,7 +11,7 @@ def scan_directory(__url, __directory):
     resp = urllib.urlopen(__url + __directory)
     print resp.code
     if resp.code == 200:
-        print '\33[33m' + __url + __directory + '\33[0m'
+        print '\33[33m \33[0m'.format(__url, __directory)
         return True
     else:
         return False
@@ -21,7 +21,7 @@ def scan_file(__url):
     resp = urllib.urlopen(__url)
     # print resp.code
     if resp.code == 200:
-        print '\33[33m' + __url + '\33[0m'
+        print '\33[33m {} \33[0m'.format(__url)
         return True
     else:
         return False
@@ -43,16 +43,18 @@ def scan(__server, __port, __path, __wordlist):
         if _step == 0:
             _step = 1
 
-        print "\33[36m Start scan with %d known names.\n\33[0m" % _totalWordList
+        print "\33[36m Start scan with {} known names.\n\33[0m".format(
+            _totalWordList)
 
         # print _step
         for _directory in __wordlist:
             if _counter % _step == 0:
-                print "\33[32m scanned %d of %d so far, continue...\33[0m" % ( _counter, len(__wordlist))
+                print "\33[32m scanned {} of {} so far, continue...\33[0m" \
+                    .format(_counter, len(__wordlist))
 
             if __path == "/":
                 __path = ""
-            
+
             _url = __server + ':' + __port + "/" + __path
             _found = scan_directory(_url, _directory)
             if _found:
@@ -62,6 +64,7 @@ def scan(__server, __port, __path, __wordlist):
             _counter += 1
 
         print "\33[36mDone.\n\33[0m"
+
 
 # main program
 if __name__ == "__main__":
