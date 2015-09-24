@@ -7,11 +7,10 @@ import urllib
 
 
 def scan_directory(__url, __directory):
-    print __url + __directory
     resp = urllib.urlopen(__url + __directory)
-    print resp.code
     if resp.code == 200:
-        print '\33[33m \33[0m'.format(__url, __directory)
+        print '\33[33m [{}] Found directory: {}\33[0m'\
+            .format(resp.code, __url + __directory)
         return True
     else:
         return False
@@ -31,7 +30,7 @@ def scan_files(__url, __directory, __wordlist):
     # print _step
     for _filename in __wordlist:
         _url = __url + __directory + '/' + _filename + '.php'
-        _found = scan_file(_url)
+        # _found = scan_file(_url)
 
 
 def scan(__server, __port, __path, __wordlist):
@@ -48,7 +47,7 @@ def scan(__server, __port, __path, __wordlist):
 
         # print _step
         for _directory in __wordlist:
-            if _counter % _step == 0:
+            if _counter > 100 and _counter % _step == 0:
                 print "\33[32m scanned {} of {} so far, continue...\33[0m" \
                     .format(_counter, len(__wordlist))
 
