@@ -9,7 +9,7 @@ import urllib
 def scan_directory(__url, __directory):
     resp = urllib.urlopen(__url + __directory)
     if resp.code == 200:
-        print '\33[33m [{}] Found directory: {}\33[0m'\
+        print '\33[33m [{}] Found directory: {}\33[0m' \
             .format(resp.code, __url + __directory)
         return True
     else:
@@ -65,8 +65,20 @@ def scan(__server, __port, __path, __wordlist):
         print "\33[36mDone.\n\33[0m"
 
 
+def run():
+    # argv: dirscan server_url server_port base_dir [wordlist]
+    if len(sys.argv) < 4 or len(sys.argv) > 5:
+        print "\nUsage:"
+        print "\n./dirscan.py SERVER_URL PORT BASE_PATH [WORDLIST FILE]"
+        exit(0)
+    else:
+        return
+
+
 # main program
 if __name__ == "__main__":
+
+    run()
 
     server = sys.argv[1]
     port = sys.argv[2]
