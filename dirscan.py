@@ -6,8 +6,10 @@ import sys
 import urllib
 
 
+# TODO check protocol in __url
 def scan_directory(__url, __directory):
-    resp = urllib.urlopen(__url + __directory)
+
+    resp = urllib.urlopen("http://" + __url + __directory)
     if resp.code == 200:
         print '\33[33m [{}] Found directory: {}\33[0m' \
             .format(resp.code, __url + __directory)
