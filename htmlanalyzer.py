@@ -32,10 +32,10 @@ def main():
 
     print
     for _line in _file:
-        i = i + 1
-        analyzeLine(_line, i)
+        i += 1
+        analyze_line(_line, i)
         identify(_line)
-    showStats(_file, i)
+    show_stats(_file, i)
 
 
 # using osftare recognition
@@ -46,7 +46,7 @@ def identify(_line):
         _ident = "WordPress CMS"
 
 
-def showStats(_file, i):
+def show_stats(_file, i):
     print _PefOutput.Green, "\n------ SUMMARY -------\n"
     print "total lines of code: %d" % (i)
     print "identified software: %s" % (_ident), _PefOutput._endline
@@ -55,27 +55,27 @@ def showStats(_file, i):
 
 
 # find interesting string(s)
-def analyzeLine(_line, i):
-    if "<!--" in _line:
+def analyze_line(_line, i):
+    if _line.lstrip().startswith('<!--'):
         print _PefOutput.White, "line %d:" % (
-        i), _PefOutput.Yellow, "comment found at line %d: %s" % (
-        i, _line.rstrip()), _PefOutput._endline
+            i), _PefOutput.Yellow, "comment found at line %d: %s" % (
+            i, _line.rstrip()), _PefOutput._endline
     if "admin" in _line:
         print _PefOutput.White, "line %d:" % (
-        i), _PefOutput.Red, "'admin' string found at line: %d" % (
-        i), _PefOutput._endline
+            i), _PefOutput.Red, "'admin' string found at line: %d" % (
+            i), _PefOutput._endline
     if "debug" in _line:
         print _PefOutput.White, "line %d:" % (
-        i), _PefOutput.Red, "debug information found at line %d" % (
-        i), _PefOutput._endline
+            i), _PefOutput.Red, "debug information found at line %d" % (
+            i), _PefOutput._endline
     if "<script>" in _line:
         print _PefOutput.White, "line %d:" % (
-        i), _PefOutput.Cyan, "inline JavaScript found at line %d" % (
-        i), _PefOutput._endline
+            i), _PefOutput.Cyan, "inline JavaScript found at line %d" % (
+            i), _PefOutput._endline
     if "\"/" in _line:
         print _PefOutput.White, "line %d:" % (
-        i), _PefOutput.Magenta, "possible directory path found at line %d" % (
-        i), _PefOutput._endline
+            i), _PefOutput.Magenta, "possible directory path found at line %d" % (
+            i), _PefOutput._endline
 
 
 # main program
