@@ -70,6 +70,10 @@ def analyze_line(_line, i):
             i), _PefOutput._endline
     if "<script>" in _line:
         print _PefOutput.White, "line %d:" % (
+            i), _PefOutput.Cyan, "script tag found at line %d" % (
+            i), _PefOutput._endline
+    if "javascript:" in _line:
+        print _PefOutput.White, "line %d:" % (
             i), _PefOutput.Cyan, "inline JavaScript found at line %d" % (
             i), _PefOutput._endline
     if "\"/" in _line:
