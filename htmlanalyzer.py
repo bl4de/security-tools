@@ -68,6 +68,10 @@ def analyze_line(_line, i):
         print _PefOutput.White, "line %d:" % (
             i), _PefOutput.Red, "debug information found at line %d" % (
             i), _PefOutput._endline
+    if "src=" in _line:
+        print _PefOutput.White, "line %d:" % (
+            i), _PefOutput.Cyan, "path to file found in %d" % (
+            i), _PefOutput._endline
     if "<script>" in _line:
         print _PefOutput.White, "line %d:" % (
             i), _PefOutput.Cyan, "script tag found at line %d" % (
