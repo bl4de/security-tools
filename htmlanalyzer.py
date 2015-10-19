@@ -6,7 +6,7 @@
 import sys
 
 
-class _PefOutput:
+class PefOutput:
     Black = '\33[30m'
     Red = '\33[31m'
     Green = '\33[32m'
@@ -27,8 +27,8 @@ _ident = "unknown"
 def main():
     _file = open(sys.argv[1], "r")
     i = 0
-    print _PefOutput.Green, "=" * 26, "HTML Analyze", "=" * 26
-    print "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", "-" * 6, _PefOutput._endline
+    print PefOutput.Green, "=" * 26, "HTML Analyze", "=" * 26
+    print "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", "-" * 6, PefOutput._endline
 
     print
     for _line in _file:
@@ -47,9 +47,9 @@ def identify(_line):
 
 
 def show_stats(_file, i):
-    print _PefOutput.Green, "\n------ SUMMARY -------\n"
+    print PefOutput.Green, "\n------ SUMMARY -------\n"
     print "total lines of code: %d" % (i)
-    print "identified software: %s" % (_ident), _PefOutput._endline
+    print "identified software: %s" % (_ident), PefOutput._endline
     # end of summary
     print "\n"
 
@@ -57,33 +57,33 @@ def show_stats(_file, i):
 # find interesting string(s)
 def analyze_line(_line, i):
     if _line.lstrip().startswith('<!--'):
-        print _PefOutput.White, "line %d:" % (
-            i), _PefOutput.Yellow, "comment found at line %d: %s" % (
-            i, _line.rstrip()), _PefOutput._endline
+        print PefOutput.White, "line %d:" % (
+            i), PefOutput.Yellow, "comment found at line %d: %s" % (
+            i, _line.rstrip()), PefOutput._endline
     if "admin" in _line:
-        print _PefOutput.White, "line %d:" % (
-            i), _PefOutput.Red, "'admin' string found at line: %d" % (
-            i), _PefOutput._endline
+        print PefOutput.White, "line %d:" % (
+            i), PefOutput.Red, "'admin' string found at line: %d" % (
+            i), PefOutput._endline
     if "debug" in _line:
-        print _PefOutput.White, "line %d:" % (
-            i), _PefOutput.Red, "debug information found at line %d" % (
-            i), _PefOutput._endline
+        print PefOutput.White, "line %d:" % (
+            i), PefOutput.Red, "debug information found at line %d" % (
+            i), PefOutput._endline
     if "src=" in _line:
-        print _PefOutput.White, "line %d:" % (
-            i), _PefOutput.Cyan, "path to file found in %d" % (
-            i), _PefOutput._endline
+        print PefOutput.White, "line %d:" % (
+            i), PefOutput.Cyan, "path to file found in %d" % (
+            i), PefOutput._endline
     if "<script>" in _line:
-        print _PefOutput.White, "line %d:" % (
-            i), _PefOutput.Cyan, "script tag found at line %d" % (
-            i), _PefOutput._endline
+        print PefOutput.White, "line %d:" % (
+            i), PefOutput.Cyan, "script tag found at line %d" % (
+            i), PefOutput._endline
     if "javascript:" in _line:
-        print _PefOutput.White, "line %d:" % (
-            i), _PefOutput.Cyan, "inline JavaScript found at line %d" % (
-            i), _PefOutput._endline
+        print PefOutput.White, "line %d:" % (
+            i), PefOutput.Cyan, "inline JavaScript found at line %d" % (
+            i), PefOutput._endline
     if "\"/" in _line:
-        print _PefOutput.White, "line %d:" % (
-            i), _PefOutput.Magenta, "possible directory path found at line %d" % (
-            i), _PefOutput._endline
+        print PefOutput.White, "line %d:" % (
+            i), PefOutput.Magenta, "possible directory path found at line %d" % (
+            i), PefOutput._endline
 
 
 # main program
