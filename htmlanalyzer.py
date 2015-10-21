@@ -27,7 +27,7 @@ _ident = "unknown"
 def main():
     _file = open(sys.argv[1], "r")
     i = 0
-    print PefOutput.Green, "=" * 26, "HTML Analyze", "=" * 26
+    print PefOutput.Green, "=" * 26, "HTML source code Analyzer", "=" * 26
     print "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", "-" * 6, PefOutput._endline
 
     print
