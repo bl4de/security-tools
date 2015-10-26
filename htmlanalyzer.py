@@ -82,16 +82,18 @@ def analyze_line(_line, i):
                           "debug information found at line %d", i)
     if "src=" in _line:
         print_output_line(i, PefOutput.Cyan,
-                          "path to file found in %d", i)
+                          "PATH to external resource file (IMG, CSS, JS)"
+                          " file found in %d",
+                          i)
     if "<script>" in _line:
         print_output_line(i, PefOutput.Cyan,
                           "script tag found at line %d", i)
     if "javascript:" in _line:
         print_output_line(i, PefOutput.Cyan,
                           "inline JavaScript found at line %d", i)
-    if "\"/" in _line:
-        print_output_line(i, PefOutput.Magenta,
-                          "possible directory path found at line %d", i)
+        # if "\"/" in _line:
+        #     print_output_line(i, PefOutput.Magenta,
+        #                       "possible directory path found at line %d", i)
 
 
 # main program
