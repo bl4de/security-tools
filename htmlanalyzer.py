@@ -91,9 +91,6 @@ def analyze_line(_line, i):
     if "javascript:" in _line:
         print_output_line(i, PefOutput.Cyan,
                           "inline JavaScript found at line %d", i)
-        # if "\"/" in _line:
-        #     print_output_line(i, PefOutput.Magenta,
-        #                       "possible directory path found at line %d", i)
 
 
 # main program
