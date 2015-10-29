@@ -5,15 +5,34 @@
 import sys
 import os
 
+catalogs = ["admin",
+            "log",
+            "about",
+            "manage",
+            "manager",
+            "panel"
+            ]
+
+
+def parse_robots(_res):
+    for _line in _res.readlines():
+        for c in catalogs:
+            if c in _line:
+                print "{} found!".format(c)
+
+
 def main():
     _url = sys.argv[1]
-    _res = os.popen("wget -q %s/robots.txt" % (_url)).read()
-    
-    if "admin" in _res:
-        print "'admin' catalog name found!"
-    
+    os.popen("rm -f robots.txt")
+    os.popen("wget %s/robots.txt" % (_url))
+
+    _res = file("robots.txt", "r")
+    if _res:
+        parse_robots(_res)
+
     print "analyze complete"
-        
+
+
 # main program
 if __name__ == "__main__":
     if len(sys.argv) == 2:
