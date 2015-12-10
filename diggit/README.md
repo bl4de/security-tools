@@ -12,9 +12,13 @@ Take a look at http://githowto.com/git_internals_working_directly_with_git_objec
 
 ### .git folder structure (basics)
 
+[TBD]
 
 ### Using diggit.py
 
+[TBD]
 
+
+https://git-scm.com/book/pl/v1/Mechanizmy-wewn%C4%99trzne-w-Git-Komendy-Plumbing-i-Porcelain
 
 
