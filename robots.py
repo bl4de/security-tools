@@ -1,6 +1,10 @@
 #!/usr/bin/python
 #
-# HTML source analyzer
+# bl4de | <bloorq@gmail.com> | https://twitter.com/_bl4de
+#
+# robots.txt analyzer
+# usage:
+# ./robots.py [url]
 #
 import sys
 import os
