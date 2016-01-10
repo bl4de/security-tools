@@ -9,6 +9,8 @@
 import sys
 import os
 
+# TODO add reading folder with dirs
+
 catalogs = ["admin",
             "log",
             "about",
