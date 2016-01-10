@@ -25,17 +25,15 @@ def get_object_dir_prefix(object_hash):
 def save_git_object(object_hash):
     complete_url = base_url + "/" + get_object_url(object_hash)
 
-    os.system("wget " + complete_url)
-    os.system("mkdir -p " + DESTINATION_FOLDER + OBJECT_DIR +
-              get_object_dir_prefix(object_hash))
-    os.system(
-            "cp " +
-            object_hash[2:] + " " + DESTINATION_FOLDER + OBJECT_DIR +
-            get_object_dir_prefix(object_hash))
+    os.system("curl '" + complete_url + "' --create-dirs -o '" +
+              DESTINATION_FOLDER +
+              get_object_url(object_hash) + "'")
 
-    os.system("cd " + DESTINATION_FOLDER + OBJECT_DIR +
-              get_object_dir_prefix(object_hash) +
-              " && git cat-file -p " + object_hash)
+    git_object_type = os.popen("cd " + DESTINATION_FOLDER + OBJECT_DIR +
+                               get_object_dir_prefix(object_hash) +
+                               " && git cat-file -t " + object_hash).read()
+
+    print git_object_type
 
 
 # main program
