@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 
-import sys
 import base64
+import sys
 import urllib
+
+
+# returns 61; for 'a' truncated from 0x61
+def __get_char_hex_value(c):
+    return hex(ord(c)).replace("0x", "")
 
 
 def to_base_64(s):
@@ -46,6 +51,15 @@ def to_hex(s):
     return xs
 
 
+def to_html_entities(s):
+    xs = ""
+    for c in s:
+        entity = "&#x00" + __get_char_hex_value(c) + ";"
+        if entity:
+            xs += entity;
+    return xs
+
+
 if __name__ == "__main__":
     fn_map_from = {
         "base64": from_base_64,
@@ -57,19 +71,21 @@ if __name__ == "__main__":
         "base64": to_base_64,
         "ascii": to_ascii,
         "url": url_encode,
-        "hex": to_hex
+        "hex": to_hex,
+        "html_entities": to_html_entities
     }
 
     if len(sys.argv) != 4:
-        print "usage: ed.py [file] [input] [output]" \
+        print "usage: ed.py [string] [input] [output]" \
               "\n\n input: base64, ascii, hex\n " \
-              "output: base64, ascii, url, hex"
+              "output: base64, ascii, url, hex, html_entities ( eg. &#0022;)"
         exit(0)
 
-    f = open(sys.argv[1], "r")
-    # TODO remove special chars - arg passing
-    data = f.readline().replace("\\n", "")
+    # f = open(sys.argv[1], "r")
+    # # TODO remove special chars - arg passing
+    # data = f.readline().replace("\\n", "")
 
+    data = sys.argv[1]
     output = fn_map_from[sys.argv[2]](fn_map_to[sys.argv[3]](data))
 
     print output
