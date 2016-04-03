@@ -11,3 +11,9 @@ Each object contains some information, eg. current tree structure, file content 
 More details:
 
 https://github.com/bl4de/research/tree/master/hidden_directories_leaks#hidden-directories-and-files-as-a-source-of-sensitive-information-about-web-application
+
+### Basic usage
+
+```
+./diggit.py http://webpage.com/ d60fbeed6db32865a1f01bb9e485755f085f51c1
+```
