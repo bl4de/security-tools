@@ -10,8 +10,6 @@ import sys
 VERSION = "0.0.1"
 OBJECT_DIR = ".git/objects/"
 
-DESTINATION_FOLDER = "/Users/bl4de/hacking/playground/diggit/test1/"
-
 Black = '\33[30m'
 Red = '\33[31m'
 Green = '\33[32m'
@@ -27,6 +25,14 @@ def print_credits():
     print "#" * 68
     print "###    diggit.py  |  Twitter: @_bl4de  | GitHub: bl4de           ###"
     print "#" * 68
+
+
+def print_usage():
+    print "\n\nusage: ./diggit.py [url] [git_object_hash] [temporary_dir]\n"
+    print " [url]               - url of web page with revealed .git directory"
+    print " [git_object_hash]   - SHA1 of Git object, as found in .git/logs/head or similar"
+    print " [temporary_dir]     - local directory with dummy Git folder structure"
+    print "  (see https://github.com/bl4de/research/blob/master/hidden_directories_leaks/README.md#git for more information)"
 
 
 def print_object_details(object_type, object_content):
@@ -52,13 +58,13 @@ def save_git_object():
     complete_url = base_url + "/" + get_object_url()
 
     os.system("curl --silent '" + complete_url + "' --create-dirs -o '" +
-              DESTINATION_FOLDER + get_object_url() + "'")
+              dummy_git_repository + get_object_url() + "'")
 
-    git_object_type = os.popen("cd " + DESTINATION_FOLDER + OBJECT_DIR +
+    git_object_type = os.popen("cd " + dummy_git_repository + OBJECT_DIR +
                                get_object_dir_prefix() +
                                " && git cat-file -t " + object_hash).read()
 
-    git_object_content = os.popen("cd " + DESTINATION_FOLDER + OBJECT_DIR +
+    git_object_content = os.popen("cd " + dummy_git_repository + OBJECT_DIR +
                                   get_object_dir_prefix() +
                                   " && git cat-file -p " + object_hash).read()
     print_object_details(git_object_type, git_object_content)
@@ -67,11 +73,18 @@ def save_git_object():
 # main program
 if __name__ == "__main__":
 
+    if len(sys.argv) != 4:
+        print_usage()
+        exit(0)
+
     # domain, base path for .git folder, eg. http://website.com
     base_url = sys.argv[1]
 
     # hash of object to save
     object_hash = sys.argv[2]
+
+    # temporary dir with dummy .git structure (create it first!)
+    dummy_git_repository = sys.argv[3]
 
     if base_url and object_hash:
         save_git_object()
