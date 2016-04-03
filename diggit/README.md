@@ -15,5 +15,5 @@ https://github.com/bl4de/research/tree/master/hidden_directories_leaks#hidden-di
 ### Basic usage
 
 ```
-./diggit.py http://webpage.com/ d60fbeed6db32865a1f01bb9e485755f085f51c1 /path/to/temp/folder
+./diggit.py http://webpage.com/ d60fbeed6db32865a1f01bb9e485755f085f51c1 /path/to/temp/folder/
 ```
