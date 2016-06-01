@@ -22,20 +22,23 @@ _endline = '\33[0m'
 
 
 def print_credits():
+    """Prints credits :)"""
     print "#" * 68
     print "###    diggit.py  |  Twitter: @_bl4de  | GitHub: bl4de           ###"
     print "#" * 68
 
 
 def print_usage():
-    print "\n\nusage: ./diggit.py [url] [git_object_hash] [temporary_dir]\n"
+    """Prints usage of diggit.py"""
+    print "\n\nusage: ./diggit.py [url] [temporary_dir] [git_object_hash] \n"
     print " [url]               - url of web page with revealed .git directory"
-    print " [git_object_hash]   - SHA1 of Git object, as found in .git/logs/head or similar"
     print " [temporary_dir]     - local directory with dummy Git folder structure"
+    print " [git_object_hash]   - SHA1 of Git object, as found in .git/logs/head or similar"
     print "  (see https://github.com/bl4de/research/blob/master/hidden_directories_leaks/README.md#git for more information)"
 
 
 def print_object_details(object_type, object_content):
+    """Prints object details"""
     print "\n" + Cyan + "#" * 12 + " " + object_hash \
           + " information " + "#" * 12 + _endline
     print "\n{0}[*] Object type: {3}{2}{1}{3}".format(Green, object_type, Red,
@@ -47,14 +50,17 @@ def print_object_details(object_type, object_content):
 
 
 def get_object_url():
+    """Returns object git url"""
     return OBJECT_DIR + object_hash[0:2] + "/" + object_hash[2:]
 
 
 def get_object_dir_prefix():
+    """Returns object directory prefix (first two chars of object hash)"""
     return object_hash[0:2] + "/"
 
 
 def save_git_object():
+    """Saves git object in temporary .git directory preserves its path"""
     complete_url = base_url + "/" + get_object_url()
 
     os.system("curl --silent '" + complete_url + "' --create-dirs -o '" +
@@ -81,10 +87,10 @@ if __name__ == "__main__":
     base_url = sys.argv[1]
 
     # hash of object to save
-    object_hash = sys.argv[2]
+    object_hash = sys.argv[3]
 
     # temporary dir with dummy .git structure (create it first!)
-    dummy_git_repository = sys.argv[3]
+    dummy_git_repository = sys.argv[2]
 
     if base_url and object_hash:
         save_git_object()
