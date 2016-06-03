@@ -32,7 +32,7 @@ def main():
 
     i = 0
     print PefOutput.Green, "=" * 26, "HTML source code Analyzer", "=" * 26
-    print "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", "-" * 6, PefOutput._endline
+    print " " + "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", "-" * 6, PefOutput._endline
 
     print
     for _line in _file:
@@ -68,11 +68,11 @@ def analyze_line(_line, i):
     if _line.lstrip().startswith('<!--'):
         if "\"/" in _line:
             print_output_line(i, PefOutput.Red,
-                              "commented PATH found at line %d: %s",
+                              "COMMENTED PATH found at line %d: %s",
                               (i, _line.rstrip()))
         else:
             print_output_line(i, PefOutput.Yellow,
-                              "comment found at line %d: %s",
+                              "COMMENT found at line %d: %s",
                               (i, _line.rstrip()))
     if "admin" in _line:
         print_output_line(i, PefOutput.Red,
@@ -86,11 +86,11 @@ def analyze_line(_line, i):
                           " file found in %d",
                           i)
     if "<script>" in _line:
-        print_output_line(i, PefOutput.Cyan,
-                          "script tag found at line %d", i)
+        print_output_line(i, PefOutput.Green,
+                          "<SCRIPT> tag found at line %d", i)
     if "javascript:" in _line:
         print_output_line(i, PefOutput.Cyan,
-                          "inline JavaScript found at line %d", i)
+                          "INLINE JavaScript found at line %d", i)
 
 
 # main program

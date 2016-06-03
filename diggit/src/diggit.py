@@ -8,7 +8,7 @@ import sys
 
 # some common definitions
 VERSION = "0.0.1"
-OBJECT_DIR = ".git/objects/"
+OBJECT_DIR = "/.git/objects/"
 
 Black = '\33[30m'
 Red = '\33[31m'
