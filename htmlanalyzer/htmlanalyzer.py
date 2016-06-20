@@ -21,10 +21,10 @@ class PefOutput:
     efMsgGlobalFound = "global variable explicit call"
 
 
-_ident = "unknown"
-
-
 def main():
+    _ident = ""
+    _fw = ""
+
     try:
         _file = open(sys.argv[1], "r")
     except:
@@ -38,22 +38,37 @@ def main():
     for _line in _file:
         i += 1
         analyze_line(_line, i)
-        identify(_line)
-    show_stats(_file, i)
+        if _ident == "":
+            _ident = identify(_line)
+        if _fw == "":
+            _fw = detect_framework(_line)
+
+    show_stats(_file, i, _ident, _fw)
+
+
+# detects frontend framework used
+def detect_framework(_line):
+    _fw = ""
+    if "ng-app" in _line:
+        _fw = "Angular 1.*"
+    return _fw
 
 
 # using osftare recognition
 def identify(_line):
+    _ident = "unknown"
     if "Jommla" in _line:
         _ident = "Joomla CMS"
     if "wp-content" in _line:
         _ident = "WordPress CMS"
+    return _ident
 
 
-def show_stats(_file, i):
+def show_stats(_file, i, _ident, _fw):
     print PefOutput.Green, "\n------ SUMMARY -------\n"
-    print "total lines of code: %d" % (i)
-    print "identified software: %s" % (_ident), PefOutput._endline
+    print "total lines of code:     %d" % (i)
+    print "identified CMS:          %s" % (_ident)
+    print "identified framework:    %s" % (_fw), PefOutput._endline
     # end of summary
     print "\n"
 
@@ -68,12 +83,12 @@ def analyze_line(_line, i):
     if _line.lstrip().startswith('<!--'):
         if "\"/" in _line:
             print_output_line(i, PefOutput.Red,
-                              "COMMENTED PATH found at line %d: %s",
-                              (i, _line.rstrip()))
+                              "COMMENTED PATH found at line %d:   %s",
+                              (i, _line.lstrip().rstrip()))
         else:
             print_output_line(i, PefOutput.Yellow,
-                              "COMMENT found at line %d: %s",
-                              (i, _line.rstrip()))
+                              "COMMENT found at line %d:   %s",
+                              (i, _line.lstrip().rstrip()))
     if "admin" in _line:
         print_output_line(i, PefOutput.Red,
                           "'admin' string found at line: %d", i)
@@ -83,8 +98,8 @@ def analyze_line(_line, i):
     if "src=" in _line:
         print_output_line(i, PefOutput.Cyan,
                           "PATH to external resource file (IMG, CSS, JS)"
-                          " file found in %d",
-                          i)
+                          " file found in %d:   %s",
+                          (i, _line.lstrip().rstrip()))
     if "<script>" in _line:
         print_output_line(i, PefOutput.Green,
                           "<SCRIPT> tag found at line %d", i)
