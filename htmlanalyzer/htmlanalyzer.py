@@ -31,10 +31,8 @@ def main():
         pass
 
     i = 0
-    print PefOutput.Green, "=" * 26, "HTML source code Analyzer", "=" * 26
-    print " " + "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", "-" * 6, PefOutput._endline
+    print_header()
 
-    print
     for _line in _file:
         i += 1
         analyze_line(_line, i)
@@ -44,6 +42,13 @@ def main():
             _fw = detect_framework(_line)
 
     show_stats(_file, i, _ident, _fw)
+
+
+# header
+def print_header():
+    print PefOutput.Green, "=" * 26, "HTML source code Analyzer", "=" * 26
+    print " " + "-" * 10, "   https://github.com/bl4de | https://twitter.com/_bl4de | bloorq@gmail.com   ", \
+        "-" * 10, "\n\n", PefOutput._endline
 
 
 # detects frontend framework used
@@ -99,7 +104,7 @@ def analyze_line(_line, i):
         print_output_line(i, PefOutput.Cyan,
                           "PATH to external resource file (IMG, CSS, JS)"
                           " file found in %d:   %s",
-                          (i, _line.lstrip().rstrip()))
+                          (i, _line.lstrip().rstrip()[0:80]))
     if "<script>" in _line:
         print_output_line(i, PefOutput.Green,
                           "<SCRIPT> tag found at line %d", i)
