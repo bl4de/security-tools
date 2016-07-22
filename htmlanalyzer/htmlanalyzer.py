@@ -29,20 +29,19 @@ class ConsoleOutputBeautifier:
     def __init__(self):
         return None
 
-    def getColor(self, color_name):
+    @staticmethod
+    def getColor(color_name):
         """returns color identified by color_name or white as default value"""
         if color_name in ConsoleOutputBeautifier.colors:
             return ConsoleOutputBeautifier.colors[color_name]
         return ConsoleOutputBeautifier.colors["white"]
 
-    def getSpecialChar(self, char_name):
+    @staticmethod
+    def getSpecialChar(char_name):
         """returns special character identified by char_name"""
         if char_name in ConsoleOutputBeautifier.characters:
             return ConsoleOutputBeautifier.characters[char_name]
         return ""
-
-
-co = ConsoleOutputBeautifier()
 
 
 def main():
@@ -70,9 +69,10 @@ def main():
 
 # header
 def print_header():
-    print co.getColor("green"), "=" * 26, "HTML source code Analyzer", "=" * 26
+    print ConsoleOutputBeautifier.getColor(
+        "green"), "=" * 26, "HTML source code Analyzer", "=" * 26
     print " " + "-" * 10, "   https://github.com/bl4de | https://twitter.com/_bl4de | bloorq@gmail.com   ", \
-        "-" * 10, "\n\n", co.getSpecialChar("endline")
+        "-" * 10, "\n\n", ConsoleOutputBeautifier.getSpecialChar("endline")
 
 
 # detects frontend framework used
@@ -94,48 +94,49 @@ def identify(_line):
 
 
 def show_stats(_file, i, _ident, _fw):
-    print co.getColor("green"), "\n------ SUMMARY -------\n"
+    print ConsoleOutputBeautifier.getColor(
+        "green"), "\n------ SUMMARY -------\n"
     print "total lines of code:     %d" % (i)
     print "identified CMS:          %s" % (_ident)
     print "identified framework:    %s" % (
-        _fw), co.getSpecialChar("endline")
+        _fw), ConsoleOutputBeautifier.getSpecialChar("endline")
     # end of summary
     print "\n"
 
 
 def print_output_line(i, col, msg, args):
-    print co.getColor("white"), "line %d:" % (
-        i), col, msg % (args), co.getSpecialChar("endline")
+    print ConsoleOutputBeautifier.getColor("white"), "line %d:" % (
+        i), col, msg % (args), ConsoleOutputBeautifier.getSpecialChar("endline")
 
 
 # find interesting string(s)
 def analyze_line(_line, i):
-    if _line.lstrip().startswith('<!--'):
+    if '<!--' in _line.lstrip():
         if "\"/" in _line:
-            print_output_line(i, co.getColor("red"),
+            print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
                               "COMMENTED PATH found at line %d:   %s",
                               (i, _line.lstrip().rstrip()))
         else:
-            print_output_line(i, co.getColor("yellow"),
+            print_output_line(i, ConsoleOutputBeautifier.getColor("yellow"),
                               "COMMENT found at line %d:   %s",
                               (i, _line.lstrip().rstrip()))
-    if "admin" in _line:
-        print_output_line(i, co.getColor("red"),
+    if "admin" in _line.lower():
+        print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
                           "'admin' string found at line: %d", i)
-    if "debug" in _line:
-        print_output_line(i, co.getColor("red"),
-                          "debug information found at line %d", i)
-    if "src=" in _line:
-        print_output_line(i, co.getColor("cyan"),
+    if "debug" in _line.lower():
+        print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
+                          "DEBUG information found at line %d", i)
+    if "src=" in _line.lower():
+        print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
                           "PATH to external resource file (IMG, CSS, JS)"
                           " file found in %d:   %s",
                           (i, _line.lstrip().rstrip()[0:80]))
-    if "<script>" in _line:
-        print_output_line(i, co.getColor("green"),
+    if "<script>" in _line.lower():
+        print_output_line(i, ConsoleOutputBeautifier.getColor("green"),
                           "<SCRIPT> tag found at line %d", i)
-    if "javascript:" in _line:
-        print_output_line(i, co.getColor("cyan"),
-                          "INLINE JavaScript found at line %d", i)
+    if "javascript:" in _line.lower():
+        print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
+                          "INLINE JavaScript event handler found at line %d", i)
 
 
 # main program
