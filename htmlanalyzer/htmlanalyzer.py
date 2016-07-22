@@ -126,14 +126,24 @@ def analyze_line(_line, i):
     if "debug" in _line.lower():
         print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
                           "DEBUG information found at line %d", i)
-    if "src=" in _line.lower():
-        print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
-                          "PATH to external resource file (IMG, CSS, JS)"
-                          " file found in %d:   %s",
-                          (i, _line.lstrip().rstrip()[0:80]))
-    if "<script>" in _line.lower():
+    if "src" in _line.lower():
+        if "<img" in _line.lower():
+            print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
+                              "PATH to external resource image "
+                              " file found in %d:   %s",
+                              (i, _line.lstrip().rstrip()[0:80]))
+        if "<iframe" in _line.lower():
+            print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
+                              "IFRAME path found in %d:   %s",
+                              (i, _line.lstrip().rstrip()[0:80]))
+        if "<script" in _line.lower():
+            print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
+                              "external SCRIPT path found in %d:   %s",
+                              (i, _line.lstrip().rstrip()[0:80]))
+
+    if "<script" in _line.lower() and "src" not in _line.lower():
         print_output_line(i, ConsoleOutputBeautifier.getColor("green"),
-                          "<SCRIPT> tag found at line %d", i)
+                          "inline <SCRIPT> tag found at line %d", i)
     if "javascript:" in _line.lower():
         print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
                           "INLINE JavaScript event handler found at line %d", i)

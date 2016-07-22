@@ -3,3 +3,4 @@ dev/
 .DS_Store
 cco.pyc pefdefs.pyc
 imports/*.pyc
+htmlanalyzer/index.html
