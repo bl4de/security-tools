@@ -6,6 +6,9 @@
 import sys
 
 
+# TODO: Python doc in functions and for module
+# TODO: args parser for: -c (comments) -s (links/src), -j (JavaScript)
+
 class PefOutput:
     Black = '\33[30m'
     Red = '\33[31m'
