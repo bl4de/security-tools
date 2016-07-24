@@ -21,7 +21,7 @@ def main():
         pass
 
     i = 0
-    print_header()
+    print_banner()
 
     for _line in _file:
         i += 1
@@ -35,11 +35,17 @@ def main():
 
 
 # header
-def print_header():
-    print ConsoleOutputBeautifier.getColor(
-        "green"), "=" * 26, "HTML source code Analyzer", "=" * 26
-    print " " + "-" * 10, "   https://github.com/bl4de | https://twitter.com/_bl4de | bloorq@gmail.com   ", \
-        "-" * 10, "\n\n", ConsoleOutputBeautifier.getSpecialChar("endline")
+def print_banner():
+    print ConsoleOutputBeautifier.getColor("green"), \
+        "=" * 26, \
+        "HTML source code Analyzer", "=" * 26, \
+        "\n", \
+        " " + "-" * 10, \
+        "   https://github.com/bl4de | https://twitter.com/_bl4de " \
+        "| bloorq@gmail.com   ", \
+        "-" * 10, \
+        "\n\n", \
+        ConsoleOutputBeautifier.getSpecialChar("endline")
 
 
 # detects frontend framework used
@@ -76,8 +82,7 @@ def print_output_line(i, col, msg, args):
         i), col, msg % (args), ConsoleOutputBeautifier.getSpecialChar("endline")
 
 
-# find interesting string(s)
-def analyze_line(_line, i):
+def detect_comments(_line, i):
     if '<!--' in _line.lstrip():
         if "\"/" in _line:
             print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
@@ -87,12 +92,21 @@ def analyze_line(_line, i):
             print_output_line(i, ConsoleOutputBeautifier.getColor("yellow"),
                               "COMMENT found at line %d:   %s",
                               (i, _line.lstrip().rstrip()))
+
+
+def detect_admin_stuff(_line, i):
     if "admin" in _line.lower():
         print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
                           "'admin' string found at line: %d", i)
+
+
+def detect_debug(_line, i):
     if "debug" in _line.lower():
         print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
                           "DEBUG information found at line %d", i)
+
+
+def detect_external_resources(_line, i):
     if "src" in _line.lower():
         if "<img" in _line.lower():
             print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
@@ -108,12 +122,23 @@ def analyze_line(_line, i):
                               "external SCRIPT path found in %d:   %s",
                               (i, _line.lstrip().rstrip()[0:80]))
 
+
+def detect_javascript(_line, i):
     if "<script" in _line.lower() and "src" not in _line.lower():
         print_output_line(i, ConsoleOutputBeautifier.getColor("green"),
                           "inline <SCRIPT> tag found at line %d", i)
     if "javascript:" in _line.lower():
         print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
                           "INLINE JavaScript event handler found at line %d", i)
+
+
+# find interesting string(s)
+def analyze_line(_line, i):
+    detect_comments(_line, i)
+    detect_admin_stuff(_line, i)
+    detect_debug(_line, i)
+    detect_external_resources(_line, i)
+    detect_javascript(_line, i)
 
 
 # main program
