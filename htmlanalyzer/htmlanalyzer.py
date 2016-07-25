@@ -29,10 +29,17 @@ def print_banner():
 # @TODO: libraries/framework detenction
 # detects frontend framework used
 def detect_framework(_line):
-    """frontend framework detection (simplified)"""
+    """frontend framework detection (simplified)
+        WARNING!!!
+        This detection is only some assumption based on some constant
+        elements but can not be treat as 100% sure.
+    """
     _fw = ""
     if "ng-app" in _line:
         _fw = "Angular 1.*"
+    if "react.js" in _line or "react-dom.js" in _line:
+        _fw = "ReactJS"
+
     return _fw
 
 
