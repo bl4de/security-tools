@@ -167,7 +167,7 @@ def main(_filename):
 
 if __name__ == "__main__":
     """run HTML analyze"""
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="HTML static code analyze")
     parser.add_argument('-u', help='Target url - index.html will be downloaded')
     parser.add_argument('-f', help='HTML file name to analyze')
     _filename = "index.html"
