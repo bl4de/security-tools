@@ -148,8 +148,9 @@ def main(_filename):
         _file = open(_filename, "r")
         print "[+] {} opened, starting analysis...\n\n".format(_filename)
     except:
-        exit(
-            "[-] " + _filename + " does not exists or could not be opened, quitting!")
+        msg = "[-] {} does not exists or could not be opened, quitting!" \
+            .format(_filename)
+        exit(msg)
 
     i = 0
     print_banner()
