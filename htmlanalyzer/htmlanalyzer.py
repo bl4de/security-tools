@@ -3,7 +3,8 @@
 # HTML source analyzer
 # bl4de | bloorq@gmail.com | Twitter: @_bl4de
 #
-import sys
+import argparse
+import os
 
 from modules.console_output_beautifier import ConsoleOutputBeautifier
 
@@ -138,15 +139,17 @@ def analyze_line(_line, i):
     detect_javascript(_line, i)
 
 
-def main():
+def main(_filename):
     """main program loop"""
     _ident = ""
     _fw = ""
 
     try:
-        _file = open(sys.argv[1], "r")
+        _file = open(_filename, "r")
+        print "[+] {} opened, starting analysis...\n\n".format(_filename)
     except:
-        pass
+        exit(
+            "[-] " + _filename + " does not exists or could not be opened, quitting!")
 
     i = 0
     print_banner()
@@ -164,7 +167,17 @@ def main():
 
 if __name__ == "__main__":
     """run HTML analyze"""
-    if len(sys.argv) == 2:
-        main()
-    else:
-        print "Enter HTML file name"
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-u', help='Target url - index.html will be downloaded')
+    parser.add_argument('-f', help='HTML file name to analyze')
+    _filename = "index.html"
+    args = parser.parse_args()
+
+    if args.u:
+        print "[+] connecting to {}...\n\n".format(args.u)
+        os.system("curl --silent -o index.html " + args.u)
+        print "[+] default index.html saved"
+    if args.f and not args.u:
+        _filename = args.f
+
+    main(_filename)
