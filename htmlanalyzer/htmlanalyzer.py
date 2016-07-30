@@ -8,9 +8,14 @@ import os
 
 from modules.console_output_beautifier import ConsoleOutputBeautifier
 
-
 # @TODO: Python doc in functions and for module
 # @TODO: args parser for: -c (comments) -s (links/src), -j (JavaScript)
+
+summary = {
+    "comments": [],
+    "scripts": [],
+    "resources": []
+}
 
 
 # header
@@ -71,6 +76,12 @@ def print_output_line(i, col, msg, args):
     """printing line of output"""
     print ConsoleOutputBeautifier.getColor("white"), "line %d:" % (
         i), col, msg % (args), ConsoleOutputBeautifier.getSpecialChar("endline")
+
+
+def create_summary(_type, _message):
+    """stores output line message in summary"""
+    if _type in summary.keys() and _message != "":
+        summary[_type].append(_message)
 
 
 def detect_comments(_line, i):
