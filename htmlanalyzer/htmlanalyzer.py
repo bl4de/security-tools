@@ -72,10 +72,12 @@ def show_stats(_file, i, _ident, _fw):
     print "\n"
 
 
-def print_output_line(i, col, msg, args):
+def print_output_line(i, col, msg, args, type="DEFAULT"):
     """printing line of output"""
-    print ConsoleOutputBeautifier.getColor("white"), "line %d:" % (
-        i), col, msg % (args), ConsoleOutputBeautifier.getSpecialChar("endline")
+    msg = ConsoleOutputBeautifier.getColor("white") + ("line %d:" % (
+        i), col, msg % (args)) + ConsoleOutputBeautifier.getSpecialChar("endline")
+    print msg
+    create_summary(type, msg)
 
 
 def create_summary(_type, _message):
