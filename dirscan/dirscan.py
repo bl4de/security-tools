@@ -8,8 +8,7 @@ import urllib
 
 # TODO check protocol in __url
 def scan_directory(__url, __directory):
-
-    resp = urllib.urlopen("http://" + __url + __directory)
+    resp = urllib.urlopen(__url + __directory)
     if resp.code == 200:
         print '\33[33m [{}] Found directory: {}\33[0m' \
             .format(resp.code, __url + __directory)
@@ -35,7 +34,7 @@ def scan_files(__url, __directory, __wordlist):
         # _found = scan_file(_url)
 
 
-def scan(__server, __port, __path, __wordlist):
+def scan(__server, __path, __wordlist):
     if len(__wordlist) > 0:
         _counter = 1
         _totalWordList = len(__wordlist)
@@ -56,7 +55,7 @@ def scan(__server, __port, __path, __wordlist):
             if __path == "/":
                 __path = ""
 
-            _url = __server + ':' + __port + "/" + __path
+            _url = __server + "/" + __path
             _found = scan_directory(_url, _directory)
             if _found:
                 # scan for files using the same wordlist
@@ -71,7 +70,7 @@ def run():
     # argv: dirscan server_url server_port base_dir [wordlist]
     if len(sys.argv) < 4 or len(sys.argv) > 5:
         print "\nUsage:"
-        print "\n./dirscan.py SERVER_URL PORT BASE_PATH [WORDLIST FILE]"
+        print "\n./dirscan.py [SERVER_URL] [BASE_PATH] [WORDLIST FILE]"
         exit(0)
     else:
         return
@@ -83,15 +82,13 @@ if __name__ == "__main__":
     run()
 
     server = sys.argv[1]
-    port = sys.argv[2]
-    path = sys.argv[3]
+    path = sys.argv[2]
 
-    if len(sys.argv) > 4:
-        wordlistFile = sys.argv[4]
-        wordlistFileHandler = open(wordlistFile, 'r')
-
-        wordlist = wordlistFileHandler.readlines()
+    if len(sys.argv) == 4:
+        wordlist = open(sys.argv[3], 'r').readlines()
     else:
         wordlist = []
 
-    scan(server, port, path, wordlist)
+    print wordlist
+
+    scan(server, path, wordlist)
