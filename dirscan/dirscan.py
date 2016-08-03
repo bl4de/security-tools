@@ -9,8 +9,10 @@ import urllib
 # TODO check protocol in __url
 def scan_directory(__url, __directory):
     resp = urllib.urlopen(__url + __directory)
+    # DEBUG
+    # print "scanning: {}".format(__url + __directory)
     if resp.code == 200:
-        print '\33[33m [{}] Found directory: {}\33[0m' \
+        print '\33[33m [{}] Found: {}\33[0m' \
             .format(resp.code, __url + __directory)
         return True
     else:
@@ -34,7 +36,7 @@ def scan_files(__url, __directory, __wordlist):
         # _found = scan_file(_url)
 
 
-def scan(__server, __path, __wordlist):
+def scan(__server, __wordlist):
     if len(__wordlist) > 0:
         _counter = 1
         _totalWordList = len(__wordlist)
@@ -51,26 +53,21 @@ def scan(__server, __path, __wordlist):
             if _counter > 100 and _counter % _step == 0:
                 print "\33[32m scanned {} of {} so far, continue...\33[0m" \
                     .format(_counter, len(__wordlist))
-
-            if __path == "/":
-                __path = ""
-
-            _url = __server + "/" + __path
-            _found = scan_directory(_url, _directory)
+            _found = scan_directory(__server, _directory)
             if _found:
                 # scan for files using the same wordlist
-                scan_files(_url, _directory, __wordlist)
+                scan_files(__server, _directory, __wordlist)
 
             _counter += 1
 
-        print "\33[36mDone.\n\33[0m"
+        print "\33[36m Done.\n\33[0m"
 
 
 def run():
     # argv: dirscan server_url server_port base_dir [wordlist]
-    if len(sys.argv) < 4 or len(sys.argv) > 5:
+    if len(sys.argv) != 3:
         print "\nUsage:"
-        print "\n./dirscan.py [SERVER_URL] [BASE_PATH] [WORDLIST FILE]"
+        print "\n./dirscan.py [SERVER_URL] [WORDLIST FILE]"
         exit(0)
     else:
         return
@@ -82,13 +79,9 @@ if __name__ == "__main__":
     run()
 
     server = sys.argv[1]
-    path = sys.argv[2]
 
-    if len(sys.argv) == 4:
-        wordlist = open(sys.argv[3], 'r').readlines()
+    if len(sys.argv) == 3:
+        wordlist = open(sys.argv[2], 'r').readlines()
     else:
         wordlist = []
-
-    print wordlist
-
-    scan(server, path, wordlist)
+    scan(server, wordlist)
