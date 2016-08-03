@@ -8,12 +8,20 @@ import urllib
 
 # TODO check protocol in __url
 def scan_directory(__url, __directory):
-    resp = urllib.urlopen(__url + __directory)
+    __full_url = __url + __directory
+    resp = urllib.urlopen(__full_url)
     # DEBUG
     # print "scanning: {}".format(__url + __directory)
-    if resp.code == 200:
-        print '\33[33m [{}] Found: {}\33[0m' \
-            .format(resp.code, __url + __directory)
+    if 199 < resp.code < 300:
+        print '\33[32m HTTP {}: {} \33[0m'.format(resp.code, __full_url)
+        return True
+    if resp.code == 403:
+        print '\33[33m HTTP {} Forbidden: {} \33[0m'.format(resp.code,
+                                                            __full_url)
+        return True
+    if resp.code == 500:
+        print '\33[31m HTTP {} Internal Server Error: {} \33[0m'.format(
+            resp.code, __full_url)
         return True
     else:
         return False
@@ -22,9 +30,14 @@ def scan_directory(__url, __directory):
 def scan_file(__url):
     resp = urllib.urlopen(__url)
     # print resp.code
-    if resp.code == 200:
-        print '\33[33m {} \33[0m'.format(__url)
+    if resp.code > 199 < 300:
+        print '\33[32m HTTP {}: {} \33[0m'.format(resp.code, __url)
         return True
+    if resp.code == 403:
+        print '\33[33m HTTP {} Forbidden: {} \33[0m'.format(resp.code, __url)
+    if resp.code == 500:
+        print '\33[31m HTTP {} Internal Server Error: {} \33[0m'.format(
+            resp.code, __url)
     else:
         return False
 
