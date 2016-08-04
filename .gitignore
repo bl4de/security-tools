@@ -5,3 +5,6 @@ cco.pyc pefdefs.pyc
 imports/*.pyc
 htmlanalyzer/index.html
 /dirscan/10000folders.txt
+/dirscan/1000folders.txt
+*.pyc
+

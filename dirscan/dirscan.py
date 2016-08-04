@@ -53,10 +53,7 @@ def scan(__server, __wordlist):
     if len(__wordlist) > 0:
         _counter = 1
         _totalWordList = len(__wordlist)
-        # 1/10 of progress indicator
-        _step = int(_totalWordList / 10)
-        if _step == 0:
-            _step = 1
+        _step = _totalWordList / 10
 
         print "\33[36m Start scan with {} known names.\n\33[0m".format(
             _totalWordList)
