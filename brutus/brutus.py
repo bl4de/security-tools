@@ -6,6 +6,13 @@
 import socket
 
 
+def send_request(target, payload, response_size=4096):
+    """sends payload to target and returns response"""
+    target.send(payload)
+    resp = target.recv(response_size)
+    return resp
+
+
 # @TODO: option to define success pattern, multi-threading
 
 # @TODO: move this to args:
@@ -35,8 +42,8 @@ for user in usernames:
         req += payload + "\r\n\r\n"
 
         # send request and check response
-        pwnlab.send(req)
-        resp = pwnlab.recv(4096)
+        resp = send_request(pwnlab, req)
+
         counter += 1
         if "Login failed" not in resp:
             print "[+] Login sucessful !!!"
