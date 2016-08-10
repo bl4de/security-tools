@@ -1,0 +1,14 @@
+admin
+administrator
+company
+corp
+mysql
+oracle
+root
+test
+testing
+user
+webmaster
+www-data
+dev
+developer
