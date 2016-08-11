@@ -23,9 +23,10 @@ def send_request(target, payload, response_size=4096):
 
 def create_http_request(path, host):
     template = "POST /{} HTTP/1.1\r\nHost: {}\r\n" \
-          "Content-Type: application/x-www-form-urlencoded\r\n" \
-          "Content-Length: {}\r\n\r\n".format(path, host)
+               "Content-Type: application/x-www-form-urlencoded\r\n" \
+               "Content-Length: {}\r\n\r\n".format(path, host)
     return template
+
 
 def single_try(user, passwd, counter):
     user = user.strip()
