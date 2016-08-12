@@ -21,10 +21,11 @@ def send_request(target, payload, response_size=4096):
     return response
 
 
-def create_http_request(path, host, method="POST"):
+def create_http_request(path, host, payload_len, method="POST"):
     template = "{} /{} HTTP/1.1\r\nHost: {}\r\n" \
                "Content-Type: application/x-www-form-urlencoded\r\n" \
-               "Content-Length: {}\r\n\r\n".format(method, path, host)
+               "Content-Length: {}\r\n\r\n".format(method, path, host,
+                                                   payload_len)
     return template
 
 
@@ -42,7 +43,7 @@ def single_try(user, passwd, method, counter):
     # pwnlab.connect(("192.168.1.2", 80))
     pwnlab = create_socket("192.168.1.2", 80)
 
-    req = create_http_request("?page=login", "192.168.1.2", method)
+    req = create_http_request("?page=login", "192.168.1.2", payload_len, method)
     req += payload + "\r\n\r\n"
 
     # send request and check response
