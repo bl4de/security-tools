@@ -4,10 +4,11 @@
 #
 # diggit - gets .git repository
 import os
+import re
 import sys
 
 # some common definitions
-VERSION = "0.0.1"
+VERSION = "0.1.1"
 OBJECT_DIR = "/.git/objects/"
 
 Black = '\33[30m'
@@ -37,7 +38,7 @@ def print_usage():
     print "  (see https://github.com/bl4de/research/blob/master/hidden_directories_leaks/README.md#git for more information)"
 
 
-def print_object_details(object_type, object_content):
+def print_object_details(object_type, object_content, object_hash):
     """Prints object details"""
     print "\n" + Cyan + "#" * 12 + " " + object_hash \
           + " information " + "#" * 12 + _endline
@@ -49,31 +50,42 @@ def print_object_details(object_type, object_content):
     print "\n" + Cyan + "#" * 78 + _endline
 
 
-def get_object_url():
+def get_object_url(object_hash):
     """Returns object git url"""
     return OBJECT_DIR + object_hash[0:2] + "/" + object_hash[2:]
 
 
-def get_object_dir_prefix():
+def get_object_dir_prefix(object_hash):
     """Returns object directory prefix (first two chars of object hash)"""
     return object_hash[0:2] + "/"
 
 
-def save_git_object():
+def save_git_object(base_url, object_hash):
     """Saves git object in temporary .git directory preserves its path"""
-    complete_url = base_url + "/" + get_object_url()
+    complete_url = base_url + "/" + get_object_url(object_hash)
 
     os.system("curl --silent '" + complete_url + "' --create-dirs -o '" +
-              dummy_git_repository + get_object_url() + "'")
+              dummy_git_repository + get_object_url(object_hash) + "'")
 
     git_object_type = os.popen("cd " + dummy_git_repository + OBJECT_DIR +
-                               get_object_dir_prefix() +
+                               get_object_dir_prefix(object_hash) +
                                " && git cat-file -t " + object_hash).read()
 
     git_object_content = os.popen("cd " + dummy_git_repository + OBJECT_DIR +
-                                  get_object_dir_prefix() +
+                                  get_object_dir_prefix(object_hash) +
                                   " && git cat-file -p " + object_hash).read()
-    print_object_details(git_object_type, git_object_content)
+    print_object_details(git_object_type, git_object_content, object_hash)
+
+    # get actual tree from commit
+    if git_object_type.strip() == "commit":
+        save_git_object(baseurl,
+                        git_object_content.split(" ")[1].split("\n")[0].strip())
+
+    if git_object_type.strip() == "tree":
+        for obj in git_object_content.split(" "):
+            obj = obj.split("\t")[0].strip()
+            if len(obj) == 40 and re.match(r"[a-zA-Z0-9]", obj):
+                save_git_object(baseurl, obj)
 
 
 # main program
@@ -84,13 +96,13 @@ if __name__ == "__main__":
         exit(0)
 
     # domain, base path for .git folder, eg. http://website.com
-    base_url = sys.argv[1]
+    baseurl = sys.argv[1]
 
     # hash of object to save
-    object_hash = sys.argv[3]
+    objecthash = sys.argv[3]
 
     # temporary dir with dummy .git structure (create it first!)
     dummy_git_repository = sys.argv[2]
 
-    if base_url and object_hash:
-        save_git_object()
+    if baseurl and objecthash:
+        save_git_object(baseurl, objecthash)
