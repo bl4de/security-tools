@@ -15,5 +15,19 @@ https://github.com/bl4de/research/tree/master/hidden_directories_leaks#hidden-di
 ### Basic usage
 
 ```
-./diggit.py http://webpage.com/ d60fbeed6db32865a1f01bb9e485755f085f51c1 /path/to/temp/folder/
+./diggit.py http://webpage.com /path/to/temp/folder/ d60fbeed6db32865a1f01bb9e485755f085f51c1
 ```
+
+where:
+
+- http://webpage.com is remote path, where .git folder exists
+- /path/to/temp/folder is path to local folder with dummy Git repository
+- d60fbeed6db32865a1f01bb9e485755f085f51c1 is a hash of particular Git object to download
+
+Dummy Git repository can be made by command _init_:
+```
+$ cd /path/to/temp/folder && git init
+```
+
+If hash is a commit, *diggit* will find current tree hash and all blobs in this tree 
+(it will download all objects)
