@@ -60,6 +60,10 @@ def get_object_dir_prefix(object_hash):
     return object_hash[0:2] + "/"
 
 
+def get_object_hash_from_object_desc(git_object_content):
+    return git_object_content.split(" ")[1].split("\n")[0].strip()
+
+
 def save_git_object(base_url, object_hash):
     """Saves git object in temporary .git directory preserves its path"""
     complete_url = base_url + "/" + get_object_url(object_hash)
@@ -79,7 +83,7 @@ def save_git_object(base_url, object_hash):
     # get actual tree from commit
     if git_object_type.strip() == "commit":
         save_git_object(baseurl,
-                        git_object_content.split(" ")[1].split("\n")[0].strip())
+                        get_object_hash_from_object_desc(git_object_content))
 
     if git_object_type.strip() == "tree":
         for obj in git_object_content.split(" "):
