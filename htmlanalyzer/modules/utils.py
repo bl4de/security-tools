@@ -5,7 +5,6 @@ summary = {
     "comment": [],
     "script": [],
     "resources": [],
-    "script": [],
     "javascript": [],
     "debug": [],
     "admin": []

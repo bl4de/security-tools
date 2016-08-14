@@ -3,9 +3,9 @@
 # bl4de | <bloorq@gmail.com> | https://twitter.com/_bl4de
 #
 # diggit - gets .git repository
+import argparse
 import os
 import re
-import sys
 
 # some common definitions
 VERSION = "0.1.1"
@@ -33,9 +33,12 @@ def print_usage():
     """Prints usage of diggit.py"""
     print "\n\nusage: ./diggit.py [url] [temporary_dir] [git_object_hash] \n"
     print " [url]               - url of web page with revealed .git directory"
-    print " [temporary_dir]     - local directory with dummy Git folder structure"
-    print " [git_object_hash]   - SHA1 of Git object, as found in .git/logs/head or similar"
-    print "  (see https://github.com/bl4de/research/blob/master/hidden_directories_leaks/README.md#git for more information)"
+    print " [temporary_dir]     - local directory with dummy " \
+          "Git folder structure"
+    print " [git_object_hash]   - SHA1 of Git object, " \
+          "as found in .git/logs/head or similar"
+    print "  (see https://github.com/bl4de/research/blob/master/" \
+          "hidden_directories_leaks/README.md#git for more information)"
 
 
 def print_object_details(object_type, object_content, object_hash):
@@ -61,10 +64,11 @@ def get_object_dir_prefix(object_hash):
 
 
 def get_object_hash_from_object_desc(git_object_content):
+    """returns object hash without control characters"""
     return git_object_content.split(" ")[1].split("\n")[0].strip()
 
 
-def save_git_object(base_url, object_hash):
+def save_git_object(base_url, object_hash, be_recursive):
     """Saves git object in temporary .git directory preserves its path"""
     complete_url = base_url + "/" + get_object_url(object_hash)
 
@@ -81,32 +85,44 @@ def save_git_object(base_url, object_hash):
     print_object_details(git_object_type, git_object_content, object_hash)
 
     # get actual tree from commit
-    if git_object_type.strip() == "commit":
+    if git_object_type.strip() == "commit" and be_recursive is True:
         save_git_object(baseurl,
-                        get_object_hash_from_object_desc(git_object_content))
+                        get_object_hash_from_object_desc(git_object_content),
+                        be_recursive)
 
-    if git_object_type.strip() == "tree":
+    if git_object_type.strip() == "tree" and be_recursive is True:
         for obj in git_object_content.split(" "):
             obj = obj.split("\t")[0].strip()
             if len(obj) == 40 and re.match(r"[a-zA-Z0-9]", obj):
-                save_git_object(baseurl, obj)
+                save_git_object(baseurl, obj, be_recursive)
 
 
 # main program
 if __name__ == "__main__":
 
-    if len(sys.argv) != 4:
-        print_usage()
-        exit(0)
+    parser = argparse.ArgumentParser(description="""
+            diggit.py - get information about Git object(s) from remote
+                        repository
+        """)
+    parser.add_argument('-u', help='URL of remote Git repository location')
+    parser.add_argument('-t',
+                        help='path to temporary Git folder on local machine')
+    parser.add_argument('-o', help='object hash (SHA-1, all 40 characters)')
+    parser.add_argument('-r', default=False,
+                        help='be recursive (if commit or tree hash '
+                             'found, go get all blobs too). Default is \'False\'')
+
+    args = parser.parse_args()
 
     # domain, base path for .git folder, eg. http://website.com
-    baseurl = sys.argv[1]
+    baseurl = args.u
 
     # hash of object to save
-    objecthash = sys.argv[3]
+    objecthash = args.o
+    be_recursive = True if args.r else False
 
     # temporary dir with dummy .git structure (create it first!)
-    dummy_git_repository = sys.argv[2]
+    dummy_git_repository = args.t
 
     if baseurl and objecthash:
-        save_git_object(baseurl, objecthash)
+        save_git_object(baseurl, objecthash, be_recursive)
