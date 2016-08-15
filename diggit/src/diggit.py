@@ -65,7 +65,7 @@ def get_object_dir_prefix(object_hash):
 
 def get_object_hash_from_object_desc(git_object_content):
     """returns object hash without control characters"""
-    return git_object_content.split(" ")[1].split("\n")[0].strip()
+    return git_object_content.split(" ")[1][:40]
 
 
 def save_git_object(base_url, object_hash, be_recursive):
@@ -92,7 +92,7 @@ def save_git_object(base_url, object_hash, be_recursive):
 
     if git_object_type.strip() == "tree" and be_recursive is True:
         for obj in git_object_content.split(" "):
-            obj = obj.split("\t")[0].strip()
+            obj = obj[:40]
             if len(obj) == 40 and re.match(r"[a-zA-Z0-9]", obj):
                 save_git_object(baseurl, obj, be_recursive)
 
