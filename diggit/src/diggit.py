@@ -29,18 +29,6 @@ def print_credits():
     print "#" * 68
 
 
-def print_usage():
-    """Prints usage of diggit.py"""
-    print "\n\nusage: ./diggit.py [url] [temporary_dir] [git_object_hash] \n"
-    print " [url]               - url of web page with revealed .git directory"
-    print " [temporary_dir]     - local directory with dummy " \
-          "Git folder structure"
-    print " [git_object_hash]   - SHA1 of Git object, " \
-          "as found in .git/logs/head or similar"
-    print "  (see https://github.com/bl4de/research/blob/master/" \
-          "hidden_directories_leaks/README.md#git for more information)"
-
-
 def print_object_details(object_type, object_content, object_hash):
     """Prints object details"""
     print "\n" + Cyan + "#" * 12 + " " + object_hash \
