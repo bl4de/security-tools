@@ -8,7 +8,7 @@ import os
 import re
 
 # some common definitions
-VERSION = "0.1.1"
+VERSION = "1.0.0"
 OBJECT_DIR = "/.git/objects/"
 
 Black = '\33[30m'
@@ -22,11 +22,12 @@ White = '\33[37m'
 _endline = '\33[0m'
 
 
-def print_credits():
+def print_banner():
     """Prints credits :)"""
-    print "#" * 68
-    print "###    diggit.py  |  Twitter: @_bl4de  | GitHub: bl4de           ###"
-    print "#" * 68
+    print "\n\n","#" * 78
+    print "###         diggit.py  |  Twitter: @_bl4de  " \
+          "| GitHub: bl4de                ###"
+    print "#" * 78
 
 
 def print_object_details(object_type, object_content, object_hash):
@@ -38,7 +39,7 @@ def print_object_details(object_type, object_content, object_hash):
     print "{0}[*] Object content:{1}\n".format(Green, _endline)
     print "{0}{1}{2}".format(Yellow, object_content, _endline)
 
-    print "\n" + Cyan + "#" * 78 + _endline
+    # print "\n" + Cyan + "#" * 78 + _endline
 
 
 def get_object_url(object_hash):
@@ -85,7 +86,6 @@ def save_git_object(base_url, object_hash, be_recursive):
                 save_git_object(baseurl, obj, be_recursive)
 
 
-# main program
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="""
@@ -113,4 +113,6 @@ if __name__ == "__main__":
     dummy_git_repository = args.t
 
     if baseurl and objecthash:
+        print_banner()
         save_git_object(baseurl, objecthash, be_recursive)
+        print "\n" + Cyan + "#" * 78 + _endline
