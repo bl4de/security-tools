@@ -82,7 +82,7 @@ def save_git_object(base_url, object_hash, be_recursive):
     if git_object_type.strip() == "tree" and be_recursive is True:
         for obj in git_object_content.split(" "):
             obj = obj[:40]
-            if len(obj) == 40 and re.match(r"[a-zA-Z0-9]", obj):
+            if re.match(r"[a-zA-Z0-9]", obj):
                 save_git_object(baseurl, obj, be_recursive)
 
 
@@ -114,5 +114,5 @@ if __name__ == "__main__":
 
     if baseurl and objecthash:
         print_banner()
-        save_git_object(baseurl, objecthash, be_recursive)
+        save_git_object(args.u, args.o, be_recursive)
         print "\n" + Cyan + "#" * 78 + _endline
