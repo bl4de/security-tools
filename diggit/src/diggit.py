@@ -24,9 +24,11 @@ _endline = '\33[0m'
 
 def print_banner():
     """Prints credits :)"""
-    print "\n\n","#" * 78
+    print "\n\n", "#" * 78
+    print "###", " " * 70, "###"
     print "###         diggit.py  |  Twitter: @_bl4de  " \
           "| GitHub: bl4de                ###"
+    print "###", " " * 70, "###"
     print "#" * 78
 
 
