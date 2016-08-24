@@ -91,7 +91,6 @@ def save_git_object(base_url, object_hash, be_recursive):
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(description="""
             diggit.py - get information about Git object(s) from remote
                         repository
