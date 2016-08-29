@@ -8,19 +8,19 @@ import urllib
 
 # TODO check protocol in __url
 def scan_directory(__url, __directory):
-    __full_url = __url + __directory
+    __full_url = (__url + __directory).strip()
     resp = urllib.urlopen(__full_url)
     # DEBUG
     # print "scanning: {}".format(__url + __directory)
     if 199 < resp.code < 300:
-        print '\33[32m HTTP {}: {} \33[0m'.format(resp.code, __full_url)
+        print '\33[32m [*] HTTP {}: {}'.format(resp.code, __full_url)
         return True
     if resp.code == 403:
-        print '\33[33m HTTP {} Forbidden: {} \33[0m'.format(resp.code,
+        print '\33[33m [*] HTTP {} Forbidden: {}'.format(resp.code,
                                                             __full_url)
         return True
     if resp.code == 500:
-        print '\33[31m HTTP {} Internal Server Error: {} \33[0m'.format(
+        print '\33[31m [*] HTTP {} Internal Server Error: {}'.format(
             resp.code, __full_url)
         return True
     else:
@@ -28,15 +28,15 @@ def scan_directory(__url, __directory):
 
 
 def scan_file(__url):
-    resp = urllib.urlopen(__url)
+    resp = urllib.urlopen(__url.strip())
     # print resp.code
     if resp.code > 199 < 300:
-        print '\33[32m HTTP {}: {} \33[0m'.format(resp.code, __url)
+        print '\33[32m [*] HTTP {}: {}'.format(resp.code, __url)
         return True
     if resp.code == 403:
-        print '\33[33m HTTP {} Forbidden: {} \33[0m'.format(resp.code, __url)
+        print '\33[33m [*] HTTP {} Forbidden: {}'.format(resp.code, __url)
     if resp.code == 500:
-        print '\33[31m HTTP {} Internal Server Error: {} \33[0m'.format(
+        print '\33[31m [*] HTTP {} Internal Server Error: {}'.format(
             resp.code, __url)
     else:
         return False
@@ -55,14 +55,11 @@ def scan(__server, __wordlist):
         _totalWordList = len(__wordlist)
         _step = _totalWordList / 10
 
-        print "\33[36m Start scan with {} known names.\n\33[0m".format(
+        print "\33[36m [+] Start scan with {} known names".format(
             _totalWordList)
 
         # print _step
         for _directory in __wordlist:
-            if _counter > 100 and _counter % _step == 0:
-                print "\33[32m scanned {} of {} so far, continue...\33[0m" \
-                    .format(_counter, len(__wordlist))
             _found = scan_directory(__server, _directory)
             if _found:
                 # scan for files using the same wordlist
@@ -70,7 +67,7 @@ def scan(__server, __wordlist):
 
             _counter += 1
 
-        print "\33[36m Done.\n\33[0m"
+        print "\33[36m [+] Done.\n"
 
 
 def run():
