@@ -8,65 +8,64 @@ import urllib
 
 # TODO check protocol in __url
 def scan_directory(__url, __directory):
-    __full_url = (__url + __directory).strip()
-    resp = urllib.urlopen(__full_url)
+    url = (__url + __directory).strip()
+    resp = urllib.urlopen(url)
     # DEBUG
     # print "scanning: {}".format(__url + __directory)
     if 199 < resp.code < 300:
-        print '\33[32m [*] HTTP {}: {}'.format(resp.code, __full_url)
+        print '\33[32m [*] HTTP {}: {}'.format(resp.code, url)
         return True
     if resp.code == 403:
         print '\33[33m [*] HTTP {} Forbidden: {}'.format(resp.code,
-                                                            __full_url)
+                                                            url)
         return True
     if resp.code == 500:
         print '\33[31m [*] HTTP {} Internal Server Error: {}'.format(
-            resp.code, __full_url)
+            resp.code, url)
         return True
     else:
         return False
 
 
-def scan_file(__url):
-    resp = urllib.urlopen(__url.strip())
+def scan_file(url):
+    resp = urllib.urlopen(url.strip())
     # print resp.code
     if resp.code > 199 < 300:
-        print '\33[32m [*] HTTP {}: {}'.format(resp.code, __url)
+        print '\33[32m [*] HTTP {}: {}'.format(resp.code, url)
         return True
     if resp.code == 403:
-        print '\33[33m [*] HTTP {} Forbidden: {}'.format(resp.code, __url)
+        print '\33[33m [*] HTTP {} Forbidden: {}'.format(resp.code, url)
     if resp.code == 500:
         print '\33[31m [*] HTTP {} Internal Server Error: {}'.format(
-            resp.code, __url)
+            resp.code, url)
     else:
         return False
 
 
-def scan_files(__url, __directory, __wordlist):
+def scan_files(url, directory, wordlist):
     # print _step
-    for _filename in __wordlist:
-        _url = __url + __directory + '/' + _filename + '.php'
+    for filename in wordlist:
+        url = url + directory + '/' + filename + '.php'
         # _found = scan_file(_url)
 
 
-def scan(__server, __wordlist):
-    if len(__wordlist) > 0:
-        _counter = 1
-        _totalWordList = len(__wordlist)
-        _step = _totalWordList / 10
+def scan(server, wordlist):
+    if len(wordlist) > 0:
+        counter = 1
+        totalWordList = len(wordlist)
+        step = totalWordList / 10
 
         print "\33[36m [+] Start scan with {} known names".format(
-            _totalWordList)
+            totalWordList)
 
         # print _step
-        for _directory in __wordlist:
-            _found = scan_directory(__server, _directory)
-            if _found:
+        for directory in wordlist:
+            found = scan_directory(server, directory)
+            if found:
                 # scan for files using the same wordlist
-                scan_files(__server, _directory, __wordlist)
+                scan_files(server, directory, wordlist)
 
-            _counter += 1
-
+            counter += 1
         print "\33[36m [+] Done.\n"
 
 
