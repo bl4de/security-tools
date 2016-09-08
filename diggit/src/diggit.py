@@ -34,7 +34,7 @@ def print_banner():
     print "#" * 78
 
 
-def print_object_details(object_type, object_content, object_hash):
+def print_object_details(object_type, object_content, object_hash, real_filename):
     """Prints object details"""
     print "\n" + Cyan + "#" * 12 + " " + object_hash \
           + " information " + "#" * 12 + _endline
@@ -42,9 +42,13 @@ def print_object_details(object_type, object_content, object_hash):
                                                       _endline)
     print "{0}[*] Object content:{1}\n".format(Green, _endline)
     print "{0}{1}{2}".format(Yellow, object_content, _endline)
-
-    # print "\n" + Cyan + "#" * 78 + _endline
-
+    if real_filename != "":
+        global dummy_git_repository
+        tmpfile = open(dummy_git_repository + "/" + real_filename, "w")
+        tmpfile.writelines(object_content)
+        tmpfile.close()
+        
+    
 
 def get_object_url(object_hash):
     """Returns object git url"""
@@ -61,7 +65,7 @@ def get_object_hash_from_object_desc(git_object_content):
     return git_object_content.split(" ")[1][:40]
 
 
-def save_git_object(base_url, object_hash, be_recursive):
+def save_git_object(base_url, object_hash, be_recursive, real_filename=""):
     """Saves git object in temporary .git directory preserves its path"""
     complete_url = base_url + "/" + get_object_url(object_hash)
 
@@ -75,7 +79,7 @@ def save_git_object(base_url, object_hash, be_recursive):
     git_object_content = os.popen("cd " + dummy_git_repository + OBJECT_DIR +
                                   get_object_dir_prefix(object_hash) +
                                   " && git cat-file -p " + object_hash).read()
-    print_object_details(git_object_type, git_object_content, object_hash)
+    print_object_details(git_object_type, git_object_content, object_hash,real_filename)
 
     # get actual tree from commit
     if git_object_type.strip() == "commit" and be_recursive is True:
@@ -86,9 +90,11 @@ def save_git_object(base_url, object_hash, be_recursive):
     if git_object_type.strip() == "tree" and be_recursive is True:
         for obj in git_object_content.split("\n"):
             if obj:
-                obj = obj.strip().split(" ")[2][:40]
-                if obj != "" and re.match(r"[a-zA-Z0-9]", obj):
-                    save_git_object(baseurl, obj, be_recursive)
+                obj = obj.strip().split(" ")
+                obj_hash = obj[2][:40]
+                real_filename = obj[2].split("\t")[1]
+                if obj_hash != "" and re.match(r"[a-zA-Z0-9]", obj_hash):
+                    save_git_object(baseurl, obj_hash, be_recursive, real_filename)
 
 
 if __name__ == "__main__":
@@ -118,5 +124,5 @@ if __name__ == "__main__":
 
     if baseurl and objecthash:
         print_banner()
-        save_git_object(args.u, args.o, be_recursive)
+        save_git_object(args.u, args.o, be_recursive, "")
         print "\n" + Cyan + "#" * 78 + _endline
