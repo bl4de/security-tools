@@ -29,7 +29,7 @@ $ ./diggit.py -u remote_git_repo -t temp_folder -o object_hash [-r=True]
 where:
 
 - -u is remote path, where .git folder exists
-- -t is path to local folder with dummy Git repository
+- -t is path to local folder with dummy Git repository and where blob content (files) are saved with their real names
 - -o is a hash of particular Git object to download
 
 Dummy Git repository can be made by command _init_:
