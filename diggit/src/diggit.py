@@ -36,31 +36,26 @@ def print_banner():
 
 def print_object_details(objtype, objcontent, objhash, objfilename):
     """Prints and saves object details/content"""
-    save_file = False
-    if objfilename != "":
-        global localgitrepo
-        tmpfp = localgitrepo + "/" + objfilename
-        save_file = True
 
     print "\n" + Cyan + "#" * 12 + " " + objhash \
           + " information " + "#" * 12 + _endline
-    print "\n{0}[*] Object type: {3}{2}{1}{3}".format(Green, objtype, Red,
-                                                      _endline)
+    print "\n{0}[*] Object type: {3}{2}{1}{3}".format(
+        Green, objtype, Red,_endline)
 
-    if save_file:
-        print "{0}[*] Object filename: {3}{2}{1}{3}".format(Green, objfilename,
-                                                            Red, _endline)
-        print "{0}[*] Object saved in {2}:{1}".format(Green, _endline,
-                                                      tmpfp)
-
-    print "{0}[*] Object content:{1}\n".format(Green, _endline)
-    print "{0}{1}{2}".format(Yellow, objcontent, _endline)
-
-    if save_file:
+    if objfilename != "":
+        global localgitrepo
+        tmpfp = localgitrepo + "/" + objfilename
+        print "{0}[*] Object filename: {3}{2}{1}{3}".format(
+            Green, objfilename,Red, _endline)
+        print "{0}[*] Object saved in {2}:{1}".format(
+            Green, _endline,tmpfp)
         tmpfile = open(tmpfp, "w")
         tmpfile.write("// diggit.py by @bl4de | {} content\n".format(objhash))
         tmpfile.writelines(objcontent)
         tmpfile.close()
+
+    print "{0}[*] Object content:{1}\n".format(Green, _endline)
+    print "{0}{1}{2}".format(Yellow, objcontent, _endline)
 
 
 def get_object_url(objhash):
