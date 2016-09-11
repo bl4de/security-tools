@@ -34,78 +34,82 @@ def print_banner():
     print "#" * 78
 
 
-def print_object_details(object_type, object_content, object_hash, object_filename):
+def print_object_details(objtype, objcontent, objhash, objfilename):
     """Prints and saves object details/content"""
-    save_file=False
-    if object_filename != "":
-        global dummy_git_repository
-        tmp_file_path = dummy_git_repository + "/" + object_filename
+    save_file = False
+    if objfilename != "":
+        global localgitrepo
+        tmpfp = localgitrepo + "/" + objfilename
         save_file = True
 
-    print "\n" + Cyan + "#" * 12 + " " + object_hash \
+    print "\n" + Cyan + "#" * 12 + " " + objhash \
           + " information " + "#" * 12 + _endline
-    print "\n{0}[*] Object type: {3}{2}{1}{3}".format(Green, object_type, Red,_endline)
+    print "\n{0}[*] Object type: {3}{2}{1}{3}".format(Green, objtype, Red,
+                                                      _endline)
 
     if save_file:
-        print "{0}[*] Object filename: {3}{2}{1}{3}".format(Green, object_filename, Red, _endline)
-        print "{0}[*] Object saved in {2}:{1}".format(Green, _endline, tmp_file_path)
+        print "{0}[*] Object filename: {3}{2}{1}{3}".format(Green, objfilename,
+                                                            Red, _endline)
+        print "{0}[*] Object saved in {2}:{1}".format(Green, _endline,
+                                                      tmpfp)
 
     print "{0}[*] Object content:{1}\n".format(Green, _endline)
-    print "{0}{1}{2}".format(Yellow, object_content, _endline)
-    
-    if save_file:    
-        tmpfile = open(tmp_file_path, "w")
-        tmpfile.write("// diggit.py by @bl4de | {} content\n".format(object_hash))
-        tmpfile.writelines(object_content)
+    print "{0}{1}{2}".format(Yellow, objcontent, _endline)
+
+    if save_file:
+        tmpfile = open(tmpfp, "w")
+        tmpfile.write("// diggit.py by @bl4de | {} content\n".format(objhash))
+        tmpfile.writelines(objcontent)
         tmpfile.close()
-        
-    
 
-def get_object_url(object_hash):
+
+def get_object_url(objhash):
     """Returns object git url"""
-    return OBJECT_DIR + object_hash[0:2] + "/" + object_hash[2:]
+    return OBJECT_DIR + objhash[0:2] + "/" + objhash[2:]
 
 
-def get_object_dir_prefix(object_hash):
+def get_object_dir_prefix(objhash):
     """Returns object directory prefix (first two chars of object hash)"""
-    return object_hash[0:2] + "/"
+    return objhash[0:2] + "/"
 
 
-def get_object_hash_from_object_desc(git_object_content):
+def get_objhash_from_object_desc(gitobjcontent):
     """returns object hash without control characters"""
-    return git_object_content.split(" ")[1][:40]
+    return gitobjcontent.split(" ")[1][:40]
 
 
-def save_git_object(base_url, object_hash, be_recursive, object_filename=""):
+def save_git_object(baseurl, objhash, berecursive, objfilename=""):
     """Saves git object in temporary .git directory preserves its path"""
-    complete_url = base_url + "/" + get_object_url(object_hash)
+    finalurl = baseurl + "/" + get_object_url(objhash)
 
-    os.system("curl --silent '" + complete_url + "' --create-dirs -o '" +
-              dummy_git_repository + get_object_url(object_hash) + "'")
+    os.system("curl --silent '" + finalurl + "' --create-dirs -o '" +
+              localgitrepo + get_object_url(objhash) + "'")
 
-    git_object_type = os.popen("cd " + dummy_git_repository + OBJECT_DIR +
-                               get_object_dir_prefix(object_hash) +
-                               " && git cat-file -t " + object_hash).read()
+    gitobjtype = os.popen("cd " + localgitrepo + OBJECT_DIR +
+                               get_object_dir_prefix(objhash) +
+                               " && git cat-file -t " + objhash).read()
 
-    git_object_content = os.popen("cd " + dummy_git_repository + OBJECT_DIR +
-                                  get_object_dir_prefix(object_hash) +
-                                  " && git cat-file -p " + object_hash).read()
-    print_object_details(git_object_type, git_object_content, object_hash,object_filename)
+    gitobjcontent = os.popen("cd " + localgitrepo + OBJECT_DIR +
+                                  get_object_dir_prefix(objhash) +
+                                  " && git cat-file -p " + objhash).read()
+    print_object_details(gitobjtype, gitobjcontent, objhash,
+                         objfilename)
 
     # get actual tree from commit
-    if git_object_type.strip() == "commit" and be_recursive is True:
+    if gitobjtype.strip() == "commit" and berecursive is True:
         save_git_object(baseurl,
-                        get_object_hash_from_object_desc(git_object_content),
-                        be_recursive)
+                        get_objhash_from_object_desc(gitobjcontent),
+                        berecursive)
 
-    if git_object_type.strip() == "tree" and be_recursive is True:
-        for obj in git_object_content.split("\n"):
+    if gitobjtype.strip() == "tree" and berecursive is True:
+        for obj in gitobjcontent.split("\n"):
             if obj:
                 obj = obj.strip().split(" ")
-                obj_hash = obj[2][:40]
+                objhash = obj[2][:40]
                 real_filename = obj[2].split("\t")[1]
-                if obj_hash != "" and re.match(r"[a-zA-Z0-9]", obj_hash):
-                    save_git_object(baseurl, obj_hash, be_recursive, real_filename)
+                if objhash != "" and re.match(r"[a-zA-Z0-9]", objhash):
+                    save_git_object(baseurl, objhash, berecursive,
+                                    real_filename)
 
 
 if __name__ == "__main__":
@@ -128,12 +132,12 @@ if __name__ == "__main__":
 
     # hash of object to save
     objecthash = args.o
-    be_recursive = True if args.r else False
+    berecursive = True if args.r else False
 
     # temporary dir with dummy .git structure (create it first!)
-    dummy_git_repository = args.t
+    localgitrepo = args.t
 
     if baseurl and objecthash:
         print_banner()
-        save_git_object(args.u, args.o, be_recursive, "")
+        save_git_object(args.u, args.o, berecursive, "")
         print "\n" + Cyan + "#" * 78 + _endline
