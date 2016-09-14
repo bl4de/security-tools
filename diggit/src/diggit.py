@@ -118,7 +118,7 @@ if __name__ == "__main__":
     parser.add_argument('-o', help='object hash (SHA-1, all 40 characters)')
     parser.add_argument('-r', default=False,
                         help='be recursive (if commit or tree hash '
-                             'found, go get all blobs too). Default is \'False\'')
+                             'found get all blobs too). Default is \'False\'')
 
     args = parser.parse_args()
 
