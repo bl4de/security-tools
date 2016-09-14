@@ -11,16 +11,17 @@ import re
 VERSION = "1.0.0"
 OBJECT_DIR = "/.git/objects/"
 
-Black = '\33[30m'
-Red = '\33[31m'
-Green = '\33[32m'
-Yellow = '\33[33m'
-Blue = '\33[34m'
-Magenta = '\33[35m'
-Cyan = '\33[36m'
-White = '\33[37m'
-_endline = '\33[0m'
-
+term = {
+    "black": '\33[30m',
+    "red" : '\33[31m',
+    "green": '\33[32m',
+    "yellow": '\33[33m',
+    "blue": '\33[34m',
+    "magenta": '\33[35m',
+    "cyan": '\33[36m',
+    "white": '\33[37m',
+    "endl": '\33[0m'
+}
 
 def print_banner():
     """Prints credits :)"""
@@ -37,25 +38,25 @@ def print_banner():
 def print_object_details(objtype, objcontent, objhash, objfilename):
     """Prints and saves object details/content"""
 
-    print "\n" + Cyan + "#" * 12 + " " + objhash \
-          + " information " + "#" * 12 + _endline
+    print "\n" + term["cyan"] + "#" * 12 + " " + objhash \
+          + " information " + "#" * 12 + term["endl"]
     print "\n{0}[*] Object type: {3}{2}{1}{3}".format(
-        Green, objtype, Red,_endline)
+        term["green"], objtype, term["red"],term["endl"])
 
     if objfilename != "":
         global localgitrepo
         tmpfp = localgitrepo + "/" + objfilename
         print "{0}[*] Object filename: {3}{2}{1}{3}".format(
-            Green, objfilename,Red, _endline)
+            term["green"], objfilename,term["red"], term["endl"])
         print "{0}[*] Object saved in {2}:{1}".format(
-            Green, _endline,tmpfp)
+            term["green"], term["endl"],tmpfp)
         tmpfile = open(tmpfp, "w")
         tmpfile.write("// diggit.py by @bl4de | {} content\n".format(objhash))
         tmpfile.writelines(objcontent)
         tmpfile.close()
 
-    print "{0}[*] Object content:{1}\n".format(Green, _endline)
-    print "{0}{1}{2}".format(Yellow, objcontent, _endline)
+    print "{0}[*] Object content:{1}\n".format(term["green"], term["endl"])
+    print "{0}{1}{2}".format(term["yellow"], objcontent, term["endl"])
 
 
 def get_object_url(objhash):
@@ -135,4 +136,4 @@ if __name__ == "__main__":
     if baseurl and objecthash:
         print_banner()
         save_git_object(args.u, args.o, berecursive, "")
-        print "\n" + Cyan + "#" * 78 + _endline
+        print "\n" + term["cyan"] + "#" * 78 + term["endl"]
