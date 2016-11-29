@@ -20,3 +20,7 @@ If you already have HTML file saved, use -f instead:
 ```
 $ ./htmlanalyzer.py -f index.html
 ```
+
+### Options reference
+
+- ```-c True``` - include informations about found comments (default: False)
