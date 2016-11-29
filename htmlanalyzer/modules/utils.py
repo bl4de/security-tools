@@ -10,7 +10,7 @@ summary = {
     "admin": []
 }
 
-# header
+
 def print_banner():
     print ConsoleOutputBeautifier.getColor("green"), \
         "=" * 26, \
@@ -33,7 +33,6 @@ def print_output_line(i, col, msg, msg_args, type="DEFAULT"):
         str(msg % msg_args)
     )
     print msg
-    # create_summary(type, msg)
 
 
 def create_summary(_type, _message):

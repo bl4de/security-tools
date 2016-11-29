@@ -6,6 +6,12 @@ from utils import print_output_line
 # detects frontend framework used
 
 
+def get_line(_line, _line_number, _chars=80):
+    """returns formatted line to print"""
+    return (_line_number, ConsoleOutputBeautifier.getColor("grey"), '\n\t\t'
+            + _line.lstrip().rstrip()[0:_chars])
+
+
 def detect_framework(_line):
     """frontend framework detection (simplified)
         WARNING!!!
@@ -50,8 +56,8 @@ def detect_dombased_xss(_line, i):
     for dombased_call in dombased_calls:
         if dombased_call in _line.lower():
             print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
-                              "POSSIBLE DOM BASED INJECTION POINT found at line %d:   %s",
-                              (i, _line.lstrip().rstrip()[0:120] + '...'), "DOM BASED XSS")
+                              "POSSIBLE DOM BASED INJECTION POINT found at line %d:  %s  %s",
+                              get_line(_line, i, 120), "DOM BASED XSS")
 
 
 def detect_comments(_line, i):
@@ -59,12 +65,12 @@ def detect_comments(_line, i):
     if '<!--' in _line.lstrip():
         if "\"/" in _line:
             print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
-                              "COMMENTED PATH found at line %d:   %s",
-                              (i, _line.lstrip().rstrip()[0:120] + '...'), "COMMENT")
+                              "COMMENTED PATH found at line %d: %s  %s",
+                              get_line(_line, i, 120), "COMMENT")
         else:
             print_output_line(i, ConsoleOutputBeautifier.getColor("yellow"),
-                              "COMMENT found at line %d:   %s",
-                              (i, _line.lstrip().rstrip()[0:120] + '...'), "COMMENT")
+                              "COMMENT found at line %d: %s  %s",
+                              get_line(_line, i, 120), "COMMENT")
 
 
 def detect_admin_stuff(_line, i):
@@ -87,16 +93,16 @@ def detect_external_resources(_line, i):
         if "<img" in _line.lower():
             print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
                               "PATH to external resource image "
-                              " file found in %d:   %s",
-                              (i, _line.lstrip().rstrip()[0:80]), "RESOURCES")
+                              " file found in %d: %s  %s",
+                              get_line(_line, i, 120), "RESOURCES")
         if "<iframe" in _line.lower():
             print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
-                              "IFRAME path found in %d:   %s",
-                              (i, _line.lstrip().rstrip()[0:80]), "RESOURCES")
+                              "IFRAME path found in %d:  %s  %s",
+                              get_line(_line, i, 120), "RESOURCES")
         if "<script" in _line.lower():
             print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
-                              "external SCRIPT path found in %d:   %s",
-                              (i, _line.lstrip().rstrip()[0:80]), "RESOURCES")
+                              "external SCRIPT path found in %d: %s  %s",
+                              get_line(_line, i, 120), "RESOURCES")
 
 
 def detect_javascript(_line, i):

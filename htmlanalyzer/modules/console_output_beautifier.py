@@ -8,7 +8,9 @@ class ConsoleOutputBeautifier:
         "yellow": '\33[33m',
         "blue": '\33[34m',
         "magenta": '\33[35m',
-        "cyan": '\33[36m'
+        "cyan": '\33[36m',
+        "grey": '\33[90m',
+        "lightblue": '\33[94'
     }
 
     characters = {
