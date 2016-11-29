@@ -14,9 +14,11 @@ import modules.utils
 # @TODO: args parser for: -c (comments) -s (links/src), -j (JavaScript)
 
 # find interesting string(s)
-def analyze_line(_line, i):
+def analyze_line(_line, i, include_comments):
     """single HTML source line - code analyze"""
-    modules.detection_engine.detect_comments(_line, i)
+    if include_comments == True:
+        modules.detection_engine.detect_comments(_line, i)
+
     modules.detection_engine.detect_admin_stuff(_line, i)
     modules.detection_engine.detect_debug(_line, i)
     modules.detection_engine.detect_external_resources(_line, i)
@@ -24,10 +26,13 @@ def analyze_line(_line, i):
     modules.detection_engine.detect_dombased_xss(_line, i)
 
 
-def main(_filename):
+def main(_filename, args):
     """main program loop"""
     _ident = ""
     _fw = ""
+
+    # include comments?
+    include_comments = True if args.c else False
 
     try:
         _file = open(_filename, "r")
@@ -42,7 +47,7 @@ def main(_filename):
 
     for _line in _file:
         i += 1
-        analyze_line(_line, i)
+        analyze_line(_line, i, include_comments)
         if _ident == "":
             _ident = modules.detection_engine.identify(_line)
         if _fw == "":
@@ -58,6 +63,9 @@ if __name__ == "__main__":
     parser.add_argument(
         '-u', help='Target url - index.html will be downloaded')
     parser.add_argument('-f', help='HTML file name to analyze')
+    parser.add_argument(
+        '-c', help='include comments in summary (excluded by default)')
+
     _filename = "index.html"
     args = parser.parse_args()
 
@@ -68,4 +76,4 @@ if __name__ == "__main__":
     if args.f and not args.u:
         _filename = args.f
 
-    main(_filename)
+    main(_filename, args)

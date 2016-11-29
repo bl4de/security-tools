@@ -37,14 +37,21 @@ def detect_dombased_xss(_line, i):
         'document.url',
         'document.urlencoded',
         'document.referrer',
-        'window.location'
+        'window.location',
+        'document.write(',
+        'document.writeln('
+        '.innerHTML',
+        'eval(',
+        'setInterval(',
+        'setTimeout(',
+        'Function('
     ]
 
     for dombased_call in dombased_calls:
         if dombased_call in _line.lower():
             print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
                               "POSSIBLE DOM BASED INJECTION POINT found at line %d:   %s",
-                              (i, _line.lstrip().rstrip()), "DOM BASED XSS")
+                              (i, _line.lstrip().rstrip()[0:120] + '...'), "DOM BASED XSS")
 
 
 def detect_comments(_line, i):
@@ -53,11 +60,11 @@ def detect_comments(_line, i):
         if "\"/" in _line:
             print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
                               "COMMENTED PATH found at line %d:   %s",
-                              (i, _line.lstrip().rstrip()), "COMMENT")
+                              (i, _line.lstrip().rstrip()[0:120] + '...'), "COMMENT")
         else:
             print_output_line(i, ConsoleOutputBeautifier.getColor("yellow"),
                               "COMMENT found at line %d:   %s",
-                              (i, _line.lstrip().rstrip()), "COMMENT")
+                              (i, _line.lstrip().rstrip()[0:120] + '...'), "COMMENT")
 
 
 def detect_admin_stuff(_line, i):
