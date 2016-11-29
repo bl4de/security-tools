@@ -10,7 +10,6 @@ summary = {
     "admin": []
 }
 
-
 # header
 def print_banner():
     print ConsoleOutputBeautifier.getColor("green"), \

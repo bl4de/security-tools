@@ -2,9 +2,10 @@
 from console_output_beautifier import ConsoleOutputBeautifier
 from utils import print_output_line
 
-
 # @TODO: libraries/framework detenction
 # detects frontend framework used
+
+
 def detect_framework(_line):
     """frontend framework detection (simplified)
         WARNING!!!
@@ -16,11 +17,9 @@ def detect_framework(_line):
         _fw = "Angular 1.*"
     if "react.js" in _line or "react-dom.js" in _line:
         _fw = "ReactJS"
-
     return _fw
 
 
-# using osftare recognition
 def identify(_line):
     """backend detection (simplified)"""
     _ident = "unknown"
@@ -29,6 +28,23 @@ def identify(_line):
     if "wp-content" in _line:
         _ident = "WordPress CMS"
     return _ident
+
+
+def detect_dombased_xss(_line, i):
+    """detection of DOM based XSS weaknesses"""
+    dombased_calls = [
+        'document.location',
+        'document.url',
+        'document.urlencoded',
+        'document.referrer',
+        'window.location'
+    ]
+
+    for dombased_call in dombased_calls:
+        if dombased_call in _line.lower():
+            print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
+                              "POSSIBLE DOM BASED INJECTION POINT found at line %d:   %s",
+                              (i, _line.lstrip().rstrip()), "DOM BASED XSS")
 
 
 def detect_comments(_line, i):

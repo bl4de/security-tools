@@ -13,15 +13,15 @@ import modules.utils
 # @TODO: Python doc in functions and for module
 # @TODO: args parser for: -c (comments) -s (links/src), -j (JavaScript)
 
-
 # find interesting string(s)
 def analyze_line(_line, i):
-    """single HTML source code analyze"""
+    """single HTML source line - code analyze"""
     modules.detection_engine.detect_comments(_line, i)
     modules.detection_engine.detect_admin_stuff(_line, i)
     modules.detection_engine.detect_debug(_line, i)
     modules.detection_engine.detect_external_resources(_line, i)
     modules.detection_engine.detect_javascript(_line, i)
+    modules.detection_engine.detect_dombased_xss(_line, i)
 
 
 def main(_filename):
@@ -55,7 +55,8 @@ def main(_filename):
 if __name__ == "__main__":
     """main program - run HTML analyze"""
     parser = argparse.ArgumentParser(description="HTML static code analyze")
-    parser.add_argument('-u', help='Target url - index.html will be downloaded')
+    parser.add_argument(
+        '-u', help='Target url - index.html will be downloaded')
     parser.add_argument('-f', help='HTML file name to analyze')
     _filename = "index.html"
     args = parser.parse_args()
