@@ -13,13 +13,9 @@ summary = {
 
 def print_banner():
     print ConsoleOutputBeautifier.getColor("green"), \
-        "=" * 26, \
-        "HTML source code Analyzer", "=" * 26, \
-        "\n", \
-        " " + "-" * 10, \
-        "   https://github.com/bl4de | https://twitter.com/_bl4de " \
-        "| bloorq@gmail.com   ", \
-        "-" * 10, \
+        "=" * 20, "HTML source code Analyzer", "=" * 20, "\n", \
+        "  https://github.com/bl4de | https://twitter.com/_bl4de \n" \
+        "  https://hackerone.com/bl4de | bloorq@gmail.com   ", \
         "\n\n", \
         ConsoleOutputBeautifier.getSpecialChar("endline")
 
