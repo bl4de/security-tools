@@ -24,3 +24,5 @@ $ ./htmlanalyzer.py -f index.html
 ### Options reference
 
 - ```-c True``` - include informations about found comments (default: False)
+- ```-v True``` - be verbose; by default only critical informations like possible DOM injectiuon points or debug information are shown
+
