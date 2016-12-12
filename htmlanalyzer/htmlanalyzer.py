@@ -86,7 +86,8 @@ if __name__ == "__main__":
 
     if args.u:
         print "[+] connecting to {}...".format(args.u)
-        os.system("curl --silent -o index.html " + args.u)
+        os.system(
+            "curl -A 'htmlanalyzer' --header 'Host: {}'--silent -o index.html {}".format(args.u, args.u))
         print "[+] default index.html saved"
     if args.f and not args.u:
         _filename = args.f
