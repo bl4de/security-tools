@@ -1,4 +1,17 @@
 #!/usr/bin/python
+
+"""HTML source analyzer
+    bl4de | bloorq@gmail.com | Twitter: @_bl4de | H1: bl4de
+
+    This tool goes through HTML document and shows all interesting places,
+    like inline JavaScript calls, commented paths, 'debug' and similar
+    words occurences, possible DOM Injection points, references to 
+    resources like images or iframes
+
+    utils.py contains functions to display results, banners, helps and all
+    other information presented by HTML analyzer
+"""
+
 from console_output_beautifier import ConsoleOutputBeautifier
 
 summary = {

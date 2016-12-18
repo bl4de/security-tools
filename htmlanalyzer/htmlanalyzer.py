@@ -1,13 +1,20 @@
 #!/usr/bin/env python
-#
-# HTML source analyzer
-# bl4de | bloorq@gmail.com | Twitter: @_bl4de
-#
+
+"""HTML source analyzer
+    bl4de | bloorq@gmail.com | Twitter: @_bl4de | H1: bl4de
+
+    This tool goes through HTML document and shows all interesting places,
+    like inline JavaScript calls, commented paths, 'debug' and similar
+    words occurences, possible DOM Injection points, references to 
+    resources like images or iframes
+"""
+
 import argparse
 import os
 
 import modules.detection_engine
 import modules.utils
+
 from modules.console_output_beautifier import ConsoleOutputBeautifier
 
 
@@ -75,7 +82,8 @@ if __name__ == "__main__":
     parser.add_argument(
         '-c', help='include comments in summary (excluded by default)')
     parser.add_argument(
-        '-v', help='verbose; shows all messages (default - shows only critical, like possible injection points or debug info occurence)'
+        '-v', help='verbose; shows all messages (default - shows only '
+        'critical, like possible injection points or debug info occurence)'
     )
 
     # let's go

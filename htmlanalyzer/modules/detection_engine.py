@@ -1,4 +1,17 @@
 #!/usr/bin/python
+
+"""HTML source analyzer
+    bl4de | bloorq@gmail.com | Twitter: @_bl4de | H1: bl4de
+
+    This tool goes through HTML document and shows all interesting places,
+    like inline JavaScript calls, commented paths, 'debug' and similar
+    words occurences, possible DOM Injection points, references to 
+    resources like images or iframes
+
+    detection_engine.py contains all specific logic which detects interesting
+    parts of HTML
+"""
+
 from console_output_beautifier import ConsoleOutputBeautifier
 from utils import print_output_line
 
