@@ -49,6 +49,31 @@ def identify(_line):
     return _ident
 
 
+def detect_developer_comments(_line, i):
+    """detection of comments left by developers"""
+    developer_comments = [
+        'bug',
+        'problem',
+        'issue',
+        'fix',
+        'ticket',
+        'bad',
+        'todo',
+        'inject',
+        'crash',
+        'trust',
+        'dev',
+        'temporary',
+        'remove'
+    ]
+
+    for developer_comment in developer_comments:
+        if developer_comment in _line.lower():
+            print_output_line(i, ConsoleOutputBeautifier.getColor("yellow"),
+                              "some developer(s) related comment string found at line %d:  %s  %s",
+                              get_line(_line, i, 120), "DOM BASED XSS")
+
+
 def detect_dombased_xss(_line, i):
     """detection of DOM based XSS weaknesses"""
     dombased_calls = [

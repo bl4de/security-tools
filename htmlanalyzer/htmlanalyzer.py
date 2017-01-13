@@ -35,6 +35,7 @@ def analyze_line(_line, i, include_comments, be_verbose):
     modules.detection_engine.detect_admin_stuff(_line, i)
     modules.detection_engine.detect_debug(_line, i)
     modules.detection_engine.detect_dombased_xss(_line, i)
+    modules.detection_engine.detect_developer_comments(_line, i)
 
 
 def main(_filename, args):
