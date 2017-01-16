@@ -8,6 +8,9 @@
     words occurences, possible DOM Injection points, references to 
     resources like images or iframes
 """
+# @TODO: args parser for: -c (comments) -s (links/src), -j (JavaScript)
+# @TODO: remove doubled line(s) - https://github.com/bl4de/security-tools/issues/15
+
 
 import argparse
 import os
@@ -18,10 +21,9 @@ import modules.utils
 from modules.console_output_beautifier import ConsoleOutputBeautifier
 
 
-# @TODO: Python doc in functions and for module
-# @TODO: args parser for: -c (comments) -s (links/src), -j (JavaScript)
-
 # find interesting string(s)
+
+
 def analyze_line(_line, i, include_comments, be_verbose):
     """single HTML source line - code analyze"""
     if include_comments == True:
