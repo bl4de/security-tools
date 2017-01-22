@@ -18,6 +18,8 @@ from utils import print_output_line
 # @TODO: libraries/framework detenction
 # detects frontend framework used
 
+line_cache = []
+
 
 def get_line(_line, _line_number, _chars=80):
     """returns formatted line to print"""
@@ -70,7 +72,7 @@ def detect_developer_comments(_line, i):
     for developer_comment in developer_comments:
         if developer_comment in _line.lower():
             print_output_line(i, ConsoleOutputBeautifier.getColor("yellow"),
-                              "some developer(s) related comment string found at line %d:  %s  %s",
+                              "probably developer(s) related comment string found at line %d:  %s  %s",
                               get_line(_line, i, 120), "DOM BASED XSS")
 
 
@@ -115,7 +117,8 @@ def detect_admin_stuff(_line, i):
     """detects anything related to administration area"""
     if "admin" in _line.lower():
         print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
-                          "'admin' string found at line: %d", i, "ADMIN")
+                          "'admin' string found at line: %d: %s  %s",
+                          get_line(_line, i, 120), "ADMIN")
 
 
 def detect_debug(_line, i):
