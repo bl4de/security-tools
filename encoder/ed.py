@@ -1,12 +1,17 @@
 #!/usr/bin/env python
+"""ED encoder/decoder tools
+    bl4de | bloorq@gmail.com | Twitter: @_bl4de | H1: bl4de | GitHub: bl4de
 
+    Simple encoder/decoder tool
+    ./ed.py [string to encode] [input encoding] [output encoding]
+"""
 import base64
 import sys
 import urllib
 
 
-# returns 61; for 'a' truncated from 0x61
 def __get_char_hex_value(c):
+    """returns 61; for 'a' truncated from 0x61"""™
     return hex(ord(c)).replace("0x", "")
 
 
@@ -56,7 +61,7 @@ def to_html_entities(s):
     for c in s:
         entity = "&#x00" + __get_char_hex_value(c) + ";"
         if entity:
-            xs += entity;
+            xs += entity
     return xs
 
 
