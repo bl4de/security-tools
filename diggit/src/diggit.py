@@ -13,7 +13,7 @@ OBJECT_DIR = "/.git/objects/"
 
 term = {
     "black": '\33[30m',
-    "red" : '\33[31m',
+    "red": '\33[31m',
     "green": '\33[32m',
     "yellow": '\33[33m',
     "blue": '\33[34m',
@@ -22,6 +22,7 @@ term = {
     "white": '\33[37m',
     "endl": '\33[0m'
 }
+
 
 def print_banner():
     """Prints credits :)"""
@@ -41,15 +42,15 @@ def print_object_details(objtype, objcontent, objhash, objfilename):
     print "\n" + term["cyan"] + "#" * 12 + " " + objhash \
           + " information " + "#" * 12 + term["endl"]
     print "\n{0}[*] Object type: {3}{2}{1}{3}".format(
-        term["green"], objtype, term["red"],term["endl"])
+        term["green"], objtype, term["red"], term["endl"])
 
     if objfilename != "":
         global localgitrepo
         tmpfp = localgitrepo + "/" + objfilename
         print "{0}[*] Object filename: {3}{2}{1}{3}".format(
-            term["green"], objfilename,term["red"], term["endl"])
+            term["green"], objfilename, term["red"], term["endl"])
         print "{0}[*] Object saved in {2}:{1}".format(
-            term["green"], term["endl"],tmpfp)
+            term["green"], term["endl"], tmpfp)
         tmpfile = open(tmpfp, "w")
         tmpfile.write("// diggit.py by @bl4de | {} content\n".format(objhash))
         tmpfile.writelines(objcontent)
@@ -82,12 +83,12 @@ def save_git_object(baseurl, objhash, berecursive, objfilename=""):
               localgitrepo + get_object_url(objhash) + "'")
 
     gitobjtype = os.popen("cd " + localgitrepo + OBJECT_DIR +
-                               get_object_dir_prefix(objhash) +
-                               " && git cat-file -t " + objhash).read()
+                          get_object_dir_prefix(objhash) +
+                          " && git cat-file -t " + objhash).read()
 
     gitobjcontent = os.popen("cd " + localgitrepo + OBJECT_DIR +
-                                  get_object_dir_prefix(objhash) +
-                                  " && git cat-file -p " + objhash).read()
+                             get_object_dir_prefix(objhash) +
+                             " && git cat-file -p " + objhash).read()
     print_object_details(gitobjtype, gitobjcontent, objhash,
                          objfilename)
 
@@ -132,6 +133,8 @@ if __name__ == "__main__":
 
     # temporary dir with dummy .git structure (create it first!)
     localgitrepo = args.t
+
+    parser.print_help()
 
     if baseurl and objecthash:
         print_banner()

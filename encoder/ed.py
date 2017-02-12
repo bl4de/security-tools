@@ -11,7 +11,7 @@ import urllib
 
 
 def __get_char_hex_value(c):
-    """returns 61; for 'a' truncated from 0x61"""™
+    """returns 61; for 'a' truncated from 0x61"""
     return hex(ord(c)).replace("0x", "")
 
 
