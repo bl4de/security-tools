@@ -15,18 +15,26 @@ $ subdomain-http-enumerate.py [domain_list]
 import requests
 import sys
 
+HTTP_OK = 200
+
+
 def usage():
     print welcome
+
 
 def enumerate_domains(domains, output_file):
     i = len(domains)
     for d in domains:
         try:
             d = d.strip('\n')
-            resp = requests.get('http://' + d, timeout = 5, headers = {
-                'Host': d
-            })
-            if resp.status_code == 200:
+            resp = requests.get('http://' + d,
+                                timeout=5,
+                                allow_redirects=False,
+                                verify=False,
+                                headers={
+                                    'Host': d
+                                })
+            if resp.status_code == HTTP_OK:
                 print '[+] domain {} HTTP OK'.format(d)
                 output_file.write('{}\n'.format(d))
 
@@ -49,7 +57,7 @@ if (len(sys.argv) < 2):
     print welcome
     exit(0)
 
-domains = open(sys.argv[1].strip(),'rw').readlines()
+domains = open(sys.argv[1].strip(), 'rw').readlines()
 output_file = open('output.txt', 'w')
 
 enumerate_domains(domains, output_file)
