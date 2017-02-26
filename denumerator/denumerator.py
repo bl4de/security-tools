@@ -15,8 +15,15 @@ $ subdomain-http-enumerate.py [domain_list]
 import requests
 import sys
 
-HTTP_OK = 200
+requests.packages.urllib3.disable_warnings()
 
+HTTP_OK = 200
+HTTP_FORBIDDEN = 403
+
+allowed_http_responses = [
+    HTTP_OK,
+    HTTP_FORBIDDEN
+]
 
 def usage():
     print welcome
@@ -34,8 +41,8 @@ def enumerate_domains(domains, output_file):
                                 headers={
                                     'Host': d
                                 })
-            if resp.status_code == HTTP_OK:
-                print '[+] domain {} HTTP OK'.format(d)
+            if resp.status_code in allowed_http_responses:
+                print '[+] domain {}:\t\t HTTP {}'.format(d, resp.status_code)
                 output_file.write('{}\n'.format(d))
 
         except requests.exceptions.InvalidURL:
