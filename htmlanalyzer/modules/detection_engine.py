@@ -15,7 +15,7 @@
 from console_output_beautifier import ConsoleOutputBeautifier
 from utils import print_output_line
 
-# @TODO: libraries/framework detenction
+# @TODO: libraries/framework detection
 # detects frontend framework used
 
 line_cache = []
@@ -44,10 +44,12 @@ def detect_framework(_line):
 def identify(_line):
     """backend detection (simplified)"""
     _ident = "unknown"
-    if "Jommla" in _line:
+    if "Joomla" in _line:
         _ident = "Joomla CMS"
     if "wp-content" in _line:
         _ident = "WordPress CMS"
+    if 'content="Drupal"' in _line:
+        _ident = "Drupal CMS"
     return _ident
 
 
