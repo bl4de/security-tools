@@ -81,6 +81,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="HTML static code analyze")
     parser.add_argument(
         '-u', help='Target url - index.html will be downloaded')
+    parser.add_argument(
+        '-H', help='Target host - "Host" HTTP request header value')
     parser.add_argument('-f', help='HTML file name to analyze')
     parser.add_argument(
         '-c', help='include comments in summary (excluded by default)')
@@ -95,10 +97,10 @@ if __name__ == "__main__":
     _filename = "index.html"
     args = parser.parse_args()
 
-    if args.u:
+    if args.H and args.u:
         print "[+] connecting to {}...".format(args.u)
         os.system(
-            "curl -A 'htmlanalyzer' --header 'Host: {}'--silent -o index.html {}".format(args.u, args.u))
+            "curl -A 'htmlanalyzer' --header 'Host: {}' --silent -o index.html {}".format(args.H, args.u))
         print "[+] default index.html saved"
     if args.f and not args.u:
         _filename = args.f
