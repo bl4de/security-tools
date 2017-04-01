@@ -1,4 +1,5 @@
 .idea/
+sword/output.html
 dev/
 .DS_Store
 cco.pyc pefdefs.pyc
