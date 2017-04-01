@@ -2,32 +2,76 @@
 
 """
 Automate tasks for full recon the target
-
-Dependiences:
-
-sublist3r       https://github.com/aboul3la/Sublist3r
-
-
 Executed step(s) and used tools:
 
-1. Enumerate subdomain(s) [sublist3r]
+1. Enumerate subdomain(s) [sublist3r, https://github.com/aboul3la/Sublist3r]
 2.
 
 """
 
 import sys
 import subprocess
+import re
+
 
 DOMAIN = ""
-OUTPUT = open("OUTPUT", "w+")
+OUTPUT = open("OUTPUT", "rw")
+HTML_OUTPUT_FILE = open("output.html", "w")
+HTML = open("template.html", "rw+").read()
 
 
-def sublist3r(__args=[]):
+################################  TESTS  #################################
+
+def sublist3r_test(__args=[]):
+    task_name = 'sublist3r'
+    html_fragment = ""
     try:
-        subprocess.Popen(['sublist3r', '--domain', DOMAIN, '--output', 'OUTPUT'])
+        for subdomain in OUTPUT.readlines():
+            html_fragment = html_fragment + \
+                "<li>{}</li>".format(subdomain.strip())
+        interpolate_html_fragment(task_name, html_fragment)
     except:
         print "[-] sublist3r: missing domain name"
         exit(0)
+
+###################################  TASKS  ##############################
+
+
+def sublist3r(__args=[]):
+    """
+    runs sublist3r
+    """
+    task_name = 'sublist3r'
+    html_fragment = ""
+    try:
+        current_process = subprocess.Popen(
+            ['sublist3r', '--domain', DOMAIN, '--output', 'OUTPUT'])
+        exit_code = current_process.wait()
+        if exit_code == 0:
+            for subdomain in OUTPUT.readlines():
+                html_fragment = html_fragment + \
+                    "<li>{}</li>".format(subdomain.strip())
+
+        interpolate_html_fragment(task_name, html_fragment)
+
+    except:
+        print "[-] sublist3r: missing domain name"
+        exit(0)
+
+
+###############################  HELPERS  ################################
+
+
+def interpolate_html_fragment(identifier, html_fragment):
+    global HTML
+    HTML = HTML.replace("#{}_output#".format(identifier), html_fragment)
+
+
+def save_html_output(html_file, html_output):
+    global DOMAIN
+    html_output = re.sub(r'#DOMAIN#', DOMAIN, html_output, flags=re.MULTILINE)
+    html_file.write(html_output)
+    html_file.close()
 
 
 def print_banner():
@@ -54,17 +98,27 @@ def run(__task, __args):
         print "[-] something went wrong :("
         exit(0)
 
+##########################################################################
 
 # main program
 if __name__ == "__main__":
     try:
-        print sys.argv[1]
         if sys.argv[1]:
             DOMAIN = sys.argv[1]
+
+        print "[+] starting with {}".format(DOMAIN)
 
         # subdomain(s) enumeration
         run(sublist3r, [DOMAIN])
 
-    except:
-        print "[-] missing DOMAIN, nothing to see here, move along..."
+        # print HTML
+
+        # save HTML output to a file
+        print "[+] saving HTML to a file"
+        save_html_output(HTML_OUTPUT_FILE, HTML)
+
+        print "[+] done\n\n\n"
+
+    except Exception, e:
+        print "[-] Excpetion raised: {}".format(str(e))
         exit(0)
