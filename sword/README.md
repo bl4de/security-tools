@@ -3,7 +3,7 @@
 This tool chains other tools using their outputs to perform automatic target renonaisance phase.
 This includes subdomains discovery, searching for open ports, working HTTP servers and so on.
 
-This tool is currently in development and may contain bunch of errors.
+This tool is **currently in development** and may contain bunch of errors and/or did not contains feature you're looking for.
 
 
 ## Requirements
@@ -18,8 +18,8 @@ The list below contains all tools used by **Sword**:
 Sample usage:
 
 DOMAIN is the domain of your target.
-Let **Sowrd** do the rest. At the end, you'll find HTML output file contains all interesting information found by 
-script during performing all steps.
+Let **Sowrd** do the rest. At the end, you'll find HTML output file (```output.html```) 
+contains all interesting information found by script during performing all steps.
 
 ```
 $ ./sword.py DOMAIN
