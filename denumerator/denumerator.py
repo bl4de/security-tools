@@ -10,7 +10,7 @@ and creates output file with servers responding on port 80/HTTP
 This indicates (in most caes) working webserver
 
 usage:
-$ subdomain-http-enumerate.py [domain_list]
+$ ./denumerator [domain_list]
 """
 import requests
 import sys
