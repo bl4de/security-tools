@@ -18,15 +18,40 @@ import sys
 requests.packages.urllib3.disable_warnings()
 
 HTTP_OK = 200
+HTTP_UNAUTHORIZED = 401
 HTTP_FORBIDDEN = 403
+HTTP_NOT_MODIFIED = 304
+HTTP_FOUND = 302
+HTTP_INTERNAL_SERVER_ERROR = 500
 
 allowed_http_responses = [
     HTTP_OK,
-    HTTP_FORBIDDEN
+    HTTP_FORBIDDEN,
+    HTTP_NOT_MODIFIED,
+    HTTP_FOUND,
+    HTTP_UNAUTHORIZED,
+    HTTP_INTERNAL_SERVER_ERROR
 ]
+
 
 def usage():
     print welcome
+
+
+def send_request(proto, domain):
+    protocols = {
+        'http': 'http://',
+        'https': 'https://'
+    }
+    resp = requests.get(protocols.get(proto.lower()) + domain,
+                        timeout=5, allow_redirects=False, verify=False,
+                        headers={
+        'Host': domain
+    })
+    if resp.status_code in allowed_http_responses:
+        print '[+] domain {}:\t\t HTTP {}'.format(domain, resp.status_code)
+        output_file.write('{}\n'.format(domain))
+    return resp.status_code
 
 
 def enumerate_domains(domains, output_file):
@@ -34,16 +59,10 @@ def enumerate_domains(domains, output_file):
     for d in domains:
         try:
             d = d.strip('\n')
-            resp = requests.get('http://' + d,
-                                timeout=5,
-                                allow_redirects=False,
-                                verify=False,
-                                headers={
-                                    'Host': d
-                                })
-            if resp.status_code in allowed_http_responses:
-                print '[+] domain {}:\t\t HTTP {}'.format(d, resp.status_code)
-                output_file.write('{}\n'.format(d))
+            return_code = send_request('http', d)
+            # if http not working, try https
+            if (return_code not in allowed_http_responses):
+                send_request('https', d)
 
         except requests.exceptions.InvalidURL:
             print '[-] {} is not a valid URL :/'.format(d)
