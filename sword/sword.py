@@ -136,7 +136,7 @@ if __name__ == "__main__":
         print "[+] starting with {}".format(DOMAIN)
 
         # subdomain(s) enumeration
-        # run(sublist3r, [DOMAIN])
+        run(sublist3r, [DOMAIN])
         # find working HTTP servers
         run(denumerator, [])
 
