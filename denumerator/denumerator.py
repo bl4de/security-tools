@@ -18,22 +18,7 @@ import sys
 
 requests.packages.urllib3.disable_warnings()
 
-HTTP_OK = 200
-HTTP_UNAUTHORIZED = 401
-HTTP_FORBIDDEN = 403
-HTTP_NOT_MODIFIED = 304
-HTTP_FOUND = 302
-HTTP_INTERNAL_SERVER_ERROR = 500
-
-allowed_http_responses = [
-    HTTP_OK,
-    HTTP_FORBIDDEN,
-    HTTP_NOT_MODIFIED,
-    HTTP_FOUND,
-    HTTP_UNAUTHORIZED,
-    HTTP_INTERNAL_SERVER_ERROR
-]
-
+allowed_http_responses = [200,302,304,401,403,500]
 
 def usage():
     print welcome
