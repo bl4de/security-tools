@@ -10,7 +10,7 @@ and creates output file with servers responding on port 80/HTTP
 This indicates (in most caes) working webserver
 
 usage:
-$ subdomain-http-enumerate.py [domain_list]
+$ ./denumerator.py [domain_list_file]
 """
 import requests
 import sys
@@ -44,10 +44,13 @@ def send_request(proto, domain):
         'https': 'https://'
     }
     resp = requests.get(protocols.get(proto.lower()) + domain,
-                        timeout=5, allow_redirects=False, verify=False,
+                        timeout=5,
+                        allow_redirects=False,
+                        verify=False,
                         headers={
-        'Host': domain
+                            'Host': domain
     })
+
     if resp.status_code in allowed_http_responses:
         print '[+] domain {}:\t\t HTTP {}'.format(domain, resp.status_code)
         output_file.write('{}\n'.format(domain))
@@ -58,7 +61,7 @@ def enumerate_domains(domains, output_file):
     i = len(domains)
     for d in domains:
         try:
-            d = d.strip('\n')
+            d = d.strip('\n').strip('\r')
             return_code = send_request('http', d)
             # if http not working, try https
             if (return_code not in allowed_http_responses):
