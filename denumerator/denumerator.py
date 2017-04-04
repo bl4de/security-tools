@@ -12,6 +12,7 @@ This indicates (in most caes) working webserver
 usage:
 $ ./denumerator.py [domain_list_file]
 """
+
 import requests
 import sys
 
