@@ -15,7 +15,7 @@ import re
 
 
 DOMAIN = ""
-OUTPUT = open("OUTPUT", "rw")
+OUTPUT = open("OUTPUT", "w+")
 HTML_OUTPUT_FILE = open("output.html", "w+")
 HTML = open("template.html", "rw+").read()
 
