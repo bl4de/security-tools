@@ -5,7 +5,7 @@ Automate tasks for full recon the target
 Executed step(s) and used tools:
 
 1. Enumerate subdomain(s) [sublist3r, https://github.com/aboul3la/Sublist3r]
-2.
+2. find working HTTP servers in output list from Step 1. [denumerator, https://github.com/bl4de/security-tools/blob/master/denumerator/denumerator.py]
 
 """
 
@@ -16,7 +16,7 @@ import re
 
 DOMAIN = ""
 OUTPUT = open("OUTPUT", "rw")
-HTML_OUTPUT_FILE = open("output.html", "w")
+HTML_OUTPUT_FILE = open("output.html", "w+")
 HTML = open("template.html", "rw+").read()
 
 
@@ -30,11 +30,36 @@ def sublist3r_test(__args=[]):
             html_fragment = html_fragment + \
                 "<li>{}</li>".format(subdomain.strip())
         interpolate_html_fragment(task_name, html_fragment)
-    except:
+    except Exception, e:
+        print "[-] Excpetion raised: {}".format(str(e))
         print "[-] sublist3r: missing domain name"
         exit(0)
 
 ###################################  TASKS  ##############################
+
+
+def denumerator(__args=[]):
+    """
+    runs denumerator.py
+    """
+    task_name = 'denumerator'
+    html_fragment = ""
+    try:
+        current_process = subprocess.Popen(
+            ['denumerator', 'OUTPUT'])
+        exit_code = current_process.wait()
+        if exit_code == 0:
+            for subdomain in open("output.txt").readlines():
+                subdomain = subdomain.strip()
+                html_fragment = html_fragment + \
+                    '<li>HTTP server found on  <a href="http://{}" target="_blank"><b>{}</b></a></li>'.format(
+                        subdomain, subdomain, subdomain)
+
+        interpolate_html_fragment(task_name, html_fragment)
+    except Exception, e:
+        print "[-] Excpetion raised: {}".format(str(e))
+        print "[-] denumerator: an error occured; denumerator failed; aborting"
+        exit(0)
 
 
 def sublist3r(__args=[]):
@@ -54,7 +79,8 @@ def sublist3r(__args=[]):
 
         interpolate_html_fragment(task_name, html_fragment)
 
-    except:
+    except Exception, e:
+        print "[-] Excpetion raised: {}".format(str(e))
         print "[-] sublist3r: missing domain name"
         exit(0)
 
@@ -94,7 +120,8 @@ def run(__task, __args):
     """
     try:
         __task(__args)
-    except:
+    except Exception, e:
+        print "[-] Excpetion raised: {}".format(str(e))
         print "[-] something went wrong :("
         exit(0)
 
@@ -109,9 +136,11 @@ if __name__ == "__main__":
         print "[+] starting with {}".format(DOMAIN)
 
         # subdomain(s) enumeration
-        run(sublist3r, [DOMAIN])
+        # run(sublist3r, [DOMAIN])
+        # find working HTTP servers
+        run(denumerator, [])
 
-        # print HTML
+        print HTML
 
         # save HTML output to a file
         print "[+] saving HTML to a file"
