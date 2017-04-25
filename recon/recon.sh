@@ -19,3 +19,6 @@ echo -e "${BLUE}[+]${NC}  ${GREEN}nikto scanning...${NC}"
 
 echo -e "${BLUE}[+]${NC}  ${GREEN}theHarvester scanning...${NC}"
 theharvester -d $TARGET -b all >> $OUTPUT_FILE 
+
+echo -e "${BLUE}[+]${NC}  ${GREEN}tryin to obtain domains for this IP...${NC}"
+curl https://reverse.report/commonapi/v1/ip/$TARGET.json >> $OUTPUT_FILE
