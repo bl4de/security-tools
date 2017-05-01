@@ -10,4 +10,5 @@ sword/OUTPUT
 /dirscan/10000folders.txt
 /dirscan/1000folders.txt
 *.pyc
+*.log
 
