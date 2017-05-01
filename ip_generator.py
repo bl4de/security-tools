@@ -8,10 +8,11 @@ usage = """
 ### by bl4de | twiiter.com/_bl4de | hackerone.com/bl4de | github.com/bl4de
 
 Generates list of IP addresses, starting from IP passed as first argument and ended up with 
-IP address passed as second argument:
+IP address passed as second argument.
+
+Sample usage: to generate all IPs between 192.168.1.1 and 192.168.2.255 (512 addresses):
 
 ./ip_generator.py 192.168.1.1 192.168.2.255
-
 
 """
 
