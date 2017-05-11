@@ -95,7 +95,7 @@ if __name__ == "__main__":
                 # print headers
 
                 req = requests.Request(
-                    method, "http://" + host, headers=headers)
+                    method, "https://" + host, headers=headers)
 
                 prepared = session.prepare_request(req)
                 resp = session.send(prepared)
