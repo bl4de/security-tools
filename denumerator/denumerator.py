@@ -18,7 +18,7 @@ import sys
 
 requests.packages.urllib3.disable_warnings()
 
-allowed_http_responses = [200,302,304,401,403,500]
+allowed_http_responses = [200,302,304,401,404,403,500]
 
 def usage():
     print welcome
