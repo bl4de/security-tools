@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+"""HTTP headers fuzzer
+    bl4de | bloorq@gmail.com | Twitter: @_bl4de | HackerOne: bl4de
+
+    headshot.py is HTTP headers fuzzer
+
+    The idea is to provide easy way to quickly enumerate multiple combinations 
+    of HTTP methods and headers to catch weird server behaviour.
+
+"""
+
 import requests
 import sys
 
@@ -41,6 +51,19 @@ class ConsoleOutputBeautifier:
         return ""
 
 
+def formatted_request(method, host, header, payload):
+    return  """
+
+    ---- REQUEST ----
+
+    {} / HTTP/1.1
+    Host: {}
+    {}: {}
+
+    ---- RESPONSE ----
+    """.format(method, host, header, payload)
+
+
 def response_description(resp):
     message = "[+] Sending {} request:  {} received {} {} with {} bytes of response {}"
 
@@ -58,26 +81,15 @@ def response_description(resp):
 if __name__ == "__main__":
 
     logfile = open("headshot.log", "w+")
+    host = sys.argv[1]
 
-    host = sys.argv[1]  # "dev.yahoo.companywebstores.com"
-
-    formatted_request = """
-
-    ---- REQUEST ----
-
-    {} / HTTP/1.1
-    Host: {}
-    {}: {}
-
-    ---- RESPONSE ----
-    """
 
     base_response_size = 0
 
     # HTTP methods
     HTTP_METHODS = ['HEAD', 'GET', 'POST', 'OPTIONS', 'PUT', 'TRACE', 'DEBUG']
 
-    # Headers payloads - piut any payload you want to test here:
+    # Headers payloads - put any payload you want to test here:
     HEADERS_PAYLOADS = {
         'User-Agent': [
             '', '"', 'Fake', 'Fake' * 20, 'Mozilla'
@@ -101,10 +113,14 @@ if __name__ == "__main__":
                 resp = session.send(prepared)
                 resp_size = resp.headers.get('content-length')
                 base_response_size = resp_size if base_response_size == 0 else base_response_size
+                
                 print response_description(resp)
-                logfile.write(formatted_request.format(
-                    method, host, header, payload))
+
+                # save request/response to log file
+                logfile.write(formatted_request(method, host, header, payload))
                 logfile.write(response_description(resp))
 
+    # done, wrap up and exit
     logfile.close()
     print "\n[+] DONE"
+    exit(0)

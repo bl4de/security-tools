@@ -2,6 +2,25 @@
 
 headshot.py is HTTP headers fuzzer
 
+The idea is to provide easy way to quickly enumerate multiple combinations of HTTP methods and headers to catch weird server behaviour.
+
+This fragment contains definition of methods and headers and their values which ```headshot.py``` uses for fuzzing (TODO: change the way those values are provided; file with predefined ? )
+
+```python
+
+    # HTTP methods
+    HTTP_METHODS = ['HEAD', 'GET', 'POST', 'OPTIONS', 'PUT', 'TRACE', 'DEBUG']
+
+    # Headers payloads - put any payload you want to test here:
+    HEADERS_PAYLOADS = {
+        'User-Agent': [
+            '', '"', 'Fake', 'Fake' * 20, 'Mozilla'
+        ]
+    }
+
+```
+
+
 ### Usage
 
 ```
