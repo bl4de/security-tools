@@ -8,11 +8,33 @@
     The idea is to provide easy way to quickly enumerate multiple combinations 
     of HTTP methods and headers to catch weird server behaviour.
 
+    Copyright 2017 bl4de
+
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 """
 
 import requests
 import sys
 
+from modules.payloads import *
 
 class ConsoleOutputBeautifier:
     """This class defines properties and methods to manipulate console output"""
@@ -64,11 +86,21 @@ def formatted_request(method, host, header, payload):
     """.format(method, host, header, payload)
 
 
+def line_start(fn):
+    """
+    line start decorator
+    """
+    def wrapper(*args, **kwargs):
+        print "[+]"
+        fn(*args, **kwargs)
+    return wrapper
+
+
 def response_description(resp):
     message = "[+] Sending {} request:  {} received {} {} with {} bytes of response {}"
 
     if resp.status_code != 200:
-        return "{}[!] Sending {} request:  response size is {}; HTTP respone status is: {} {}{}".format(ConsoleOutputBeautifier.getColor('red'), method, resp_size, resp.status_code, resp.reason, ConsoleOutputBeautifier.getColor('white'))
+        return "[-] {}Sending {} request:  response size is {}; HTTP respone status is: {} {}{}".format(ConsoleOutputBeautifier.getColor('red'), method, resp_size, resp.status_code, resp.reason, ConsoleOutputBeautifier.getColor('white'))
     else:
         return message.format(method,
                               ConsoleOutputBeautifier.getColor(
@@ -86,15 +118,6 @@ if __name__ == "__main__":
 
     base_response_size = 0
 
-    # HTTP methods
-    HTTP_METHODS = ['HEAD', 'GET', 'POST', 'OPTIONS', 'PUT', 'TRACE', 'DEBUG']
-
-    # Headers payloads - put any payload you want to test here:
-    HEADERS_PAYLOADS = {
-        'User-Agent': [
-            '', '"', 'Fake', 'Fake' * 20, 'Mozilla'
-        ]
-    }
 
     session = requests.Session()
     for method in HTTP_METHODS:
@@ -107,7 +130,7 @@ if __name__ == "__main__":
                 # print headers
 
                 req = requests.Request(
-                    method, "https://" + host, headers=headers)
+                    method, "http://" + host, headers=headers)
 
                 prepared = session.prepare_request(req)
                 resp = session.send(prepared)
