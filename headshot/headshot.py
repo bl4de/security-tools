@@ -35,113 +35,53 @@ import requests
 import sys
 
 from modules.payloads import *
+from modules.utils import *
 
-class ConsoleOutputBeautifier:
-    """This class defines properties and methods to manipulate console output"""
-    colors = {
-        "black": '\33[30m',
-        "white": '\33[37m',
-        "red": '\33[31m',
-        "green": '\33[32m',
-        "yellow": '\33[33m',
-        "blue": '\33[34m',
-        "magenta": '\33[35m',
-        "cyan": '\33[36m',
-        "grey": '\33[90m',
-        "lightblue": '\33[94'
-    }
-
-    characters = {
-        "endline": '\33[0m'
-    }
-
-    def __init__(self):
-        return None
-
-    @staticmethod
-    def getColor(color_name):
-        """returns color identified by color_name or white as default value"""
-        if color_name in ConsoleOutputBeautifier.colors:
-            return ConsoleOutputBeautifier.colors[color_name]
-        return ConsoleOutputBeautifier.colors["white"]
-
-    @staticmethod
-    def getSpecialChar(char_name):
-        """returns special character identified by char_name"""
-        if char_name in ConsoleOutputBeautifier.characters:
-            return ConsoleOutputBeautifier.characters[char_name]
-        return ""
-
-
-def formatted_request(method, host, header, payload):
-    return  """
-
-    ---- REQUEST ----
-
-    {} / HTTP/1.1
-    Host: {}
-    {}: {}
-
-    ---- RESPONSE ----
-    """.format(method, host, header, payload)
-
-
-def line_start(fn):
-    """
-    line start decorator
-    """
-    def wrapper(*args, **kwargs):
-        print "[+]"
-        fn(*args, **kwargs)
-    return wrapper
-
-
-def response_description(resp):
-    message = "[+] Sending {} request:  {} received {} {} with {} bytes of response {}"
-
-    if resp.status_code != 200:
-        return "[-] {}Sending {} request:  response size is {}; HTTP respone status is: {} {}{}".format(ConsoleOutputBeautifier.getColor('red'), method, resp_size, resp.status_code, resp.reason, ConsoleOutputBeautifier.getColor('white'))
-    else:
-        return message.format(method,
-                              ConsoleOutputBeautifier.getColor(
-                                  'green'), resp.status_code,
-                              resp.reason, resp.headers.get(
-                                  'content-length'),
-                              ConsoleOutputBeautifier.getColor('white'))
-
+requests.packages.urllib3.disable_warnings()
 
 if __name__ == "__main__":
 
     logfile = open("headshot.log", "w+")
     host = sys.argv[1]
 
-
     base_response_size = 0
-
 
     session = requests.Session()
     for method in HTTP_METHODS:
         for header in HEADERS_PAYLOADS:
             for payload in HEADERS_PAYLOADS[header]:
                 headers = {
-                    'Host': host,
+                    'Host': host.split('://')[1],
                     header: payload
                 }
                 # print headers
+                try:
+                    req = requests.Request(method, host, headers=headers)
 
-                req = requests.Request(
-                    method, "http://" + host, headers=headers)
+                    prepared = session.prepare_request(req)
+                    resp = session.send(prepared)
+                    resp_size = resp.headers.get('content-length')
+                    base_response_size = resp_size if base_response_size == 0 else base_response_size
 
-                prepared = session.prepare_request(req)
-                resp = session.send(prepared)
-                resp_size = resp.headers.get('content-length')
-                base_response_size = resp_size if base_response_size == 0 else base_response_size
-                
-                print response_description(resp)
+                    print response_description(method, resp_size, resp)
 
-                # save request/response to log file
-                logfile.write(formatted_request(method, host, header, payload))
-                logfile.write(response_description(resp))
+                    # save request/response to log file
+                    logfile.write(formatted_request(
+                        method, host, header, payload))
+                    logfile.write(response_description(
+                        method, resp_size, resp))
+                except requests.exceptions.ConnectTimeout:
+                    print '[-] {} :('.format(d)
+                    continue
+                except requests.exceptions.ConnectionError:
+                    print '[-] connection to {} aborted :/'.format(host)
+                except requests.exceptions.ReadTimeout:
+                    print '[-] {} read timeout :/'.format(host)
+                except requests.exceptions.TooManyRedirects:
+                    print '[-] {} probably went into redirects loop :('.format(host)
+                    exit(0)
+                else:
+                    pass
 
     # done, wrap up and exit
     logfile.close()
