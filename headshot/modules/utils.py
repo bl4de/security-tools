@@ -6,13 +6,13 @@ from modules.console_beautifier import ConsoleOutputBeautifier
 def formatted_request(method, host, header, payload):
     return  """
 
-    ---- REQUEST ----
+---- REQUEST ----
 
-    {} / HTTP/1.1
-    Host: {}
-    {}: {}
+{} / HTTP/1.1
+Host: {}
+{}: {}
 
-    ---- RESPONSE ----
+---- RESPONSE ----
     """.format(method, host, header, payload)
 
 

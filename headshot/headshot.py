@@ -5,7 +5,7 @@
 
     headshot.py is HTTP headers fuzzer
 
-    The idea is to provide easy way to quickly enumerate multiple combinations 
+    The idea is to provide easy way to quickly enumerate multiple combinations
     of HTTP methods and headers to catch weird server behaviour.
 
     Copyright 2017 bl4de
@@ -33,6 +33,7 @@
 
 import requests
 import sys
+import numpy
 
 from modules.payloads import *
 from modules.utils import *
@@ -41,7 +42,7 @@ requests.packages.urllib3.disable_warnings()
 
 if __name__ == "__main__":
 
-    logfile = open("headshot.log", "w+")
+    logfile = open("headshot.log.html", "w+")
     host = sys.argv[1]
 
     base_response_size = 0
@@ -50,15 +51,17 @@ if __name__ == "__main__":
     for method in HTTP_METHODS:
         for header in HEADERS_PAYLOADS:
             for payload in HEADERS_PAYLOADS[header]:
-                headers = {
-                    'Host': host.split('://')[1],
-                    header: payload
-                }
                 # print headers
                 try:
+                    headers = {
+                        'Host': host.split('://')[1],
+                        header: payload
+                    }
                     req = requests.Request(method, host, headers=headers)
-
                     prepared = session.prepare_request(req)
+                    
+                    # print prepared.headers
+                    # exit(0)
                     resp = session.send(prepared)
                     resp_size = resp.headers.get('content-length')
                     base_response_size = resp_size if base_response_size == 0 else base_response_size
@@ -68,8 +71,12 @@ if __name__ == "__main__":
                     # save request/response to log file
                     logfile.write(formatted_request(
                         method, host, header, payload))
-                    logfile.write(response_description(
-                        method, resp_size, resp))
+                    logfile.write("\n{} {}\n".format(resp.status_code, resp.reason))
+                    for h in resp.headers:
+                        logfile.write('{}: {}\n'.format(h, resp.headers.get(h)))
+                    
+                    logfile.write("\n\n{}".format(resp.content))
+
                 except requests.exceptions.ConnectTimeout:
                     print '[-] {} :('.format(d)
                     continue

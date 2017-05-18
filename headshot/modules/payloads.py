@@ -16,6 +16,17 @@ HEADERS_PAYLOADS = {
         'Fake',
         'Fake' * 20,
         'Mozilla'
+    ],
+    'Referer': [
+        '',
+        '"',
+        'Fake',
+        'http://fake',
+        'http://google.ie',
+        'https://google.ie',
+        'ftp://server.com',
+        '--',
+        '//'
     ]
 }
 
