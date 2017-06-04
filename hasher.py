@@ -5,9 +5,10 @@
 
 import sys
 import hashlib
+import base64
 
 description = """
-hasher.py - hash string using SHA1, MD5
+hasher.py - hash string using SHA1, MD5, Base64
 usage: ./hasher.py [string_to_hash]
 
 """
@@ -21,11 +22,12 @@ def usage():
 def main(s):
     print "[+] SHA1\t\t{}".format(hashlib.sha1(s).hexdigest())
     print "[+] MD5 \t\t{}".format(hashlib.md5(s).hexdigest())
+    print "[+] Base64 \t\t{}".format(base64.b64encode(s))
 
 
 if __name__ == "__main__":
     if (len(sys.argv) == 2):
-        arguments=sys.argv[1:]
+        arguments = sys.argv[1:]
         main(arguments[0])
     else:
         usage()
