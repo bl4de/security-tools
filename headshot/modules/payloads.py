@@ -29,14 +29,3 @@ HEADERS_PAYLOADS = {
         '//'
     ]
 }
-
-# # TESTS ONLY
-# # HTTP methods
-# HTTP_METHODS = ['GET',  'DEBUG']
-
-# # Headers payloads - put any payload you want to test here:
-# HEADERS_PAYLOADS = {
-#     'User-Agent': [
-#         '', '"', 'Fake', 'Fake' * 20, 'Mozilla'
-#     ]
-# }
