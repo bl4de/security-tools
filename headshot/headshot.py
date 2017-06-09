@@ -40,8 +40,21 @@ from modules.utils import *
 
 requests.packages.urllib3.disable_warnings()
 
+def usage():
+    usage = """
+    Usage:
+
+    $ ./headshot.py URL
+    """
+    print usage
+    exit(0)
+
+
 if __name__ == "__main__":
 
+    if len(sys.argv) != 2:
+        usage()
+        
     logfile = open("headshot.log.html", "w+")
     host = sys.argv[1]
 
