@@ -96,7 +96,7 @@ def detect_dombased_xss(_line, i):
     ]
 
     for dombased_call in dombased_calls:
-        if dombased_call in _line.lower():
+        if dombased_call in _line:
             print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
                               "POSSIBLE DOM BASED INJECTION POINT found at line %d:  %s  %s",
                               get_line(_line, i, 120), "DOM BASED XSS")
@@ -109,7 +109,7 @@ def detect_ajax_calls(_line, i):
     ]
 
     for call in ajax_calls:
-        if call in _line.lower():
+        if call in _line:
             print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
                               "AJAX CALL (possible REST endpoint revealed) at line %d:  %s  %s",
                               get_line(_line, i, 120), "AJAX/REST CALL")
@@ -145,17 +145,17 @@ def detect_debug(_line, i):
 
 def detect_external_resources(_line, i):
     """detects external resources like imgs, iframes, scripts"""
-    if "src" in _line.lower():
-        if "<img" in _line.lower():
+    if "src" in _line:
+        if "<img" in _line:
             print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
                               "PATH to external resource image "
                               " file found in %d: %s  %s",
                               get_line(_line, i, 120), "RESOURCES")
-        if "<iframe" in _line.lower():
+        if "<iframe" in _line:
             print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
                               "IFRAME path found in %d:  %s  %s",
                               get_line(_line, i, 120), "RESOURCES")
-        if "<script" in _line.lower():
+        if "<script" in _line:
             print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
                               "external SCRIPT path found in %d: %s  %s",
                               get_line(_line, i, 120), "RESOURCES")
@@ -164,10 +164,10 @@ def detect_external_resources(_line, i):
 def detect_javascript(_line, i):
     """detects inline JavaScript occurences, as a script or event handler
     inside HTML tag"""
-    if "<script" in _line.lower() and "src" not in _line.lower():
+    if "<script" in _line and "src" not in _line:
         print_output_line(i, ConsoleOutputBeautifier.getColor("green"),
                           "inline <SCRIPT> tag found at line %d", i, "SCRIPT")
-    if "javascript:" in _line.lower():
+    if "javascript:" in _line:
         print_output_line(i, ConsoleOutputBeautifier.getColor("cyan"),
                           "INLINE JavaScript event handler found at line %d", i,
                           "JAVASCRIPT")
