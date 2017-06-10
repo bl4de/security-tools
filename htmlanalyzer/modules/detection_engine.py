@@ -101,6 +101,19 @@ def detect_dombased_xss(_line, i):
                               "POSSIBLE DOM BASED INJECTION POINT found at line %d:  %s  %s",
                               get_line(_line, i, 120), "DOM BASED XSS")
 
+def detect_ajax_calls(_line, i):
+    ajax_calls = [
+        '$.ajax',
+        '$.getJSON',
+        '$http.'
+    ]
+
+    for call in ajax_calls:
+        if call in _line.lower():
+            print_output_line(i, ConsoleOutputBeautifier.getColor("red"),
+                              "AJAX CALL (possible REST endpoint revealed) at line %d:  %s  %s",
+                              get_line(_line, i, 120), "AJAX/REST CALL")
+
 
 def detect_comments(_line, i):
     """detects comments"""
