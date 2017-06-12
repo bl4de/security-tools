@@ -34,7 +34,7 @@ def detect_framework(_line):
         elements but can not be treat as 100% sure.
     """
     _fw = ""
-    if "ng-app" in _line:
+    if "ng-app" or "angular.js" or "angular.min.js" in _line:
         _fw = "Angular 1.*"
     if "react.js" in _line or "react-dom.js" in _line:
         _fw = "ReactJS"
