@@ -73,7 +73,7 @@ if (len(sys.argv) < 2):
     exit(0)
 
 domains = open(sys.argv[1].strip(), 'rw').readlines()
-output_file = open('output.txt', 'w')
+output_file = open('denumerator-{}-output.txt'.format(domains[0].strip()), 'w')
 
 enumerate_domains(domains, output_file)
 
