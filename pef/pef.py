@@ -7,13 +7,13 @@ import sys
 import os
 
 from imports import pefdefs
-from imports import cco
+from imports.cco import ConsoleOutputBeautifier
 
 
 # prints formated output line
 def printcodeline(_line, i, _fn, _message):
     print "::  line %d :: \33[33;1m%s\33[0m %s found " % (i, _fn, _message)
-    print _PefOutput.Blue + _line + _PefOutput._endline
+    print ConsoleOutputBeautifier.getColor("blue") + _line + ConsoleOutputBeautifier.getSpecialChar("endline")
 
 
 # performs code analysis, line by line
@@ -33,30 +33,32 @@ def main(srcfile):
         for _fn in pefdefs.exploitableFunctions:
             if _fn + '(' in __line or _fn + ' (' in __line:
                 total += 1
-                printcodeline(_line, i, _fn + '()', _PefOutput.efMsgFound)
+                printcodeline(_line, i, _fn + '()',
+                              ConsoleOutputBeautifier.efMsgFound)
         for _dp in pefdefs.fileInclude:
             if _dp in __line:
                 total += 1
-                printcodeline(_line, i, _dp + '()', _PefOutput.fiMsgFound)
+                printcodeline(_line, i, _dp + '()',
+                              ConsoleOutputBeautifier.fiMsgFound)
         for _global in pefdefs.globalVars:
             if _global in __line:
                 total += 1
-                printcodeline(_line, i, _global, _PefOutput.efMsgGlobalFound)
+                printcodeline(_line, i, _global,
+                              ConsoleOutputBeautifier.efMsgGlobalFound)
 
     if total < 1:
-        print _PefOutput.Green + "No exploitable functions found\n" + _PefOutput._endline
+        print ConsoleOutputBeautifier.getColor("green") + "No exploitable functions found\n" + ConsoleOutputBeautifier.getSpecialChar("endline")
     else:
-        print _PefOutput.Red + "Found %d exploitable functions total\n" % (total) + _PefOutput._endline
+        print ConsoleOutputBeautifier.getColor("red") + "Found %d exploitable functions total\n" % (total) + ConsoleOutputBeautifier.getSpecialChar("endline")
 
-    print _PefOutput.White + "-" * 100
+    print ConsoleOutputBeautifier.getColor("white") + "-" * 100
 
 
 # main program
 if __name__ == "__main__":
-    _PefOutput = cco._PefOutput
 
     if len(sys.argv) >= 2:
-        print _PefOutput.Green + "\n\n", "-" * 100
+        print ConsoleOutputBeautifier.getColor("green") + "\n\n", "-" * 100
         print "-" * 6, " PEF | PHP Exploitable Functions scanner", " " * 35, "-" * 16
         print "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", " " * 22, "-" * 16
         print "-" * 100, "\33[0m\n"
