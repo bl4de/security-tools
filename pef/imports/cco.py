@@ -38,3 +38,4 @@ class ConsoleOutputBeautifier:
     efMsgFound = "exploitable function call"
     efMsgGlobalFound = "global variable explicit call"
     fiMsgFound = "file include pattern found; potential LFI/RFI detected"
+    eReflFound = "reflected property found; check for XSS"

@@ -10,6 +10,15 @@ exploitableFunctions = [" system", " exec", " popen", " pcntl_exec",
 globalVars = ["$_POST", "$_GET", "$_COOKIE", "$_REQUEST", "$_SERVER"]
 
 # dangerous patterns - LFI/RFI
-fileInclude = ["include($_GET", "require($_GET", 
-"include_once($_GET", "require_once($_GET",
-"include($_REQUEST", "require($_REQUEST","include_once($_REQUEST","require_once($_REQUEST"]
+fileInclude = ["include($_GET", "require($_GET",
+               "include_once($_GET", "require_once($_GET",
+               "include($_REQUEST", "require($_REQUEST", "include_once($_REQUEST", "require_once($_REQUEST"]
+
+# reflected properties which might leads to eg. XSS
+reflectedProperties = ["$_SERVER[\"PHP_SELF\"]",
+                       "$_SERVER[\"SERVER_ADDR\"]",
+                       "$_SERVER[\"SERVER_NAME\"]",
+                       "$_SERVER[\"REMOTE_ADDR\"]",
+                       "$_SERVER[\"REMOTE_HOST\"]",
+                       "$_SERVER[\"REQUEST_URI\"]",
+                       "$_SERVER[\"HTTP_USER_AGENT\"]"]

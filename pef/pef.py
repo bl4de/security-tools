@@ -45,6 +45,11 @@ def main(srcfile):
                 total += 1
                 printcodeline(_line, i, _global,
                               ConsoleOutputBeautifier.efMsgGlobalFound)
+        for _refl in pefdefs.reflectedProperties:
+            if _refl in __line:
+                total += 1
+                printcodeline(_line, i, _refl,
+                              ConsoleOutputBeautifier.eReflFound)
 
     if total < 1:
         print ConsoleOutputBeautifier.getColor("green") + "No exploitable functions found\n" + ConsoleOutputBeautifier.getSpecialChar("endline")
