@@ -29,7 +29,7 @@ def main(srcfile):
 
     for _line in _file:
         i += 1
-        __line = _line.replace(" ", "")
+        __line = _line.strip()
         for _fn in pefdefs.exploitableFunctions:
             if _fn + '(' in __line or _fn + ' (' in __line:
                 total += 1
@@ -72,8 +72,9 @@ if __name__ == "__main__":
         if len(sys.argv) == 3 and sys.argv[1] == "-R":
             file_list = os.listdir(sys.argv[2])
             for __file in file_list:
-                if os.path.isfile(__file) and '.php' in __file:
-                    main(__file)
+                full_path = sys.argv[2] + '/' + __file
+                if os.path.isfile(full_path):
+                    main(full_path)
         else:
             main(sys.argv[1])
 
