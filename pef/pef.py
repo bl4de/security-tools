@@ -69,10 +69,16 @@ if __name__ == "__main__":
         print "-" * 100, "\33[0m\n"
 
         # main program loop
-        if len(sys.argv) == 3 and sys.argv[1] == "-R":
-            file_list = os.listdir(sys.argv[2])
+        if len(sys.argv) == 3 and (sys.argv[1] == "-R" or sys.argv[2] == "-R"):
+            if sys.argv[1] == "-R":
+                base_path = sys.argv[2] + '/'
+                file_list = os.listdir(sys.argv[2])
+            if sys.argv[2] == "-R":
+                file_list = os.listdir(sys.argv[1])
+                base_path = sys.argv[1] + '/'
+                
             for __file in file_list:
-                full_path = sys.argv[2] + '/' + __file
+                full_path = base_path + __file
                 if os.path.isfile(full_path):
                     main(full_path)
         else:
