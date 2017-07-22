@@ -7,14 +7,14 @@ import sys
 import os
 
 from imports import pefdefs
-from imports.cco import ConsoleOutputBeautifier
+from imports.beautyConsole import beautyConsole
 
 
 def banner():
     """
     Prints welcome banner with contact info
     """
-    print ConsoleOutputBeautifier.getColor("green") + "\n\n", "-" * 100
+    print beautyConsole.getColor("green") + "\n\n", "-" * 100
     print "-" * 6, " PEF | PHP Exploitable Functions scanner", " " * 35, "-" * 16
     print "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", " " * 22, "-" * 16
     print "-" * 100, "\33[0m\n"
@@ -25,7 +25,7 @@ def printcodeline(_line, i, _fn, _message):
     Formats and prints line of output
     """
     print "::  line %d :: \33[33;1m%s\33[0m %s found " % (i, _fn, _message)
-    print ConsoleOutputBeautifier.getColor("blue") + _line + ConsoleOutputBeautifier.getSpecialChar("endline")
+    print beautyConsole.getColor("blue") + _line + beautyConsole.getSpecialChar("endline")
 
 
 def main(src):
@@ -47,36 +47,36 @@ def main(src):
             if _fn + '(' in __line or _fn + ' (' in __line:
                 total += 1
                 printcodeline(_line, i, _fn + '()',
-                              ConsoleOutputBeautifier.efMsgFound)
+                              beautyConsole.efMsgFound)
         for _dp in pefdefs.fileInclude:
             if _dp in __line:
                 total += 1
                 printcodeline(_line, i, _dp + '()',
-                              ConsoleOutputBeautifier.fiMsgFound)
+                              beautyConsole.fiMsgFound)
         for _global in pefdefs.globalVars:
             if _global in __line:
                 total += 1
                 printcodeline(_line, i, _global,
-                              ConsoleOutputBeautifier.efMsgGlobalFound)
+                              beautyConsole.efMsgGlobalFound)
         for _refl in pefdefs.reflectedProperties:
             if _refl in __line:
                 total += 1
                 printcodeline(_line, i, _refl,
-                              ConsoleOutputBeautifier.eReflFound)
+                              beautyConsole.eReflFound)
 
     if total < 1:
-        print ConsoleOutputBeautifier.getColor("green") + "No exploitable functions found\n" + ConsoleOutputBeautifier.getSpecialChar("endline")
+        print beautyConsole.getColor("green") + "No exploitable functions found\n" + beautyConsole.getSpecialChar("endline")
     else:
-        print ConsoleOutputBeautifier.getColor("red") + "Found %d exploitable functions total\n" % (total) + ConsoleOutputBeautifier.getSpecialChar("endline")
+        print beautyConsole.getColor("red") + "Found %d exploitable functions total\n" % (total) + beautyConsole.getSpecialChar("endline")
 
-    print ConsoleOutputBeautifier.getColor("white") + "-" * 100
+    print beautyConsole.getColor("white") + "-" * 100
 
 
 # main program
 if __name__ == "__main__":
 
     if len(sys.argv) >= 2:
-        print ConsoleOutputBeautifier.getColor("green") + "\n\n", "-" * 100
+        print beautyConsole.getColor("green") + "\n\n", "-" * 100
         print "-" * 6, " PEF | PHP Exploitable Functions scanner", " " * 35, "-" * 16
         print "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", " " * 22, "-" * 16
         print "-" * 100, "\33[0m\n"
