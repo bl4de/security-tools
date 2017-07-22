@@ -3,6 +3,13 @@
 # PHP Exploitable Functions/Vars Scanner
 # bl4de | bloorq@gmail.com | Twitter: @_bl4de
 #
+
+## pylint: disable=C0103
+"""
+pef.py - PHP static code analysis tool (very, very simple)
+by bl4de
+GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com
+"""
 import sys
 import os
 
@@ -65,9 +72,13 @@ def main(src):
                               beautyConsole.eReflFound)
 
     if total < 1:
-        print beautyConsole.getColor("green") + "No exploitable functions found\n" + beautyConsole.getSpecialChar("endline")
+        print beautyConsole.getColor("green") + \
+            "No exploitable functions found\n" + \
+            beautyConsole.getSpecialChar("endline")
     else:
-        print beautyConsole.getColor("red") + "Found %d exploitable functions total\n" % (total) + beautyConsole.getSpecialChar("endline")
+        print beautyConsole.getColor("red") + \
+            "Found %d exploitable functions total\n" % (total) + \
+            beautyConsole.getSpecialChar("endline")
 
     print beautyConsole.getColor("white") + "-" * 100
 
@@ -76,10 +87,7 @@ def main(src):
 if __name__ == "__main__":
 
     if len(sys.argv) >= 2:
-        print beautyConsole.getColor("green") + "\n\n", "-" * 100
-        print "-" * 6, " PEF | PHP Exploitable Functions scanner", " " * 35, "-" * 16
-        print "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", " " * 22, "-" * 16
-        print "-" * 100, "\33[0m\n"
+        banner()
 
         # main program loop
         if len(sys.argv) == 3 and (sys.argv[1] == "-R" or sys.argv[2] == "-R"):
