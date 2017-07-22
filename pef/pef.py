@@ -10,22 +10,35 @@ from imports import pefdefs
 from imports.cco import ConsoleOutputBeautifier
 
 
-# prints formated output line
+def banner():
+    """
+    Prints welcome banner with contact info
+    """
+    print ConsoleOutputBeautifier.getColor("green") + "\n\n", "-" * 100
+    print "-" * 6, " PEF | PHP Exploitable Functions scanner", " " * 35, "-" * 16
+    print "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", " " * 22, "-" * 16
+    print "-" * 100, "\33[0m\n"
+
+
 def printcodeline(_line, i, _fn, _message):
+    """
+    Formats and prints line of output
+    """
     print "::  line %d :: \33[33;1m%s\33[0m %s found " % (i, _fn, _message)
     print ConsoleOutputBeautifier.getColor("blue") + _line + ConsoleOutputBeautifier.getSpecialChar("endline")
 
 
-# performs code analysis, line by line
-def main(srcfile):
-    # open file to analyse
-    _file = open(srcfile, "r")
+def main(src):
+    """
+    performs code analysis, line by line
+    """
+    _file = open(src, "r")
     i = 0
     total = 0
-    filenamelength = len(srcfile)
+    filenamelength = len(src)
     linelength = 97
 
-    print "-" * 14, " FILE: \33[33m%s\33[0m " % srcfile, "-" * (linelength - filenamelength - 21), "\n"
+    print "-" * 14, " FILE: \33[33m%s\33[0m " % src, "-" * (linelength - filenamelength - 21), "\n"
 
     for _line in _file:
         i += 1
@@ -76,7 +89,7 @@ if __name__ == "__main__":
             if sys.argv[2] == "-R":
                 file_list = os.listdir(sys.argv[1])
                 base_path = sys.argv[1] + '/'
-                
+
             for __file in file_list:
                 full_path = base_path + __file
                 if os.path.isfile(full_path):
