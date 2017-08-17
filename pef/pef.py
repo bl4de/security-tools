@@ -4,7 +4,7 @@
 # bl4de | bloorq@gmail.com | Twitter: @_bl4de
 #
 
-## pylint: disable=C0103
+# pylint: disable=C0103
 """
 pef.py - PHP static code analysis tool (very, very simple)
 by bl4de
@@ -51,12 +51,17 @@ def main(src):
         i += 1
         __line = _line.strip()
         for _fn in pefdefs.exploitableFunctions:
-            if _fn + '(' in __line or _fn + ' (' in __line:
+            if _fn in __line.replace(" ", ""):
                 total += 1
-                printcodeline(_line, i, _fn + '()',
+                printcodeline(_line, i, _fn + ')',
                               beautyConsole.efMsgFound)
+        for _kw in pefdefs.keywords:
+            if _kw.lower() in __line.lower():
+                total += 1
+                printcodeline(_line, i, _kw,
+                              beautyConsole.eKeyWordFound)
         for _dp in pefdefs.fileInclude:
-            if _dp in __line:
+            if _dp in __line.replace(" ", ""):
                 total += 1
                 printcodeline(_line, i, _dp + '()',
                               beautyConsole.fiMsgFound)

@@ -36,6 +36,7 @@ class beautyConsole:
 
 
     efMsgFound = "exploitable function call"
+    eKeyWordFound = "keyword with possibly critical meaning in code"
     efMsgGlobalFound = "global variable explicit call"
     fiMsgFound = "file include pattern found; potential LFI/RFI detected"
     eReflFound = "reflected property found; check for XSS"
