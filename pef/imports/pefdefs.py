@@ -4,7 +4,8 @@
 exploitableFunctions = ["system(", "exec(", "popen(", "pcntl_exec(",
                         "eval(", "preg_replace(", "create_function(", "include(", "require(", "passthru(",
                         "shell_exec(", "popen(", "proc_open(",
-                        "pcntl_exec(", "asset(", "extract(", "parse_str(", "putenv(", "ini_set(", "mail(", "header("]
+                        "pcntl_exec(", "asset(", "extract(", "parse_str(", "putenv(", "ini_set(",
+                        "mail(", "header(", "unserialize("]
 
 # other keywords points to critical features, credentials, configs etc.
 keywords = [
