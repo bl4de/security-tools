@@ -20,8 +20,6 @@ def usage():
 
 def main(fname):
     f = open(fname, 'r').read()
-    print f
-
     print "{}".format(base64.b64decode(f.strip()))
 
 

@@ -31,20 +31,21 @@
 
 """
 
-import requests
 import sys
-import numpy
+import requests
+# import numpy
 
 from modules.payloads import *
 from modules.utils import *
 
 requests.packages.urllib3.disable_warnings()
 
+
 def usage():
     usage = """
     Usage:
 
-    $ ./headshot.py URL
+    $ ./headshot.py URL [PATH]
     """
     print usage
     exit(0)
@@ -52,46 +53,57 @@ def usage():
 
 if __name__ == "__main__":
 
-    if len(sys.argv) != 2:
+    if len(sys.argv) > 3 or len(sys.argv) < 2:
         usage()
-        
-    logfile = open("headshot.log.html", "w+")
+
+    logfile = open("headshot.log", "w+")
     host = sys.argv[1]
+    if len(sys.argv) == 3:
+        path = '/' + sys.argv[2]
+    else:
+        path = ''
 
     base_response_size = 0
-
+    hostname = host.split('://')[1]
+    host = host + path
+    
     session = requests.Session()
     for method in HTTP_METHODS:
-        for header in HEADERS_PAYLOADS:
-            for payload in HEADERS_PAYLOADS[header]:
+        for header in HTTP_HEADERS:
+            for payload in HEADERS_PAYLOADS:
                 # print headers
                 try:
                     headers = {
-                        'Host': host.split('://')[1],
+                        'Host': hostname,
                         header: payload
                     }
-                    req = requests.Request(method, host, headers=headers)
+
+                    if method in ['POST','PUT']:
+                        body = BODY_CONTENT[0]
+                    else:
+                        body = ''
+
+                    req = requests.Request(
+                        method, host, headers=headers, data=body)
                     prepared = session.prepare_request(req)
-                    
-                    # print prepared.headers
-                    # exit(0)
+
                     resp = session.send(prepared)
                     resp_size = resp.headers.get('content-length')
                     base_response_size = resp_size if base_response_size == 0 else base_response_size
 
-                    print response_description(method, resp_size, resp)
+                    print response_description(method, host, resp_size, resp)
 
                     # save request/response to log file
                     logfile.write(formatted_request(
-                        method, host, header, payload))
-                    logfile.write("\n{} {}\n".format(resp.status_code, resp.reason))
+                        method, hostname, header, payload))
+                    logfile.write("\n{} {}\n".format(
+                        resp.status_code, resp.reason))
                     for h in resp.headers:
-                        logfile.write('{}: {}\n'.format(h, resp.headers.get(h)))
-                    
-                    logfile.write("\n\n{}".format(resp.content))
+                        logfile.write('{}: {}\n'.format(
+                            h, resp.headers.get(h)))
 
                 except requests.exceptions.ConnectTimeout:
-                    print '[-] {} :('.format(d)
+                    print '[-] Timeout :('
                     continue
                 except requests.exceptions.ConnectionError:
                     print '[-] connection to {} aborted :/'.format(host)

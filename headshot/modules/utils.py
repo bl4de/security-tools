@@ -3,6 +3,7 @@ Misc functions for headshot.py
 """
 from modules.console_beautifier import ConsoleOutputBeautifier
 
+
 def formatted_request(method, host, header, payload):
     return  """
 
@@ -26,16 +27,15 @@ def line_start(fn):
     return wrapper
 
 
-def response_description(method, resp_size, resp):
-    message = "[+] Sending {} request:  {} received {} {} with {} bytes of response {}"
+def response_description(method, host, resp_size, resp):
+    message = "{}[+] Sending {} request to {}\t\t  received {} {} with {} bytes of response {}"
 
     if resp.status_code != 200:
-        return "[-] {}Sending {} request:  response size is {}; HTTP respone status is: {} {}{}".format(ConsoleOutputBeautifier.getColor('red'), method, resp_size, resp.status_code, resp.reason, ConsoleOutputBeautifier.getColor('white'))
+        return "{}[-] Sending {} request to {}\t\t  response size is {}; HTTP respone status is: {} {}{}".format(ConsoleOutputBeautifier.getColor('red'), method, host, resp_size, resp.status_code, resp.reason, ConsoleOutputBeautifier.getColor('white'))
     else:
-        return message.format(method,
-                              ConsoleOutputBeautifier.getColor(
-                                  'green'), resp.status_code,
-                              resp.reason, resp.headers.get(
-                                  'content-length'),
-                              ConsoleOutputBeautifier.getColor('white'))
-
+        return message.format(
+            ConsoleOutputBeautifier.getColor(
+                'green'), method, host, resp.status_code,
+            resp.reason, resp.headers.get(
+                'content-length'),
+            ConsoleOutputBeautifier.getColor('white'))
