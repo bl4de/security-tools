@@ -1,0 +1,16 @@
+.htaccess
+.htpasswd
+.git
+.gitignore
+.git/config
+.git/logs/HEAD
+.svn
+.gitlab-ci.yml
+.idea
+.nbproject
+.DS_Store
+.idea/workspace.xml
+.ssh
+.bashrc
+.bash_profile
+.bash_history
