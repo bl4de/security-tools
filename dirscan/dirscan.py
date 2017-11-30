@@ -2,6 +2,7 @@
 #
 # webserver dir bruteforce scanner
 #
+from __future__ import print_function
 import sys
 import urllib
 
@@ -13,15 +14,15 @@ def scan_directory(__url, __directory):
     # DEBUG
     # print "scanning: {}".format(__url + __directory)
     if 199 < resp.code < 300:
-        print '\33[32m [*] HTTP {}: {}'.format(resp.code, url)
+        print('\33[32m [*] HTTP {}: {}'.format(resp.code, url))
         return True
     if resp.code == 403:
-        print '\33[33m [*] HTTP {} Forbidden: {}'.format(resp.code,
-                                                            url)
+        print('\33[33m [*] HTTP {} Forbidden: {}'.format(resp.code,
+                                                            url))
         return True
     if resp.code == 500:
-        print '\33[31m [*] HTTP {} Internal Server Error: {}'.format(
-            resp.code, url)
+        print('\33[31m [*] HTTP {} Internal Server Error: {}'.format(
+            resp.code, url))
         return True
     else:
         return False
@@ -31,13 +32,13 @@ def scan_file(url):
     resp = urllib.urlopen(url.strip())
     # print resp.code
     if resp.code > 199 < 300:
-        print '\33[32m [*] HTTP {}: {}'.format(resp.code, url)
+        print('\33[32m [*] HTTP {}: {}'.format(resp.code, url))
         return True
     if resp.code == 403:
-        print '\33[33m [*] HTTP {} Forbidden: {}'.format(resp.code, url)
+        print('\33[33m [*] HTTP {} Forbidden: {}'.format(resp.code, url))
     if resp.code == 500:
-        print '\33[31m [*] HTTP {} Internal Server Error: {}'.format(
-            resp.code, url)
+        print('\33[31m [*] HTTP {} Internal Server Error: {}'.format(
+            resp.code, url))
     else:
         return False
 
@@ -55,8 +56,8 @@ def scan(server, wordlist):
         totalWordList = len(wordlist)
         step = totalWordList / 10
 
-        print "\33[36m [+] Start scan with {} known names".format(
-            totalWordList)
+        print("\33[36m [+] Start scan with {} known names".format(
+            totalWordList))
 
         # print _step
         for directory in wordlist:
@@ -66,14 +67,14 @@ def scan(server, wordlist):
                 scan_files(server, directory, wordlist)
 
             counter += 1
-        print "\33[36m [+] Done.\n"
+        print("\33[36m [+] Done.\n")
 
 
 def run():
     # argv: dirscan server_url server_port base_dir [wordlist]
     if len(sys.argv) != 3:
-        print "\nUsage:"
-        print "\n./dirscan.py [SERVER_URL] [WORDLIST FILE]"
+        print("\nUsage:")
+        print("\n./dirscan.py [SERVER_URL] [WORDLIST FILE]")
         exit(0)
     else:
         return

@@ -8,6 +8,8 @@
     words occurences, possible DOM Injection points, references to 
     resources like images or iframes
 """
+from __future__ import print_function
+from __future__ import absolute_import
 # @TODO: args parser for: -c (comments) -s (links/src), -j (JavaScript)
 # @TODO: remove doubled line(s) - https://github.com/bl4de/security-tools/issues/15
 
@@ -15,10 +17,9 @@
 import argparse
 import os
 
-import modules.detection_engine
-import modules.utils
+from . import modules
 
-from modules.console_output_beautifier import ConsoleOutputBeautifier
+from .modules.console_output_beautifier import ConsoleOutputBeautifier
 
 
 # find interesting string(s)
@@ -54,7 +55,7 @@ def main(_filename, args):
 
     try:
         _file = open(_filename, "r")
-        print "[+] {} opened, starting analysis...\n\n".format(_filename)
+        print("[+] {} opened, starting analysis...\n\n".format(_filename))
     except:
         msg = "[-] {} does not exists or could not be opened, quitting!" \
             .format(_filename)
@@ -62,8 +63,8 @@ def main(_filename, args):
 
     i = 0
 
-    print ConsoleOutputBeautifier.getColor(
-        "green"), "\n------ ANALYSIS ------\n"
+    print(ConsoleOutputBeautifier.getColor(
+        "green"), "\n------ ANALYSIS ------\n")
 
     for _line in _file:
         i += 1
@@ -99,15 +100,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.H and args.u:
-        print "[+] connecting to {}...".format(args.u)
+        print("[+] connecting to {}...".format(args.u))
         os.system(
             "curl -A 'htmlanalyzer' --header 'Host: {}' --silent -o index.html {}".format(args.H, args.u))
-        print "[+] default index.html saved"
+        print("[+] default index.html saved")
     if args.f and not args.u:
         _filename = args.f
 
     if not args.f and not args.u:
-        print "[-] no filename (-f FILENAME) or url (-u URL); aborting!"
+        print("[-] no filename (-f FILENAME) or url (-u URL); aborting!")
         exit(0)
 
     main(_filename, args)

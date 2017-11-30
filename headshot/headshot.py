@@ -30,6 +30,7 @@
     WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """
+from __future__ import print_function
 
 import sys
 import requests
@@ -47,7 +48,7 @@ def usage():
 
     $ ./headshot.py URL [PATH]
     """
-    print usage
+    print(usage)
     exit(0)
 
 
@@ -91,7 +92,7 @@ if __name__ == "__main__":
                     resp_size = resp.headers.get('content-length')
                     base_response_size = resp_size if base_response_size == 0 else base_response_size
 
-                    print response_description(method, host, resp_size, resp)
+                    print(response_description(method, host, resp_size, resp))
 
                     # save request/response to log file
                     logfile.write(formatted_request(
@@ -103,19 +104,19 @@ if __name__ == "__main__":
                             h, resp.headers.get(h)))
 
                 except requests.exceptions.ConnectTimeout:
-                    print '[-] Timeout :('
+                    print('[-] Timeout :(')
                     continue
                 except requests.exceptions.ConnectionError:
-                    print '[-] connection to {} aborted :/'.format(host)
+                    print('[-] connection to {} aborted :/'.format(host))
                 except requests.exceptions.ReadTimeout:
-                    print '[-] {} read timeout :/'.format(host)
+                    print('[-] {} read timeout :/'.format(host))
                 except requests.exceptions.TooManyRedirects:
-                    print '[-] {} probably went into redirects loop :('.format(host)
+                    print('[-] {} probably went into redirects loop :('.format(host))
                     exit(0)
                 else:
                     pass
 
     # done, wrap up and exit
     logfile.close()
-    print "\n[+] DONE"
+    print("\n[+] DONE")
     exit(0)

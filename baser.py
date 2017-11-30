@@ -3,6 +3,7 @@
 ### created by bl4de | bloorq@gmail.com | twitter.com/_bl4de    ###
 ### github.com/bl4de | hackerone.com/bl4de                      ###
 
+from __future__ import print_function
 import sys
 import base64
 
@@ -14,13 +15,13 @@ usage: ./baser.py [path_to_file_in_base64]
 
 
 def usage():
-    print description
+    print(description)
     exit(0)
 
 
 def main(fname):
     f = open(fname, 'r').read()
-    print "{}".format(base64.b64decode(f.strip()))
+    print("{}".format(base64.b64decode(f.strip())))
 
 
 if __name__ == "__main__":

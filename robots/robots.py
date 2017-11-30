@@ -6,6 +6,7 @@
 # usage:
 # ./robots.py [url]
 #
+from __future__ import print_function
 import sys
 import os
 
@@ -24,7 +25,7 @@ def parse_robots(_res):
     for _line in _res.readlines():
         for c in catalogs:
             if c in _line:
-                print "{} found!".format(c)
+                print("{} found!".format(c))
 
 
 def main():
@@ -32,11 +33,11 @@ def main():
     os.popen("rm -f robots.txt")
     os.popen("wget %s/robots.txt" % (_url))
 
-    _res = file("robots.txt", "r")
+    _res = open("robots.txt", "r")
     if _res:
         parse_robots(_res)
 
-    print "analyze complete"
+    print("analyze complete")
 
 
 # main program
@@ -44,4 +45,4 @@ if __name__ == "__main__":
     if len(sys.argv) == 2:
         main()
     else:
-        print "Enter url"
+        print("Enter url")

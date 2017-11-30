@@ -11,9 +11,10 @@
     detection_engine.py contains all specific logic which detects interesting
     parts of HTML
 """
+from __future__ import absolute_import
 
-from console_output_beautifier import ConsoleOutputBeautifier
-from utils import print_output_line
+from .console_output_beautifier import ConsoleOutputBeautifier
+from .utils import print_output_line
 
 # @TODO: libraries/framework detection
 # detects frontend framework used

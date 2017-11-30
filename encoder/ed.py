@@ -5,6 +5,7 @@
     Simple encoder/decoder tool
     ./ed.py [string to encode] [input encoding] [output encoding]
 """
+from __future__ import print_function
 import base64
 import sys
 import urllib
@@ -81,9 +82,9 @@ if __name__ == "__main__":
     }
 
     if len(sys.argv) != 4:
-        print "usage: ed.py [string] [input] [output]" \
+        print("usage: ed.py [string] [input] [output]" \
               "\n\n input: base64, ascii, hex\n " \
-              "output: base64, ascii, url, hex, html_entities ( eg. &#0022;)"
+              "output: base64, ascii, url, hex, html_entities ( eg. &#0022;)")
         exit(0)
 
     # f = open(sys.argv[1], "r")
@@ -93,4 +94,4 @@ if __name__ == "__main__":
     data = sys.argv[1]
     output = fn_map_from[sys.argv[2]](fn_map_to[sys.argv[3]](data))
 
-    print output
+    print(output)

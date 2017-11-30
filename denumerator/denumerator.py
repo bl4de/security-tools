@@ -13,6 +13,7 @@ This indicates (in most caes) working webserver
 usage:
 $ ./denumerator.py [domain_list_file]
 """
+from __future__ import print_function
 
 import sys
 import requests
@@ -32,7 +33,7 @@ def usage():
     """
     prints welcome message
     """
-    print welcome
+    print(welcome)
 
 
 def send_request(proto, domain):
@@ -50,7 +51,7 @@ def send_request(proto, domain):
                         headers={'Host': domain})
 
     if resp.status_code in allowed_http_responses:
-        print '[+] domain {}:\t\t HTTP {}'.format(domain, resp.status_code)
+        print('[+] domain {}:\t\t HTTP {}'.format(domain, resp.status_code))
         output_file.write('{}\n'.format(domain))
     return resp.status_code
 
@@ -68,22 +69,22 @@ def enumerate_domains(domains):
                 send_request('https', d)
 
         except requests.exceptions.InvalidURL:
-            print '[-] {} is not a valid URL :/'.format(d)
+            print('[-] {} is not a valid URL :/'.format(d))
         except requests.exceptions.ConnectTimeout:
-            print '[-] {} :('.format(d)
+            print('[-] {} :('.format(d))
             continue
         except requests.exceptions.ConnectionError:
-            print '[-] connection to {} aborted :/'.format(d)
+            print('[-] connection to {} aborted :/'.format(d))
         except requests.exceptions.ReadTimeout:
-            print '[-] {} read timeout :/'.format(d)
+            print('[-] {} read timeout :/'.format(d))
         except requests.exceptions.TooManyRedirects:
-            print '[-] {} probably went into redirects loop :('.format(d)
+            print('[-] {} probably went into redirects loop :('.format(d))
         else:
             pass
 
 
 if len(sys.argv) < 2:
-    print welcome
+    print(welcome)
     exit(0)
 
 domains = open(sys.argv[1].strip(), 'rw').readlines()
