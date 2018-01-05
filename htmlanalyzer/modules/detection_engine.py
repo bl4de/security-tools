@@ -12,6 +12,8 @@
     parts of HTML
 """
 
+import json
+import re
 from console_output_beautifier import ConsoleOutputBeautifier
 from utils import print_output_line
 
@@ -19,7 +21,7 @@ from utils import print_output_line
 # detects frontend framework used
 
 line_cache = []
-
+vulners = json.loads(open('modules/vulners_api_rules.json').read())
 
 def get_line(_line, _line_number, _chars=80):
     """returns formatted line to print"""
@@ -33,13 +35,14 @@ def detect_framework(_line):
         This detection is only some assumption based on some constant
         elements but can not be treat as 100% sure.
     """
-    _fw = ""
-    if "ng-app" or "angular.js" or "angular.min.js" in _line:
-        _fw = "Angular 1.*"
-    if "react.js" in _line or "react-dom.js" in _line:
-        _fw = "ReactJS"
-    return _fw
+    return detect_framework_vulners_db(_line)
 
+
+def detect_framework_vulners_db(_line):
+    for rule in vulners["data"]["rules"]:
+        if re.match(vulners["data"]["rules"][rule]["regex"], _line):
+            print vulners["data"]["rules"][rule]["alias"]
+            return '{1} ({2})'.format(vulners["data"]["rules"][rule]["alias"], rule)
 
 def identify(_line):
     """backend detection (simplified)"""
