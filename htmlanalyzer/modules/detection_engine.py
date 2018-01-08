@@ -16,12 +16,12 @@ import json
 import re
 from console_output_beautifier import ConsoleOutputBeautifier
 from utils import print_output_line
+from vulners_rules import RULES
 
 # @TODO: libraries/framework detection
 # detects frontend framework used
 
 line_cache = []
-vulners = json.loads(open('modules/vulners_api_rules.json').read())
 
 def get_line(_line, _line_number, _chars=80):
     """returns formatted line to print"""
@@ -39,10 +39,10 @@ def detect_framework(_line):
 
 
 def detect_framework_vulners_db(_line):
-    for rule in vulners["data"]["rules"]:
-        if re.match(vulners["data"]["rules"][rule]["regex"], _line):
-            print vulners["data"]["rules"][rule]["alias"]
-            return '{1} ({2})'.format(vulners["data"]["rules"][rule]["alias"], rule)
+    for rule in RULES:
+        if re.match(RULES[rule]["regex"], _line):
+            print RULES[rule]["alias"]
+            return '{1} ({2})'.format(RULES[rule]["alias"], rule)
 
 def identify(_line):
     """backend detection (simplified)"""
