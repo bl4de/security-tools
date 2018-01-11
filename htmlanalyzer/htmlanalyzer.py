@@ -5,10 +5,10 @@
 
     This tool goes through HTML document and shows all interesting places,
     like inline JavaScript calls, commented paths, 'debug' and similar
-    words occurences, possible DOM Injection points, references to 
+    words occurences, possible DOM Injection points, references to
     resources like images or iframes
 """
-# @TODO: args parser for: -c (comments) -s (links/src), -j (JavaScript)
+# @TODO: args PARSER for: -c (comments) -s (links/src), -j (JavaScript)
 # @TODO: remove doubled line(s) - https://github.com/bl4de/security-tools/issues/15
 
 
@@ -26,11 +26,11 @@ from modules.console_output_beautifier import ConsoleOutputBeautifier
 
 def analyze_line(_line, i, include_comments, be_verbose):
     """single HTML source line - code analyze"""
-    if include_comments == True:
+    if include_comments is True:
         modules.detection_engine.detect_comments(_line, i)
 
     # shows only when -v is set
-    if be_verbose == True:
+    if be_verbose is True:
         modules.detection_engine.detect_external_resources(_line, i)
         modules.detection_engine.detect_javascript(_line, i)
         modules.detection_engine.detect_developer_comments(_line, i)
@@ -55,7 +55,7 @@ def main(_filename, args):
     try:
         _file = open(_filename, "r")
         print "[+] {} opened, starting analysis...\n\n".format(_filename)
-    except:
+    except IOError:
         msg = "[-] {} does not exists or could not be opened, quitting!" \
             .format(_filename)
         exit(msg)
@@ -78,16 +78,18 @@ def main(_filename, args):
 
 
 if __name__ == "__main__":
-    """main program - run HTML analyze"""
-    parser = argparse.ArgumentParser(description="HTML static code analyze")
-    parser.add_argument(
+    """
+    main program - run HTML analyze
+    """
+    PARSER = argparse.ArgumentParser(description="HTML static code analyze")
+    PARSER.add_argument(
         '-u', help='Target url - index.html will be downloaded')
-    parser.add_argument(
+    PARSER.add_argument(
         '-H', help='Target host - "Host" HTTP request header value')
-    parser.add_argument('-f', help='HTML file name to analyze')
-    parser.add_argument(
+    PARSER.add_argument('-f', help='HTML file name to analyze')
+    PARSER.add_argument(
         '-c', help='include comments in summary (excluded by default)')
-    parser.add_argument(
+    PARSER.add_argument(
         '-v', help='verbose; shows all messages (default - shows only '
         'critical, like possible injection points or debug info occurence)'
     )
@@ -95,19 +97,19 @@ if __name__ == "__main__":
     # let's go
     modules.utils.print_banner()
 
-    _filename = "index.html"
-    args = parser.parse_args()
+    FILENAME = "index.html"
+    ARGS = PARSER.parse_args()
 
-    if args.H and args.u:
-        print "[+] connecting to {}...".format(args.u)
-        os.system(
-            "curl -A 'htmlanalyzer' --header 'Host: {}' --silent -o index.html {}".format(args.H, args.u))
+    if ARGS.H and ARGS.u:
+        print "[+] connecting to {}...".format(ARGS.u)
+        os.system("curl -A 'htmlanalyzer' --header " +
+                  "'Host: {}' --silent -o index.html {}".format(ARGS.H, ARGS.u))
         print "[+] default index.html saved"
-    if args.f and not args.u:
-        _filename = args.f
+    if ARGS.f and not ARGS.u:
+        FILENAME = ARGS.f
 
-    if not args.f and not args.u:
+    if not ARGS.f and not ARGS.u:
         print "[-] no filename (-f FILENAME) or url (-u URL); aborting!"
         exit(0)
 
-    main(_filename, args)
+    main(FILENAME, ARGS)
