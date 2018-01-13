@@ -23,6 +23,22 @@ else
 fi
 echo "[+] using $DICTIONARY as dictionary file for files/dirs enumeration"
 
+echo "[+] running recon.sh against $TARGET, please stand by..."
+# # enumerate subdomains
+# if [ -z $2 ]
+# then
+#     echo "[+] execute sublist3r $TARGET saving output to $TARGET_out file..."
+#     sublist3r -d $TARGET > $TARGET"_out"
+#     echo "[+] small sed-ing..."
+#     cat $TARGET"_out" | sed  -e 's/\[92//;1,24d' > $TARGET"_subdomains"
+#     SUBDOMAINS=$TARGET"_subdomains"
+# else
+#     echo "[+] using $2 as subdomains list"
+#     SUBDOMAINS=$2
+# fi
+
+cat $SUBDOMAINS
+
 #  nmap 
 echo "[+] scanning and directories/files discovery"
 while read DOMAIN; do
