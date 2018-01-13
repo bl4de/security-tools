@@ -3,19 +3,18 @@
 # by bl4de | https://twitter.com/_bl4de
 
 # params
-TARGET=$1
-SUBDOMAINS=$2
-DICTIONARY=$3
+SUBDOMAINS=$1
+DICTIONARY=$2
 
 echo
-echo " usage: ./recon.sh DOMAIN [subdomains list] [dictionary file]"
+echo " usage: ./recon.sh [subdomains list] [dictionary file]"
 echo
 echo "  subdomains list - file with list of subdomains, if you have one"
 echo "  dictionary file - optional; paht to dictionary used for files/dirs enumeration"
 echo "                    dict.txt is used by default"
 echo
 
-if [ -z $3 ]
+if [ -z $2 ]
 then
     # enter path to default dictionary for enumeration you want to use
     DICTIONARY=/Users/bl4de/hacking/tools/bl4de/recon/dict.txt
@@ -24,20 +23,6 @@ else
 fi
 echo "[+] using $DICTIONARY as dictionary file for files/dirs enumeration"
 
-echo "[+] running recon.sh against $TARGET, please stand by..."
-# enumerate subdomains
-if [ -z $2 ]
-then
-    echo "[+] execute sublist3r $TARGET saving output to $TARGET_out file..."
-    sublist3r -d $TARGET > $TARGET"_out"
-    echo "[+] small sed-ing..."
-    cat $TARGET"_out" | sed  -e 's/\[92//;1,24d' > $TARGET"_subdomains"
-    SUBDOMAINS=$TARGET"_subdomains"
-else
-    echo "[+] using $2 as subdomains list"
-    SUBDOMAINS=$2
-fi
-
 #  nmap 
 echo "[+] scanning and directories/files discovery"
 while read DOMAIN; do
@@ -45,7 +30,7 @@ while read DOMAIN; do
     nmap -sV -F $DOMAIN -oG $DOMAIN"_nmap" 1> /dev/null
     
     while read line; do
-        if [[ $line == *"80/open/tcp//http"* ]]
+        if [[ $line == *"80/open/tcp//http"* ]]  
         then
             echo "[+] found webserver on $DOMAIN port 80/HTTP, running files/directories discovery..."
             wfuzz -f $DOMAIN"_wfuzz_80",raw --hc 404,301,302,401,000 -w $DICTIONARY http://$DOMAIN/FUZZ 1>/dev/null
