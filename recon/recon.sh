@@ -1,27 +1,55 @@
 #!/bin/bash
-# r3c0n.sh by bl4de | twitter.com/bl4de
+# recon - basic recon of bugbounty target scope
+# by bl4de | https://twitter.com/_bl4de
 
+# params
 TARGET=$1
-OUTPUT_FILE="$TARGET".log
+SUBDOMAINS=$2
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-LGRAY='\033[0;37m'
+echo "[+] running recon.sh against $TARGET, please stand by..."
+# enumerate subdomains
+if [ -z $2 ]
+then
+    echo "[+] execute sublist3r $TARGET saving output to $TARGET_out file..."
+    sublist3r -d $TARGET > $TARGET"_out"
+    echo "[+] small sed-ing..."
+    cat $TARGET"_out" | sed  -e 's/\[92//;1,24d' > $TARGET"_subdomains"
+    SUBDOMAINS=$TARGET"_subdomains"
+else
+    echo "[+] using $2 as subdomains list"
+    SUBDOMAINS=$2
+fi
 
-NC='\033[0m' # No Color
+#  nmap 
+echo "[+] scanning and directories/files discovery"
+while read DOMAIN; do
+    echo "[+] current target: $DOMAIN"
+    nmap -sV -F $DOMAIN -oG $DOMAIN"_nmap" # 1> /dev/null
+    
+    while read line; do
+        if [[ $line == *"80/open/tcp//http"* ]]
+        then
+            echo "[+] found webserver on $DOMAIN port 80/HTTP, running files/directories discovery..."
+            wfuzz -f $DOMAIN"_wfuzz_80",raw --hc 404,301,302,401,000 -w dict.txt http://$DOMAIN/FUZZ # 1> /dev/null
+        fi
+        if [[ $line == *"443/open/tcp//http"* ]]
+        then
+            echo "[+] found webserver on $DOMAIN port 80/HTTP, running files/directories discovery..."
+            wfuzz -f $DOMAIN"_wfuzz_443",raw --hc 404,301,302,401,000 -w dict.txt https://$DOMAIN/FUZZ # 1> /dev/null
+        fi
+        if [[ $line == *"8080/open/tcp//http"* ]]
+        then
+            echo "[+] found webserver on $DOMAIN port 80/HTTP, running files/directories discovery..."
+            wfuzz -f $DOMAIN"_wfuzz_8080",raw --hc 404,301,302,401,000 -w dict.txt http://$DOMAIN:8080/FUZZ # 1> /dev/null
+        fi
+        if [[ $line == *"8008/open/tcp//http"* ]]
+        then
+            echo "[+] found webserver on $DOMAIN port 80/HTTP, running files/directories discovery..."
+            wfuzz -f $DOMAIN"_wfuzz_8008",raw --hc 404,301,302,401,000 -w dict.txt http://$DOMAIN:8008/FUZZ # 1> /dev/null
+        fi
+    done < $DOMAIN"_nmap"
+done < $TARGET"_subdomains"
 
-echo -e "${BLUE}[+]${NC} ${GREEN}nmap scanning...${NC}"
-nmap -p- -A -sV $TARGET -o $OUTPUT_FILE 
-
-echo -e "${BLUE}[+]${NC}  ${GREEN}nikto scanning...${NC}"
-/Users/bl4de/hacking/tools/nikto/program/nikto.pl -host $TARGET >> $OUTPUT_FILE 
-
-echo -e "${BLUE}[+]${NC}  ${GREEN}theHarvester scanning...${NC}"
-theharvester -d $TARGET -b all >> $OUTPUT_FILE 
-
-echo -e "${BLUE}[+]${NC}  ${GREEN}tryin to obtain domains for this IP...${NC}"
-curl -L https://reverse.report/commonapi/v1/ip/$TARGET.json >> $OUTPUT_FILE
-
-
-# curl -L https://reverse.report/commonapi/v1/ip/98.137.250.226.json 
+echo "[+] all done!!!"
+echo
+exit
