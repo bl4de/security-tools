@@ -5,6 +5,20 @@
 # params
 TARGET=$1
 SUBDOMAINS=$2
+DICTIONARY=$3
+
+echo
+echo "[+] usage: ./recon.sh DOMAIN [subdomains] [dictionary]"
+echo
+
+if [ -z $3 ]
+then
+    # enter path to default dictionary for enumeration you want to use
+    DICTIONARY=/Users/bl4de/hacking/tools/bl4de/recon/dict.txt
+else
+    DICTIONARY=$3
+fi
+echo "[+] using $DICTIONARY as dictionary file for files/dirs enumeration"
 
 echo "[+] running recon.sh against $TARGET, please stand by..."
 # enumerate subdomains
@@ -30,22 +44,22 @@ while read DOMAIN; do
         if [[ $line == *"80/open/tcp//http"* ]]
         then
             echo "[+] found webserver on $DOMAIN port 80/HTTP, running files/directories discovery..."
-            wfuzz -f $DOMAIN"_wfuzz_80",raw --hc 404,301,302,401,000 -w dict.txt http://$DOMAIN/FUZZ # 1> /dev/null
+            wfuzz -f $DOMAIN"_wfuzz_80",raw --hc 404,301,302,401,000 -w $DICTIONARY http://$DOMAIN/FUZZ 1>/dev/null
         fi
         if [[ $line == *"443/open/tcp//http"* ]]
         then
-            echo "[+] found webserver on $DOMAIN port 80/HTTP, running files/directories discovery..."
-            wfuzz -f $DOMAIN"_wfuzz_443",raw --hc 404,301,302,401,000 -w dict.txt https://$DOMAIN/FUZZ # 1> /dev/null
+            echo "[+] found webserver on $DOMAIN port 443/HTTPS, running files/directories discovery..."
+            wfuzz -f $DOMAIN"_wfuzz_443",raw --hc 404,301,302,401,000 -w $DICTIONARY https://$DOMAIN/FUZZ 1>/dev/null
         fi
         if [[ $line == *"8080/open/tcp//http"* ]]
         then
-            echo "[+] found webserver on $DOMAIN port 80/HTTP, running files/directories discovery..."
-            wfuzz -f $DOMAIN"_wfuzz_8080",raw --hc 404,301,302,401,000 -w dict.txt http://$DOMAIN:8080/FUZZ # 1> /dev/null
+            echo "[+] found webserver on $DOMAIN port 8080/HTTP, running files/directories discovery..."
+            wfuzz -f $DOMAIN"_wfuzz_8080",raw --hc 404,301,302,401,000 -w $DICTIONARY http://$DOMAIN:8080/FUZZ 1>/dev/null
         fi
         if [[ $line == *"8008/open/tcp//http"* ]]
         then
-            echo "[+] found webserver on $DOMAIN port 80/HTTP, running files/directories discovery..."
-            wfuzz -f $DOMAIN"_wfuzz_8008",raw --hc 404,301,302,401,000 -w dict.txt http://$DOMAIN:8008/FUZZ # 1> /dev/null
+            echo "[+] found webserver on $DOMAIN port 8008/HTTP, running files/directories discovery..."
+            wfuzz -f $DOMAIN"_wfuzz_8008",raw --hc 404,301,302,401,000 -w $DICTIONARY http://$DOMAIN:8008/FUZZ 1>/dev/null
         fi
     done < $DOMAIN"_nmap"
 done < $TARGET"_subdomains"

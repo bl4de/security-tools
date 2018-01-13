@@ -1,4 +1,0 @@
-# Nmap 7.60 scan initiated Sat Jan 13 15:14:19 2018 as: nmap -sV -F -oG localhost_nmap localhost
-Host: 127.0.0.1 (localhost)	Status: Up
-Host: 127.0.0.1 (localhost)	Ports: 80/open/tcp//http//Apache httpd 2.4.28 ((Unix) PHP|7.1.7)/, 631/open/tcp//ipp//CUPS 2.2/	Ignored State: closed (98)
-# Nmap done at Sat Jan 13 15:14:25 2018 -- 1 IP address (1 host up) scanned in 6.86 seconds
