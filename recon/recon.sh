@@ -8,7 +8,11 @@ SUBDOMAINS=$2
 DICTIONARY=$3
 
 echo
-echo "[+] usage: ./recon.sh DOMAIN [subdomains] [dictionary]"
+echo " usage: ./recon.sh DOMAIN [subdomains list] [dictionary file]"
+echo
+echo "  subdomains list - file with list of subdomains, if you have one"
+echo "  dictionary file - optional; paht to dictionary used for files/dirs enumeration"
+echo "                    dict.txt is used by default"
 echo
 
 if [ -z $3 ]
@@ -38,7 +42,7 @@ fi
 echo "[+] scanning and directories/files discovery"
 while read DOMAIN; do
     echo "[+] current target: $DOMAIN"
-    nmap -sV -F $DOMAIN -oG $DOMAIN"_nmap" # 1> /dev/null
+    nmap -sV -F $DOMAIN -oG $DOMAIN"_nmap" 1> /dev/null
     
     while read line; do
         if [[ $line == *"80/open/tcp//http"* ]]
@@ -62,7 +66,7 @@ while read DOMAIN; do
             wfuzz -f $DOMAIN"_wfuzz_8008",raw --hc 404,301,302,401,000 -w $DICTIONARY http://$DOMAIN:8008/FUZZ 1>/dev/null
         fi
     done < $DOMAIN"_nmap"
-done < $TARGET"_subdomains"
+done < $SUBDOMAINS
 
 echo "[+] all done!!!"
 echo
