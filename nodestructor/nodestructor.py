@@ -25,7 +25,11 @@ GitHub: bl4de | Twitter: @_bl4de | hackerone.com/bl4de | bloorq@gmail.com
 PATTERNS = [
     ".readFile(",
     ".readFileSync(",
-    ".resolve("
+    ".resolve(",
+    ".exec(",
+    "setInterval(",
+    "setTimeout(",
+    "new Function("
 ]
 
 
@@ -67,11 +71,11 @@ def main(src):
 
     if total < 1:
         print beautyConsole.getColor("green") + \
-            "No exploitable functions found\n" + \
+            "No dangerous functions found\n" + \
             beautyConsole.getSpecialChar("endline")
     else:
         print beautyConsole.getColor("red") + \
-            "Found %d exploitable functions total\n" % (total) + \
+            "Found %d dangerous functions total\n" % (total) + \
             beautyConsole.getSpecialChar("endline")
 
     print beautyConsole.getColor("white") + "-" * 100
