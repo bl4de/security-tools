@@ -97,9 +97,10 @@ if __name__ == "__main__":
                 BASE_PATH = sys.argv[1] + '/'
 
             for __file in FILE_LIST:
-                full_path = BASE_PATH + __file
-                if os.path.isfile(full_path):
-                    main(full_path)
+                if __file[-3:] == ".js":
+                    full_path = BASE_PATH + __file
+                    if os.path.isfile(full_path):
+                        main(full_path)
         else:
             main(sys.argv[1])
 
