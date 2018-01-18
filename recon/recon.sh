@@ -57,17 +57,17 @@ while read DOMAIN; do
             echo "[+] found webserver on $DOMAIN port 443/HTTPS, running files/directories discovery..."
             wfuzz -f $OUTPUT_DIR/$DOMAIN"_wfuzz_443",raw --hc 404,301,302,401,000 -w $DICTIONARY https://$DOMAIN/FUZZ 1>/dev/null
         fi
-        if [[ $line == *"8080/open/tcp//http"* ]]
-        then
-            echo "[+] found webserver on $DOMAIN port 8080/HTTP, running files/directories discovery..."
-            wfuzz -f $OUTPUT_DIR/$DOMAIN"_wfuzz_8080",raw --hc 404,301,302,401,000 -w $DICTIONARY http://$DOMAIN:8080/FUZZ 1>/dev/null
-        fi
-        if [[ $line == *"8008/open/tcp//http"* ]]
-        then
-            echo "[+] found webserver on $DOMAIN port 8008/HTTP, running files/directories discovery..."
-            wfuzz -f $OUTPUT_DIR/$DOMAIN"_wfuzz_8008",raw --hc 404,301,302,401,000 -w $DICTIONARY http://$DOMAIN:8008/FUZZ 1>/dev/null
-        fi
-    done < $DOMAIN"_nmap"
+        # if [[ $line == *"8080/open/tcp//http"* ]]
+        # then
+        #     echo "[+] found webserver on $DOMAIN port 8080/HTTP, running files/directories discovery..."
+        #     wfuzz -f $OUTPUT_DIR/$DOMAIN"_wfuzz_8080",raw --hc 404,301,302,401,000 -w $DICTIONARY http://$DOMAIN:8080/FUZZ 1>/dev/null
+        # fi
+        # if [[ $line == *"8008/open/tcp//http"* ]]
+        # then
+        #     echo "[+] found webserver on $DOMAIN port 8008/HTTP, running files/directories discovery..."
+        #     wfuzz -f $OUTPUT_DIR/$DOMAIN"_wfuzz_8008",raw --hc 404,301,302,401,000 -w $DICTIONARY http://$DOMAIN:8008/FUZZ 1>/dev/null
+        # fi
+    done < $OUTPUT_DIR/$DOMAIN"_nmap"
 done < $SUBDOMAINS
 
 echo "[+] all done!!!"
