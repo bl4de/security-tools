@@ -29,7 +29,8 @@ PATTERNS = [
     ".exec(",
     "setInterval(",
     "setTimeout(",
-    "new Function("
+    "new Function(",
+    "path.join("
 ]
 
 
