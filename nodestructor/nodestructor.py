@@ -18,9 +18,8 @@ from imports.beautyConsole import beautyConsole
 
 
 BANNER = """
-nodestructor.py - static code analysis for Node.js applications
-by bl4de
-GitHub: bl4de | Twitter: @_bl4de | hackerone.com/bl4de | bloorq@gmail.com 
+#####  nodestructor.py - static code analysis for Node.js applications  #####
+# GitHub: bl4de | Twitter: @_bl4de | hackerone.com/bl4de | bloorq@gmail.com #
 """
 
 PATTERNS = [
@@ -81,7 +80,7 @@ def printcodeline(_line, i, _fn, _message):
     """
     Formats and prints line of output
     """
-    print "::  line %d :: \33[33;1m%s\33[0m %s found " % (i, _fn, _message)
+    print "::  line %d :: \33[33;1m%s\33[0m %s " % (i, _fn, _message)
     print beautyConsole.getColor("grey") + _line + beautyConsole.getSpecialChar("endline")
 
 
@@ -105,15 +104,15 @@ def main(src):
             if __rex.match(__line):
                 total += 1
                 printcodeline(_line, i, __pattern + ')',
-                              beautyConsole.efMsgFound)
+                              ' dangerous pattern identified')
 
     if total < 1:
-        print beautyConsole.getColor("green") + \
-            "No dangerous functions found\n" + \
+        print "\n\n" + beautyConsole.getColor("green") + \
+            "No dangerous patterns identified\n" + \
             beautyConsole.getSpecialChar("endline")
     else:
-        print beautyConsole.getColor("red") + \
-            "Found %d dangerous functions total\n" % (total) + \
+        print "\n\n" + beautyConsole.getColor("red") + \
+            "Identified %d dangerous code pattern(s)\n" % (total) + \
             beautyConsole.getSpecialChar("endline")
 
     print beautyConsole.getColor("white") + "-" * 100
