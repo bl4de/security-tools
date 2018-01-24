@@ -6,7 +6,7 @@
 import sys
 import base64
 
-description = """
+DESC = """
 baser.py - decode base64 file to plaintext
 usage: ./baser.py [path_to_file_in_base64]
 
@@ -14,18 +14,24 @@ usage: ./baser.py [path_to_file_in_base64]
 
 
 def usage():
-    print description
+    """
+    displays usage message
+    """
+    print DESC
     exit(0)
 
 
 def main(fname):
-    f = open(fname, 'r').read()
-    print "{}".format(base64.b64decode(f.strip()))
+    """
+    decodes from Base64
+    """
+    __file = open(fname, 'r').read()
+    print "{}".format(base64.b64decode(__file.strip()))
 
 
 if __name__ == "__main__":
-    if (len(sys.argv) == 2):
-        arguments=sys.argv[1:]
-        main(arguments[0])
+    if len(sys.argv) == 2:
+        ARGS = sys.argv[1:]
+        main(ARGS[0])
     else:
         usage()
