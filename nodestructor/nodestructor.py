@@ -25,7 +25,7 @@ BANNER = """
 PATTERNS = [
     ".*parse\(",
     ".*normalize\(",
-
+    ".*fs.readFileSync\(",
     ".*bodyParser()",
     ".*handlebars.SafeString\(",
     ".*eval\(",
@@ -111,11 +111,11 @@ def main(src):
 
     if total < 1:
         print "\n\n" + beautyConsole.getColor("green") + \
-            "No dangerous patterns identified\n" + \
+            "No patterns identified\n" + \
             beautyConsole.getSpecialChar("endline")
     else:
         print "\n\n" + beautyConsole.getColor("red") + \
-            "Identified %d dangerous code pattern(s)\n" % (total) + \
+            "Identified %d code pattern(s)\n" % (total) + \
             beautyConsole.getSpecialChar("endline")
 
     print beautyConsole.getColor("white") + "-" * 100
