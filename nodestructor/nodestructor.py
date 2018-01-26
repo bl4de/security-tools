@@ -163,10 +163,10 @@ if __name__ == "__main__":
 
         print
 
-        # TODO summary jakies ladniejsze
 
+        # TODO summary by patter
         print beautyConsole.getColor("cyan")
-        print " {} files scanned in total".format(total_files)
+        print " {} file(s) scanned in total".format(total_files)
         if patterns_identified > 0:
             print beautyConsole.getColor(
                 "red"), "Identified {} code pattern(s) in total".format(patterns_identified)
