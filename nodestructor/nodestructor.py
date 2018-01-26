@@ -23,6 +23,7 @@ BANNER = """
 """
 
 PATTERNS = [
+    ".*url\.parse\(",
     ".*parse\(",
     ".*normalize\(",
     ".*fs.readFileSync\(",
