@@ -24,9 +24,9 @@ BANNER = """
 
 PATTERNS = [
     ".*url\.parse\(",
-    ".*parse\(",
     ".*normalize\(",
     ".*fs.readFileSync\(",
+    ".*f.readFile\(",
     ".*bodyParser()",
     ".*handlebars.SafeString\(",
     ".*eval\(",
@@ -167,8 +167,9 @@ if __name__ == "__main__":
 
         print beautyConsole.getColor("cyan")
         print " {} files scanned in total".format(total_files)
-        print beautyConsole.getColor(
-            "red"), "Identified {} code pattern(s) in total".format(patterns_identified)
+        if patterns_identified > 0:
+            print beautyConsole.getColor(
+                "red"), "Identified {} code pattern(s) in total".format(patterns_identified)
         print beautyConsole.getColor("white")
 
     else:
