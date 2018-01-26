@@ -85,20 +85,30 @@ def printcodeline(_line, i, _fn, _message):
     Formats and prints line of output
     """
     print "::  line %d :: \33[33;1m%s\33[0m %s " % (i, _fn, _message)
-    print beautyConsole.getColor("grey") + _line + beautyConsole.getSpecialChar("endline")
+    print beautyConsole.getColor("grey") + _line + \
+        beautyConsole.getSpecialChar("endline")
+
+
+def build_file_list(start_dir):
+    for subdir, dirs, files in os.walk(start_dir):
+        for file in files:
+            print os.path.join(subdir, file)
 
 
 def main(src):
     """
     performs code analysis, line by line
     """
+    global patterns_identified
+
     _file = open(src, "r")
     i = 0
-    total = 0
+    patterns_found_in_file = 0
     filenamelength = len(src)
     linelength = 97
 
-    print "-" * 14, " FILE: \33[33m%s\33[0m " % src, "-" * (linelength - filenamelength - 21), "\n"
+    print "-" * 14, " FILE: \33[33m%s\33[0m " % src, "-" * \
+        (linelength - filenamelength - 21)
 
     for _line in _file:
         i += 1
@@ -106,17 +116,18 @@ def main(src):
         for __pattern in PATTERNS:
             __rex = re.compile(__pattern)
             if __rex.match(__line):
-                total += 1
+                patterns_found_in_file += 1
                 printcodeline(_line, i, __pattern + ')',
                               ' dangerous pattern identified')
 
-    if total < 1:
-        print "\n\n" + beautyConsole.getColor("green") + \
+    if patterns_found_in_file < 1:
+        print beautyConsole.getColor("green") + \
             "No patterns identified\n" + \
             beautyConsole.getSpecialChar("endline")
     else:
+        patterns_identified = patterns_identified + patterns_found_in_file
         print "\n\n" + beautyConsole.getColor("red") + \
-            "Identified %d code pattern(s)\n" % (total) + \
+            "Identified %d code pattern(s)\n" % (patterns_found_in_file) + \
             beautyConsole.getSpecialChar("endline")
 
     print beautyConsole.getColor("white") + "-" * 100
@@ -124,6 +135,8 @@ def main(src):
 
 # main program
 if __name__ == "__main__":
+    total_files = 0
+    patterns_identified = 0
 
     if len(sys.argv) >= 2:
         show_banner()
@@ -131,21 +144,32 @@ if __name__ == "__main__":
         # main program loop
         if len(sys.argv) == 3 and (sys.argv[1] == "-R" or sys.argv[2] == "-R"):
             if sys.argv[1] == "-R":
-                BASE_PATH = sys.argv[2] + '/'
+                BASE_PATH = sys.argv[2]
                 FILE_LIST = os.listdir(sys.argv[2])
             if sys.argv[2] == "-R":
                 FILE_LIST = os.listdir(sys.argv[1])
-                BASE_PATH = sys.argv[1] + '/'
+                BASE_PATH = sys.argv[1]
 
-            for __file in FILE_LIST:
-                if __file[-3:] == ".js":
-                    full_path = BASE_PATH + __file
-                    if os.path.isfile(full_path):
-                        main(full_path)
+            # build_file_list(BASE_PATH)
+
+            for subdir, dirs, files in os.walk(BASE_PATH):
+                for __file in files:
+                    if __file[-3:] == ".js":
+                        main(os.path.join(subdir, __file))
+                        total_files = total_files + 1
         else:
             main(sys.argv[1])
 
         print
+
+        # TODO summary jakies ladniejsze
+
+        print beautyConsole.getColor("cyan")
+        print "{} files scanned in total".format(total_files)
+        print beautyConsole.getColor(
+            "red"), "{} patterns identified".format(patterns_identified)
+        print beautyConsole.getColor("white")
+
     else:
         print "Enter JavaScript file name or directory name with file(s) to analyse"
         print "single file: ./nodestructor.py filename.js"
