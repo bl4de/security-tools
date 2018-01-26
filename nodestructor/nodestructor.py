@@ -77,7 +77,9 @@ def show_banner():
     """
     Prints welcome banner with contact info
     """
+    print beautyConsole.getColor("cyan")
     print BANNER
+    print beautyConsole.getColor("white")
 
 
 def printcodeline(_line, i, _fn, _message):
@@ -85,7 +87,7 @@ def printcodeline(_line, i, _fn, _message):
     Formats and prints line of output
     """
     print "::  line %d :: \33[33;1m%s\33[0m %s " % (i, _fn, _message)
-    print beautyConsole.getColor("grey") + _line + \
+    print beautyConsole.getColor("lightgrey") + _line + \
         beautyConsole.getSpecialChar("endline")
 
 
@@ -118,7 +120,7 @@ def main(src):
             if __rex.match(__line):
                 patterns_found_in_file += 1
                 printcodeline(_line, i, __pattern + ')',
-                              ' dangerous pattern identified')
+                              ' dangerous pattern identified: ')
 
     if patterns_found_in_file < 1:
         print beautyConsole.getColor("green") + \
@@ -129,8 +131,7 @@ def main(src):
         print "\n\n" + beautyConsole.getColor("red") + \
             "Identified %d code pattern(s)\n" % (patterns_found_in_file) + \
             beautyConsole.getSpecialChar("endline")
-
-    print beautyConsole.getColor("white") + "-" * 100
+        print beautyConsole.getColor("white") + "-" * 100
 
 
 # main program
@@ -165,9 +166,9 @@ if __name__ == "__main__":
         # TODO summary jakies ladniejsze
 
         print beautyConsole.getColor("cyan")
-        print "{} files scanned in total".format(total_files)
+        print " {} files scanned in total".format(total_files)
         print beautyConsole.getColor(
-            "red"), "{} patterns identified".format(patterns_identified)
+            "red"), "Identified {} code pattern(s) in total".format(patterns_identified)
         print beautyConsole.getColor("white")
 
     else:
