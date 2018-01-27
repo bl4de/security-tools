@@ -88,3 +88,12 @@ asset
 assets
 origin
 origins
+node_modules
+e2e
+.editorconfig
+karma.conf.js
+package.json
+Gemfile
+Gemfile.lock
+yarn.lock
+

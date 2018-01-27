@@ -109,8 +109,7 @@ def main(src):
     filenamelength = len(src)
     linelength = 97
 
-    print "-" * 14, " FILE: \33[33m%s\33[0m " % src, "-" * \
-        (linelength - filenamelength - 21)
+    print "FILE: \33[33m%s\33[0m " % src
 
     for _line in _file:
         i += 1
@@ -162,7 +161,6 @@ if __name__ == "__main__":
             main(sys.argv[1])
 
         print
-
 
         # TODO summary by patter
         print beautyConsole.getColor("cyan")
