@@ -32,9 +32,9 @@ PATTERNS = [
     ".*eval\("
 ]
 
-total_files = 0
-patterns_identified = 0
-files_with_identified_patterns = 0
+TOTAL_FILES = 0
+PATTERNS_IDENTIFIED = 0
+FILES_WITH_IDENTIFIED_PATTERNS = 0
 
 
 def show_banner():
@@ -55,18 +55,12 @@ def printcodeline(_line, i, _fn, _message):
         beautyConsole.getSpecialChar("endline")
 
 
-def build_file_list(start_dir):
-    for subdir, dirs, files in os.walk(start_dir):
-        for file in files:
-            print os.path.join(subdir, file)
-
-
 def main(src):
     """
     performs code analysis, line by line
     """
-    global patterns_identified
-    global files_with_identified_patterns
+    global PATTERNS_IDENTIFIED
+    global FILES_WITH_IDENTIFIED_PATTERNS
     print_filename = True
 
     _file = open(src, "r")
@@ -80,7 +74,7 @@ def main(src):
             __rex = re.compile(__pattern)
             if __rex.match(__line):
                 if print_filename:
-                    files_with_identified_patterns = files_with_identified_patterns + 1
+                    FILES_WITH_IDENTIFIED_PATTERNS = FILES_WITH_IDENTIFIED_PATTERNS + 1
                     print "FILE: \33[33m{}\33[0m\n".format(src)
                     print_filename = False
                 patterns_found_in_file += 1
@@ -88,7 +82,7 @@ def main(src):
                               ' dangerous pattern identified: ')
 
     if patterns_found_in_file > 0:
-        patterns_identified = patterns_identified + patterns_found_in_file
+        PATTERNS_IDENTIFIED = PATTERNS_IDENTIFIED + patterns_found_in_file
         print beautyConsole.getColor("red") + \
             "Identified %d code pattern(s)\n" % (patterns_found_in_file) + \
             beautyConsole.getSpecialChar("endline")
@@ -116,7 +110,7 @@ if __name__ == "__main__":
                 for __file in files:
                     if __file[-3:] == ".js":
                         main(os.path.join(subdir, __file))
-                        total_files = total_files + 1
+                        TOTAL_FILES = TOTAL_FILES + 1
         else:
             main(sys.argv[1])
 
@@ -124,10 +118,10 @@ if __name__ == "__main__":
 
         # TODO summary by patter
         print beautyConsole.getColor("cyan")
-        print " {} file(s) scanned in total".format(total_files)
-        if patterns_identified > 0:
+        print " {} file(s) scanned in total".format(TOTAL_FILES)
+        if PATTERNS_IDENTIFIED > 0:
             print beautyConsole.getColor(
-                "red"), "Identified {} code pattern(s) in {} file(s)".format(patterns_identified, files_with_identified_patterns)
+                "red"), "Identified {} code pattern(s) in {} file(s)".format(PATTERNS_IDENTIFIED, FILES_WITH_IDENTIFIED_PATTERNS)
         print beautyConsole.getColor("white")
 
     else:
