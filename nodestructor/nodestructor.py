@@ -122,6 +122,9 @@ if __name__ == "__main__":
         if PATTERNS_IDENTIFIED > 0:
             print beautyConsole.getColor(
                 "red"), "Identified {} code pattern(s) in {} file(s)".format(PATTERNS_IDENTIFIED, FILES_WITH_IDENTIFIED_PATTERNS)
+        else:
+            print beautyConsole.getColor(
+                "green"), "No code pattern identified"
         print beautyConsole.getColor("white")
 
     else:
