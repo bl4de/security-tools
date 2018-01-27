@@ -108,9 +108,8 @@ if __name__ == "__main__":
 
             for subdir, dirs, files in os.walk(BASE_PATH):
                 for __file in files:
-                    if __file[-3:] == ".js":
-                        main(os.path.join(subdir, __file))
-                        TOTAL_FILES = TOTAL_FILES + 1
+                    main(os.path.join(subdir, __file))
+                    TOTAL_FILES = TOTAL_FILES + 1
         else:
             main(sys.argv[1])
 
