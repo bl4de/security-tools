@@ -23,13 +23,14 @@ BANNER = """
 """
 
 PATTERNS = [
-    ".*url\.parse\(",
+    ".*url.parse\(",
     ".*normalize\(",
     ".*fs.readFileSync\(",
     ".*f.readFile\(",
     ".*bodyParser()",
     ".*handlebars.SafeString\(",
-    ".*eval\("
+    ".*eval\(",
+    ".*res.write\("
 ]
 
 TOTAL_FILES = 0
