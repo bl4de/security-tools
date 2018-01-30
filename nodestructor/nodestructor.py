@@ -96,25 +96,28 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         show_banner()
 
-        # main program loop
-        if len(sys.argv) == 3 and (sys.argv[1] == "-R" or sys.argv[2] == "-R"):
-            if sys.argv[1] == "-R":
-                BASE_PATH = sys.argv[2]
-                FILE_LIST = os.listdir(sys.argv[2])
-            if sys.argv[2] == "-R":
-                FILE_LIST = os.listdir(sys.argv[1])
-                BASE_PATH = sys.argv[1]
+        try:
+            # main program loop
+            if len(sys.argv) == 3 and (sys.argv[1] == "-R" or sys.argv[2] == "-R"):
+                if sys.argv[1] == "-R":
+                    BASE_PATH = sys.argv[2]
+                    FILE_LIST = os.listdir(sys.argv[2])
+                if sys.argv[2] == "-R":
+                    FILE_LIST = os.listdir(sys.argv[1])
+                    BASE_PATH = sys.argv[1]
 
-            # build_file_list(BASE_PATH)
+                # build_file_list(BASE_PATH)
 
-            for subdir, dirs, files in os.walk(BASE_PATH):
-                for __file in files:
-                    main(os.path.join(subdir, __file))
-                    TOTAL_FILES = TOTAL_FILES + 1
-        else:
-            main(sys.argv[1])
+                for subdir, dirs, files in os.walk(BASE_PATH):
+                    for __file in files:
+                        main(os.path.join(subdir, __file))
+                        TOTAL_FILES = TOTAL_FILES + 1
+            else:
+                main(sys.argv[1])
+        except Exception as ex:
+            print beautyConsole.getColor("red"),"An exception occured: {}\n\n".format(ex.args[1])
+            exit(1)
 
-        print
 
         # TODO summary by patter
         print beautyConsole.getColor("cyan")
