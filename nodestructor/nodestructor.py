@@ -27,7 +27,7 @@ PATTERNS = [
     ".*normalize\(",
     ".*fs.readFileSync\(",
     ".*f.readFile\(",
-    ".*bodyParser()",
+    ".*bodyParser\(",
     ".*handlebars.SafeString\(",
     ".*eval\(",
     ".*res.write\("
@@ -36,6 +36,7 @@ PATTERNS = [
 TOTAL_FILES = 0
 PATTERNS_IDENTIFIED = 0
 FILES_WITH_IDENTIFIED_PATTERNS = 0
+EXTENSIONS_TO_IGNORE = ['md', 'txt']
 
 
 def show_banner():
@@ -110,21 +111,21 @@ if __name__ == "__main__":
 
                 for subdir, dirs, files in os.walk(BASE_PATH):
                     for __file in files:
-                        main(os.path.join(subdir, __file))
+                        FILENAME = os.path.join(subdir, __file)
+                        if FILENAME[-3:] not in EXTENSIONS_TO_IGNORE and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE:
+                            main(FILENAME)
                         TOTAL_FILES = TOTAL_FILES + 1
             else:
                 main(sys.argv[1])
         except Exception as ex:
-            print beautyConsole.getColor("red"),"An exception occured: {}\n\n".format(ex.args[1])
+            print beautyConsole.getColor("red"), "An exception occured: {}\n\n".format(ex.args[1])
             exit(1)
 
-
-        # TODO summary by patter
         print beautyConsole.getColor("cyan")
         print " {} file(s) scanned in total".format(TOTAL_FILES)
         if PATTERNS_IDENTIFIED > 0:
-            print beautyConsole.getColor(
-                "red"), "Identified {} code pattern(s) in {} file(s)".format(PATTERNS_IDENTIFIED, FILES_WITH_IDENTIFIED_PATTERNS)
+            print beautyConsole.getColor("red")
+            print "Identified {} code pattern(s) in {} file(s)".format(PATTERNS_IDENTIFIED, FILES_WITH_IDENTIFIED_PATTERNS)
         else:
             print beautyConsole.getColor(
                 "green"), "No code pattern identified"
