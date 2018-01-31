@@ -25,8 +25,9 @@ BANNER = """
 PATTERNS = [
     ".*url.parse\(",
     ".*normalize\(",
-    ".*fs.readFileSync\(",
-    ".*f.readFile\(",
+    ".*fs.*File.*\(",
+    ".*fs.*Read.*\(",
+    ".*pipe\(res",
     ".*bodyParser\(",
     ".*handlebars.SafeString\(",
     ".*eval\(",
