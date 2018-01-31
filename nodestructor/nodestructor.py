@@ -20,6 +20,10 @@ from imports.beautyConsole import beautyConsole
 BANNER = """
 #####  nodestructor.py - static code analysis for Node.js applications  #####
 # GitHub: bl4de | Twitter: @_bl4de | hackerone.com/bl4de | bloorq@gmail.com #
+
+usage:  $ ./nodestructor filename.js
+        $ ./nodestructor -R ./dirname
+        $ ./nodestructor -R ./dirname --skip-node-modules
 """
 
 PATTERNS = [
@@ -41,7 +45,7 @@ FILES_WITH_IDENTIFIED_PATTERNS = 0
 # some files not to loking in:
 EXTENSIONS_TO_IGNORE = ['md', 'txt', 'map']
 MINIFIED_EXT = ['.min.js']
-
+SKIP_NODE_MODULES = False
 
 def show_banner():
     """
@@ -103,13 +107,16 @@ if __name__ == "__main__":
 
         try:
             # main program loop
-            if len(sys.argv) == 3 and (sys.argv[1] == "-R" or sys.argv[2] == "-R"):
+            if len(sys.argv) >= 3 and (sys.argv[1] == "-R" or sys.argv[2] == "-R"):
                 if sys.argv[1] == "-R":
                     BASE_PATH = sys.argv[2]
                     FILE_LIST = os.listdir(sys.argv[2])
                 if sys.argv[2] == "-R":
                     FILE_LIST = os.listdir(sys.argv[1])
                     BASE_PATH = sys.argv[1]
+                
+                if len(sys.argv) == 4 and sys.argv[3] == "--skip-node-modules":
+                    SKIP_NODE_MODULES = True
 
                 # build_file_list(BASE_PATH)
 
@@ -119,8 +126,9 @@ if __name__ == "__main__":
                         if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
                                 and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
                                 and FILENAME[-7:] not in MINIFIED_EXT):
-                            main(FILENAME)
-                        TOTAL_FILES = TOTAL_FILES + 1
+                            if not '/node_modules/' in subdir or ('/node_modules/' in subdir and SKIP_NODE_MODULES == False):
+                                main(FILENAME)
+                                TOTAL_FILES = TOTAL_FILES + 1
             else:
                 main(sys.argv[1])
         except Exception as ex:
