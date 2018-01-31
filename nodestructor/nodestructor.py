@@ -36,7 +36,10 @@ PATTERNS = [
 TOTAL_FILES = 0
 PATTERNS_IDENTIFIED = 0
 FILES_WITH_IDENTIFIED_PATTERNS = 0
-EXTENSIONS_TO_IGNORE = ['md', 'txt']
+
+# some files not to loking in:
+EXTENSIONS_TO_IGNORE = ['md', 'txt', 'map']
+MINIFIED_EXT = ['.min.js']
 
 
 def show_banner():
@@ -81,7 +84,7 @@ def main(src):
                     print_filename = False
                 patterns_found_in_file += 1
                 printcodeline(_line, i, __pattern + ')',
-                              ' dangerous pattern identified: ')
+                              ' code pattern identified: ')
 
     if patterns_found_in_file > 0:
         PATTERNS_IDENTIFIED = PATTERNS_IDENTIFIED + patterns_found_in_file
@@ -112,7 +115,9 @@ if __name__ == "__main__":
                 for subdir, dirs, files in os.walk(BASE_PATH):
                     for __file in files:
                         FILENAME = os.path.join(subdir, __file)
-                        if FILENAME[-3:] not in EXTENSIONS_TO_IGNORE and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE:
+                        if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
+                                and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
+                                and FILENAME[-7:] not in MINIFIED_EXT):
                             main(FILENAME)
                         TOTAL_FILES = TOTAL_FILES + 1
             else:
