@@ -47,6 +47,7 @@ EXTENSIONS_TO_IGNORE = ['md', 'txt', 'map']
 MINIFIED_EXT = ['.min.js']
 SKIP_NODE_MODULES = False
 
+
 def show_banner():
     """
     Prints welcome banner with contact info
@@ -114,7 +115,7 @@ if __name__ == "__main__":
                 if sys.argv[2] == "-R":
                     FILE_LIST = os.listdir(sys.argv[1])
                     BASE_PATH = sys.argv[1]
-                
+
                 if len(sys.argv) == 4 and sys.argv[3] == "--skip-node-modules":
                     SKIP_NODE_MODULES = True
 
