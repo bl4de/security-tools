@@ -8,6 +8,11 @@ https://www.youtube.com/watch?v=B8nRrw_M_nk&index=1&list=WL
 """
 import argparse
 
+ASCII = 'ascii'
+CTRL = 'ctrl'
+OTHER = 'other'
+
+
 COLORS = {
     "black": '\33[30m',
     "white": '\33[37m',
@@ -22,17 +27,24 @@ COLORS = {
     "lightblue": '\33[94m'
 }
 
+def char_type(c):
+    if ord(c) < 128 and ord(c) > 32:
+        return ASCII
+    if ord(c) <= 16:
+        return CTRL
+    return OTHER
 
 def make_color(c):
     """
     Formats color for byte depends on if it's printable ASCII
     """
     # printable ASCII:
-    if ord(c) < 128 and ord(c) > 32:
+    if char_type(c) == ASCII:
         retval = "{}{:02X}{}".format(COLORS['green'], ord(c), COLORS['white'])
-    # non-printable ASCII
-    else:
+    if char_type(c) == OTHER:
         retval = "{}{:02X}{}".format(COLORS['yellow'], ord(c), COLORS['white'])
+    if char_type(c) == CTRL:
+        retval = "{}{:02X}{}".format(COLORS['red'], ord(c), COLORS['white'])
     return retval
 
 
@@ -40,9 +52,11 @@ def format_text(c):
     """
     Formats color for character depends on if it's printable ASCII
     """
-    if ord(c) < 128 and ord(c) > 32:
+    if char_type(c) == ASCII:
         retval = "{}{}{}".format(COLORS['green'], c, COLORS['white'])
-    else:
+    if char_type(c) == CTRL:
+        retval = "{}.{}".format(COLORS['red'], COLORS['white'])
+    if char_type(c) == OTHER:
         retval = "{}.{}".format(COLORS['yellow'], COLORS['white'])
     return retval
 
@@ -98,7 +112,7 @@ def main():
                     if args.decimal:
                         output += "   " * (((b * 2) - 4 - len(chunk))) + text
                     else:
-                        output += "   " * (b - len(chunk)) + text
+                        output += "   " * (b + 4 - len(chunk)) + text
                 else:
                     output += " " + text
 
