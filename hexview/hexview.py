@@ -53,7 +53,7 @@ def format_text(c):
     Formats color for character depends on if it's printable ASCII
     """
     if char_type(c) == ASCII:
-        retval = "{}{}{}".format(COLORS['green'], c, COLORS['white'])
+        retval = "{}{}{}".format(COLORS['lightblue'], c, COLORS['white'])
     if char_type(c) == CTRL:
         retval = "{}.{}".format(COLORS['red'], COLORS['white'])
     if char_type(c) == OTHER:
