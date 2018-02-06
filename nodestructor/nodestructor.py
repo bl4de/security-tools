@@ -31,6 +31,7 @@ PATTERNS = [
     ".*normalize\(",
     ".*fs.*File.*\(",
     ".*fs.*Read.*\(",
+    ".*process.cwd\(",
     ".*pipe\(res",
     ".*bodyParser\(",
     ".*handlebars.SafeString\(",
