@@ -13,6 +13,7 @@ GitHub: bl4de | Twitter: @_bl4de | hackerone.com/bl4de  bloorq@gmail.com
 import sys
 import os
 import re
+import argparse
 
 from imports.beautyConsole import beautyConsole
 
@@ -103,51 +104,51 @@ def main(src):
 
 # main program
 if __name__ == "__main__":
+    show_banner()
 
-    if len(sys.argv) >= 2:
-        show_banner()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("filename", help="Specify a file or directory to scan")
+    parser.add_argument(
+        "-R", "--recursive", help="check files recursively", action="store_true")
+    parser.add_argument(
+        "-S", "--skip-node-modules", help="when scanning recursively, do not scan ./node_modules folder", action="store_true")
 
-        try:
-            # main program loop
-            if len(sys.argv) >= 3 and (sys.argv[1] == "-R" or sys.argv[2] == "-R"):
-                if sys.argv[1] == "-R":
-                    BASE_PATH = sys.argv[2]
-                    FILE_LIST = os.listdir(sys.argv[2])
-                if sys.argv[2] == "-R":
-                    FILE_LIST = os.listdir(sys.argv[1])
-                    BASE_PATH = sys.argv[1]
+    args = parser.parse_args()
 
-                if len(sys.argv) == 4 and sys.argv[3] == "--skip-node-modules":
-                    SKIP_NODE_MODULES = True
+    try:
+        BASE_PATH = args.filename
+        FILE_LIST = os.listdir(args.filename)
+        SKIP_NODE_MODULES = args.skip_node_modules
 
-                # build_file_list(BASE_PATH)
-
-                for subdir, dirs, files in os.walk(BASE_PATH):
-                    for __file in files:
-                        FILENAME = os.path.join(subdir, __file)
-                        if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
-                                and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
-                                and FILENAME[-7:] not in MINIFIED_EXT):
-                            if not '/node_modules/' in subdir or ('/node_modules/' in subdir and SKIP_NODE_MODULES == False):
-                                main(FILENAME)
-                                TOTAL_FILES = TOTAL_FILES + 1
-            else:
-                main(sys.argv[1])
-        except Exception as ex:
-            print beautyConsole.getColor("red"), "An exception occured: {}\n\n".format(ex.args[1])
-            exit(1)
-
-        print beautyConsole.getColor("cyan")
-        print " {} file(s) scanned in total".format(TOTAL_FILES)
-        if PATTERNS_IDENTIFIED > 0:
-            print beautyConsole.getColor("red")
-            print "Identified {} code pattern(s) in {} file(s)".format(PATTERNS_IDENTIFIED, FILES_WITH_IDENTIFIED_PATTERNS)
+        if args.recursive:
+            for subdir, dirs, files in os.walk(BASE_PATH):
+                for __file in files:
+                    FILENAME = os.path.join(subdir, __file)
+                    if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
+                            and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
+                            and FILENAME[-7:] not in MINIFIED_EXT):
+                        if not '/node_modules/' in subdir or ('/node_modules/' in subdir and SKIP_NODE_MODULES == False):
+                            main(FILENAME)
+                            TOTAL_FILES = TOTAL_FILES + 1
         else:
-            print beautyConsole.getColor(
-                "green"), "No code pattern identified"
-        print beautyConsole.getColor("white")
+            FILENAME = args.filename
+            if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
+                            and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
+                            and FILENAME[-7:] not in MINIFIED_EXT):
+                main(FILENAME)
+                TOTAL_FILES = TOTAL_FILES + 1
 
+    except Exception as ex:
+        # print ex
+        print beautyConsole.getColor("red"), "An exception occured: {}\n\n".format(ex.args[1])
+        exit(1)
+
+    print beautyConsole.getColor("cyan")
+    print " {} file(s) scanned in total".format(TOTAL_FILES)
+    if PATTERNS_IDENTIFIED > 0:
+        print beautyConsole.getColor("red")
+        print "Identified {} code pattern(s) in {} file(s)".format(PATTERNS_IDENTIFIED, FILES_WITH_IDENTIFIED_PATTERNS)
     else:
-        print "Enter JavaScript file name or directory name with file(s) to analyse"
-        print "single file: ./nodestructor.py filename.js"
-        print "directory: ./nodestructor.py -R dirname"
+        print beautyConsole.getColor(
+            "green"), "No code pattern identified"
+    print beautyConsole.getColor("white")
