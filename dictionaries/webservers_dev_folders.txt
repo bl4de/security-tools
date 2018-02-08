@@ -112,7 +112,7 @@ dbcon
 .db
 debug
 .debug
-dum
+dump
 .dump
 trash
 .trash
