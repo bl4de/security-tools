@@ -130,3 +130,5 @@ opt
 .opt
 build
 builds
+Gopkg.toml
+Gopkg.lock
