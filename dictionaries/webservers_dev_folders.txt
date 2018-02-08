@@ -96,4 +96,4 @@ package.json
 Gemfile
 Gemfile.lock
 yarn.lock
-
+.well_known
