@@ -128,3 +128,5 @@ etc
 .etc
 opt
 .opt
+build
+builds
