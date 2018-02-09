@@ -117,7 +117,9 @@ if __name__ == "__main__":
 
     try:
         BASE_PATH = args.filename
-        FILE_LIST = os.listdir(args.filename)
+        if args.recursive:
+            FILE_LIST = os.listdir(args.filename)
+
         SKIP_NODE_MODULES = args.skip_node_modules
 
         if args.recursive:
@@ -139,8 +141,7 @@ if __name__ == "__main__":
                 TOTAL_FILES = TOTAL_FILES + 1
 
     except Exception as ex:
-        # print ex
-        print beautyConsole.getColor("red"), "An exception occured: {}\n\n".format(ex.args[1])
+        print beautyConsole.getColor("red"), "An exception occured: {}\n\n".format(ex)
         exit(1)
 
     print beautyConsole.getColor("cyan")
