@@ -37,7 +37,10 @@ PATTERNS = [
     ".*bodyParser\(",
     ".*handlebars.SafeString\(",
     ".*eval\(",
-    ".*res.write\("
+    ".*res.write\(",
+    ".*<a.*href.*>",
+    ".*<img.*src.*>",
+    ".*<iframe.*src.*>"
 ]
 
 TOTAL_FILES = 0
@@ -45,7 +48,7 @@ PATTERNS_IDENTIFIED = 0
 FILES_WITH_IDENTIFIED_PATTERNS = 0
 
 # some files not to loking in:
-EXTENSIONS_TO_IGNORE = ['md', 'txt', 'map']
+EXTENSIONS_TO_IGNORE = ['md', 'txt', 'map', 'jpg' ,'png']
 MINIFIED_EXT = ['.min.js']
 SKIP_NODE_MODULES = False
 
@@ -91,7 +94,7 @@ def main(src):
                     print "FILE: \33[33m{}\33[0m\n".format(src)
                     print_filename = False
                 patterns_found_in_file += 1
-                printcodeline(_line, i, __pattern + ')',
+                printcodeline(_line, i, __pattern,
                               ' code pattern identified: ')
 
     if patterns_found_in_file > 0:
