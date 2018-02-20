@@ -63,6 +63,7 @@ def show_banner():
 
 
 def printcodeline(_line, i, _fn, _message):
+    _fn = _fn.replace("*","").replace("\\","").replace(".(", '(')[1:len(_fn)]
     """
     Formats and prints line of output
     """
