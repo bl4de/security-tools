@@ -1,6 +1,7 @@
 """
 Misc functions for headshot.py
 """
+from __future__ import print_function
 from modules.console_beautifier import ConsoleOutputBeautifier
 
 
@@ -22,7 +23,7 @@ def line_start(fn):
     line start decorator
     """
     def wrapper(*args, **kwargs):
-        print "[+]"
+        print("[+]")
         fn(*args, **kwargs)
     return wrapper
 

@@ -10,6 +10,7 @@ pef.py - PHP static code analysis tool (very, very simple)
 by bl4de
 GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com
 """
+from __future__ import print_function
 import sys
 import os
 
@@ -21,18 +22,18 @@ def banner():
     """
     Prints welcome banner with contact info
     """
-    print beautyConsole.getColor("green") + "\n\n", "-" * 100
-    print "-" * 6, " PEF | PHP Exploitable Functions scanner", " " * 35, "-" * 16
-    print "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", " " * 22, "-" * 16
-    print "-" * 100, "\33[0m\n"
+    print(beautyConsole.getColor("green") + "\n\n", "-" * 100)
+    print("-" * 6, " PEF | PHP Exploitable Functions scanner", " " * 35, "-" * 16)
+    print("-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", " " * 22, "-" * 16)
+    print("-" * 100, "\33[0m\n")
 
 
 def printcodeline(_line, i, _fn, _message):
     """
     Formats and prints line of output
     """
-    print "::  line %d :: \33[33;1m%s\33[0m %s found " % (i, _fn, _message)
-    print beautyConsole.getColor("grey") + _line + beautyConsole.getSpecialChar("endline")
+    print("::  line %d :: \33[33;1m%s\33[0m %s found " % (i, _fn, _message))
+    print(beautyConsole.getColor("grey") + _line + beautyConsole.getSpecialChar("endline"))
 
 
 def main(src):
@@ -45,7 +46,7 @@ def main(src):
     filenamelength = len(src)
     linelength = 97
 
-    print "-" * 14, " FILE: \33[33m%s\33[0m " % src, "-" * (linelength - filenamelength - 21), "\n"
+    print("-" * 14, " FILE: \33[33m%s\33[0m " % src, "-" * (linelength - filenamelength - 21), "\n")
 
     for _line in _file:
         i += 1
@@ -77,15 +78,15 @@ def main(src):
                               beautyConsole.eReflFound)
 
     if total < 1:
-        print beautyConsole.getColor("green") + \
+        print(beautyConsole.getColor("green") + \
             "No exploitable functions found\n" + \
-            beautyConsole.getSpecialChar("endline")
+            beautyConsole.getSpecialChar("endline"))
     else:
-        print beautyConsole.getColor("red") + \
+        print(beautyConsole.getColor("red") + \
             "Found %d exploitable functions total\n" % (total) + \
-            beautyConsole.getSpecialChar("endline")
+            beautyConsole.getSpecialChar("endline"))
 
-    print beautyConsole.getColor("white") + "-" * 100
+    print(beautyConsole.getColor("white") + "-" * 100)
 
 
 # main program
@@ -110,8 +111,8 @@ if __name__ == "__main__":
         else:
             main(sys.argv[1])
 
-        print
+        print()
     else:
-        print "Enter PHP or directory name with file(s) to analyse"
-        print "single file: pef filename.php"
-        print "directory: pef -R dirname"
+        print("Enter PHP or directory name with file(s) to analyse")
+        print("single file: pef filename.php")
+        print("directory: pef -R dirname")

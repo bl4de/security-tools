@@ -3,6 +3,7 @@
 ### created by bl4de | bloorq@gmail.com | twitter.com/_bl4de    ###
 ### github.com/bl4de | hackerone.com/bl4de                      ###
 
+from __future__ import print_function
 import sys
 import base64
 
@@ -17,7 +18,7 @@ def usage():
     """
     displays usage message
     """
-    print DESC
+    print(DESC)
     exit(0)
 
 
@@ -26,7 +27,7 @@ def main(fname):
     decodes from Base64
     """
     __file = open(fname, 'r').read()
-    print "{}".format(base64.b64decode(__file.strip()))
+    print("{}".format(base64.b64decode(__file.strip())))
 
 
 if __name__ == "__main__":

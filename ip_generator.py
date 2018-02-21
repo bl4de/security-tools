@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # generates list of IP addresses from range IP start - IP stop
 #
+from __future__ import print_function
 import sys
 
 usage = """
@@ -18,7 +19,7 @@ Sample usage: to generate all IPs between 192.168.1.1 and 192.168.2.255 (512 add
 
 
 def help():
-    print usage
+    print(usage)
 
 
 def generate(start, stop, logfile):
@@ -41,7 +42,7 @@ if __name__ == "__main__":
 
     start = sys.argv[1].split(".")
     stop = sys.argv[2].split(".")
-    print "\n[+] generating IP addresses in range from {} to {}...".format(sys.argv[1], sys.argv[2])
+    print("\n[+] generating IP addresses in range from {} to {}...".format(sys.argv[1], sys.argv[2]))
     generate(start, stop, f)
-    print "[+] addresses generated...\n"
+    print("[+] addresses generated...\n")
     

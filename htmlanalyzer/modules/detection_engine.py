@@ -11,6 +11,8 @@
     detection_engine.py contains all specific logic which detects interesting
     parts of HTML
 """
+from __future__ import absolute_import
+
 import re
 from console_output_beautifier import ConsoleOutputBeautifier
 from utils import print_output_line
@@ -42,7 +44,7 @@ def detect_framework_vulners_db(_line):
     """
     for rule in RULES:
         if re.match(RULES[rule]["regex"], _line):
-            print RULES[rule]["alias"]
+            print(RULES[rule]["alias"])
             return '{1} ({2})'.format(RULES[rule]["alias"], rule)
 
 def identify(_line):

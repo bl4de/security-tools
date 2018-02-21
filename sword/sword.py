@@ -8,6 +8,7 @@ Executed step(s) and used tools:
 2. find working HTTP servers in output list from Step 1. [denumerator, https://github.com/bl4de/security-tools/blob/master/denumerator/denumerator.py]
 
 """
+from __future__ import print_function
 
 import sys
 import subprocess
@@ -31,8 +32,8 @@ def sublist3r_test(__args=[]):
                 "<li>{}</li>".format(subdomain.strip())
         interpolate_html_fragment(task_name, html_fragment)
     except Exception as e:
-        print "[-] Excpetion raised: {}".format(str(e))
-        print "[-] sublist3r: missing domain name"
+        print("[-] Excpetion raised: {}".format(str(e)))
+        print("[-] sublist3r: missing domain name")
         exit(0)
 
 ###################################  TASKS  ##############################
@@ -57,8 +58,8 @@ def denumerator(__args=[]):
 
         interpolate_html_fragment(task_name, html_fragment)
     except Exception as e:
-        print "[-] Excpetion raised: {}".format(str(e))
-        print "[-] denumerator: an error occured; denumerator failed; aborting"
+        print("[-] Excpetion raised: {}".format(str(e)))
+        print("[-] denumerator: an error occured; denumerator failed; aborting")
         exit(0)
 
 
@@ -80,8 +81,8 @@ def sublist3r(__args=[]):
         interpolate_html_fragment(task_name, html_fragment)
 
     except Exception as e:
-        print "[-] Excpetion raised: {}".format(str(e))
-        print "[-] sublist3r: missing domain name"
+        print("[-] Excpetion raised: {}".format(str(e)))
+        print("[-] sublist3r: missing domain name")
         exit(0)
 
 
@@ -104,14 +105,14 @@ def print_banner():
     """
     prints welcome banner
     """
-    print "#####  Sword | by bl4de  #####\n\n"
+    print("#####  Sword | by bl4de  #####\n\n")
 
 
 def print_usage():
     """
     prints usage
     """
-    print "usage: ./sword.py [domain] [steps] [exclude_tool(s)]\n\n"
+    print("usage: ./sword.py [domain] [steps] [exclude_tool(s)]\n\n")
 
 
 def run(__task, __args):
@@ -121,8 +122,8 @@ def run(__task, __args):
     try:
         __task(__args)
     except Exception as e:
-        print "[-] Excpetion raised: {}".format(str(e))
-        print "[-] something went wrong :("
+        print("[-] Excpetion raised: {}".format(str(e)))
+        print("[-] something went wrong :(")
         exit(0)
 
 ##########################################################################
@@ -133,21 +134,21 @@ if __name__ == "__main__":
         if sys.argv[1]:
             DOMAIN = sys.argv[1]
 
-        print "[+] starting with {}".format(DOMAIN)
+        print("[+] starting with {}".format(DOMAIN))
 
         # subdomain(s) enumeration
         run(sublist3r, [DOMAIN])
         # find working HTTP servers
         run(denumerator, [])
 
-        print HTML
+        print(HTML)
 
         # save HTML output to a file
-        print "[+] saving HTML to a file"
+        print("[+] saving HTML to a file")
         save_html_output(HTML_OUTPUT_FILE, HTML)
 
-        print "[+] done\n\n\n"
+        print("[+] done\n\n\n")
 
     except Exception as e:
-        print "[-] Excpetion raised: {}".format(str(e))
+        print("[-] Excpetion raised: {}".format(str(e)))
         exit(0)

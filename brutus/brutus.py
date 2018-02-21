@@ -3,6 +3,7 @@
 # Brute force attacker
 # bl4de | bloorq@gmail.com | Twitter: @_bl4de
 #
+from __future__ import print_function
 import argparse
 import socket
 
@@ -32,7 +33,7 @@ def create_http_request(path, host, payload_len, method="POST"):
 def single_try(user, passwd, method, counter):
     user = user.strip()
     passwd = passwd.strip()
-    print "[*] Trying {}:{}... ({})".format(user, passwd, counter)
+    print("[*] Trying {}:{}... ({})".format(user, passwd, counter))
 
     # create POST payload
     payload = "user={}&pass={}&submit=Login".format(user, passwd)
@@ -51,7 +52,7 @@ def single_try(user, passwd, method, counter):
 
     counter += 1
     if args.e not in resp:
-        print "[+] Login sucessful !!!"
+        print("[+] Login sucessful !!!")
         exit("{}:{}".format(user, passwd))
 
 
@@ -87,14 +88,14 @@ if __name__ == "__main__":
     counter = 1
 
     if len(passwords) > 0 and len(usernames) > 0:
-        print "[*] Will try {} credentials, hold on...".format(
-            len(usernames) * len(passwords))
+        print("[*] Will try {} credentials, hold on...".format(
+            len(usernames) * len(passwords)))
         for user in usernames:
             for passwd in passwords:
                 single_try(user, passwd, method, counter)
                 counter += 1
 
-        print "[-] All done, valid credentials not found :("
+        print("[-] All done, valid credentials not found :(")
     else:
-        print "[-] No usernames and/or passwords provided, exiting..."
+        print("[-] No usernames and/or passwords provided, exiting...")
         exit(0)
