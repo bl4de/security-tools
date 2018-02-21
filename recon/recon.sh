@@ -1,27 +1,75 @@
 #!/bin/bash
-# r3c0n.sh by bl4de | twitter.com/bl4de
+# recon - basic recon of bugbounty target scope
+# by bl4de | https://twitter.com/_bl4de
 
-TARGET=$1
-OUTPUT_FILE="$TARGET".log
+# params
+SUBDOMAINS=$1
+DICTIONARY=$2
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-LGRAY='\033[0;37m'
+mkdir out
+OUTPUT_DIR=./out
 
-NC='\033[0m' # No Color
+echo
+echo " usage: ./recon.sh [subdomains list] [dictionary file]"
+echo
+echo "  subdomains list - file with list of subdomains, if you have one"
+echo "  dictionary file - optional; paht to dictionary used for files/dirs enumeration"
+echo "                    dict.txt is used by default"
+echo
 
-echo -e "${BLUE}[+]${NC} ${GREEN}nmap scanning...${NC}"
-nmap -p- -A -sV $TARGET -o $OUTPUT_FILE 
+if [ -z $2 ]
+then
+    # enter path to default dictionary for enumeration you want to use
+    DICTIONARY=/Users/bl4de/hacking/tools/bl4de/recon/dict.txt
+else
+    DICTIONARY=$3
+fi
+echo "[+] using $DICTIONARY as dictionary file for files/dirs enumeration"
 
-echo -e "${BLUE}[+]${NC}  ${GREEN}nikto scanning...${NC}"
-/Users/bl4de/hacking/tools/nikto/program/nikto.pl -host $TARGET >> $OUTPUT_FILE 
+echo "[+] running recon.sh against $TARGET, please stand by..."
+# # enumerate subdomains
+# if [ -z $2 ]
+# then
+#     echo "[+] execute sublist3r $TARGET saving output to $TARGET_out file..."
+#     sublist3r -d $TARGET > $TARGET"_out"
+#     echo "[+] small sed-ing..."
+#     cat $TARGET"_out" | sed  -e 's/\[92//;1,24d' > $TARGET"_subdomains"
+#     SUBDOMAINS=$TARGET"_subdomains"
+# else
+#     echo "[+] using $2 as subdomains list"
+#     SUBDOMAINS=$2
+# fi
 
-echo -e "${BLUE}[+]${NC}  ${GREEN}theHarvester scanning...${NC}"
-theharvester -d $TARGET -b all >> $OUTPUT_FILE 
+#  nmap 
+echo "[+] scanning and directories/files discovery"
+while read DOMAIN; do
+    echo "[+] current target: $DOMAIN"
+    nmap -sV -F $DOMAIN -oG $OUTPUT_DIR/$DOMAIN"_nmap" 1> /dev/null
+    
+    while read line; do
+        if [[ $line == *"80/open/tcp//http"* ]]  
+        then
+            echo "[+] found webserver on $DOMAIN port 80/HTTP, running files/directories discovery..."
+            wfuzz -f $OUTPUT_DIR/$DOMAIN"_wfuzz_80",raw --hc 404,301,302,401,000 -w $DICTIONARY http://$DOMAIN/FUZZ 1>/dev/null
+        fi
+        if [[ $line == *"443/open/tcp//http"* ]]
+        then
+            echo "[+] found webserver on $DOMAIN port 443/HTTPS, running files/directories discovery..."
+            wfuzz -f $OUTPUT_DIR/$DOMAIN"_wfuzz_443",raw --hc 404,301,302,401,000 -w $DICTIONARY https://$DOMAIN/FUZZ 1>/dev/null
+        fi
+        # if [[ $line == *"8080/open/tcp//http"* ]]
+        # then
+        #     echo "[+] found webserver on $DOMAIN port 8080/HTTP, running files/directories discovery..."
+        #     wfuzz -f $OUTPUT_DIR/$DOMAIN"_wfuzz_8080",raw --hc 404,301,302,401,000 -w $DICTIONARY http://$DOMAIN:8080/FUZZ 1>/dev/null
+        # fi
+        # if [[ $line == *"8008/open/tcp//http"* ]]
+        # then
+        #     echo "[+] found webserver on $DOMAIN port 8008/HTTP, running files/directories discovery..."
+        #     wfuzz -f $OUTPUT_DIR/$DOMAIN"_wfuzz_8008",raw --hc 404,301,302,401,000 -w $DICTIONARY http://$DOMAIN:8008/FUZZ 1>/dev/null
+        # fi
+    done < $OUTPUT_DIR/$DOMAIN"_nmap"
+done < $SUBDOMAINS
 
-echo -e "${BLUE}[+]${NC}  ${GREEN}tryin to obtain domains for this IP...${NC}"
-curl -L https://reverse.report/commonapi/v1/ip/$TARGET.json >> $OUTPUT_FILE
-
-
-# curl -L https://reverse.report/commonapi/v1/ip/98.137.250.226.json 
+echo "[+] all done!!!"
+echo
+exit

@@ -13,14 +13,15 @@
 """
 from __future__ import absolute_import
 
-from .console_output_beautifier import ConsoleOutputBeautifier
-from .utils import print_output_line
+import re
+from console_output_beautifier import ConsoleOutputBeautifier
+from utils import print_output_line
+from vulners_rules import RULES
 
 # @TODO: libraries/framework detection
 # detects frontend framework used
 
 line_cache = []
-
 
 def get_line(_line, _line_number, _chars=80):
     """returns formatted line to print"""
@@ -34,13 +35,17 @@ def detect_framework(_line):
         This detection is only some assumption based on some constant
         elements but can not be treat as 100% sure.
     """
-    _fw = ""
-    if "ng-app" or "angular.js" or "angular.min.js" in _line:
-        _fw = "Angular 1.*"
-    if "react.js" in _line or "react-dom.js" in _line:
-        _fw = "ReactJS"
-    return _fw
+    return detect_framework_vulners_db(_line)
 
+
+def detect_framework_vulners_db(_line):
+    """using Vulners API rules, detect software
+        used by analyzed HTML
+    """
+    for rule in RULES:
+        if re.match(RULES[rule]["regex"], _line):
+            print(RULES[rule]["alias"])
+            return '{1} ({2})'.format(RULES[rule]["alias"], rule)
 
 def identify(_line):
     """backend detection (simplified)"""
