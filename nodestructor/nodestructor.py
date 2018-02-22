@@ -40,7 +40,8 @@ PATTERNS = [
     ".*res.write\(",
     ".*<a.*href.*>",
     ".*<img.*src.*>",
-    ".*<iframe.*src.*>"
+    ".*<iframe.*src.*>",
+    ".*__dirname.*"
 ]
 
 TOTAL_FILES = 0
