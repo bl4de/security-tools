@@ -137,4 +137,5 @@ index.php.bak
 db.inc~
 db.inc.php~
 db.inc
+index.js
 
