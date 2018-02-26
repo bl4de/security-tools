@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-#pylint: disable=invalid-name
+#!/usr/bin/python
+# pylint: disable=invalid-name
 """
 --- dENUMerator ---
 
@@ -27,6 +27,11 @@ requests.packages.urllib3.disable_warnings()
 
 allowed_http_responses = [200, 302, 304, 401, 404, 403, 500]
 
+http_ports_short_list = [80, 443, 8000, 8008, 8080, 9080]
+
+http_ports_long_list = [80, 443, 591, 981, 1311, 4444,
+              4445, 7001, 7002, 8000, 8008, 8080, 8088, 8222, 8530, 8531, 8887, 8888, 9080, 16080, 18091]
+
 
 def usage():
     """
@@ -35,7 +40,7 @@ def usage():
     print welcome
 
 
-def send_request(proto, domain):
+def send_request(proto, domain, port=80):
     """
     sends request to check if server is alive
     """
@@ -43,7 +48,8 @@ def send_request(proto, domain):
         'http': 'http://',
         'https': 'https://'
     }
-    resp = requests.get(protocols.get(proto.lower()) + domain,
+    full_url = protocols.get(proto.lower()) + domain + ":" + str(port)
+    resp = requests.get(full_url,
                         timeout=5,
                         allow_redirects=False,
                         verify=False,
@@ -60,26 +66,28 @@ def enumerate_domains(domains):
     enumerates domain from domains
     """
     for d in domains:
-        try:
-            d = d.strip('\n').strip('\r')
-            return_code = send_request('http', d)
-            # if http not working, try https
-            if return_code not in allowed_http_responses:
-                send_request('https', d)
+        # TODO: make selection of port(s) list or pass as option:
+        for port in http_ports_short_list:
+            try:
+                d = d.strip('\n').strip('\r')
+                return_code = send_request('http', d, port)
+                # if http not working on this port, try https
+                if return_code not in allowed_http_responses:
+                    send_request('https', d, port)
 
-        except requests.exceptions.InvalidURL:
-            print '[-] {} is not a valid URL :/'.format(d)
-        except requests.exceptions.ConnectTimeout:
-            print '[-] {} :('.format(d)
-            continue
-        except requests.exceptions.ConnectionError:
-            print '[-] connection to {} aborted :/'.format(d)
-        except requests.exceptions.ReadTimeout:
-            print '[-] {} read timeout :/'.format(d)
-        except requests.exceptions.TooManyRedirects:
-            print '[-] {} probably went into redirects loop :('.format(d)
-        else:
-            pass
+            except requests.exceptions.InvalidURL:
+                print '[-] {} is not a valid URL :/'.format(d)
+            except requests.exceptions.ConnectTimeout:
+                print '[-] {} :('.format(d)
+                continue
+            except requests.exceptions.ConnectionError:
+                print '[-] connection to {} aborted :/'.format(d)
+            except requests.exceptions.ReadTimeout:
+                print '[-] {} read timeout :/'.format(d)
+            except requests.exceptions.TooManyRedirects:
+                print '[-] {} probably went into redirects loop :('.format(d)
+            else:
+                pass
 
 
 if len(sys.argv) < 2:
