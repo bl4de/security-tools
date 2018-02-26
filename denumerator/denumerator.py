@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#pylint: disable=invalid-name
+# pylint: disable=invalid-name
 """
 --- dENUMerator ---
 
@@ -30,6 +30,7 @@ allowed_http_responses = [200, 302, 304, 401, 404, 403, 500]
 domains = open(sys.argv[1].strip(), 'rw').readlines()
 output_file = open('denumerator_output.txt', 'w+')
 
+
 def usage():
     """
     prints welcome message
@@ -54,7 +55,8 @@ def send_request(proto, domain):
 
     if resp.status_code in allowed_http_responses:
         print '[+] domain {}:\t\t HTTP {}'.format(domain, resp.status_code)
-        output_file.write('{}\t\t\t\t\tHTTP Response: {}\n'.format(domain, resp.status_code))
+        output_file.write('HTTP Response: {}\t\t{}\n'.format(
+            resp.status_code, domain))
         output_file.flush()
     return resp.status_code
 
