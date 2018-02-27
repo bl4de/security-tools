@@ -24,7 +24,7 @@ BANNER = """
 
 examples:   $ ./nodestructor filename.js
             $ ./nodestructor -R ./dirname
-            $ ./nodestructor -R ./dirname --skip-node-modules
+            $ ./nodestructor -R ./dirname --skip-node-modules --skip-test-files
 """
 
 PATTERNS = [
@@ -51,8 +51,9 @@ FILES_WITH_IDENTIFIED_PATTERNS = 0
 # some files not to loking in:
 EXTENSIONS_TO_IGNORE = ['md', 'txt', 'map', 'jpg' ,'png']
 MINIFIED_EXT = ['.min.js']
+TEST_FILES = ['test.js', 'tests.js']
 SKIP_NODE_MODULES = False
-
+SKIP_TEST_FILES = False
 
 def show_banner():
     """
@@ -117,6 +118,8 @@ if __name__ == "__main__":
         "-R", "--recursive", help="check files recursively", action="store_true")
     parser.add_argument(
         "-S", "--skip-node-modules", help="when scanning recursively, do not scan ./node_modules folder", action="store_true")
+    parser.add_argument(
+        "-T", "--skip-test-files", help="when scanning recursively, do not check test files (usually test.js)", action="store_true")
 
     args = parser.parse_args()
 
@@ -126,6 +129,7 @@ if __name__ == "__main__":
             FILE_LIST = os.listdir(args.filename)
 
         SKIP_NODE_MODULES = args.skip_node_modules
+        SKIP_TEST_FILES = args.skip_test_files
 
         if args.recursive:
             for subdir, dirs, files in os.walk(BASE_PATH):
@@ -134,9 +138,15 @@ if __name__ == "__main__":
                     if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
                             and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
                             and FILENAME[-7:] not in MINIFIED_EXT):
+                        
                         if not '/node_modules/' in subdir or ('/node_modules/' in subdir and SKIP_NODE_MODULES == False):
-                            main(FILENAME)
-                            TOTAL_FILES = TOTAL_FILES + 1
+                            if (SKIP_TEST_FILES == False):
+                                main(FILENAME)
+                                TOTAL_FILES = TOTAL_FILES + 1
+                            else:
+                                if __file not in TEST_FILES and "/test" not in FILENAME and "/tests" not in FILENAME:
+                                    main(FILENAME)
+                                    TOTAL_FILES = TOTAL_FILES + 1
         else:
             FILENAME = args.filename
             if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
