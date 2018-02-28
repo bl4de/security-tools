@@ -41,7 +41,8 @@ PATTERNS = [
     ".*<a.*href.*>",
     ".*<img.*src.*>",
     ".*<iframe.*src.*>",
-    ".*__dirname.*"
+    ".*__dirname.*",
+    ".*child_process.exec\(.*"
 ]
 
 TOTAL_FILES = 0
@@ -49,11 +50,12 @@ PATTERNS_IDENTIFIED = 0
 FILES_WITH_IDENTIFIED_PATTERNS = 0
 
 # some files not to loking in:
-EXTENSIONS_TO_IGNORE = ['md', 'txt', 'map', 'jpg' ,'png']
+EXTENSIONS_TO_IGNORE = ['md', 'txt', 'map', 'jpg', 'png']
 MINIFIED_EXT = ['.min.js']
 TEST_FILES = ['test.js', 'tests.js']
 SKIP_NODE_MODULES = False
 SKIP_TEST_FILES = False
+
 
 def show_banner():
     """
@@ -65,7 +67,7 @@ def show_banner():
 
 
 def printcodeline(_line, i, _fn, _message):
-    _fn = _fn.replace("*","").replace("\\","").replace(".(", '(')[1:len(_fn)]
+    _fn = _fn.replace("*", "").replace("\\", "").replace(".(", '(')[1:len(_fn)]
     """
     Formats and prints line of output
     """
@@ -138,7 +140,7 @@ if __name__ == "__main__":
                     if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
                             and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
                             and FILENAME[-7:] not in MINIFIED_EXT):
-                        
+
                         if not '/node_modules/' in subdir or ('/node_modules/' in subdir and SKIP_NODE_MODULES == False):
                             if (SKIP_TEST_FILES == False):
                                 main(FILENAME)
@@ -150,8 +152,8 @@ if __name__ == "__main__":
         else:
             FILENAME = args.filename
             if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
-                            and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
-                            and FILENAME[-7:] not in MINIFIED_EXT):
+                and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
+                    and FILENAME[-7:] not in MINIFIED_EXT):
                 main(FILENAME)
                 TOTAL_FILES = TOTAL_FILES + 1
 
