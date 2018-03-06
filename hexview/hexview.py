@@ -27,12 +27,14 @@ COLORS = {
     "lightblue": '\33[94m'
 }
 
+
 def char_type(c):
     if ord(c) < 128 and ord(c) > 32:
         return ASCII
     if ord(c) <= 16:
         return CTRL
     return OTHER
+
 
 def make_color(c):
     """
@@ -72,6 +74,19 @@ def format_chunk(chunk, start, stop, dec=False):
         return " ".join("{} ".format(make_color(c)) for c in chunk[start:stop])
 
 
+def extract_shellcode(start, end, read_binary):
+    start = int(start, 16)
+    end = int(end, 16)
+    read_binary.seek(start)
+    shellcode = ""
+    s = read_binary.read(end - start)
+    for c in s:
+        shellcode = shellcode + "\\x" + str(hex(ord(c))).replace('0x', '')
+    print "\n{}[+] Shellcode extracted from byte(s) {:#08x} to {:#08x}:{}".format(COLORS['cyan'], start, end, COLORS['white'])
+    print "\n{}{}{}\n".format(COLORS['yellow'], shellcode, COLORS['white'])
+    return shellcode
+
+
 def main():
     """
     main program routine
@@ -80,15 +95,23 @@ def main():
     parser.add_argument("file", help="Specify a file")
     parser.add_argument(
         "-d", "--decimal", help="Display DEC values with HEX", action="store_true")
+    parser.add_argument(
+        "-s", "--start", help="Start byte for shellcode extraction")
+    parser.add_argument(
+        "-e", "--end", help="End byte for shellcode extraction")
 
     args = parser.parse_args()
-
-    # b = args.opt_bytes or 16
     b = 16
 
     if args.file:
         offset = 0
         with open(args.file, 'rb') as infile:
+            # if shellcode extraction, do it here
+            if args.start and args.end and (int(args.start, 16) > -1 and int(args.end, 16) > int(args.start, 16)):
+                shellcode = extract_shellcode(args.start, args.end, infile)
+                # get back to byte 0, if shellcode was read earlier
+                infile.seek(0)
+
             while True:
                 chunk = infile.read(b)
                 if len(chunk) == 0:
