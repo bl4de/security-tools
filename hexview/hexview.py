@@ -81,10 +81,14 @@ def extract_shellcode(start, end, read_binary):
     shellcode = ""
     s = read_binary.read(end - start)
     for c in s:
-        shellcode = shellcode + "\\x" + str(hex(ord(c))).replace('0x', '')
+        if ord(c) == 0:
+            shellcode = shellcode + "{}".format(COLORS['red']) + str(
+                hex(ord(c))).replace("0x", "\\x") + "{}".format(COLORS['white'])
+        else:
+            shellcode = shellcode + "{}".format(COLORS['yellow']) + str(
+                hex(ord(c))).replace("0x", "\\x") + "{}".format(COLORS['white'])
     print "\n{}[+] Shellcode extracted from byte(s) {:#08x} to {:#08x}:{}".format(COLORS['cyan'], start, end, COLORS['white'])
-    print "\n{}{}{}\n".format(COLORS['yellow'], shellcode, COLORS['white'])
-    return shellcode
+    print "\n{}\n".format(shellcode)
 
 
 def main():
@@ -108,10 +112,11 @@ def main():
         with open(args.file, 'rb') as infile:
             # if shellcode extraction, do it here
             if args.start and args.end and (int(args.start, 16) > -1 and int(args.end, 16) > int(args.start, 16)):
-                shellcode = extract_shellcode(args.start, args.end, infile)
+                extract_shellcode(args.start, args.end, infile)
                 # get back to byte 0, if shellcode was read earlier
                 infile.seek(0)
 
+            print "{}[+] File content: {}\n".format(COLORS['cyan'], COLORS['white'])
             while True:
                 chunk = infile.read(b)
                 if len(chunk) == 0:
@@ -141,6 +146,8 @@ def main():
 
                 print output
                 offset += 16
+
+            print
     else:
         print parser.usage
 
