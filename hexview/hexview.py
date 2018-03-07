@@ -113,9 +113,8 @@ def main():
     b = 16
 
     if args.file:
-        offset = 0
         with open(args.file, 'rb') as infile:
-            if args.start and args.end and (int(args.start, 16) > -1 and int(args.end, 16) > int(args.start, 16)):
+            if args.start > -1 and args.end and (int(args.start, 16) > -1 and int(args.end, 16) > int(args.start, 16)):
                 __FROM = int(args.start, 16)
                 __TO = int(args.end, 16)
             else:
@@ -125,7 +124,8 @@ def main():
                 extract_shellcode(__FROM, __TO, infile)
 
             infile.seek(__FROM)
-
+            offset = __FROM
+            
             print "{}[+] File content: {}\n".format(COLORS['cyan'], COLORS['white'])
             while offset < __TO:
                 chunk = infile.read(b)
