@@ -7,6 +7,8 @@ https://www.youtube.com/watch?v=B8nRrw_M_nk&index=1&list=WL
 
 """
 import argparse
+import os
+
 
 ASCII = 'ascii'
 CTRL = 'ctrl'
@@ -75,8 +77,6 @@ def format_chunk(chunk, start, stop, dec=False):
 
 
 def extract_shellcode(start, end, read_binary):
-    start = int(start, 16)
-    end = int(end, 16)
     read_binary.seek(start)
     shellcode = ""
     s = read_binary.read(end - start)
@@ -95,14 +95,19 @@ def main():
     """
     main program routine
     """
+    __FROM = 0
+    __TO = 0
+
     parser = argparse.ArgumentParser()
     parser.add_argument("file", help="Specify a file")
     parser.add_argument(
         "-d", "--decimal", help="Display DEC values with HEX", action="store_true")
     parser.add_argument(
-        "-s", "--start", help="Start byte for shellcode extraction")
+        "-s", "--start", help="Start byte")
     parser.add_argument(
-        "-e", "--end", help="End byte for shellcode extraction")
+        "-e", "--end", help="End byte")
+    parser.add_argument(
+        "-S", "--shellcode", help="Extract shellcode (-s and -e has to be passed)", action="store_true")
 
     args = parser.parse_args()
     b = 16
@@ -110,14 +115,19 @@ def main():
     if args.file:
         offset = 0
         with open(args.file, 'rb') as infile:
-            # if shellcode extraction, do it here
             if args.start and args.end and (int(args.start, 16) > -1 and int(args.end, 16) > int(args.start, 16)):
-                extract_shellcode(args.start, args.end, infile)
-                # get back to byte 0, if shellcode was read earlier
-                infile.seek(0)
+                __FROM = int(args.start, 16)
+                __TO = int(args.end, 16)
+            else:
+                __TO = os.path.getsize(args.file)
+
+            if args.shellcode and __FROM > -1 and __TO:
+                extract_shellcode(__FROM, __TO, infile)
+
+            infile.seek(__FROM)
 
             print "{}[+] File content: {}\n".format(COLORS['cyan'], COLORS['white'])
-            while True:
+            while offset < __TO:
                 chunk = infile.read(b)
                 if len(chunk) == 0:
                     break
