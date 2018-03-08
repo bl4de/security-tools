@@ -31,6 +31,9 @@ COLORS = {
 
 
 def char_type(c):
+    """
+    Returns char type depends on its ASCII code
+    """
     if ord(c) < 128 and ord(c) > 32:
         return ASCII
     if ord(c) <= 16:
@@ -77,6 +80,9 @@ def format_chunk(chunk, start, stop, dec=False):
 
 
 def extract_shellcode(start, end, read_binary):
+    """
+    Extract shellcode in hex format, eg. for C exploits, from given range of bytes
+    """
     read_binary.seek(start)
     shellcode = ""
     s = read_binary.read(end - start)
@@ -90,8 +96,7 @@ def extract_shellcode(start, end, read_binary):
     print "\n{}[+] Shellcode extracted from byte(s) {:#08x} to {:#08x}:{}".format(COLORS['cyan'], start, end, COLORS['white'])
     print "\n{}\n".format(shellcode)
 
-
-def main():
+if __name__ == "__main__":
     """
     main program routine
     """
@@ -125,8 +130,8 @@ def main():
 
             infile.seek(__FROM)
             offset = __FROM
-            
-            print "{}[+] File content: {}\n".format(COLORS['cyan'], COLORS['white'])
+
+            print "{}[+] Hex dump: {}\n".format(COLORS['cyan'], COLORS['white'])
             while offset < __TO:
                 chunk = infile.read(b)
                 if len(chunk) == 0:
@@ -160,7 +165,3 @@ def main():
             print
     else:
         print parser.usage
-
-
-if __name__ == "__main__":
-    main()
