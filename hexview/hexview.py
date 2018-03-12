@@ -112,6 +112,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "-e", "--end", help="End byte")
     parser.add_argument(
+        "-d", "--diff", help="Perform diff with FILENAME")
+    parser.add_argument(
         "-S", "--shellcode", help="Extract shellcode (-s and -e has to be passed)", action="store_true")
 
     args = parser.parse_args()
