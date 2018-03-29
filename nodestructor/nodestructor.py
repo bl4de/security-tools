@@ -42,7 +42,12 @@ PATTERNS = [
     ".*<img.*src.*>",
     ".*<iframe.*src.*>",
     ".*__dirname.*",
-    ".*child_process.exec\(.*"
+    ".*child_process.exec\(.*",
+    ".*exec\(",
+    ".*Function\(",
+    ".*execFile\(",
+    ".*spawn\(",
+    ".*fork\("
 ]
 
 TOTAL_FILES = 0
