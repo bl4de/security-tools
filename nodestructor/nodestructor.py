@@ -35,7 +35,6 @@ PATTERNS = [
     ".*process.cwd\(",
     ".*pipe\(res",
     ".*bodyParser\(",
-    ".*handlebars.SafeString\(",
     ".*eval\(",
     ".*res.write\(",
     ".*<a.*href.*>",
