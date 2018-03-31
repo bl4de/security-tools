@@ -41,7 +41,6 @@ PATTERNS = [
     ".*<img.*src.*>",
     ".*<iframe.*src.*>",
     ".*__dirname.*",
-    ".*child_process.exec\(.*",
     ".*exec\(",
     ".*Function\(",
     ".*execFile\(",
