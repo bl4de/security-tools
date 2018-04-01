@@ -34,7 +34,7 @@ def char_type(c):
     """
     Returns char type depends on its ASCII code
     """
-    if ord(c) < 128 and ord(c) > 32:
+    if 32 < ord(c) < 128:
         return ASCII
     if ord(c) <= 16:
         return CTRL
