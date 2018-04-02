@@ -145,12 +145,9 @@ if __name__ == "__main__":
                 output = "{}{:#08x}{}".format(
                     COLORS['cyan'], offset, COLORS['white']) + ": "
 
-                output += format_chunk(chunk, 0, 4, args.decimal)
-                output += " | "
-                output += format_chunk(chunk, 4, 8, args.decimal)
-                output += " | "
-                output += format_chunk(chunk, 8, 12, args.decimal)
-                output += " | "
+                output += format_chunk(chunk, 0, 4, args.decimal) + " | "
+                output += format_chunk(chunk, 4, 8, args.decimal) + " | "
+                output += format_chunk(chunk, 8, 12, args.decimal) + " | "
                 output += format_chunk(chunk, 12, 16, args.decimal)
 
                 if len(chunk) % b != 0:
