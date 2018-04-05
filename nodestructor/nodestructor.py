@@ -45,7 +45,8 @@ PATTERNS = [
     ".*Function\(",
     ".*execFile\(",
     ".*spawn\(",
-    ".*fork\("
+    ".*fork\(",
+    ".*replace\("
 ]
 
 TOTAL_FILES = 0
@@ -96,7 +97,7 @@ def main(src):
         __line = _line.strip()
         for __pattern in PATTERNS:
             __rex = re.compile(__pattern)
-            if __rex.match(__line):
+            if __rex.match(__line.replace(' ','')):
                 if print_filename:
                     FILES_WITH_IDENTIFIED_PATTERNS = FILES_WITH_IDENTIFIED_PATTERNS + 1
                     print "FILE: \33[33m{}\33[0m\n".format(src)
