@@ -28,7 +28,7 @@ requests.packages.urllib3.disable_warnings()
 allowed_http_responses = [200, 302, 304, 401, 404, 403, 500]
 
 domains = open(sys.argv[1].strip(), 'rw').readlines()
-output_file = open('denumerator_output.txt', 'w+')
+output_file = open(sys.argv[1] + '_denumerator_output.txt', 'w+')
 
 
 def usage():
@@ -38,8 +38,7 @@ def usage():
     print welcome
 
 
-def send_request(proto, domain):
-    global output_file
+def send_request(proto, domain, output_file):
     """
     sends request to check if server is alive
     """
@@ -61,14 +60,14 @@ def send_request(proto, domain):
     return resp.status_code
 
 
-def enumerate_domains(domains):
+def enumerate_domains(domains, output_file):
     """
     enumerates domain from domains
     """
     for d in domains:
         try:
             d = d.strip('\n').strip('\r')
-            return_code = send_request('http', d)
+            return_code = send_request('http', d, output_file)
             # if http not working, try https
             if return_code not in allowed_http_responses:
                 send_request('https', d)
@@ -87,11 +86,9 @@ def enumerate_domains(domains):
         else:
             pass
 
-
 if len(sys.argv) < 2:
     print welcome
     exit(0)
 
-enumerate_domains(domains)
-
+enumerate_domains(domains, output_file)
 output_file.close()
