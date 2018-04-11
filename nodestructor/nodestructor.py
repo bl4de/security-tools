@@ -25,6 +25,7 @@ BANNER = """
 examples:   $ ./nodestructor filename.js
             $ ./nodestructor -R ./dirname
             $ ./nodestructor -R ./dirname --skip-node-modules --skip-test-files
+            $ ./nodestructor -R ./node_modules --exclude babel,lodash,ansi
 """
 
 PATTERNS = [
@@ -41,13 +42,14 @@ PATTERNS = [
     ".*<img.*src.*>",
     ".*<iframe.*src.*>",
     ".*__dirname.*",
-    ".*exec\(",
+    # ".*exec\(",
     ".*Function\(",
     ".*execFile\(",
     ".*spawn\(",
     ".*fork\(",
-    ".*replace\("
+    # ".*replace\("
 ]
+
 
 TOTAL_FILES = 0
 PATTERNS_IDENTIFIED = 0
@@ -56,9 +58,11 @@ FILES_WITH_IDENTIFIED_PATTERNS = 0
 # some files not to loking in:
 EXTENSIONS_TO_IGNORE = ['md', 'txt', 'map', 'jpg', 'png']
 MINIFIED_EXT = ['.min.js']
+SKIP_ALWAYS = ['package.json', 'README.md']
 TEST_FILES = ['test.js', 'tests.js']
 SKIP_NODE_MODULES = False
 SKIP_TEST_FILES = False
+EXCLUDE = []
 
 
 def show_banner():
@@ -97,7 +101,7 @@ def main(src):
         __line = _line.strip()
         for __pattern in PATTERNS:
             __rex = re.compile(__pattern)
-            if __rex.match(__line.replace(' ','')):
+            if __rex.match(__line.replace(' ', '')):
                 if print_filename:
                     FILES_WITH_IDENTIFIED_PATTERNS = FILES_WITH_IDENTIFIED_PATTERNS + 1
                     print "FILE: \33[33m{}\33[0m\n".format(src)
@@ -123,6 +127,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "-R", "--recursive", help="check files recursively", action="store_true")
     parser.add_argument(
+        "-E", "--exclude", help="comma separated list of packages to exclude from scanning (eg. babel excludes ALL packages with babel in name, like babel-register, babel-types etc.")
+    parser.add_argument(
         "-S", "--skip-node-modules", help="when scanning recursively, do not scan ./node_modules folder", action="store_true")
     parser.add_argument(
         "-T", "--skip-test-files", help="when scanning recursively, do not check test files (usually test.js)", action="store_true")
@@ -133,26 +139,31 @@ if __name__ == "__main__":
         BASE_PATH = args.filename
         if args.recursive:
             FILE_LIST = os.listdir(args.filename)
+        if args.exclude:
+            EXCLUDE = [e for e in args.exclude.split(',')]
 
         SKIP_NODE_MODULES = args.skip_node_modules
         SKIP_TEST_FILES = args.skip_test_files
 
         if args.recursive:
             for subdir, dirs, files in os.walk(BASE_PATH):
-                for __file in files:
-                    FILENAME = os.path.join(subdir, __file)
-                    if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
-                            and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
-                            and FILENAME[-7:] not in MINIFIED_EXT):
+            
+                if not True in [e in subdir for e in EXCLUDE]:
+                    for __file in files:
+                        FILENAME = os.path.join(subdir, __file)
+                        if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE 
+                                and FILENAME not in SKIP_ALWAYS
+                                and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
+                                and FILENAME[-7:] not in MINIFIED_EXT):
 
-                        if not '/node_modules/' in subdir or ('/node_modules/' in subdir and SKIP_NODE_MODULES == False):
-                            if (SKIP_TEST_FILES == False):
-                                main(FILENAME)
-                                TOTAL_FILES = TOTAL_FILES + 1
-                            else:
-                                if __file not in TEST_FILES and "/test" not in FILENAME and "/tests" not in FILENAME:
+                            if not '/node_modules/' in subdir or ('/node_modules/' in subdir and SKIP_NODE_MODULES is False):
+                                if (SKIP_TEST_FILES is False):
                                     main(FILENAME)
                                     TOTAL_FILES = TOTAL_FILES + 1
+                                else:
+                                    if __file not in TEST_FILES and "/test" not in FILENAME and "/tests" not in FILENAME:
+                                        main(FILENAME)
+                                        TOTAL_FILES = TOTAL_FILES + 1
         else:
             FILENAME = args.filename
             if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
@@ -162,14 +173,16 @@ if __name__ == "__main__":
                 TOTAL_FILES = TOTAL_FILES + 1
 
     except Exception as ex:
-        print beautyConsole.getColor("red"), "An exception occured: {}\n\n".format(ex)
+        print beautyConsole.getColor(
+            "red"), "An exception occured: {}\n\n".format(ex)
         exit(1)
 
     print beautyConsole.getColor("cyan")
     print " {} file(s) scanned in total".format(TOTAL_FILES)
     if PATTERNS_IDENTIFIED > 0:
         print beautyConsole.getColor("red")
-        print "Identified {} code pattern(s) in {} file(s)".format(PATTERNS_IDENTIFIED, FILES_WITH_IDENTIFIED_PATTERNS)
+        print "Identified {} code pattern(s) in {} file(s)".format(
+            PATTERNS_IDENTIFIED, FILES_WITH_IDENTIFIED_PATTERNS)
     else:
         print beautyConsole.getColor(
             "green"), "No code pattern identified"
