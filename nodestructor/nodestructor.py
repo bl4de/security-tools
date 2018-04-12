@@ -63,6 +63,8 @@ TEST_FILES = ['test.js', 'tests.js']
 SKIP_NODE_MODULES = False
 SKIP_TEST_FILES = False
 EXCLUDE = []
+EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi',
+                  'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-']
 
 
 def show_banner():
@@ -140,18 +142,20 @@ if __name__ == "__main__":
         if args.recursive:
             FILE_LIST = os.listdir(args.filename)
         if args.exclude:
-            EXCLUDE = [e for e in args.exclude.split(',')]
+            EXCLUDE = [e for e in args.exclude.split(',')] + EXCLUDE_ALWAYS
+        else:
+            EXCLUDE = EXCLUDE_ALWAYS
 
         SKIP_NODE_MODULES = args.skip_node_modules
         SKIP_TEST_FILES = args.skip_test_files
 
         if args.recursive:
             for subdir, dirs, files in os.walk(BASE_PATH):
-            
+
                 if not True in [e in subdir for e in EXCLUDE]:
                     for __file in files:
                         FILENAME = os.path.join(subdir, __file)
-                        if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE 
+                        if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
                                 and FILENAME not in SKIP_ALWAYS
                                 and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
                                 and FILENAME[-7:] not in MINIFIED_EXT):
