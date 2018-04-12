@@ -30,7 +30,7 @@ examples:   $ ./nodestructor filename.js
 
 PATTERNS = [
     ".*url.parse\(",
-    ".*normalize\(",
+    ".*[pP]ath.normalize\(",
     ".*fs.*File.*\(",
     ".*fs.*Read.*\(",
     ".*process.cwd\(",
@@ -42,14 +42,18 @@ PATTERNS = [
     ".*<img.*src.*>",
     ".*<iframe.*src.*>",
     ".*__dirname.*",
-    # ".*exec\(",
-    ".*Function\(",
+    ".*child_process.exec\(",
+    ".* Function\(",
     ".*execFile\(",
     ".*spawn\(",
     ".*fork\(",
     # ".*replace\("
 ]
 
+# for test purposes only :)
+# PATTERNS = [
+#     ".*[pP]ath.normalize\("
+# ]
 
 TOTAL_FILES = 0
 PATTERNS_IDENTIFIED = 0
