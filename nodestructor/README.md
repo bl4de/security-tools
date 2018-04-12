@@ -1,5 +1,14 @@
 ### nodestructor.py - static code analysis tool for Node.js applications
 
+
+```nodestructor``` is a simple Python script to perform some basic static code analysis of installed npm modules in your ```node_modules``` directory, but it can be easily changed into universal JavaScript files scanner.
+
+I've created this tool while working on [Node.js third-party modules Bug Bounty Program](https://hackerone.com/nodejs-ecosystem) on HackerOne and I just add any new "suspicious" code pattern that in certain conditions might lead to security vulnerability (like calls to ```fs``` module functions like ```readFile()``` or ```createReadStream()``` - without proper sanitization this sometimes leads to Path Traversals and Local File Include vulnerabilities - you can read more about such vulnerabilities found in many ```npm``` modules [here](https://github.com/bl4de/research/blob/master/npm-static-servers-most-common-issues/npm-static-servers-most-common-issues.md) )
+
+
+You can use this tool and modify it as you want.
+
+
 ```
 usage: nodestructor [-h] [-R] [-E EXCLUDE] [-S] [-T] filename
 
@@ -71,6 +80,11 @@ Identified 4 code pattern(s)
 Identified 4 code pattern(s) in 1 file(s)
 
 ```
+
+
+#### -h
+
+This option displays simple help with description of all available options.
 
 
 
