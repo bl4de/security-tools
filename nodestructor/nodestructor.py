@@ -63,7 +63,7 @@ TEST_FILES = ['test.js', 'tests.js']
 SKIP_NODE_MODULES = False
 SKIP_TEST_FILES = False
 EXCLUDE = []
-EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi',
+EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'core-util', '.bin',
                   'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-']
 
 
