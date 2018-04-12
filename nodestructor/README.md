@@ -21,6 +21,10 @@ optional arguments:
                         (usually test.js)
 
 ```
+
+![Sample usage screen](screen.jpg)
+
+
 #### Scanning single file
 
 The basic usage - scan single file:
