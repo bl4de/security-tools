@@ -149,11 +149,8 @@ if __name__ == "__main__":
         BASE_PATH = args.filename
         if args.recursive:
             FILE_LIST = os.listdir(args.filename)
-        if args.exclude:
-            EXCLUDE = [e for e in args.exclude.split(',')] + EXCLUDE_ALWAYS
-        else:
-            EXCLUDE = EXCLUDE_ALWAYS
 
+        EXCLUDE = [e for e in args.exclude.split(',')] + EXCLUDE_ALWAYS if args.exclude else EXCLUDE_ALWAYS
         SKIP_NODE_MODULES = args.skip_node_modules
         SKIP_TEST_FILES = args.skip_test_files
 
