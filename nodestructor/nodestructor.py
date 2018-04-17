@@ -48,6 +48,9 @@ PATTERNS = [
     ".*execFile\(",
     ".*spawn\(",
     ".*fork\(",
+    ".*setTimeout\(",
+    ".*setInterval\(",
+    ".*setImmediate\(",
     # ".*replace\("
 ]
 
