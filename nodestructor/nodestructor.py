@@ -22,7 +22,7 @@ BANNER = """
 #####  nodestructor.py - static code analysis for Node.js applications  #####
 # GitHub: bl4de | Twitter: @_bl4de | hackerone.com/bl4de | bloorq@gmail.com #
 
-examples:   $ ./nodestructor filename.js
+example usages:   $ ./nodestructor filename.js
             $ ./nodestructor -R ./dirname
             $ ./nodestructor -R ./dirname --skip-node-modules --skip-test-files
             $ ./nodestructor -R ./node_modules --exclude babel,lodash,ansi
