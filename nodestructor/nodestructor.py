@@ -19,8 +19,17 @@ from imports.beautyConsole import beautyConsole
 
 
 BANNER = """
-#####  nodestructor.py - static code analysis for Node.js applications  #####
-# GitHub: bl4de | Twitter: @_bl4de | hackerone.com/bl4de | bloorq@gmail.com #
+                                                                    
+                    (                )                    )           
+                    )\ )   (      ( /( (      (        ( /(      (    
+        (      (   (()/(  ))\ (   )\()))(    ))\   (   )\()) (   )(   
+        )\ )   )\   ((_))/((_))\ (_))/(()\  /((_)  )\ (_))/  )\ (()\  
+        _(_/(  ((_)  _| |(_)) ((_)| |_  ((_)(_))(  ((_)| |_  ((_) ((_) 
+        | ' \))/ _ \/ _` |/ -_)(_-<|  _|| '_|| || |/ _| |  _|/ _ \| '_| 
+        |_||_| \___/\__,_|\___|/__/ \__||_|   \_,_|\__|  \__|\___/|_|   
+                                                                
+#####    static code analysis for Node.js and other JavaScript apps        #####
+#####    GitHub.com/bl4de | twitter.com/_bl4de | hackerone.com/bl4de       #####
 
 example usages:   $ ./nodestructor filename.js
             $ ./nodestructor -R ./dirname
@@ -28,7 +37,7 @@ example usages:   $ ./nodestructor filename.js
             $ ./nodestructor -R ./node_modules --exclude babel,lodash,ansi
 """
 
-PATTERNS = [
+NODEJS_PATTERNS = [
     ".*url.parse\(",
     ".*[pP]ath.normalize\(",
     ".*fs.*File.*\(",
@@ -50,8 +59,11 @@ PATTERNS = [
     ".*fork\(",
     ".*setTimeout\(",
     ".*setInterval\(",
-    ".*setImmediate\(",
-    # ".*replace\("
+    ".*setImmediate\("
+]
+
+BROWSER_PATTERNS = [
+    ".*URLSearchParams\("
 ]
 
 # for test purposes only :)
@@ -59,6 +71,7 @@ PATTERNS = [
 #     ".*[pP]ath.normalize\("
 # ]
 
+PATTERNS = NODEJS_PATTERNS + BROWSER_PATTERNS
 TOTAL_FILES = 0
 PATTERNS_IDENTIFIED = 0
 FILES_WITH_IDENTIFIED_PATTERNS = 0
@@ -72,7 +85,7 @@ SKIP_NODE_MODULES = False
 SKIP_TEST_FILES = False
 EXCLUDE = []
 EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'core-util', '.bin',
-                  'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-']
+                  'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-', '.git', '.idea']
 
 
 def show_banner():
