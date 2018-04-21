@@ -70,7 +70,7 @@ def enumerate_domains(domains, output_file):
             return_code = send_request('http', d, output_file)
             # if http not working, try https
             if return_code not in allowed_http_responses:
-                send_request('https', d)
+                send_request('https', d, output_file)
 
         except requests.exceptions.InvalidURL:
             print '[-] {} is not a valid URL :/'.format(d)
