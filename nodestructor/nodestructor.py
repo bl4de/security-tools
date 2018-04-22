@@ -63,7 +63,12 @@ NODEJS_PATTERNS = [
 ]
 
 BROWSER_PATTERNS = [
-    ".*URLSearchParams\("
+    ".*URLSearchParams\(",
+    ".*innerHTML\(",
+    ".*outerHTML\(",
+    ".*document.write\(",
+    ".*document.location",
+    ".*window.open\("
 ]
 
 # for test purposes only :)
