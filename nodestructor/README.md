@@ -3,11 +3,23 @@
 
 ```nodestructor``` is a simple Python script to perform some basic static code analysis of installed npm modules in your ```node_modules``` directory, but it can be easily changed into universal JavaScript files scanner.
 
+
 I've created this tool while working on [Node.js third-party modules Bug Bounty Program](https://hackerone.com/nodejs-ecosystem) on HackerOne and I just add any new "suspicious" code pattern that in certain conditions might lead to security vulnerability (like calls to ```fs``` module functions like ```readFile()``` or ```createReadStream()``` - without proper sanitization this sometimes leads to Path Traversals and Local File Include vulnerabilities - you can read more about such vulnerabilities found in many ```npm``` modules [here](https://github.com/bl4de/research/blob/master/npm-static-servers-most-common-issues/npm-static-servers-most-common-issues.md) )
 
 
-You can use this tool and modify it as you want.
+There are two sets of dangerous patterns implemented: one is NodeJS application specific (like ```child_process``` or ```fs.readFile```), and the other one is more focused on browser patterns (like ```innerHTML``` or ```location.href```).
 
+Important thing is that the presence of such patterns does not mean application is vulnerable. It might be, if user input is processed there in an insecure way, eg. input from the user is directly used in ```innerHTML``` call, which might cause DOM-based XSS.
+
+```nodestructor``` only helps to find those patterns across huge codebases, like heavy npm'ed NodeJS apps. There is always a long way between source, where input comes, and a sink, when it can be (eventualy) executed.
+
+To learn more about how to identify this relationship between sources and sinks, I strictly recommend to watch an awesome video made by @LiveOverflow (https://twitter.com/LiveOverflow), available here: https://www.youtube.com/watch?v=ZaOtY4i5w_U
+
+
+You can use nodestructor and modify it as you want, as it's available under WTFPL Licence (https://pl.wikipedia.org/wiki/WTFPL).
+
+
+### Usage and options 
 
 ```
 usage: nodestructor [-h] [-R] [-E EXCLUDE] [-S] [-T] filename
@@ -114,6 +126,19 @@ Example usage:
 $ nodestructor -R ./node_modules/ --exclude=some_module,other_module,this_module_as_well
 ```
 
+#### -I or --include
+
+This option allows to scan only predefined list of modules. Might be helpful when application contains hundreds of npm package dependiences and you want to scan only couple of them. When this option is set, then ```--exclude``` is ignored.
+
+Example usage:
+
+```
+$ nodestructor -R node_modules --include=body-parser,chalk,commander --skip-test-files
+```
+
+This will scan only ```body-parser```, ```chalk``` and ```commander``` directories in ```node_modules``` folder.
+
+
 #### -T or --skip-test-files
 
 This option allows to exclude form scanning typical test files, like ```test.js```, ```tests.js``` etc. Feel free to extend this for your needs (defined in source as ```TEST_FILES``` array)
@@ -124,7 +149,7 @@ This option allows to exclude form scanning typical test files, like ```test.js`
 After installing a template engine ```nunjucks``` (https://www.npmjs.com/package/nunjucks), I did a scan with following options set:
 
 ```
-$ nodestructor -R node_modules/nunjucks/ --exclude=docs,browser,samples
+$ nodestructor -R node_modules/nunjucks/ --exclude=docs,browser,samples --skip-test-files
 ```
 
 The result was:
@@ -183,6 +208,24 @@ Identified 7 code pattern(s) in 3 file(s)
 
 ```
 
+
+#### Predefined settings
+
+Some of predefined settings are hardcoded directly in the code. If you'd like to tune up this tool to meet your needs or you think something is not working as you expect, this is likely a good place to take a look at:
+
+```python
+
+EXTENSIONS_TO_IGNORE = ['md', 'txt', 'map', 'jpg', 'png']
+MINIFIED_EXT = ['.min.js']
+SKIP_ALWAYS = ['package.json', 'README.md']
+TEST_FILES = ['test.js', 'tests.js']
+SKIP_NODE_MODULES = False
+SKIP_TEST_FILES = False
+EXCLUDE = []
+EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'array', 'core-util', '.bin',
+                  'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-', '.git', '.idea']
+INCLUDE = []
+```
 
 #### LICENCE
 

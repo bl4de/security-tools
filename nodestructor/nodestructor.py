@@ -69,6 +69,7 @@ BROWSER_PATTERNS = [
     ".*appendChild\(",
     ".*document.write\(",
     ".*document.location",
+    ".*location.href",
     ".*window.open\("
 ]
 
