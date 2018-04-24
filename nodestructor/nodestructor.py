@@ -34,7 +34,8 @@ BANNER = """
 example usages:   $ ./nodestructor filename.js
             $ ./nodestructor -R ./dirname
             $ ./nodestructor -R ./dirname --skip-node-modules --skip-test-files
-            $ ./nodestructor -R ./node_modules --exclude babel,lodash,ansi
+            $ ./nodestructor -R ./node_modules --exclude=babel,lodash,ansi
+            $ ./nodestructor -R ./node_modules --include=body-parser,chalk,commander
 """
 
 NODEJS_PATTERNS = [
@@ -65,6 +66,7 @@ BROWSER_PATTERNS = [
     ".*URLSearchParams\(",
     ".*innerHTML\(",
     ".*outerHTML\(",
+    ".*appendChild\(",
     ".*document.write\(",
     ".*document.location",
     ".*window.open\("
@@ -88,8 +90,9 @@ TEST_FILES = ['test.js', 'tests.js']
 SKIP_NODE_MODULES = False
 SKIP_TEST_FILES = False
 EXCLUDE = []
-EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'core-util', '.bin',
+EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'array', 'core-util', '.bin',
                   'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-', '.git', '.idea']
+INCLUDE = []
 
 
 def show_banner():
@@ -102,13 +105,35 @@ def show_banner():
 
 
 def printcodeline(_line, i, _fn, _message):
-    _fn = _fn.replace("*", "").replace("\\", "").replace(".(", '(')[1:len(_fn)]
     """
     Formats and prints line of output
     """
+    _fn = _fn.replace("*", "").replace("\\", "").replace(".(", '(')[1:len(_fn)]
     print "::  line %d :: \33[33;1m%s\33[0m %s " % (i, _fn, _message)
     print beautyConsole.getColor("grey") + _line + \
         beautyConsole.getSpecialChar("endline")
+
+
+def process_files(subdirectory, sd_files):
+    """
+    recursively iterates ofer all files and checks those which meet criteria set by options only
+    """
+    global TOTAL_FILES
+    for __file in sd_files:
+        current_filename = os.path.join(subdirectory, __file)
+        if (current_filename[-3:] not in EXTENSIONS_TO_IGNORE
+                and current_filename not in SKIP_ALWAYS
+                and current_filename[-2:] not in EXTENSIONS_TO_IGNORE
+                and current_filename[-7:] not in MINIFIED_EXT):
+
+            if not '/node_modules/' in subdirectory or ('/node_modules/' in subdirectory and SKIP_NODE_MODULES is False):
+                if (SKIP_TEST_FILES is False):
+                    main(current_filename)
+                    TOTAL_FILES = TOTAL_FILES + 1
+                else:
+                    if __file not in TEST_FILES and "/test" not in current_filename and "/tests" not in current_filename:
+                        main(current_filename)
+                        TOTAL_FILES = TOTAL_FILES + 1
 
 
 def main(src):
@@ -134,7 +159,7 @@ def main(src):
                     print "FILE: \33[33m{}\33[0m\n".format(src)
                     print_filename = False
                 patterns_found_in_file += 1
-                printcodeline(_line, i, __pattern,
+                printcodeline(_line[0:120] + "...", i, __pattern,
                               ' code pattern identified: ')
 
     if patterns_found_in_file > 0:
@@ -156,46 +181,41 @@ if __name__ == "__main__":
     parser.add_argument(
         "-E", "--exclude", help="comma separated list of packages to exclude from scanning (eg. babel excludes ALL packages with babel in name, like babel-register, babel-types etc.")
     parser.add_argument(
+        "-I", "--include", help="comma separated list of selected packages for scanning. Might be useful in projects where there are hundreds of dependiences and only some of them needs to be processed")
+    parser.add_argument(
         "-S", "--skip-node-modules", help="when scanning recursively, do not scan ./node_modules folder", action="store_true")
     parser.add_argument(
         "-T", "--skip-test-files", help="when scanning recursively, do not check test files (usually test.js)", action="store_true")
 
-    args = parser.parse_args()
+    ARGS = parser.parse_args()
 
     try:
-        BASE_PATH = args.filename
-        if args.recursive:
-            FILE_LIST = os.listdir(args.filename)
+        BASE_PATH = ARGS.filename
+        if ARGS.recursive:
+            FILE_LIST = os.listdir(ARGS.filename)
 
-        EXCLUDE = [e for e in args.exclude.split(',')] + EXCLUDE_ALWAYS if args.exclude else EXCLUDE_ALWAYS
-        SKIP_NODE_MODULES = args.skip_node_modules
-        SKIP_TEST_FILES = args.skip_test_files
+        EXCLUDE = [e for e in ARGS.exclude.split(
+            ',')] + EXCLUDE_ALWAYS if ARGS.exclude else EXCLUDE_ALWAYS
+        INCLUDE = [i for i in ARGS.include.split(',')] if ARGS.include else []
 
-        if args.recursive:
+        SKIP_NODE_MODULES = ARGS.skip_node_modules
+        SKIP_TEST_FILES = ARGS.skip_test_files
+
+        if ARGS.recursive:
             for subdir, dirs, files in os.walk(BASE_PATH):
-
-                if not True in [e in subdir for e in EXCLUDE]:
-                    for __file in files:
-                        FILENAME = os.path.join(subdir, __file)
-                        if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
-                                and FILENAME not in SKIP_ALWAYS
-                                and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
-                                and FILENAME[-7:] not in MINIFIED_EXT):
-
-                            if not '/node_modules/' in subdir or ('/node_modules/' in subdir and SKIP_NODE_MODULES is False):
-                                if (SKIP_TEST_FILES is False):
-                                    main(FILENAME)
-                                    TOTAL_FILES = TOTAL_FILES + 1
-                                else:
-                                    if __file not in TEST_FILES and "/test" not in FILENAME and "/tests" not in FILENAME:
-                                        main(FILENAME)
-                                        TOTAL_FILES = TOTAL_FILES + 1
+                if not INCLUDE:
+                    if not True in [e in subdir for e in EXCLUDE]:
+                        process_files(subdir, files)
+                else:
+                    if True in [i in subdir for i in INCLUDE]:
+                        process_files(subdir, files)
         else:
-            FILENAME = args.filename
-            if (FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
-                and FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
-                    and FILENAME[-7:] not in MINIFIED_EXT):
-                main(FILENAME)
+            # process only single file
+            S_FILENAME = ARGS.filename
+            if (S_FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
+                and S_FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
+                    and S_FILENAME[-7:] not in MINIFIED_EXT):
+                main(S_FILENAME)
                 TOTAL_FILES = TOTAL_FILES + 1
 
     except Exception as ex:
