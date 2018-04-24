@@ -22,7 +22,26 @@ You can use nodestructor and modify it as you want, as it's available under WTFP
 ### Usage and options 
 
 ```
-usage: nodestructor [-h] [-R] [-E EXCLUDE] [-S] [-T] filename
+                                                                    
+                    (                )                    )           
+                    )\ )   (      ( /( (      (        ( /(      (    
+        (      (   (()/(  ))\ (   )\()))(    ))\   (   )\()) (   )(   
+        )\ )   )\   ((_))/((_))\ (_))/(()\  /((_)  )\ (_))/  )\ (()\  
+        _(_/(  ((_)  _| |(_)) ((_)| |_  ((_)(_))(  ((_)| |_  ((_) ((_) 
+        | ' \))/ _ \/ _` |/ -_)(_-<|  _|| '_|| || |/ _| |  _|/ _ \| '_| 
+        |_||_| \___/\__,_|\___|/__/ \__||_|   \_,_|\__|  \__|\___/|_|   
+                                                                
+#####    static code analysis for Node.js and other JavaScript apps        #####
+#####    GitHub.com/bl4de | twitter.com/_bl4de | hackerone.com/bl4de       #####
+
+example usages:   $ ./nodestructor filename.js
+            $ ./nodestructor -R ./dirname
+            $ ./nodestructor -R ./dirname --skip-node-modules --skip-test-files
+            $ ./nodestructor -R ./node_modules --exclude=babel,lodash,ansi
+            $ ./nodestructor -R ./node_modules --include=body-parser,chalk,commander
+
+
+usage: nodestructor [-h] [-R] [-E EXCLUDE] [-I INCLUDE] [-S] [-T] filename
 
 positional arguments:
   filename              Specify a file or directory to scan
@@ -34,12 +53,18 @@ optional arguments:
                         comma separated list of packages to exclude from
                         scanning (eg. babel excludes ALL packages with babel
                         in name, like babel-register, babel-types etc.
+  -I INCLUDE, --include INCLUDE
+                        comma separated list of selected packages for
+                        scanning. Might be useful in projects where there are
+                        hundreds of dependiences and only some of them needs
+                        to be processed
   -S, --skip-node-modules
                         when scanning recursively, do not scan ./node_modules
                         folder
   -T, --skip-test-files
                         when scanning recursively, do not check test files
                         (usually test.js)
+
 
 ```
 
