@@ -22,7 +22,7 @@ You can use nodestructor and modify it as you want, as it's available under WTFP
 ### Usage and options 
 
 ```
-                                                                    
+                                                                              
                     (                )                    )           
                     )\ )   (      ( /( (      (        ( /(      (    
         (      (   (()/(  ))\ (   )\()))(    ))\   (   )\()) (   )(   
@@ -34,7 +34,8 @@ You can use nodestructor and modify it as you want, as it's available under WTFP
 #####    static code analysis for Node.js and other JavaScript apps        #####
 #####    GitHub.com/bl4de | twitter.com/_bl4de | hackerone.com/bl4de       #####
 
-example usages:   $ ./nodestructor filename.js
+example usages:   
+            $ ./nodestructor filename.js
             $ ./nodestructor -R ./dirname
             $ ./nodestructor -R ./dirname --skip-node-modules --skip-test-files
             $ ./nodestructor -R ./node_modules --exclude=babel,lodash,ansi
@@ -64,6 +65,7 @@ optional arguments:
   -T, --skip-test-files
                         when scanning recursively, do not check test files
                         (usually test.js)
+
 
 
 ```
