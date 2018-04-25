@@ -96,6 +96,7 @@ EXCLUDE = []
 EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'array', 'core-util', '.bin',
                   'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-', '.git', '.idea']
 INCLUDE = []
+PATTERN = ""
 
 
 def show_banner():
@@ -117,7 +118,7 @@ def printcodeline(_line, i, _fn, _message):
         beautyConsole.getSpecialChar("endline")
 
 
-def process_files(subdirectory, sd_files):
+def process_files(subdirectory, sd_files, pattern=""):
     """
     recursively iterates ofer all files and checks those which meet criteria set by options only
     """
@@ -131,20 +132,26 @@ def process_files(subdirectory, sd_files):
 
             if not '/node_modules/' in subdirectory or ('/node_modules/' in subdirectory and SKIP_NODE_MODULES is False):
                 if (SKIP_TEST_FILES is False):
-                    main(current_filename)
+                    main(current_filename, pattern)
                     TOTAL_FILES = TOTAL_FILES + 1
                 else:
                     if __file not in TEST_FILES and "/test" not in current_filename and "/tests" not in current_filename:
-                        main(current_filename)
+                        main(current_filename, pattern)
                         TOTAL_FILES = TOTAL_FILES + 1
 
 
-def main(src):
+def main(src, pattern=""):
     """
     performs code analysis, line by line
     """
     global PATTERNS_IDENTIFIED
     global FILES_WITH_IDENTIFIED_PATTERNS
+    global PATTERNS
+
+    # if -P / --pattern is defined, overwrite PATTERNS with user defined value(s)
+    if pattern:
+        PATTERNS = [pattern]
+
     print_filename = True
 
     _file = open(src, "r")
@@ -189,6 +196,8 @@ if __name__ == "__main__":
         "-S", "--skip-node-modules", help="when scanning recursively, do not scan ./node_modules folder", action="store_true")
     parser.add_argument(
         "-T", "--skip-test-files", help="when scanning recursively, do not check test files (usually test.js)", action="store_true")
+    parser.add_argument(
+        "-P", "--pattern", help="define your own pattern to look for. Pattern has to be a RegEx, like '.*fork\('. nodestructor removes whiitespaces, so if you want to look for 'new fn()', your pattern should look like this: '.*newfn\(\)' (all special characters for RegEx have to be escaped with \ )")
 
     ARGS = parser.parse_args()
 
@@ -196,6 +205,8 @@ if __name__ == "__main__":
         BASE_PATH = ARGS.filename
         if ARGS.recursive:
             FILE_LIST = os.listdir(ARGS.filename)
+
+        PATTERN = ARGS.pattern if ARGS.pattern else ""
 
         EXCLUDE = [e for e in ARGS.exclude.split(
             ',')] + EXCLUDE_ALWAYS if ARGS.exclude else EXCLUDE_ALWAYS
@@ -208,17 +219,17 @@ if __name__ == "__main__":
             for subdir, dirs, files in os.walk(BASE_PATH):
                 if not INCLUDE:
                     if not True in [e in subdir for e in EXCLUDE]:
-                        process_files(subdir, files)
+                        process_files(subdir, files, PATTERN)
                 else:
                     if True in [i in subdir for i in INCLUDE]:
-                        process_files(subdir, files)
+                        process_files(subdir, files, PATTERN)
         else:
             # process only single file
             S_FILENAME = ARGS.filename
             if (S_FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
                 and S_FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
                     and S_FILENAME[-7:] not in MINIFIED_EXT):
-                main(S_FILENAME)
+                main(S_FILENAME, PATTERN)
                 TOTAL_FILES = TOTAL_FILES + 1
 
     except Exception as ex:
