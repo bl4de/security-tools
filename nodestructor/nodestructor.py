@@ -60,7 +60,8 @@ NODEJS_PATTERNS = [
     ".*fork\(",
     ".*setTimeout\(",
     ".*setInterval\(",
-    ".*setImmediate\("
+    ".*setImmediate\(",
+    ".*newBuffer\("
 ]
 
 BROWSER_PATTERNS = [
