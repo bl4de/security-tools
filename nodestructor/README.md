@@ -65,6 +65,14 @@ optional arguments:
   -T, --skip-test-files
                         when scanning recursively, do not check test files
                         (usually test.js)
+  -P PATTERN, --pattern PATTERN
+                        define your own pattern to look for. Pattern has to be
+                        a RegEx, like '.*fork\('. nodestructor removes
+                        whiitespaces, so if you want to look for 'new fn()',
+                        your pattern should look like this: '.*newfn\(\)' (all
+                        special characters for RegEx have to be escaped with \
+                        )
+
 
 
 
@@ -169,6 +177,37 @@ This will scan only ```body-parser```, ```chalk``` and ```commander``` directori
 #### -T or --skip-test-files
 
 This option allows to exclude form scanning typical test files, like ```test.js```, ```tests.js``` etc. Feel free to extend this for your needs (defined in source as ```TEST_FILES``` array)
+
+
+#### -P or --pattern
+
+Allows to define own patterns to look for. Defined pattern should follow format used in ```nodestructor```, which means no spaces between words and escaping all RegEx special characters with ```\```.
+
+Example:
+
+If you'd like to look for:
+
+```
+return Object.keys(myObj)
+```
+
+the pattern should be defined as follows:
+
+```
+"returnObject\.keys\(myObj\)"
+```
+
+Complete command will then look like this:
+
+```
+$ nodestructor -R node_modules -P "returnObject\.keys\(myObj\)"
+```
+
+or
+
+```
+$ nodestructor -R node_modules --pattern "returnObject\.keys\(myObj\)"
+```
 
 
 #### Complete sample usage

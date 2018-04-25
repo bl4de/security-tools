@@ -150,7 +150,7 @@ def main(src, pattern=""):
 
     # if -P / --pattern is defined, overwrite PATTERNS with user defined value(s)
     if pattern:
-        PATTERNS = [pattern]
+        PATTERNS = [".*" + pattern]
 
     print_filename = True
 
