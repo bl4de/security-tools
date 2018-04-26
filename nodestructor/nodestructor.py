@@ -37,6 +37,7 @@ example usages:
             $ ./nodestructor -R ./dirname --skip-node-modules --skip-test-files
             $ ./nodestructor -R ./node_modules --exclude=babel,lodash,ansi
             $ ./nodestructor -R ./node_modules --include=body-parser,chalk,commander
+            $ ./nodestructor -R ./node_modules --pattern="obj.dangerousFn\("
 """
 
 NODEJS_PATTERNS = [
