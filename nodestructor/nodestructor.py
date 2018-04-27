@@ -73,7 +73,9 @@ BROWSER_PATTERNS = [
     ".*document.write\(",
     ".*document.location",
     ".*location.href",
-    ".*window.open\("
+    ".*window.open\(",
+    ".*window.postMessage\(",
+    ".*.addEventListener\(['\"]message['\"]"
 ]
 
 # for test purposes only :)
@@ -149,7 +151,8 @@ def main(src, pattern=""):
     global FILES_WITH_IDENTIFIED_PATTERNS
     global PATTERNS
 
-    # if -P / --pattern is defined, overwrite PATTERNS with user defined value(s)
+    # if -P / --pattern is defined, overwrite PATTERNS with user defined
+    # value(s)
     if pattern:
         PATTERNS = [".*" + pattern]
 
