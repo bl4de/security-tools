@@ -75,7 +75,10 @@ BROWSER_PATTERNS = [
     ".*location.href",
     ".*window.open\(",
     ".*window.postMessage\(",
-    ".*.addEventListener\(['\"]message['\"]"
+    ".*.addEventListener\(['\"]message['\"]",
+    ".*\$.ajax",
+    ".*\$.getJSON",
+    ".*\$http."
 ]
 
 # for test purposes only :)
