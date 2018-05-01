@@ -99,8 +99,10 @@ TEST_FILES = ['test.js', 'tests.js']
 SKIP_NODE_MODULES = False
 SKIP_TEST_FILES = False
 EXCLUDE = []
-EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'array', 'core-util', '.bin',
-                  'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-', '.git', '.idea']
+EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'array', 'core-util', '.bin', 'babylon', 'next-tick',
+                  'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-',
+                  'to-fast-properties','json5','async','http-proxy',
+                  '.git', '.idea']
 INCLUDE = []
 PATTERN = ""
 
