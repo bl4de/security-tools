@@ -100,7 +100,7 @@ SKIP_NODE_MODULES = False
 SKIP_TEST_FILES = False
 EXCLUDE = []
 EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'array', 'core-util', '.bin', 'babylon', 'next-tick',
-                  'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-',
+                  'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-', 'mime',
                   'to-fast-properties', 'json5', 'async', 'http-proxy', 'mkdirp', 'loose-envify',
                   '.git', '.idea']
 INCLUDE = []
