@@ -101,7 +101,7 @@ SKIP_TEST_FILES = False
 EXCLUDE = []
 EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'array', 'core-util', '.bin', 'babylon', 'next-tick',
                   'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-',
-                  'to-fast-properties','json5','async','http-proxy',
+                  'to-fast-properties', 'json5', 'async', 'http-proxy', 'mkdirp', 'loose-envify',
                   '.git', '.idea']
 INCLUDE = []
 PATTERN = ""
