@@ -81,11 +81,6 @@ BROWSER_PATTERNS = [
     ".*\$http."
 ]
 
-# for test purposes only :)
-# PATTERNS = [
-#     ".*[pP]ath.normalize\("
-# ]
-
 PATTERNS = NODEJS_PATTERNS + BROWSER_PATTERNS
 TOTAL_FILES = 0
 PATTERNS_IDENTIFIED = 0
