@@ -119,6 +119,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
     b = 16
 
+# for -D / --diff - second file has to be opened
+    if args.diff:
+        diff_file = open(args.diff, 'rb')
+
     if args.file:
         with open(args.file, 'rb') as infile:
             if args.start > -1 and args.end and (int(args.start, 16) > -1 and int(args.end, 16) > int(args.start, 16)):
@@ -131,11 +135,19 @@ if __name__ == "__main__":
                 extract_shellcode(__FROM, __TO, infile)
 
             infile.seek(__FROM)
+
+            if args.diff:
+                diff_file.seek(__FROM)
+
             offset = __FROM
 
             print "{}[+] Hex dump: {}\n".format(COLORS['cyan'], COLORS['white'])
             while offset < __TO:
                 chunk = infile.read(b)
+
+                if args.diff:
+                    df_chunk = diff_file.read(b)
+
                 if len(chunk) == 0:
                     break
 
@@ -150,15 +162,30 @@ if __name__ == "__main__":
                 output += format_chunk(chunk, 8, 12, args.decimal) + " | "
                 output += format_chunk(chunk, 12, 16, args.decimal)
 
+                if args.diff:
+                    df_text = str(df_chunk)
+                    df_text = ''.join([format_text(i) for i in text])
+
+                    df_output = "    " + format_chunk(df_chunk, 0, 4, args.decimal) + " | "
+                    df_output += format_chunk(df_chunk, 4, 8, args.decimal) + " | "
+                    df_output += format_chunk(df_chunk, 8, 12, args.decimal) + " | "
+                    df_output += format_chunk(df_chunk, 12, 16, args.decimal)
+
                 if len(chunk) % b != 0:
                     if args.decimal:
                         output += "   " * (((b * 2) - 4 - len(chunk))) + text
+                        if args.diff:
+                            df_output += "   " * (((b * 2) - 4 - len(df_chunk))) + df_text
                     else:
                         output += "   " * (b + 4 - len(chunk)) + text
+                        if args.diff:
+                            df_output += "   " * (b + 4 - len(df_chunk)) + df_text
                 else:
                     output += " " + text
+                    if args.diff:
+                        output += df_output
 
-                print output
+                print output        
                 offset += 16
 
             print
