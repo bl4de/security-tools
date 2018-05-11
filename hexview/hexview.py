@@ -8,7 +8,7 @@ https://www.youtube.com/watch?v=B8nRrw_M_nk&index=1&list=WL
 """
 import argparse
 import os
-
+import itertools
 
 ASCII = 'ascii'
 CTRL = 'ctrl'
@@ -16,17 +16,20 @@ OTHER = 'other'
 
 
 COLORS = {
-    "black": '\33[30m',
-    "white": '\33[37m',
-    "red": '\33[31m',
-    "green": '\33[32m',
-    "yellow": '\33[33m',
-    "blue": '\33[34m',
-    "magenta": '\33[35m',
-    "cyan": '\33[36m',
-    "grey": '\33[90m',
-    "lightgrey": '\33[37m',
-    "lightblue": '\33[94m'
+    "black": '\33[0;30m\33[40m',
+    "white": '\33[0;37m\33[40m',
+    "red": '\33[0;31m\33[40m',
+    "green": '\33[0;32m\33[40m',
+    "green_bg": '\33[1;32m\33[41m',
+    "yellow": '\33[0;33m\33[40m',
+    "yellow_bg": '\33[1;33m\33[41m',
+    "blue": '\33[0;34m\33[40m',
+    "magenta": '\33[0;35m\33[40m',
+    "magenta_bg": '\33[1;35m\33[41m',
+    "cyan": '\33[0;36m\33[40m',
+    "grey": '\33[0;90m\33[40m',
+    "lightgrey": '\33[0;37m\33[40m',
+    "lightblue": '\33[0;94m\33[40m'
 }
 
 
@@ -41,17 +44,36 @@ def char_type(c):
     return OTHER
 
 
-def make_color(c):
+def make_color(c, df_c=False):
     """
     Formats color for byte depends on if it's printable ASCII
     """
+
+    # for file diff - if characters are different, use bg color for char:
+    diff = (c != df_c) if df_c != False else False
+
     # printable ASCII:
     if char_type(c) == ASCII:
-        retval = "{}{:02X}{}".format(COLORS['green'], ord(c), COLORS['white'])
+        if diff:
+            retval = "{}{:02X}{}".format(
+                COLORS['green_bg'], ord(c), COLORS['white'])
+        else:
+            retval = "{}{:02X}{}".format(
+                COLORS['green'], ord(c), COLORS['white'])
     if char_type(c) == OTHER:
-        retval = "{}{:02X}{}".format(COLORS['yellow'], ord(c), COLORS['white'])
+        if diff:
+            retval = "{}{:02X}{}".format(
+                COLORS['yellow_bg'], ord(c), COLORS['white'])
+        else:
+            retval = "{}{:02X}{}".format(
+                COLORS['yellow'], ord(c), COLORS['white'])
     if char_type(c) == CTRL:
-        retval = "{}{:02X}{}".format(COLORS['red'], ord(c), COLORS['white'])
+        if diff:
+            retval = "{}{:02X}{}".format(
+                COLORS['magenta_bg'], ord(c), COLORS['white'])
+        else:
+            retval = "{}{:02X}{}".format(
+                COLORS['magenta'], ord(c), COLORS['white'])
     return retval
 
 
@@ -62,20 +84,25 @@ def format_text(c):
     if char_type(c) == ASCII:
         retval = "{}{}{}".format(COLORS['lightblue'], c, COLORS['white'])
     if char_type(c) == CTRL:
-        retval = "{}.{}".format(COLORS['red'], COLORS['white'])
+        retval = "{}.{}".format(COLORS['magenta'], COLORS['white'])
     if char_type(c) == OTHER:
         retval = "{}.{}".format(COLORS['yellow'], COLORS['white'])
     return retval
 
 
-def format_chunk(chunk, start, stop, dec=False):
+def format_chunk(chunk, start, stop, df_chunk=False, dec=False):
     """
     Formats one full chunk (byte)
     """
     if dec:
+        if df_chunk:
+            return " ".join("{}:{}{:#04}{} ".format(make_color(c, df_c), COLORS['grey'],
+                                                    ord(c), COLORS['white']) for c, df_c in itertools.izip(chunk[start:stop], df_chunk[start:stop]))
         return " ".join("{}:{}{:#04}{} ".format(make_color(c), COLORS['grey'],
                                                 ord(c), COLORS['white']) for c in chunk[start:stop])
     else:
+        if df_chunk:
+            return " ".join("{} ".format(make_color(c, df_c)) for c, df_c in itertools.izip(chunk[start:stop], df_chunk[start:stop]))
         return " ".join("{} ".format(make_color(c)) for c in chunk[start:stop])
 
 
@@ -147,6 +174,8 @@ if __name__ == "__main__":
 
                 if args.diff:
                     df_chunk = diff_file.read(b)
+                else:
+                    df_chunk = False
 
                 if len(chunk) == 0:
                     break
@@ -157,35 +186,45 @@ if __name__ == "__main__":
                 output = "{}{:#08x}{}".format(
                     COLORS['cyan'], offset, COLORS['white']) + ": "
 
-                output += format_chunk(chunk, 0, 4, args.decimal) + " | "
-                output += format_chunk(chunk, 4, 8, args.decimal) + " | "
-                output += format_chunk(chunk, 8, 12, args.decimal) + " | "
-                output += format_chunk(chunk, 12, 16, args.decimal)
+                output += format_chunk(chunk, 0, 4,
+                                       df_chunk, args.decimal) + " | "
+                output += format_chunk(chunk, 4, 8,
+                                       df_chunk, args.decimal) + " | "
+                output += format_chunk(chunk, 8, 12,
+                                       df_chunk, args.decimal) + " | "
+                output += format_chunk(chunk, 12, 16, df_chunk, args.decimal)
 
                 if args.diff:
                     df_text = str(df_chunk)
-                    df_text = ''.join([format_text(i) for i in text])
+                    df_text = ''.join([format_text(i) for i in df_text])
 
-                    df_output = "    " + format_chunk(df_chunk, 0, 4, args.decimal) + " | "
-                    df_output += format_chunk(df_chunk, 4, 8, args.decimal) + " | "
-                    df_output += format_chunk(df_chunk, 8, 12, args.decimal) + " | "
-                    df_output += format_chunk(df_chunk, 12, 16, args.decimal)
+                    df_output = "    " + \
+                        format_chunk(df_chunk, 0, 4, chunk,
+                                     args.decimal) + " | "
+                    df_output += format_chunk(df_chunk,
+                                              4, 8, chunk, args.decimal) + " | "
+                    df_output += format_chunk(df_chunk,
+                                              8, 12, chunk, args.decimal) + " | "
+                    df_output += format_chunk(df_chunk, 12,
+                                              16, chunk, args.decimal) + df_text
 
                 if len(chunk) % b != 0:
                     if args.decimal:
                         output += "   " * (((b * 2) - 4 - len(chunk))) + text
                         if args.diff:
-                            df_output += "   " * (((b * 2) - 4 - len(df_chunk))) + df_text
+                            df_output += "   " * \
+                                (((b * 2) - 4 - len(df_chunk))) + df_text
                     else:
                         output += "   " * (b + 4 - len(chunk)) + text
                         if args.diff:
-                            df_output += "   " * (b + 4 - len(df_chunk)) + df_text
+                            df_output += "   " * \
+                                (b + 4 - len(df_chunk)) + df_text
                 else:
                     output += " " + text
                     if args.diff:
                         output += df_output
 
-                print output        
+                print output
                 offset += 16
 
             print
