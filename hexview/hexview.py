@@ -49,11 +49,6 @@ def make_color(c, df_c=False):
     Formats color for byte depends on if it's printable ASCII
     """
 
-    # if character is \0 added for padding return immediately as black
-    if c == "\0":
-        return "{}{:02X}{}".format(
-                COLORS['black'], ord(c), COLORS['white'])
-
     # for file diff - if characters are different, use bg color for char:
     diff = (c != df_c) if df_c != False else False
     # printable ASCII:
@@ -99,14 +94,6 @@ def format_chunk(chunk, start, stop, df_chunk=False, dec=False):
     """
     Formats one full chunk (byte)
     """
-
-    # add padding if chunk is shorter than 16 characters, same for df_chunk
-    if len(chunk) < 16:
-        chunk += "\0" * (16 - len(chunk))
-    
-    if df_chunk and len(df_chunk) < 16:
-        df_chunk += "\0" * (16 - len(df_chunk))
-
     if dec:
         if df_chunk:
             return " ".join("{}:{}{:#04}{} ".format(make_color(c, df_c), COLORS['grey'],
