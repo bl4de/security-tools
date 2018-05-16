@@ -79,8 +79,8 @@ BROWSER_PATTERNS = [
     ".*window.open\(",
     ".*window.postMessage\(",
     ".*.addEventListener\(['\"]message['\"]",
-    ".*\$.ajax",
-    ".*\$.getJSON",
+    ".*.ajax",
+    ".*.getJSON",
     ".*\$http."
 ]
 
