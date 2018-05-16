@@ -65,6 +65,9 @@ optional arguments:
   -T, --skip-test-files
                         when scanning recursively, do not check test files
                         (usually test.js)
+  -H, --include-html-patterns
+                        include HTML patterns, like <a href=, <img src=,
+                        <iframe src= etc.
   -P PATTERN, --pattern PATTERN
                         define your own pattern to look for. Pattern has to be
                         a RegEx, like '.*fork\('. nodestructor removes
@@ -177,6 +180,27 @@ This will scan only ```body-parser```, ```chalk``` and ```commander``` directori
 #### -T or --skip-test-files
 
 This option allows to exclude form scanning typical test files, like ```test.js```, ```tests.js``` etc. Feel free to extend this for your needs (defined in source as ```TEST_FILES``` array)
+
+
+#### -H or --include-html-patterns
+
+This option allows to search HTML code patterns, like ```<a href="">``` or ```<iframe src="">```. It's a separate options, because in client-side scanned files it might produce a huge number of false-positives, however in NodeJS applications such patterns might be exploitable when HTML is generated dynamically and such patterns are concatenated with user input.
+
+Here's an example of code vulnerable to XSS, where ```name``` variable is concatenated with HTML:
+
+```
+res.setHeader('Content-Type', 'text/html');                                         
+    res.write('<html><body>');
+    for(var f = 0; f < results.length; f++) {
+        var name = results[f].name;
+        var normalized = url + '/' + name;
+        while(normalized[0] == '/') { normalized = normalized.slice(1, normalized.length); }
+        res.write('\r\n<p><a href="/' + normalized + '">' + name + '</a></p>');
+    }
+    res.end('\r\n</body></html>');
+```
+
+HTML patterns are defined in ```HTML_PATTERNS``` array in ```nodestructor.py``` file. By default, they are not included in tests. ```-H``` allows to use them as well.
 
 
 #### -P or --pattern

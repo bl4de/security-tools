@@ -50,9 +50,6 @@ NODEJS_PATTERNS = [
     ".*bodyParser\(",
     ".*eval\(",
     ".*res.write\(",
-    ".*<a.*href.*>",
-    ".*<img.*src.*>",
-    ".*<iframe.*src.*>",
     ".*child_process",
     ".*child_process.exec\(",
     ".* Function\(",
@@ -63,6 +60,12 @@ NODEJS_PATTERNS = [
     ".*setInterval\(",
     ".*setImmediate\(",
     ".*newBuffer\("
+]
+
+HTML_PATTERNS = [
+    ".*<a.*href.*>",
+    ".*<img.*src.*>",
+    ".*<iframe.*src.*>"
 ]
 
 BROWSER_PATTERNS = [
@@ -201,6 +204,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "-T", "--skip-test-files", help="when scanning recursively, do not check test files (usually test.js)", action="store_true")
     parser.add_argument(
+        "-H", "--include-html-patterns", help="include HTML patterns, like <a href=, <img src=, <iframe src= etc.", action="store_true")
+    parser.add_argument(
         "-P", "--pattern", help="define your own pattern to look for. Pattern has to be a RegEx, like '.*fork\('. nodestructor removes whiitespaces, so if you want to look for 'new fn()', your pattern should look like this: '.*newfn\(\)' (all special characters for RegEx have to be escaped with \ )")
 
     ARGS = parser.parse_args()
@@ -219,6 +224,9 @@ if __name__ == "__main__":
         SKIP_NODE_MODULES = ARGS.skip_node_modules
         SKIP_TEST_FILES = ARGS.skip_test_files
 
+        if ARGS.include_html_patterns:
+            PATTERNS = PATTERNS + HTML_PATTERNS
+            
         if ARGS.recursive:
             for subdir, dirs, files in os.walk(BASE_PATH):
                 if not INCLUDE:
