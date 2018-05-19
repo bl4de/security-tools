@@ -75,6 +75,8 @@ BROWSER_PATTERNS = [
     ".*appendChild\(",
     ".*document.write\(",
     ".*document.location",
+    ".*document.cookie",
+    ".*navigator.userAgent",
     ".*location.href",
     ".*window.open\(",
     ".*window.postMessage\(",
