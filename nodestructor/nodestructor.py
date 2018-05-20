@@ -70,8 +70,10 @@ HTML_PATTERNS = [
 
 BROWSER_PATTERNS = [
     ".*URLSearchParams\(",
-    ".*innerHTML\(",
-    ".*outerHTML\(",
+    ".*innerHTML",
+    ".*innerText",
+    ".*textContent",
+    ".*outerHTML",
     ".*appendChild\(",
     ".*document.write\(",
     ".*document.location",
