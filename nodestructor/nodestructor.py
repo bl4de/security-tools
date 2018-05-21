@@ -77,6 +77,10 @@ BROWSER_PATTERNS = [
     ".*appendChild\(",
     ".*document.write\(",
     ".*document.location",
+    ".*location.href",
+    ".*location.search",
+    ".*location.hash",
+    ".*location.pathname",
     ".*document.cookie",
     ".*navigator.userAgent",
     ".*location.href",
@@ -230,7 +234,7 @@ if __name__ == "__main__":
 
         if ARGS.include_html_patterns:
             PATTERNS = PATTERNS + HTML_PATTERNS
-            
+
         if ARGS.recursive:
             for subdir, dirs, files in os.walk(BASE_PATH):
                 if not INCLUDE:
