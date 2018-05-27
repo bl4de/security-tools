@@ -1,6 +1,5 @@
 #!/usr/bin/python
 """
-
  ██░ ██ ▓█████ ▒██   ██▒ ██▒   █▓ ██▓▓█████  █     █░
 ▓██░ ██▒▓█   ▀ ▒▒ █ █ ▒░▓██░   █▒▓██▒▓█   ▀ ▓█░ █ ░█░
 ▒██▀▀██░▒███   ░░  █   ░ ▓██  █▒░▒██▒▒███   ▒█░ █ ░█ 
@@ -11,8 +10,6 @@
  ░  ░░ ░   ░    ░    ░       ░░   ▒ ░   ░     ░   ░  
  ░  ░  ░   ░  ░ ░    ░        ░   ░     ░  ░    ░    
                              ░                       
-
-hexview.py - hex dump of any file
 
 based on: "Tutorial: Making your own Hex Dump Program" by DrapsTV
 https://www.youtube.com/watch?v=B8nRrw_M_nk&index=1&list=WL
