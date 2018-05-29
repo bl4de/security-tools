@@ -7,7 +7,7 @@
 I've created this tool while working on [Node.js third-party modules Bug Bounty Program](https://hackerone.com/nodejs-ecosystem) on HackerOne and I just add any new "suspicious" code pattern that in certain conditions might lead to security vulnerability (like calls to ```fs``` module functions like ```readFile()``` or ```createReadStream()``` - without proper sanitization this sometimes leads to Path Traversals and Local File Include vulnerabilities - you can read more about such vulnerabilities found in many ```npm``` modules [here](https://github.com/bl4de/research/blob/master/npm-static-servers-most-common-issues/npm-static-servers-most-common-issues.md) )
 
 
-There are two sets of dangerous patterns implemented: one is NodeJS application specific (like ```child_process``` or ```fs.readFile```), and the other one is more focused on browser patterns (like ```innerHTML``` or ```location.href```).
+There are three sets of dangerous patterns implemented: one is NodeJS application specific (like ```child_process``` or ```fs.readFile```) - ```NODEJS_PATTERNS```, one JavaScript related to browser apps (like ```location.href```) - ```BROWSER_PATTERNS``` and the last one are HTML patterns which params might be exploited via eg. DOM-based XSS - ```HTML_PATTERNS```.
 
 Important thing is that the presence of such patterns does not mean application is vulnerable. It might be, if user input is processed there in an insecure way, eg. input from the user is directly used in ```innerHTML``` call, which might cause DOM-based XSS.
 
