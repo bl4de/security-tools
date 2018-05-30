@@ -62,12 +62,6 @@ NODEJS_PATTERNS = [
     ".*newBuffer\("
 ]
 
-HTML_PATTERNS = [
-    ".*<a.*href.*>",
-    ".*<img.*src.*>",
-    ".*<iframe.*src.*>"
-]
-
 BROWSER_PATTERNS = [
     ".*URLSearchParams\(",
     ".*innerHTML",
@@ -94,7 +88,13 @@ BROWSER_PATTERNS = [
     ".*\$http."
 ]
 
-PATTERNS = NODEJS_PATTERNS + BROWSER_PATTERNS
+HTML_PATTERNS = [
+    ".*<a.*href.*>",
+    ".*<img.*src.*>",
+    ".*<iframe.*src.*>"
+]
+
+PATTERNS = NODEJS_PATTERNS
 TOTAL_FILES = 0
 PATTERNS_IDENTIFIED = 0
 FILES_WITH_IDENTIFIED_PATTERNS = 0
@@ -235,7 +235,7 @@ if __name__ == "__main__":
         SKIP_TEST_FILES = ARGS.skip_test_files
 
         if ARGS.include_html_patterns:
-            PATTERNS = PATTERNS + HTML_PATTERNS
+            PATTERNS = PATTERNS + HTML_PATTERNS + BROWSER_PATTERNS
 
         if ARGS.recursive:
             for subdir, dirs, files in os.walk(BASE_PATH):
