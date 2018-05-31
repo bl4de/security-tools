@@ -1,16 +1,5 @@
 #!/usr/bin/python
 """
- ██░ ██ ▓█████ ▒██   ██▒ ██▒   █▓ ██▓▓█████  █     █░
-▓██░ ██▒▓█   ▀ ▒▒ █ █ ▒░▓██░   █▒▓██▒▓█   ▀ ▓█░ █ ░█░
-▒██▀▀██░▒███   ░░  █   ░ ▓██  █▒░▒██▒▒███   ▒█░ █ ░█ 
-░▓█ ░██ ▒▓█  ▄  ░ █ █ ▒   ▒██ █░░░██░▒▓█  ▄ ░█░ █ ░█ 
-░▓█▒░██▓░▒████▒▒██▒ ▒██▒   ▒▀█░  ░██░░▒████▒░░██▒██▓ 
- ▒ ░░▒░▒░░ ▒░ ░▒▒ ░ ░▓ ░   ░ ▐░  ░▓  ░░ ▒░ ░░ ▓░▒ ▒  
- ▒ ░▒░ ░ ░ ░  ░░░   ░▒ ░   ░ ░░   ▒ ░ ░ ░  ░  ▒ ░ ░  
- ░  ░░ ░   ░    ░    ░       ░░   ▒ ░   ░     ░   ░  
- ░  ░  ░   ░  ░ ░    ░        ░   ░     ░  ░    ░    
-                             ░                       
-
 based on: "Tutorial: Making your own Hex Dump Program" by DrapsTV
 https://www.youtube.com/watch?v=B8nRrw_M_nk&index=1&list=WL
 
@@ -111,9 +100,10 @@ def format_chunk(chunk, start, stop, df_chunk=False, dec=False):
                                                 ord(c), COLORS['white']) for c in chunk[start:stop])
     else:
         if df_chunk:
-            return " ".join("{} ".format(make_color(c, df_c)) for c, df_c in itertools.izip(chunk[start:stop],df_chunk[start:stop]))
-        return  " ".join("{} ".format(make_color(c)) for c in chunk[start:stop])
-        
+            return " ".join("{} ".format(make_color(c, df_c)) 
+                for c, df_c in itertools.izip(chunk[start:stop], df_chunk[start:stop]))
+        return " ".join("{} ".format(make_color(c)) for c in chunk[start:stop])
+
 
 def extract_shellcode(start, end, read_binary):
     """
