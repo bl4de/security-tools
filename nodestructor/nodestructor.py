@@ -10,7 +10,7 @@ nodestructor.py - static code analysis for Node.js applications
 by bl4de
 GitHub: bl4de | Twitter: @_bl4de | hackerone.com/bl4de  bloorq@gmail.com
 """
-import sys
+
 import os
 import re
 import argparse
