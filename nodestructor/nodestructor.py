@@ -75,6 +75,7 @@ BROWSER_PATTERNS = [
     ".*location.href",
     ".*location.search",
     ".*location.hash",
+    ".*location.host",
     ".*location.pathname",
     ".*document.cookie",
     ".*history.pushState\(",
