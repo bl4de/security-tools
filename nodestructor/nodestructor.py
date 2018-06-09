@@ -81,7 +81,6 @@ BROWSER_PATTERNS = [
     ".*history.pushState\(",
     ".*history.replaceState\(",
     ".*navigator.userAgent",
-    ".*location.href",
     ".*window.open\(",
     ".*window.postMessage\(",
     ".*.addEventListener\(['\"]message['\"]",
