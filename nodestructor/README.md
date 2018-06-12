@@ -200,6 +200,8 @@ res.setHeader('Content-Type', 'text/html');
     res.end('\r\n</body></html>');
 ```
 
+Using `-H` option enables `nodestructor` to look for such patterns.
+
 HTML patterns are defined in ```HTML_PATTERNS``` array in ```nodestructor.py``` file. By default, they are not included in tests. ```-H``` allows to use them as well.
 
 
