@@ -63,6 +63,11 @@ NODEJS_PATTERNS = [
     ".*constructor\("
 ]
 
+NPM_PATTERNS = [
+    ".*serialize\(",
+    ".*unserialize\("
+]
+
 BROWSER_PATTERNS = [
     ".*URLSearchParams\(",
     ".*innerHTML",
@@ -95,7 +100,7 @@ HTML_PATTERNS = [
     ".*<iframe.*src.*>"
 ]
 
-PATTERNS = NODEJS_PATTERNS
+PATTERNS = NODEJS_PATTERNS + NPM_PATTERNS
 TOTAL_FILES = 0
 PATTERNS_IDENTIFIED = 0
 FILES_WITH_IDENTIFIED_PATTERNS = 0

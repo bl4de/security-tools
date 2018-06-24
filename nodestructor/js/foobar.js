@@ -1,4 +1,3 @@
-
 'use strict'
 
 function fn(arg) {
@@ -7,4 +6,3 @@ function fn(arg) {
 
 let x = 20
 x = fn(x)
-
