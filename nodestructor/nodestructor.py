@@ -185,7 +185,7 @@ def main(src, pattern=""):
         i += 1
         __line = _line.strip()
         for __pattern in PATTERNS:
-            __rex = re.compile(__pattern)
+            __rex = re.compile(__pattern, re.IGNORECASE)
             if __rex.match(__line.replace(' ', '')):
                 if print_filename:
                     FILES_WITH_IDENTIFIED_PATTERNS = FILES_WITH_IDENTIFIED_PATTERNS + 1
