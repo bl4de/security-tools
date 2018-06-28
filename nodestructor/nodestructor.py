@@ -119,6 +119,7 @@ EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'array', 'core-util', '.bin', 'baby
                   '.git', '.idea']
 INCLUDE = []
 PATTERN = ""
+EXCLUDE_PATTERNS = []
 
 
 def show_banner():
@@ -154,15 +155,15 @@ def process_files(subdirectory, sd_files, pattern=""):
 
             if not '/node_modules/' in subdirectory or ('/node_modules/' in subdirectory and SKIP_NODE_MODULES is False):
                 if (SKIP_TEST_FILES is False):
-                    main(current_filename, pattern)
+                    perform_code_analysis(current_filename, pattern)
                     TOTAL_FILES = TOTAL_FILES + 1
                 else:
                     if __file not in TEST_FILES and "/test" not in current_filename and "/tests" not in current_filename:
-                        main(current_filename, pattern)
+                        perform_code_analysis(current_filename, pattern)
                         TOTAL_FILES = TOTAL_FILES + 1
 
 
-def main(src, pattern=""):
+def perform_code_analysis(src, pattern=""):
     """
     performs code analysis, line by line
     """
@@ -257,7 +258,7 @@ if __name__ == "__main__":
             if (S_FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
                 and S_FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
                     and S_FILENAME[-7:] not in MINIFIED_EXT):
-                main(S_FILENAME, PATTERN)
+                perform_code_analysis(S_FILENAME, PATTERN)
                 TOTAL_FILES = TOTAL_FILES + 1
 
     except Exception as ex:
