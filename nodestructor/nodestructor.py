@@ -186,7 +186,7 @@ def perform_code_analysis(src, pattern=""):
         i += 1
         __line = _line.strip()
         for __pattern in PATTERNS:
-            __rex = re.compile(__pattern, re.IGNORECASE)
+            __rex = re.compile(__pattern)
             if __rex.match(__line.replace(' ', '')):
                 if print_filename:
                     FILES_WITH_IDENTIFIED_PATTERNS = FILES_WITH_IDENTIFIED_PATTERNS + 1
