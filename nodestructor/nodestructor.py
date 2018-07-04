@@ -91,7 +91,8 @@ BROWSER_PATTERNS = [
     ".*.addEventListener\(['\"]message['\"]",
     ".*.ajax",
     ".*.getJSON",
-    ".*\$http."
+    ".*\$http.",
+    ".*navigator.sendBeacon\("
 ]
 
 HTML_PATTERNS = [
