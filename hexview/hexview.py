@@ -146,6 +146,7 @@ if __name__ == "__main__":
     b = 16
 
     # for -D / --diff - second file has to be opened
+    # https://github.com/bl4de/security-tools/issues/22 [RESOLVED]
     if args.diff:
         diff_file = open(args.diff, 'rb')
 
