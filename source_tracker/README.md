@@ -76,4 +76,5 @@ $ ./compare.py http://localhost:8080/test.html
 - refactoring
 - multiple websites compare (loaded list form file, eg. output from Aquatone?)
 - colorful output :D
+- multiple snapshots (?)
 
