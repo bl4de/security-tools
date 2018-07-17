@@ -52,16 +52,26 @@ def abort(status_code):
     exit(0)
 
 
-def print_diff(snapshot_line, site_source, line_counter):
-    print '\n{}-- LINE {} {}{}'.format(colors['blue'],
+def print_line(line, color):
+    # TBD
+    return
+
+def print_diff(snapshot_source, site_source, line_counter):
+    print '\n{}-- Change in line {} {}{}'.format(colors['red'],
                                        line_counter + 1, '-' * 80 + '\n', colors['white'])
+
     print '{}>>>>>  snaphsot line {}'.format(
         colors['yellow'], line_counter + 1)
-    print '{}{}'.format(colors['cyan'], snapshot_line.strip())
+    
+    print '{}{}:\t{}{}'.format(colors['white'],line_counter, colors['grey'], snapshot_source[line_counter - 1].strip())
+    print '{}{}:\t{}{}'.format(colors['white'],line_counter + 1, colors['cyan'], snapshot_source[line_counter].strip())
+    print '{}{}:\t{}{}'.format(colors['white'],line_counter + 2, colors['grey'], snapshot_source[line_counter + 1].strip())
+    
     print '\n{}<<<<<  site source line {}'.format(
         colors['yellow'], line_counter + 1)
-    print '{}{}{}'.format(
-        colors['cyan'], site_source[line_counter].strip(), colors['white'])
+    print '{}{}:\t{}{}'.format(colors['white'], line_counter, colors['grey'], site_source[line_counter - 1].strip())
+    print '{}{}:\t{}{}'.format(colors['white'], line_counter + 1, colors['cyan'], site_source[line_counter].strip())
+    print '{}{}:\t{}{}{}'.format(colors['white'], line_counter + 2, colors['grey'], site_source[line_counter + 1].strip(), colors['white'])
 
 
 def main(site_url):
@@ -82,7 +92,7 @@ def main(site_url):
 
         for snapshot_line in snapshot_source:
             if snapshot_line.strip() != site_source[line_counter].strip():
-                print_diff(snapshot_line, site_source, line_counter)
+                print_diff(snapshot_source, site_source, line_counter)
                 differencies = differencies + 1
 
             line_counter = line_counter + 1
