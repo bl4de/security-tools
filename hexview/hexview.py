@@ -7,11 +7,29 @@ https://www.youtube.com/watch?v=B8nRrw_M_nk&index=1&list=WL
 import argparse
 import os
 import itertools
+import binascii
 
 ASCII = 'ascii'
 CTRL = 'ctrl'
 OTHER = 'other'
 
+# https://en.wikipedia.org/wiki/List_of_file_signatures
+FILE_SIGNATURES = {
+    'a1b2c3d4': 'Libpcap File Format',
+    'd4c3b2a1': 'Libpcap File Format',
+    '0a0d0d0a': 'PCAP Next Generation Dump File Format (pcapng)',
+    'edabeedb': 'RedHat Package Manager (RPM) package',
+    '53503031': 'Amazon Kindle Update Package',
+    '00': 'IBM Storyboard bitmap file; Windows Program Information File; Mac Stuffit Self-Extracting Archive; IRIS OCR data file',
+    'BEBAFECA': 'Palm Desktop Calendar Archive',
+    '00014244': 'Palm Desktop To Do Archive',
+    '00014454': 'Palm Desktop Calendar Archive',
+    '00010000': 'Palm Desktop Data File (Access format)',
+    '00000100': 'Computer icon encoded in ICO file format',
+    '667479703367': '3rd Generation Partnership Project 3GPP and 3GPP2 multimedia files',
+    '1FA0': 'Compressed file (often tar zip) using LZH algorithm',
+    'FFD8FFE00010': 'JPEG raw or in the JFIF or Exif file format'
+}
 
 COLORS = {
     "black": '\33[0;30m\33[40m',
@@ -29,6 +47,19 @@ COLORS = {
     "lightgrey": '\33[0;37m\33[40m',
     "lightblue": '\33[0;94m\33[40m'
 }
+
+
+def file_type(file_signature):
+    """
+    Recognize file type based on file 'magic numbers'
+    """
+    file_signature = binascii.hexlify(file_signature).upper()
+    recognized = 'ASCII text (no file signature found)'
+    for signature in FILE_SIGNATURES:
+        if file_signature.startswith(signature.upper()):
+            recognized = FILE_SIGNATURES[signature]
+
+    return "{}\n[+] File type: {}{}{}".format(COLORS['cyan'], COLORS['yellow'], recognized, COLORS['white'])
 
 
 def char_type(c):
@@ -100,8 +131,8 @@ def format_chunk(chunk, start, stop, df_chunk=False, dec=False):
                                                 ord(c), COLORS['white']) for c in chunk[start:stop])
     else:
         if df_chunk:
-            return " ".join("{} ".format(make_color(c, df_c)) 
-                for c, df_c in itertools.izip(chunk[start:stop], df_chunk[start:stop]))
+            return " ".join("{} ".format(make_color(c, df_c))
+                            for c, df_c in itertools.izip(chunk[start:stop], df_chunk[start:stop]))
         return " ".join("{} ".format(make_color(c)) for c in chunk[start:stop])
 
 
@@ -151,6 +182,9 @@ if __name__ == "__main__":
         diff_file = open(args.diff, 'rb')
 
     if args.file:
+        # read first 8 bytes to recognize file type
+        print file_type(open(args.file, 'rb').read(8))
+
         with open(args.file, 'rb') as infile:
             if args.start > -1 and args.end and (int(args.start, 16) > -1 and int(args.end, 16) > int(args.start, 16)):
                 __FROM = int(args.start, 16)
