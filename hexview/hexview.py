@@ -29,6 +29,8 @@ FILE_SIGNATURES = {
     '667479703367': '3rd Generation Partnership Project 3GPP and 3GPP2 multimedia files',
     '1FA0': 'Compressed file (often tar zip) using LZH algorithm',
     '425A68': 'Compressed file using Bzip2 algorithm',
+    '474946383761': 'Image file encoded in the Graphics Interchange Format (GIF) - GIF87a',
+    '474946383961': 'Image file encoded in the Graphics Interchange Format (GIF) - GIF89a',
     'FFD8FFE00010': 'JPEG raw or in the JFIF or Exif file format'
 }
 

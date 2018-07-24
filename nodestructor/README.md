@@ -68,6 +68,7 @@ optional arguments:
   -H, --include-html-patterns
                         include HTML patterns, like <a href=, <img src=,
                         <iframe src= etc.
+  -U, --include-urls    identify URLs
   -P PATTERN, --pattern PATTERN
                         define your own pattern to look for. Pattern has to be
                         a RegEx, like '.*fork\('. nodestructor removes
@@ -180,6 +181,11 @@ This will scan only ```body-parser```, ```chalk``` and ```commander``` directori
 #### -T or --skip-test-files
 
 This option allows to exclude form scanning typical test files, like ```test.js```, ```tests.js``` etc. Feel free to extend this for your needs (defined in source as ```TEST_FILES``` array)
+
+
+#### -U or --inlcude-urls
+
+Enables searching for URLs in source code. Disabled by default.
 
 
 #### -H or --include-html-patterns

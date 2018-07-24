@@ -101,6 +101,9 @@ HTML_PATTERNS = [
     ".*<iframe.*src.*>"
 ]
 
+URL_REGEX = re.compile("(https|http):\/\/[a-zA-Z0-9#=\-\?\&\/\.]+")
+URLS = []
+
 PATTERNS = NODEJS_PATTERNS + NPM_PATTERNS
 TOTAL_FILES = 0
 PATTERNS_IDENTIFIED = 0
@@ -113,6 +116,7 @@ SKIP_ALWAYS = ['package.json', 'README.md']
 TEST_FILES = ['test.js', 'tests.js']
 SKIP_NODE_MODULES = False
 SKIP_TEST_FILES = False
+IDENTIFY_URLS = False
 EXCLUDE = []
 EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'array', 'core-util', '.bin', 'babylon', 'next-tick',
                   'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-', 'mime',
@@ -136,7 +140,7 @@ def printcodeline(_line, i, _fn, _message):
     """
     Formats and prints line of output
     """
-    _fn = _fn.replace("*", "").replace("\\", "").replace(".(", '(')[1:len(_fn)]
+    _fn = _fn.replace("*", "").replace("\\", "").replace(".(", '(')[0:len(_fn)]
     print "::  line %d :: \33[33;1m%s\33[0m %s " % (i, _fn, _message)
     print beautyConsole.getColor("grey") + _line + \
         beautyConsole.getSpecialChar("endline")
@@ -197,6 +201,15 @@ def perform_code_analysis(src, pattern=""):
                 printcodeline(_line[0:120] + "...", i, __pattern,
                               ' code pattern identified: ')
 
+            # URL searching
+            if IDENTIFY_URLS == True:
+                if URL_REGEX.search(__line):
+                    __url = URL_REGEX.search(__line).group(0)
+                    # show each unique URL only once
+                    if __url not in URLS:
+                        printcodeline(__url, i, __url, ' URL found: ')
+                        URLS.append(__url)
+
     if patterns_found_in_file > 0:
         PATTERNS_IDENTIFIED = PATTERNS_IDENTIFIED + patterns_found_in_file
         print beautyConsole.getColor("red") + \
@@ -224,6 +237,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "-H", "--include-html-patterns", help="include HTML patterns, like <a href=, <img src=, <iframe src= etc.", action="store_true")
     parser.add_argument(
+        "-U", "--include-urls", help="identify URLs", action="store_true")
+    parser.add_argument(
         "-P", "--pattern", help="define your own pattern to look for. Pattern has to be a RegEx, like '.*fork\('. nodestructor removes whiitespaces, so if you want to look for 'new fn()', your pattern should look like this: '.*newfn\(\)' (all special characters for RegEx have to be escaped with \ )")
 
     ARGS = parser.parse_args()
@@ -241,6 +256,7 @@ if __name__ == "__main__":
 
         SKIP_NODE_MODULES = ARGS.skip_node_modules
         SKIP_TEST_FILES = ARGS.skip_test_files
+        IDENTIFY_URLS = ARGS.include_urls
 
         if ARGS.include_html_patterns:
             PATTERNS = PATTERNS + HTML_PATTERNS + BROWSER_PATTERNS
