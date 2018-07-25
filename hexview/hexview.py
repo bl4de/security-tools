@@ -31,7 +31,12 @@ FILE_SIGNATURES = {
     '425A68': 'Compressed file using Bzip2 algorithm',
     '474946383761': 'Image file encoded in the Graphics Interchange Format (GIF) - GIF87a',
     '474946383961': 'Image file encoded in the Graphics Interchange Format (GIF) - GIF89a',
-    'FFD8FFE00010': 'JPEG raw or in the JFIF or Exif file format'
+    'FFD8FFE00010': 'JPEG raw or in the JFIF or Exif file format',
+    '49492A00': 'Tagged Image File Format (tiff, Little Endian format)',
+    '4D4D002A': 'Tagged Image File Format (tiff, Big Endian)',
+    '49492A0010000000': 'Canon RAW Format Version 2',
+    '4352':'Canon RAW format is based on the TIFF file format'
+
 }
 
 COLORS = {
