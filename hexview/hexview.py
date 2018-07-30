@@ -35,7 +35,12 @@ FILE_SIGNATURES = {
     '49492A00': 'Tagged Image File Format (tiff, Little Endian format)',
     '4D4D002A': 'Tagged Image File Format (tiff, Big Endian)',
     '49492A0010000000': 'Canon RAW Format Version 2',
-    '4352':'Canon RAW format is based on the TIFF file format'
+    '4352':'Canon RAW format is based on the TIFF file format',
+    '802A5FD7': 'Kodak Cineon image',
+    '524E4301':'Compressed file using Rob Northen Compression version 1',
+    '524E4302':'Compressed file using Rob Northen Compression version 2',
+    '53445058':'SMPTE DPX image (big endian format)',
+    '58504453':'SMPTE DPX image (little endian format)'
 
 }
 
