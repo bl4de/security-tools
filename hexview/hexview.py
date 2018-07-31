@@ -40,7 +40,12 @@ FILE_SIGNATURES = {
     '524E4301':'Compressed file using Rob Northen Compression version 1',
     '524E4302':'Compressed file using Rob Northen Compression version 2',
     '53445058':'SMPTE DPX image (big endian format)',
-    '58504453':'SMPTE DPX image (little endian format)'
+    '58504453':'SMPTE DPX image (little endian format)',
+    '762F3101': 'OpenEXR image',
+    '425047FB':'Better Portable Graphics',
+    'FFD8FFDB':'JPEG raw or in the JFIF or Exif file format',
+    'FFD8FFE000104A4649460001':'JPEG raw or in the JFIF or Exif file format',
+    'FFD8FFE1':'JPEG raw or in the JFIF or Exif file format'
 
 }
 
