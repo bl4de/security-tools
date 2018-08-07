@@ -45,7 +45,12 @@ FILE_SIGNATURES = {
     '425047FB':'Better Portable Graphics',
     'FFD8FFDB':'JPEG raw or in the JFIF or Exif file format',
     'FFD8FFE000104A4649460001':'JPEG raw or in the JFIF or Exif file format',
-    'FFD8FFE1':'JPEG raw or in the JFIF or Exif file format'
+    'FFD8FFE1':'JPEG raw or in the JFIF or Exif file format',
+    '464F52':'IFF Interleaved Bitmap Image',
+    '4C424D':'IFF Interleaved Bitmap Image',
+    '464F52':'IFF 8-Bit Sampled Voice',
+    '535658':'IFF 8-Bit Sampled Voice',
+    '464F524D': 'IFF (misc filetypes)'
 
 }
 
