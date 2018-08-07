@@ -50,7 +50,15 @@ FILE_SIGNATURES = {
     '4C424D':'IFF Interleaved Bitmap Image',
     '464F52':'IFF 8-Bit Sampled Voice',
     '535658':'IFF 8-Bit Sampled Voice',
-    '464F524D': 'IFF (misc filetypes)'
+    '464F524D': 'IFF (misc filetypes)',
+    '4C5A4950': 'lzip compressed file',
+    '4D5A':'DOS MZ executable file format and its descendants (including NE and PE)',
+    '504B0304':'zip file format and formats based on it, such as JAR, ODF, OOXML',
+    '504B0506':'zip file format and formats based on it, such as JAR, ODF, OOXML (empty archive)',
+    '504B0708':'zip file format and formats based on it, such as JAR, ODF, OOXML (spanned archive)',
+    '526172211A0700':'RAR archive version 1.50 onwards',
+    '526172211A070100':'RAR archive version 5.0 onwards',
+    '7F454C46': 'ELF Executable and Linkable Format'
 
 }
 
