@@ -58,7 +58,10 @@ FILE_SIGNATURES = {
     '504B0708':'zip file format and formats based on it, such as JAR, ODF, OOXML (spanned archive)',
     '526172211A0700':'RAR archive version 1.50 onwards',
     '526172211A070100':'RAR archive version 5.0 onwards',
-    '7F454C46': 'ELF Executable and Linkable Format'
+    '7F454C46': 'ELF Executable and Linkable Format',
+    '89504E470D0A1A0A':'Image encoded in the Portable Network Graphics format (PNG)',
+    'CAFEBABE':'Java class file, Mach-O Fat Binary',
+    'EFBBBF':'UTF-8 encoded Unicode byte order mark, commonly seen in text files'
 
 }
 
