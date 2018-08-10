@@ -61,8 +61,14 @@ FILE_SIGNATURES = {
     '7F454C46': 'ELF Executable and Linkable Format',
     '89504E470D0A1A0A':'Image encoded in the Portable Network Graphics format (PNG)',
     'CAFEBABE':'Java class file, Mach-O Fat Binary',
-    'EFBBBF':'UTF-8 encoded Unicode byte order mark, commonly seen in text files'
-
+    'EFBBBF':'UTF-8 encoded Unicode byte order mark, commonly seen in text files',
+    'FEEDFACE':'Mach-O binary (32-bit)',
+    'FEEDFACF':'Mach-O binary (64-bit)',
+    'CEFAEDFE':'Mach-O binary (reverse byte ordering scheme, 32-bit)',
+    'CFFAEDFE':'Mach-O binary (reverse byte ordering scheme, 64-bit)',
+    'FFFE':'Byte-order mark for text file encoded in little-endian 16-bit Unicode Transfer Format',
+    'FFFE0000':'Byte-order mark for text file encoded in little-endian 32-bit Unicode Transfer Format',
+    
 }
 
 COLORS = {
