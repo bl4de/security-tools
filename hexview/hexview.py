@@ -68,7 +68,8 @@ FILE_SIGNATURES = {
     'CFFAEDFE':'Mach-O binary (reverse byte ordering scheme, 64-bit)',
     'FFFE':'Byte-order mark for text file encoded in little-endian 16-bit Unicode Transfer Format',
     'FFFE0000':'Byte-order mark for text file encoded in little-endian 32-bit Unicode Transfer Format',
-    
+    '25215053':'PostScript document',
+    '25504446':'PDF document'
 }
 
 COLORS = {
