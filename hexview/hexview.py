@@ -69,7 +69,9 @@ FILE_SIGNATURES = {
     'FFFE':'Byte-order mark for text file encoded in little-endian 16-bit Unicode Transfer Format',
     'FFFE0000':'Byte-order mark for text file encoded in little-endian 32-bit Unicode Transfer Format',
     '25215053':'PostScript document',
-    '25504446':'PDF document'
+    '25504446':'PDF document',
+    '3026B2758E66CF11':'Advanced Systems Format (asf, wma, wmv)',
+    'A6D900AA0062CE6C':'Advanced Systems Format (asf, wma, wmv)'
 }
 
 COLORS = {
