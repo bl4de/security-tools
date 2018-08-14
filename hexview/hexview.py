@@ -100,7 +100,15 @@ FILE_SIGNATURES = {
     '746F7833':'Open source portable voxel file',
     '4D4C5649':'Magic Lantern Video file',
     '44434D0150413330':'Windows Update Binary Delta Compression',
-    '377ABCAF271C':'7-Zip File Format'
+    '377ABCAF271C':'7-Zip File Format',
+    '1F8B':'GZIP file',
+    'FD377A585A0000':'XZ compression utility using LZMA/LZMA2 compression',
+    '04224D18':'LZ4 Frame Format',
+    '4D534346':'Microsoft Cabinet file',
+    '535A444488F02733':'Microsoft compressed file in Quantum format',
+    '464C4946':'Free Lossless Image Format',
+    '1A45DFA3':'Matroska media container, including WebM',
+    '3082':'DER encoded X.509 certificate'
 }
 
 COLORS = {
