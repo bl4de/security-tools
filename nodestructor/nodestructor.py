@@ -92,7 +92,16 @@ BROWSER_PATTERNS = [
     ".*.ajax",
     ".*.getJSON",
     ".*\$http.",
-    ".*navigator.sendBeacon\("
+    ".*navigator.sendBeacon\(",
+    ".*\.add\(",
+    ".*\.append\(",
+    ".*\.after\(",
+    ".*\.before\(",
+    ".*\.html\(",
+    ".*\.prepend\(",
+    ".*\.replaceWith\(",
+    ".*\.wrap\(",
+    ".*\.wrapAll\(",
 ]
 
 HTML_PATTERNS = [
