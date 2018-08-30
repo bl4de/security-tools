@@ -1,5 +1,7 @@
 ### hexview.py
 
+![](screen1.png)
+
 hexview is an universal hex viewer for files. I've created this tool while learning some new Python skills from this awesome YT video tutorial by [DrapsTV](https://twitter.com/DrapsTV):
 
 
