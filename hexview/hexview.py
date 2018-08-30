@@ -332,11 +332,11 @@ if __name__ == "__main__":
                     COLORS['cyan'], offset, COLORS['white']) + ": "
 
                 output += format_chunk(chunk, 0, 4,
-                                       df_chunk, args.decimal) + " | "
+                                       df_chunk, args.decimal) + "   "
                 output += format_chunk(chunk, 4, 8,
-                                       df_chunk, args.decimal) + " | "
+                                       df_chunk, args.decimal) + "   "
                 output += format_chunk(chunk, 8, 12,
-                                       df_chunk, args.decimal) + " | "
+                                       df_chunk, args.decimal) + "   "
                 output += format_chunk(chunk, 12, 16, df_chunk, args.decimal)
 
                 if args.diff:
@@ -345,11 +345,11 @@ if __name__ == "__main__":
 
                     df_output = "    " + \
                         format_chunk(df_chunk, 0, 4, chunk,
-                                     args.decimal) + " | "
+                                     args.decimal) + "   "
                     df_output += format_chunk(df_chunk,
-                                              4, 8, chunk, args.decimal) + " | "
+                                              4, 8, chunk, args.decimal) + "   "
                     df_output += format_chunk(df_chunk,
-                                              8, 12, chunk, args.decimal) + " | "
+                                              8, 12, chunk, args.decimal) + "   "
                     df_output += format_chunk(df_chunk, 12,
                                               16, chunk, args.decimal) + df_text
 
