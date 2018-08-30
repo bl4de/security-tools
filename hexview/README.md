@@ -51,13 +51,13 @@ $ hexview.py -d FILENAME
 #### Bytes range
 
 
-Using ```-s``` (or ```--start```) and ```-e``` (or ```--end```) you can define range of bytes to display.
+Using ```-s``` (or ```--start```) and ```-e``` (or ```--end```) you can define range of bytes to display. Values are hexadecimal offset.
 
 
-View first 128 bytes of file:
+View first 256 bytes of file:
 
 ```
-$ hexview.py -s 0 -e 128 FILENAME
+$ hexview.py -s 0 -e ff FILENAME
 ```
 
 
@@ -79,9 +79,7 @@ main()
 {
 
     printf("Shellcode Length: %d\n", strlen(code));
-
     int (*ret)() = (int(*)())code;
-
     ret();
 }
 ```
@@ -91,15 +89,15 @@ As you can see, a string with mnemonics contains ```\xhh``` values. To easy get 
 
 
 ```
-$ hexview.py -s 0 -e 128 --shellcode
+$ hexview.py -s 0 -e 71 --shellcode
 ```
 
 The result is:
 
 ```
-$ h -s 0 -e 128 --shellcode test.c
+$ h -s 0 -e 71 --shellcode test.c
 
-[+] Shellcode extracted from byte(s) 0x000000 to 0x000128:
+[+] Shellcode extracted from byte(s) 0x000000 to 0x000071:
 
 \x69\x6e\x74\x20\x73\x28\x69\x6e\x74\x20\x78\x2c\x20\x69\x6e\x74\x20\x79\x29\x20\x7b\xa\x9\x72\x65\x74\x75\x72\x6e\x20\x78\x20\x2b\x20\x79\x3b\xa\x7d\xa\xa\x76\x6f\x69\x64\x20\x6d\x61\x69\x6e\x28\x29\x20\x7b\xa\x9\x69\x6e\x74\x20\x78\x20\x3d\x20\x31\x3b\xa\x9\x69\x6e\x74\x20\x79\x20\x3d\x20\x32\x3b\xa\xa\x9\x69\x6e\x74\x20\x73\x75\x6d\x20\x3d\x20\x73\x28\x78\x2c\x79\x29\x3b\xa\xa\x9\x72\x65\x74\x75\x72\x6e\x20\x73\x75\x6d\x3b\xa\x7d\xa
 
