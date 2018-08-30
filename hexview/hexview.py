@@ -214,7 +214,7 @@ def make_color(c, df_c=False):
             retval = "{}{:02X}{}".format(
                 COLORS['magenta'], ord(c), COLORS['white'])
 
-    return retval
+    return retval.lower()
 
 
 def format_text(c):
