@@ -8,24 +8,23 @@ import argparse
 
 
 def main(zipfilename, dictionary):
+    counter = 0
     """
     Zipfile password cracker using a brute-force dictionary attack
     """
-    # zipfilename = 'secret.zip'
-    # dictionary = '/Users/bl4de/hacking/dictionaries/passwords_2150000.txt'
-
     password = None
     zip_file = zipfile.ZipFile(zipfilename)
-    with open(dictionary, 'r') as f:
-        for line in f.readlines():
-            password = line.strip('\n')
-            # print password
-            try:
-                zip_file.extractall(pwd=password)
-                password = 'Password found: %s' % password
-            except:
-                pass
-    print password
+    passwords = open(dictionary, 'r').readlines()
+    for p in passwords:
+        password = p.strip('\n')
+        counter = counter + 1
+        if counter % 10000 == 0:
+            print "[+] {} password checked so far...".format(counter)
+        try:
+            zip_file.extractall(pwd=password)
+            print 'Password found: %s' % password
+        except:
+            pass
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
