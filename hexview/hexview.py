@@ -159,6 +159,10 @@ COLORS = {
     "lightblue": '\33[0;94m\33[40m'
 }
 
+# some globals
+upper_case = False
+
+
 
 def file_type(file_signature):
     """
@@ -188,6 +192,7 @@ def make_color(c, df_c=False):
     """
     Formats color for byte depends on if it's printable ASCII
     """
+    global upper_case
 
     # for file diff - if characters are different, use bg color for char:
     diff = (c != df_c) if df_c != False else False
@@ -214,7 +219,7 @@ def make_color(c, df_c=False):
             retval = "{}{:02X}{}".format(
                 COLORS['magenta'], ord(c), COLORS['white'])
 
-    return retval.lower()
+    return (retval if upper_case else retval.lower())
 
 
 def format_text(c):
@@ -283,6 +288,8 @@ if __name__ == "__main__":
         "-D", "--diff", help="Perform diff with FILENAME")
     parser.add_argument(
         "-S", "--shellcode", help="Extract shellcode (-s and -e has to be passed)", action="store_true")
+    parser.add_argument(
+        "-u", "--uppercase", help="Display output using uppercase characters", action="store_true")
 
     args = parser.parse_args()
     b = 16
@@ -292,6 +299,9 @@ if __name__ == "__main__":
     if args.diff:
         diff_file = open(args.diff, 'rb')
 
+    if args.uppercase:
+        upper_case = True
+    
     if args.file:
         # read first 8 bytes to recognize file type
         print file_type(open(args.file, 'rb').read(8))

@@ -132,5 +132,11 @@ Sample output:
 ![](screen1.jpg)
 
 
+#### Display bytes using uppercasde characters
+
+`-u` or `--uppercase` allows to display output with uppercase characters:
+
+
+![](uppercase.png)
 
 
