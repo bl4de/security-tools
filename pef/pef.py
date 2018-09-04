@@ -31,9 +31,13 @@ def printcodeline(_line, i, _fn, _message):
     """
     Formats and prints line of output
     """
-    print "::  line %d :: \33[33;1m%s\33[0m %s found " % (i, _fn, _message)
+    print "::  line %d ::   \33[33;1m%s\33[0m %s found " % (i, _fn, _message)
+    if _fn and pefdefs.exploitableFunctionsDesc.has_key(_fn):
+        print "\t\t" + beautyConsole.getColor("white") + pefdefs.exploitableFunctionsDesc.get(_fn) + beautyConsole.getSpecialChar("endline")
+
     print beautyConsole.getColor("grey") + _line + beautyConsole.getSpecialChar("endline")
 
+    
 
 def main(src):
     """

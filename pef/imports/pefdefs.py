@@ -7,6 +7,16 @@ exploitableFunctions = ["system(", "exec(", "popen(", "pcntl_exec(",
                         "pcntl_exec(", "asset(", "extract(", "parse_str(", "putenv(", "ini_set(",
                         "mail(", "header(", "unserialize("]
 
+# exploitable functions description
+# needs to have closing bracket ), bc this is how pattern is passed to function
+# printcodeline(_line, i, _fn, _message)
+
+# @TODO: add other descriptions :)
+exploitableFunctionsDesc = {
+    "parse_str()": "when parse_str(arg, [target]) parses URL-like string, \n\t\tit sets variables in current scope WITHOUT initializing it",
+    "system()": "allows to execute system command passed as an argument"
+}
+
 # dangerous global(s)
 globalVars = ["$_POST", "$_GET", "$_COOKIE", "$_REQUEST", "$_SERVER"]
 
