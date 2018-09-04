@@ -55,11 +55,6 @@ def main(src):
                 total += 1
                 printcodeline(_line, i, _fn + ')',
                               beautyConsole.efMsgFound)
-        for _kw in pefdefs.keywords:
-            if _kw.lower() in __line.lower():
-                total += 1
-                printcodeline(_line, i, _kw,
-                              beautyConsole.eKeyWordFound)
         for _dp in pefdefs.fileInclude:
             if _dp in __line.replace(" ", ""):
                 total += 1
