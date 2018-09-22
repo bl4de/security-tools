@@ -77,6 +77,11 @@ BROWSER_PATTERNS = [
     ".*appendChild\(",
     ".*document.write\(",
     ".*document.location",
+    ".*document.URL",
+    ".*document.documentURI",
+    ".*document.URLUnencoded",
+    ".*document.baseURI",
+    ".*document.referrer",
     ".*location.href",
     ".*location.search",
     ".*location.hash",
@@ -102,6 +107,11 @@ BROWSER_PATTERNS = [
     ".*\.replaceWith\(",
     ".*\.wrap\(",
     ".*\.wrapAll\(",
+    ".*\.dangerouslytSetInnerHTML\(",
+    ".*\.bypassSecurityTrust.*\(",
+    ".*localStorage\.",
+    ".*sessionStorage\.",
+    ".*\$sce\.trustAsHtml\("
 ]
 
 HTML_PATTERNS = [
