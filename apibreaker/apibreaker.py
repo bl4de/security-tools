@@ -10,7 +10,7 @@
 ### - arguments parser
 ### - recursive paths, eg.:  /news  -> /news/add, /news/delete etc.
 ### - save output to file
-### - ???
+### - add common endpoints and common GET params dictionaries as default
 
 import requests
 
