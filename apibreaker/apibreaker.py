@@ -15,7 +15,7 @@
 import requests
 
 # make script arguments from these here:
-HOSTNAME = 'af.opera.com'
+HOSTNAME = 'xxx.com'
 api_url = HOSTNAME + '/api/'
 USER_AGENT = 'bl4de/HackerOne'
 SCHEMA = 'https://'
