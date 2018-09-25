@@ -137,9 +137,12 @@ SKIP_NODE_MODULES = False
 SKIP_TEST_FILES = False
 IDENTIFY_URLS = False
 EXCLUDE = []
-EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'array', 'core-util', '.bin', 'babylon', 'next-tick',
-                  'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-', 'mime',
-                  'to-fast-properties', 'json5', 'async', 'http-proxy', 'mkdirp', 'loose-envify',
+EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'array', 'core-util', '.bin',
+                  'babylon', 'next-tick',
+                  'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-',
+                  'mime',
+                  'to-fast-properties', 'json5', 'async', 'http-proxy',
+                  'mkdirp', 'loose-envify',
                   '.git', '.idea']
 INCLUDE = []
 PATTERN = ""
@@ -167,7 +170,8 @@ def printcodeline(_line, i, _fn, _message):
 
 def process_files(subdirectory, sd_files, pattern=""):
     """
-    recursively iterates ofer all files and checks those which meet criteria set by options only
+    recursively iterates ofer all files and checks those which meet 
+    criteria set by options only
     """
     global TOTAL_FILES
     for __file in sd_files:
