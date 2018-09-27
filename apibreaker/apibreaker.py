@@ -2,21 +2,22 @@
 #
 # REST API bubgounty tool
 #
-# bl4de <bloorq@gmail.com> | twitter.com/_bl4de | hackerone.com/bl4de | github.com/bl4de
+# bl4de <bloorq@gmail.com> | twitter.com/_bl4de | hackerone.com/bl4de |
+# github.com/bl4de
 
 
-### @TODO
-### - colorful output based on HTTP Response code, content etc.
-### - arguments parser
-### - recursive paths, eg.:  /news  -> /news/add, /news/delete etc.
-### - save output to file
-### - add common endpoints and common GET params dictionaries as default
+# @TODO
+# - colorful output based on HTTP Response code, content etc.
+# - arguments parser
+# - recursive paths, eg.:  /news  -> /news/add, /news/delete etc.
+# - save output to file
+# - add common endpoints and common GET params dictionaries as default
 
 import requests
 
 # make script arguments from these here:
-HOSTNAME = 'xxx.com'
-api_url = HOSTNAME + '/api/'
+HOSTNAME = 'sitecheck.opera.com'
+api_url = HOSTNAME + '/api/v1/'
 USER_AGENT = 'bl4de/HackerOne'
 SCHEMA = 'https://'
 be_verbose = False
@@ -63,19 +64,19 @@ def print_response(url, method, resp, msg=""):
     print "{} to {} {}: HTTP {}; \t\t\t\tresponse size: {}".format(
         method, url, resp.status_code, msg, len(resp.content))
     if be_verbose == True and len(resp.content) > 0:
-        print "-- Response content --" + "-"*78
+        print "-- Response content --" + "-" * 78
         print "\n{}\n".format(resp.content)
-        print "\n" + "-"*100 + "\n"
+        print "\n" + "-" * 100 + "\n"
 
 
 def enumerate_endpoints(api_url, wordlist):
-    print "[+] enumerating existing endpoints using dictionary..."
+    print "[+] enumerating existing endpoints using dictionary with {} names...".format(len(wordlist))
     c = 0
     enumerated = []
     for w in wordlist:
-        resp = requests.get(api_url + w, headers=HEADERS)
+        resp = requests.get(api_url + w.strip(), headers=HEADERS)
         if resp.status_code != 404:
-            enumerated.append(w)
+            enumerated.append(w.strip())
             c = c + 1
 
     if c == 0:
@@ -94,12 +95,7 @@ def send_requests(enumerated_endpoints):
     for http_method in HTTP_METHODS:
         if http_method == 'GET':
 
-            get_params = [
-                'debug',
-                'test',
-                't',
-                'a'
-            ]
+            get_params = open('params.txt', 'r').readlines()
 
             for w in enumerated_endpoints:
                 c = c + 1
@@ -109,7 +105,7 @@ def send_requests(enumerated_endpoints):
             for w in enumerated_endpoints:
                 for param in get_params:
                     c = c + 1
-                    url = api_url + w + '?{}=somedata'.format(param)
+                    url = api_url + w + '?{}=google.ie'.format(param.strip())
                     resp = requests.get(url, headers=HEADERS)
                     print_response(url, http_method, resp)
 
@@ -157,15 +153,7 @@ def send_requests(enumerated_endpoints):
 
 
 def main():
-    wordlist = [
-        'query',
-        'user',
-        'upload',
-        'test',
-        'debug',
-        'check',
-        'login'
-    ]
+    wordlist = open('endpoints.txt', 'r').readlines()
 
     enumerated_endpoints = enumerate_endpoints(api_url, wordlist)
     send_requests(enumerated_endpoints)
