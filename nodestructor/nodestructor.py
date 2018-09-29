@@ -52,7 +52,7 @@ NODEJS_PATTERNS = [
     ".*res.write\(",
     ".*child_process",
     ".*child_process.exec\(",
-    ".*Function\(",
+    ".*\sFunction\(",
     ".*execFile\(",
     ".*spawn\(",
     ".*fork\(",
