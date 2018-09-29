@@ -56,8 +56,8 @@ NODEJS_PATTERNS = [
     ".*execFile\(",
     ".*spawn\(",
     ".*fork\(",
-    ".*setTimeout\(",
-    ".*setInterval\(",
+    # ".*setTimeout\(",
+    # ".*setInterval\(",
     ".*setImmediate\(",
     ".*newBuffer\(",
     ".*constructor\("
@@ -92,7 +92,7 @@ BROWSER_PATTERNS = [
     ".*history.replaceState\(",
     ".*navigator.userAgent",
     ".*window.open\(",
-    ".*window.postMessage\(",
+    ".*postMessage\(",
     ".*.addEventListener\(['\"]message['\"]",
     ".*.ajax",
     ".*.getJSON",
@@ -112,12 +112,6 @@ BROWSER_PATTERNS = [
     ".*localStorage\.",
     ".*sessionStorage\.",
     ".*\$sce\.trustAsHtml\("
-]
-
-HTML_PATTERNS = [
-    ".*<a.*href.*>",
-    ".*<img.*src.*>",
-    ".*<iframe.*src.*>"
 ]
 
 URL_REGEX = re.compile("(https|http):\/\/[a-zA-Z0-9#=\-\?\&\/\.]+")
@@ -282,7 +276,7 @@ if __name__ == "__main__":
         IDENTIFY_URLS = ARGS.include_urls
 
         if ARGS.include_html_patterns:
-            PATTERNS = PATTERNS + HTML_PATTERNS + BROWSER_PATTERNS
+            PATTERNS = PATTERNS + BROWSER_PATTERNS
 
         if ARGS.recursive:
             for subdir, dirs, files in os.walk(BASE_PATH):
