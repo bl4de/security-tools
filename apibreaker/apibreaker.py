@@ -2,25 +2,27 @@
 #
 # REST API bubgounty tool
 #
-# bl4de <bloorq@gmail.com> | twitter.com/_bl4de | hackerone.com/bl4de | github.com/bl4de
+# bl4de <bloorq@gmail.com> | twitter.com/_bl4de | hackerone.com/bl4de |
+# github.com/bl4de
 
 
-### @TODO
-### - colorful output based on HTTP Response code, content etc.
-### - arguments parser
-### - recursive paths, eg.:  /news  -> /news/add, /news/delete etc.
-### - save output to file
-### - add common endpoints and common GET params dictionaries as default
+# @TODO
+# - colorful output based on HTTP Response code, content etc.
+# - arguments parser
+# - recursive paths, eg.:  /news  -> /news/add, /news/delete etc.
+# - save output to file
+# - add common endpoints and common GET params dictionaries as default
 
 import requests
 
 # make script arguments from these here:
-HOSTNAME = 'xxx.com'
+HOSTNAME = 'cdc-tool.roche.com'
 api_url = HOSTNAME + '/api/'
 USER_AGENT = 'bl4de/HackerOne'
 SCHEMA = 'https://'
-be_verbose = False
 
+be_verbose = True
+last_response_size = 0
 
 # HTTP methods
 HTTP_METHODS = [
@@ -57,25 +59,44 @@ HEADERS = {
 api_url = SCHEMA + api_url
 
 
+def prepare_dictonaries():
+    get_params = open('params.txt', 'r').readlines()
+
+    # hardcoded for tests
+    get_params = [
+        'debug',
+        'info'
+    ]
+
+    wordlist = open('endpoints.txt', 'r').readlines()
+
+    # hardcoded for tests
+    wordlist = ['user']
+
+    return [wordlist, get_params]
+
+
 def print_response(url, method, resp, msg=""):
     global be_verbose
+    global last_response_size
 
-    print "{} to {} {}: HTTP {}; \t\t\t\tresponse size: {}".format(
-        method, url, resp.status_code, msg, len(resp.content))
-    if be_verbose == True and len(resp.content) > 0:
-        print "-- Response content --" + "-"*78
-        print "\n{}\n".format(resp.content)
-        print "\n" + "-"*100 + "\n"
-
+    if len(resp.content) != last_response_size:
+        print "{} to {} {} HTTP {}: \t\t\t\tresponse size: {}".format(
+            method, url, resp.status_code, msg, len(resp.content))
+        last_response_size = len(resp.content)
+        if be_verbose == True and len(resp.content) > 0:
+            print "-- Response content --" + "-" * 78
+            print "\n{}\n".format(resp.content)
+            print "\n" + "-" * 100 + "\n"
 
 def enumerate_endpoints(api_url, wordlist):
-    print "[+] enumerating existing endpoints using dictionary..."
+    print "[+] enumerating existing endpoints using dictionary with {} names...".format(len(wordlist))
     c = 0
     enumerated = []
     for w in wordlist:
-        resp = requests.get(api_url + w, headers=HEADERS)
-        if resp.status_code != 404:
-            enumerated.append(w)
+        resp = requests.get(api_url + w.strip(), headers=HEADERS)
+        if True or resp.status_code == 200:
+            enumerated.append(w.strip())
             c = c + 1
 
     if c == 0:
@@ -86,41 +107,31 @@ def enumerate_endpoints(api_url, wordlist):
     return enumerated
 
 
-def send_requests(enumerated_endpoints):
+def send_requests(enumerated_endpoints, get_params):
     print "[+] sending HTTP requests to previously identified {} endpoints. This migth take a while...\n\n".format(
         len(enumerated_endpoints))
 
     c = 0
-    for http_method in HTTP_METHODS:
-        if http_method == 'GET':
+    for w in enumerated_endpoints:
+        for http_method in HTTP_METHODS:
 
-            get_params = [
-                'debug',
-                'test',
-                't',
-                'a'
-            ]
-
-            for w in enumerated_endpoints:
+            if http_method == 'GET':
                 c = c + 1
                 resp = requests.get(api_url + w, headers=HEADERS)
                 print_response(api_url + w, http_method, resp)
 
-            for w in enumerated_endpoints:
                 for param in get_params:
                     c = c + 1
-                    url = api_url + w + '?{}=somedata'.format(param)
+                    url = api_url + w + '?{}=google.ie'.format(param.strip())
                     resp = requests.get(url, headers=HEADERS)
                     print_response(url, http_method, resp)
 
-        if http_method == 'HEAD':
-            for w in enumerated_endpoints:
+            if http_method == 'HEAD':
                 c = c + 1
                 resp = requests.head(api_url + w, headers=HEADERS)
                 print_response(api_url + w, http_method, resp)
 
-        if http_method == 'POST':
-            for w in enumerated_endpoints:
+            if http_method == 'POST':
                 c = c + 2
                 # application/xml
                 HEADERS['Content-Type'] = 'application/xml'
@@ -136,8 +147,7 @@ def send_requests(enumerated_endpoints):
                 print_response(api_url + w, http_method,
                                resp,  " with JSON payload")
 
-        if http_method == 'PUT':
-            for w in enumerated_endpoints:
+            if http_method == 'PUT':
                 c = c + 2
                 # application/xml
                 HEADERS['Content-Type'] = 'application/xml'
@@ -157,18 +167,9 @@ def send_requests(enumerated_endpoints):
 
 
 def main():
-    wordlist = [
-        'query',
-        'user',
-        'upload',
-        'test',
-        'debug',
-        'check',
-        'login'
-    ]
-
+    [wordlist, get_params] = prepare_dictonaries()
     enumerated_endpoints = enumerate_endpoints(api_url, wordlist)
-    send_requests(enumerated_endpoints)
+    send_requests(enumerated_endpoints, get_params)
 
 
 if __name__ == "__main__":
