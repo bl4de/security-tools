@@ -143,20 +143,20 @@ FILE_SIGNATURES = {
 }
 
 COLORS = {
-    "black": '\33[0;30m\33[40m',
-    "white": '\33[0;37m\33[40m',
-    "red": '\33[0;31m\33[40m',
-    "green": '\33[0;32m\33[40m',
+    "black": '\33[0;30m',
+    "white": '\33[0;37m',
+    "red": '\33[0;31m',
+    "green": '\33[0;32m',
     "green_bg": '\33[1;32m\33[41m',
-    "yellow": '\33[0;33m\33[40m',
+    "yellow": '\33[0;33m',
     "yellow_bg": '\33[1;33m\33[41m',
-    "blue": '\33[0;34m\33[40m',
-    "magenta": '\33[0;35m\33[40m',
+    "blue": '\33[0;34m',
+    "magenta": '\33[0;35m',
     "magenta_bg": '\33[1;35m\33[41m',
-    "cyan": '\33[0;36m\33[40m',
-    "grey": '\33[0;90m\33[40m',
-    "lightgrey": '\33[0;37m\33[40m',
-    "lightblue": '\33[0;94m\33[40m'
+    "cyan": '\33[0;36m',
+    "grey": '\33[0;90m',
+    "lightgrey": '\33[0;37m',
+    "lightblue": '\33[0;94m'
 }
 
 # some globals
