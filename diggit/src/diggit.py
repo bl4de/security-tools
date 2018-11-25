@@ -57,7 +57,11 @@ def print_object_details(objtype, objcontent, objhash, objfilename):
         tmpfile.close()
 
     print "{0}[*] Object content:{1}\n".format(term["green"], term["endl"])
-    print "{0}{1}{2}".format(term["yellow"], objcontent, term["endl"])
+    if len(objcontent) < 2048:
+        print "{0}{1}{2}".format(term["yellow"], objcontent, term["endl"])
+    else:
+        print "{}[!] file too big to preview - {} kB{}".format(
+            term["red"], len(objcontent)/1024, term["endl"])
 
 
 def get_object_url(objhash):
