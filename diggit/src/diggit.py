@@ -62,6 +62,7 @@ def print_object_details(objtype, objcontent, objhash, objfilename):
     else:
         print "{}[!] file too big to preview - {} kB{}".format(
             term["red"], len(objcontent)/1024, term["endl"])
+            
 
 
 def get_object_url(objhash):
