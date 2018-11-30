@@ -13,7 +13,7 @@ This indicates (in most caes) working webserver
 usage:
 $ ./denumerator.py [domain_list_file]
 """
-
+import argparse
 import sys
 import requests
 
@@ -27,9 +27,8 @@ requests.packages.urllib3.disable_warnings()
 
 allowed_http_responses = [200, 302, 304, 401, 404, 403, 500]
 
-domains = open(sys.argv[1].strip(), 'rw').readlines()
 output_file = open(sys.argv[1] + '_denumerator_output.txt', 'w+')
-
+timeout = 2
 
 def usage():
     """
@@ -47,7 +46,7 @@ def send_request(proto, domain, output_file):
         'https': 'https://'
     }
     resp = requests.get(protocols.get(proto.lower()) + domain,
-                        timeout=5,
+                        timeout=timeout,
                         allow_redirects=False,
                         verify=False,
                         headers={'Host': domain})
@@ -86,9 +85,25 @@ def enumerate_domains(domains, output_file):
         else:
             pass
 
-if len(sys.argv) < 2:
-    print welcome
-    exit(0)
+def main():
+    
+    parser = argparse.ArgumentParser()
 
-enumerate_domains(domains, output_file)
-output_file.close()
+    parser.add_argument(
+        "-f", "--file", help="File with list of hostnames")
+    parser.add_argument(
+        "-t", "--timeout", help="Max. request timeout (default = 2)")
+    
+    args = parser.parse_args()
+    if args.timeout:
+        timeout = arg.timeout
+
+    domains = open(args.file, 'rw').readlines()
+
+    enumerate_domains(domains, output_file)
+    output_file.close()
+
+
+
+if __name__ == "__main__":
+    main()
