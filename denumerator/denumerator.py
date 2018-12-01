@@ -20,7 +20,7 @@ import requests
 welcome = """
 --- dENUMerator ---
 usage:
-$ ./denumerator.py [domain_list_file]
+$ ./denumerator.py -f DOMAINS_LIST -t 5
 """
 
 requests.packages.urllib3.disable_warnings()
@@ -96,7 +96,7 @@ def main():
     
     args = parser.parse_args()
     if args.timeout:
-        timeout = arg.timeout
+        timeout = args.timeout
 
     domains = open(args.file, 'rw').readlines()
 
