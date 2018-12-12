@@ -111,7 +111,19 @@ BROWSER_PATTERNS = [
     ".*\.bypassSecurityTrust.*\(",
     ".*localStorage\.",
     ".*sessionStorage\.",
-    ".*\$sce\.trustAsHtml\("
+    ".*\$sce\.trustAsHtml\(",
+    ".*\.load\(",
+    ".*jQuery\.ajax\(",
+    ".*parseHTML",
+    ".*wrap.*\(",
+    ".*html\(",
+    ".*before\(",
+    ".*after\(",
+    ".*insertBefore\(",
+    ".*insertAfter\(",
+    ".*prepend",
+    ".*setContent\(",
+    ".*setHTML\("
 ]
 
 URL_REGEX = re.compile("(https|http):\/\/[a-zA-Z0-9#=\-\?\&\/\.]+")
