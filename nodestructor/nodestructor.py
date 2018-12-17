@@ -123,7 +123,8 @@ BROWSER_PATTERNS = [
     ".*insertAfter\(",
     ".*prepend",
     ".*setContent\(",
-    ".*setHTML\("
+    ".*setHTML\(",
+    ".*\.SafeString\("
 ]
 
 URL_REGEX = re.compile("(https|http):\/\/[a-zA-Z0-9#=\-\?\&\/\.]+")
