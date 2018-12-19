@@ -171,7 +171,7 @@ def printcodeline(_line, i, _fn, _message):
     """
     _fn = _fn.replace("*", "").replace("\\", "").replace(".(", '(')[0:len(_fn)]
     print "::  line %d :: \33[33;1m%s\33[0m %s " % (i, _fn, _message)
-    print beautyConsole.getColor("grey") + _line + \
+    print beautyConsole.getColor("green") + '\n\t' + _line.lstrip() + \
         beautyConsole.getSpecialChar("endline")
 
 
