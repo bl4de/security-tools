@@ -16,6 +16,7 @@ OTHER = 'other'
 # https://en.wikipedia.org/wiki/List_of_file_signatures
 FILE_SIGNATURES = {
     'a1b2c3d4': 'Libpcap File Format',
+    # '47': 'MPEG Transport Stream (MPEG-2 Part 1)',
     'd4c3b2a1': 'Libpcap File Format',
     '0a0d0d0a': 'PCAP Next Generation Dump File Format (pcapng)',
     'edabeedb': 'RedHat Package Manager (RPM) package',
@@ -122,7 +123,6 @@ FILE_SIGNATURES = {
     '27051956': 'U-Boot / uImage. Das U-Boot Universal Boot Loader',
     '7B5C72746631': 'Rich Text Format',
     '54415045': 'Microsoft Tape Format',
-    '47': 'MPEG Transport Stream (MPEG-2 Part 1)',
     '000001BA': 'MPEG Program Stream (MPEG-1 Part 1 (essentially identical) and MPEG-2 Part 1)',
     '000001B3': 'MPEG Program Stream; MPEG Transport Stream; MPEG-1 video and MPEG-2 video (MPEG-1 Part 2 and MPEG-2 Part 2)',
     '7801': 'zlib (No Compression/low)',
