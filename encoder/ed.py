@@ -37,8 +37,7 @@ def from_ascii(s):
 
 def from_hex(s):
     xs = ""
-    decimals = s.split()
-    for d in decimals:
+    for d in list(s):
         xs += str(int(d, 10))
 
     return xs
@@ -46,9 +45,8 @@ def from_hex(s):
 
 def to_hex(s):
     xs = ""
-    hexnums = s.split()
-    for d in hexnums:
-        hexnum = str(hex(int(d, 10))).replace("0x", "")
+    for d in list(s):
+        hexnum = str(hex(ord(d))).replace("0x", "")
         if len(hexnum) < 2:
             hexnum = "0" + hexnum
         xs += hexnum + " "
