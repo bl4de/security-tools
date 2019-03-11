@@ -42,10 +42,7 @@ colors = {
 }
 
 requests.packages.urllib3.disable_warnings()
-
 allowed_http_responses = [200, 302, 304, 401, 404, 403, 500]
-
-output_file = open('denumerator_output.txt', 'w+')
 timeout = 2
 
 
@@ -73,9 +70,11 @@ def send_request(proto, domain, output_file):
     if resp.status_code in allowed_http_responses:
         print '[+] {}HTTP {}{}:\t {}'.format(
             colors[resp.status_code], resp.status_code, colors['white'], domain)
-        output_file.write('HTTP Response: {}\t{}\n'.format(
-            resp.status_code, domain))
-        output_file.flush()
+
+        if output_file:
+            output_file.write('{}\n'.format(domain))
+            output_file.flush()
+
     return resp.status_code
 
 
@@ -121,16 +120,28 @@ def main():
         "-t", "--timeout", help="Max. request timeout (default = 2)")
     parser.add_argument(
         "-s", "--success", help="Show all responses, including exceptions")
+    parser.add_argument(
+        "-o", "--output", help="Path to output file")
 
     args = parser.parse_args()
     if args.timeout:
         timeout = args.timeout
 
+    if args.output:
+        output_file = open(args.output, 'w+')
+    else:
+        output_file = False
+
+    # set options
     show = True if args.success else False
     domains = open(args.file, 'rw').readlines()
 
+    # main loop
     enumerate_domains(domains, output_file, show)
-    output_file.close()
+    
+    # close output file
+    if args.output:
+        output_file.close()
 
 
 if __name__ == "__main__":
