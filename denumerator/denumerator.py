@@ -23,12 +23,31 @@ usage:
 $ ./denumerator.py -f DOMAINS_LIST -t 5
 """
 
+
+colors = {
+    "white": '\33[37m',
+    500: '\33[31m',
+    200: '\33[32m',
+    302: '\33[33m',
+    304: '\33[33m',
+    302: '\33[33m',
+    401: '\33[94m',
+    403: '\33[94m',
+    404: '\33[94m',
+    "magenta": '\33[35m',
+    "cyan": '\33[36m',
+    "grey": '\33[90m',
+    "lightgrey": '\33[37m',
+    "lightblue": '\33[94'
+}
+
 requests.packages.urllib3.disable_warnings()
 
 allowed_http_responses = [200, 302, 304, 401, 404, 403, 500]
 
-output_file = open(sys.argv[1] + '_denumerator_output.txt', 'w+')
+output_file = open('denumerator_output.txt', 'w+')
 timeout = 2
+
 
 def usage():
     """
@@ -52,8 +71,9 @@ def send_request(proto, domain, output_file):
                         headers={'Host': domain})
 
     if resp.status_code in allowed_http_responses:
-        print '[+] domain {}:\t\t HTTP {}'.format(domain, resp.status_code)
-        output_file.write('HTTP Response: {}\t\t{}\n'.format(
+        print '[+] {}HTTP {}{}:\t {}'.format(
+            colors[resp.status_code], resp.status_code, colors['white'], domain)
+        output_file.write('HTTP Response: {}\t{}\n'.format(
             resp.status_code, domain))
         output_file.flush()
     return resp.status_code
@@ -85,15 +105,16 @@ def enumerate_domains(domains, output_file):
         else:
             pass
 
+
 def main():
-    
+
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
         "-f", "--file", help="File with list of hostnames")
     parser.add_argument(
         "-t", "--timeout", help="Max. request timeout (default = 2)")
-    
+
     args = parser.parse_args()
     if args.timeout:
         timeout = args.timeout
@@ -102,7 +123,6 @@ def main():
 
     enumerate_domains(domains, output_file)
     output_file.close()
-
 
 
 if __name__ == "__main__":
