@@ -79,7 +79,7 @@ def send_request(proto, domain, output_file):
     return resp.status_code
 
 
-def enumerate_domains(domains, output_file):
+def enumerate_domains(domains, output_file, show=False):
     """
     enumerates domain from domains
     """
@@ -92,16 +92,21 @@ def enumerate_domains(domains, output_file):
                 send_request('https', d, output_file)
 
         except requests.exceptions.InvalidURL:
-            print '[-] {} is not a valid URL :/'.format(d)
+            if show is True:
+                print '[-] {} is not a valid URL :/'.format(d)
         except requests.exceptions.ConnectTimeout:
-            print '[-] {} :('.format(d)
+            if show is True:
+                print '[-] {} :('.format(d)
             continue
         except requests.exceptions.ConnectionError:
-            print '[-] connection to {} aborted :/'.format(d)
+            if show is True:
+                print '[-] connection to {} aborted :/'.format(d)
         except requests.exceptions.ReadTimeout:
-            print '[-] {} read timeout :/'.format(d)
+            if show is True:
+                print '[-] {} read timeout :/'.format(d)
         except requests.exceptions.TooManyRedirects:
-            print '[-] {} probably went into redirects loop :('.format(d)
+            if show is True:
+                print '[-] {} probably went into redirects loop :('.format(d)
         else:
             pass
 
@@ -114,14 +119,17 @@ def main():
         "-f", "--file", help="File with list of hostnames")
     parser.add_argument(
         "-t", "--timeout", help="Max. request timeout (default = 2)")
+    parser.add_argument(
+        "-s", "--success", help="Show all responses, including exceptions")
 
     args = parser.parse_args()
     if args.timeout:
         timeout = args.timeout
 
+    show = True if args.success else False
     domains = open(args.file, 'rw').readlines()
 
-    enumerate_domains(domains, output_file)
+    enumerate_domains(domains, output_file, show)
     output_file.close()
 
 
