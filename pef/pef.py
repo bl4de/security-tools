@@ -33,11 +33,12 @@ def printcodeline(_line, i, _fn, _message):
     """
     print "::  line %d ::   \33[33;1m%s\33[0m %s found " % (i, _fn, _message)
     if _fn and pefdefs.exploitableFunctionsDesc.has_key(_fn):
-        print "\t\t" + beautyConsole.getColor("white") + pefdefs.exploitableFunctionsDesc.get(_fn) + beautyConsole.getSpecialChar("endline")
+        print "\t\t" + beautyConsole.getColor("white") + pefdefs.exploitableFunctionsDesc.get(
+            _fn) + beautyConsole.getSpecialChar("endline")
 
-    print beautyConsole.getColor("grey") + _line + beautyConsole.getSpecialChar("endline")
+    print beautyConsole.getColor("grey") + _line + \
+        beautyConsole.getSpecialChar("endline")
 
-    
 
 def main(src):
     """
@@ -49,7 +50,8 @@ def main(src):
     filenamelength = len(src)
     linelength = 97
 
-    print "-" * 14, " FILE: \33[33m%s\33[0m " % src, "-" * (linelength - filenamelength - 21), "\n"
+    print "FILE: \33[33m%s\33[0m " % src, "-" * \
+        (linelength - filenamelength - 21), "\n"
 
     for _line in _file:
         i += 1
@@ -77,7 +79,7 @@ def main(src):
 
     if total < 1:
         print beautyConsole.getColor("green") + \
-            "No exploitable functions found\n" + \
+            "No exploitable functions found" + \
             beautyConsole.getSpecialChar("endline")
     else:
         print beautyConsole.getColor("red") + \
