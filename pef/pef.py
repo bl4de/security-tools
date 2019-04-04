@@ -50,8 +50,8 @@ def main(src):
     filenamelength = len(src)
     linelength = 97
 
-    print "FILE: \33[33m%s\33[0m " % src, "-" * \
-        (linelength - filenamelength - 21), "\n"
+    print "FILE: \33[33m%s\33[0m " % os.path.realpath(_file.name), "-" * \
+        (linelength - filenamelength - 63), "\n"
 
     for _line in _file:
         i += 1
@@ -67,12 +67,12 @@ def main(src):
                 printcodeline(_line, i, _dp + '()',
                               beautyConsole.fiMsgFound)
         for _global in pefdefs.globalVars:
-            if _global in __line:
+            if _global in __line.replace(" ", ""):
                 total += 1
                 printcodeline(_line, i, _global,
                               beautyConsole.efMsgGlobalFound)
         for _refl in pefdefs.reflectedProperties:
-            if _refl in __line:
+            if _refl in __line.replace(" ", ""):
                 total += 1
                 printcodeline(_line, i, _refl,
                               beautyConsole.eReflFound)

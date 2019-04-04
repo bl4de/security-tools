@@ -72,11 +72,10 @@ exploitableFunctions = ["system(", "exec(", "popen(", "pcntl_exec(",
                         "putenv(",
                         "readlink(",
                         "runkit_function_rename(",
-                        "shell_exec(",
                         "show_source(",
                         "symlink(",
                         "syslog(",
-                        "system("]
+                        ]
 
 # exploitable functions description
 # needs to have closing bracket ), bc this is how pattern is passed to function
