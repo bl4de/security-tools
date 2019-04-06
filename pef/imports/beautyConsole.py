@@ -2,15 +2,15 @@ class beautyConsole:
     """This class defines properties and methods to manipulate console output"""
     colors = {
         "black": '\33[30m',
-        "white": '\33[37m',
         "red": '\33[31m',
         "green": '\33[32m',
         "yellow": '\33[33m',
         "blue": '\33[34m',
         "magenta": '\33[35m',
         "cyan": '\33[36m',
+        "white": '\33[37m',
         "grey": '\33[90m',
-        "lightblue": '\33[94'
+        "lightblue": '\33[94m'
     }
 
     characters = {
