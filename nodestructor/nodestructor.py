@@ -165,14 +165,29 @@ def show_banner():
     print beautyConsole.getColor("white")
 
 
-def printcodeline(_line, i, _fn, _message):
+def printcodeline(_line, i, _fn, _message, _code=[]):
     """
     Formats and prints line of output
     """
     _fn = _fn.replace("*", "").replace("\\", "").replace(".(", '(')[0:len(_fn)]
-    print "::  line %d :: \33[33;1m%s\33[0m %s " % (i, _fn, _message)
-    print beautyConsole.getColor("green") + '\n\t' + _line.lstrip() + \
+    print "\n::  line %d :: \33[33;1m%s\33[0m %s \n" % (i, _fn, _message)
+
+    if i > 3:
+        print str(i - 3) + '   ' + beautyConsole.getColor("grey") + _code[i-3].rstrip() + \
+            beautyConsole.getSpecialChar("endline")
+    if i > 2:
+        print str(i - 2) + '   ' + beautyConsole.getColor("grey") + _code[i-2].rstrip() + \
+            beautyConsole.getSpecialChar("endline")
+
+    print str(i) + '   ' + beautyConsole.getColor("green") + _line.rstrip() + \
         beautyConsole.getSpecialChar("endline")
+    
+    if i < len(_code) - 1:
+        print str(i + 1) + '   ' + beautyConsole.getColor("grey") + _code[i+1].rstrip() + \
+            beautyConsole.getSpecialChar("endline")
+    if i < len(_code) - 2:
+        print str(i + 2) + '   ' + beautyConsole.getColor("grey") + _code[i+2].rstrip() + \
+            beautyConsole.getSpecialChar("endline")
 
 
 def process_files(subdirectory, sd_files, pattern=""):
@@ -214,10 +229,11 @@ def perform_code_analysis(src, pattern=""):
     print_filename = True
 
     _file = open(src, "r")
+    _code = _file.readlines()
     i = 0
     patterns_found_in_file = 0
 
-    for _line in _file:
+    for _line in _code:
         i += 1
         __line = _line.strip()
         for __pattern in PATTERNS:
@@ -228,8 +244,8 @@ def perform_code_analysis(src, pattern=""):
                     print "FILE: \33[33m{}\33[0m\n".format(src)
                     print_filename = False
                 patterns_found_in_file += 1
-                printcodeline(_line[0:120] + "...", i, __pattern,
-                              ' code pattern identified: ')
+                printcodeline(_line, i, __pattern,
+                              ' code pattern identified: ', _code)
 
             # URL searching
             if IDENTIFY_URLS == True:
@@ -237,7 +253,7 @@ def perform_code_analysis(src, pattern=""):
                     __url = URL_REGEX.search(__line).group(0)
                     # show each unique URL only once
                     if __url not in URLS:
-                        printcodeline(__url, i, __url, ' URL found: ')
+                        printcodeline(__url, i, __url, ' URL found: ', _code)
                         URLS.append(__url)
 
     if patterns_found_in_file > 0:
