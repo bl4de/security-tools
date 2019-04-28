@@ -259,7 +259,7 @@ def perform_code_analysis(src, pattern=""):
     if patterns_found_in_file > 0:
         PATTERNS_IDENTIFIED = PATTERNS_IDENTIFIED + patterns_found_in_file
         print beautyConsole.getColor("red") + \
-            "Identified %d code pattern(s)\n" % (patterns_found_in_file) + \
+            "\nIdentified %d code pattern(s)\n" % (patterns_found_in_file) + \
             beautyConsole.getSpecialChar("endline")
         print beautyConsole.getColor("white") + "-" * 100
 

@@ -15,6 +15,8 @@ $ ./denumerator.py [domain_list_file]
 """
 import argparse
 import sys
+import os
+import time
 import requests
 
 welcome = """
@@ -53,7 +55,50 @@ def usage():
     print welcome
 
 
-def send_request(proto, domain, output_file):
+def create_output_header(html_output):
+    html = """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8">
+    <title>denumerator output</title>
+</head>
+
+<body>
+    """
+    html_output.write(html)
+    return
+
+
+def append_to_output(html_output, url):
+    screenshot_cmd = '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --user-agent="bl4de/HackerOne" --disable-gpu --screenshot '
+    os.system(screenshot_cmd + url)
+    time.sleep(3)
+    screenshot_name = url.replace('https', '').replace(
+        'http', '').replace('://', '')
+    os.rename('screenshot.png', screenshot_name + '.png')
+    html = """
+<div>
+    <p>
+        <a href="{}" target="_blank">{}</a>
+    </p>
+    <img style="width:320px; height:200px; border:1px solid #cecece; margin:10px;" src="{}" />
+</div>
+    """.format(url, url, screenshot_name + '.png')
+    html_output.write(html)
+    return
+
+
+def create_output_footer(html_output):
+    html = """
+</body>
+</html>
+    """
+    html_output.write(html)
+    return
+
+
+def send_request(proto, domain, output_file, html_output):
     """
     sends request to check if server is alive
     """
@@ -71,6 +116,11 @@ def send_request(proto, domain, output_file):
         print '[+] {}HTTP {}{}:\t {}'.format(
             colors[resp.status_code], resp.status_code, colors['white'], domain)
 
+        # create screenshot only for HTTP 200 OK - makes no sense to screenshooting 302, 404 etc.
+        if resp.status_code == 200:
+            append_to_output(html_output, protocols.get(
+                proto.lower()) + domain)
+
         if output_file:
             output_file.write('{}\n'.format(domain))
             output_file.flush()
@@ -78,17 +128,17 @@ def send_request(proto, domain, output_file):
     return resp.status_code
 
 
-def enumerate_domains(domains, output_file, show=False):
+def enumerate_domains(domains, output_file, html_output, show=False):
     """
     enumerates domain from domains
     """
     for d in domains:
         try:
             d = d.strip('\n').strip('\r')
-            return_code = send_request('http', d, output_file)
+            return_code = send_request('http', d, output_file, html_output)
             # if http not working, try https
             if return_code not in allowed_http_responses:
-                send_request('https', d, output_file)
+                send_request('https', d, output_file, html_output)
 
         except requests.exceptions.InvalidURL:
             if show is True:
@@ -136,9 +186,16 @@ def main():
     show = True if args.success else False
     domains = open(args.file, 'rw').readlines()
 
+    # starts output HTML
+    html_output = open('denumerator_output.html', 'a')
+    create_output_header(html_output)
     # main loop
-    enumerate_domains(domains, output_file, show)
-    
+    enumerate_domains(domains, output_file, html_output, show)
+
+    # finish HTML output
+    create_output_footer(html_output)
+    html_output.close()
+
     # close output file
     if args.output:
         output_file.close()
