@@ -71,7 +71,7 @@ def create_output_header(html_output):
 
 
 def append_to_output(html_output, url):
-    screenshot_name = url.replace('https', '').replace(
+    screenshot_name = './report/' + url.replace('https', '').replace(
         'http', '').replace('://', '') + '.png'
     screenshot_cmd = '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --user-agent="bl4de/HackerOne" --disable-gpu --screenshot={} '.format(
         screenshot_name)
@@ -186,8 +186,11 @@ def main():
     show = True if args.success else False
     domains = open(args.file, 'rw').readlines()
 
+    # create dir for HTML report
+    os.mkdir('report')
+
     # starts output HTML
-    html_output = open('denumerator_output.html', 'a')
+    html_output = open('report/denumerator_report.html', 'a')
     create_output_header(html_output)
     # main loop
     enumerate_domains(domains, output_file, html_output, show)
