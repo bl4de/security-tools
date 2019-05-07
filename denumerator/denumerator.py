@@ -70,20 +70,28 @@ def create_output_header(html_output):
     return
 
 
-def append_to_output(html_output, url):
+def append_to_output(html_output, url, http_status_code):
     screenshot_name = url.replace('https', '').replace(
         'http', '').replace('://', '') + '.png'
     screenshot_cmd = '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --user-agent="bl4de/HackerOne" --disable-gpu --screenshot={} '.format(
-        './report/' +  screenshot_name)
+        './report/' + screenshot_name)
     os.system(screenshot_cmd + url)
+
+    http_status_code_color = "000"
+    if http_status_code == 200:
+        http_status_code_color = "0c0"
+    if http_status_code == 403:
+        http_status_code_color = "c00"
+
     html = """
 <div style="padding:10px; border-top:1px solid #3e3e3e; margin-top:20px;">
+    <h4>HTTP Response Status: <strong style="color:#{};">{}</strong></h4>
     <p>
         <a href="{}" target="_blank">{}</a>
     </p>
     <img style="width:360px; border:1px solid #cecece; margin:10px;" src="{}" />
 </div>
-    """.format(url, url, screenshot_name)
+    """.format(http_status_code_color, http_status_code, url, url, screenshot_name)
     html_output.write(html)
     html_output.flush()
     return
@@ -116,10 +124,9 @@ def send_request(proto, domain, output_file, html_output):
         print '[+] {}HTTP {}{}:\t {}'.format(
             colors[resp.status_code], resp.status_code, colors['white'], domain)
 
-        # create screenshot only for HTTP 200 OK - makes no sense to screenshooting 302, 404 etc.
-        if resp.status_code == 200:
+        if resp.status_code in [200, 302, 403, 404, 500]:
             append_to_output(html_output, protocols.get(
-                proto.lower()) + domain)
+                proto.lower()) + domain, resp.status_code)
 
         if output_file:
             output_file.write('{}\n'.format(domain))
@@ -135,10 +142,8 @@ def enumerate_domains(domains, output_file, html_output, show=False):
     for d in domains:
         try:
             d = d.strip('\n').strip('\r')
-            return_code = send_request('http', d, output_file, html_output)
-            # if http not working, try https
-            if return_code not in allowed_http_responses:
-                send_request('https', d, output_file, html_output)
+            send_request('http', d, output_file, html_output)
+            send_request('https', d, output_file, html_output)
 
         except requests.exceptions.InvalidURL:
             if show is True:
@@ -187,10 +192,11 @@ def main():
     domains = open(args.file, 'rw').readlines()
 
     # create dir for HTML report
-    os.mkdir('report')
+    if os.path.isdir('report') == False:
+        os.mkdir('report')
 
     # starts output HTML
-    html_output = open('report/denumerator_report.html', 'a')
+    html_output = open('report/denumerator_report.html', 'w+')
     create_output_header(html_output)
     # main loop
     enumerate_domains(domains, output_file, html_output, show)
