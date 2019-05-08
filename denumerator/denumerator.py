@@ -80,7 +80,7 @@ def append_to_output(html_output, url, http_status_code):
     http_status_code_color = "000"
     if http_status_code == 200:
         http_status_code_color = "0c0"
-    if http_status_code == 403:
+    if http_status_code == 403 or http_status_code == 500:
         http_status_code_color = "c00"
 
     html = """
@@ -124,7 +124,7 @@ def send_request(proto, domain, output_file, html_output):
         print '[+] {}HTTP {}{}:\t {}'.format(
             colors[resp.status_code], resp.status_code, colors['white'], domain)
 
-        if resp.status_code in [200, 302, 403, 404, 500]:
+        if resp.status_code in [200, 403, 404, 500]:
             append_to_output(html_output, protocols.get(
                 proto.lower()) + domain, resp.status_code)
 
