@@ -12,6 +12,7 @@ GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com
 """
 import sys
 import os
+import argparse
 
 from imports import pefdefs
 from imports.beautyConsole import beautyConsole
@@ -85,14 +86,17 @@ def main(src):
         i += 1
         __line = _line.strip()
         for _fn in pefdefs.exploitableFunctions:
-            _fn = " {}".format(_fn) # there has to be space before function call; prevents from false-positives strings contains PHP function names
+            # there has to be space before function call; prevents from false-positives strings contains PHP function names
+            _fn = " {}".format(_fn)
             if _fn in __line:
                 total += 1
                 printcodeline(_line, i, _fn + ')',
                               beautyConsole.efMsgFound, prev_line, next_line, prev_prev_line, next_next_line)
         for _dp in pefdefs.fileInclude:
-            _dp = " {}".formast(_dp) # there has to be space before function call; prevents from false-positives strings contains PHP function names
-            if _dp in __line.repalce(" ", ""): # remove spaces to allow detection eg. include(  $_GET['something]  )
+            # there has to be space before function call; prevents from false-positives strings contains PHP function names
+            _dp = " {}".format(_dp)
+            # remove spaces to allow detection eg. include(  $_GET['something]  )
+            if _dp in __line.replace(" ", ""):
                 total += 1
                 printcodeline(_line, i, _dp + '()',
                               beautyConsole.fiMsgFound, prev_line, next_line, prev_prev_line, next_next_line)
@@ -117,32 +121,34 @@ def main(src):
             beautyConsole.getSpecialChar("endline")
 
     print beautyConsole.getColor("white") + "-" * 100
+    return total  # return how many findings in current file
 
 
 # main program
 if __name__ == "__main__":
 
-    if len(sys.argv) >= 2:
-        banner()
+    parser = argparse.ArgumentParser()
 
-        # main program loop
-        if len(sys.argv) == 3 and (sys.argv[1] == "-R" or sys.argv[2] == "-R"):
-            if sys.argv[1] == "-R":
-                base_path = sys.argv[2] + '/'
-                file_list = os.listdir(sys.argv[2])
-            if sys.argv[2] == "-R":
-                file_list = os.listdir(sys.argv[1])
-                base_path = sys.argv[1] + '/'
+    parser.add_argument(
+        "-r", "--recursive", help="scan PHP files recursively in current directory", action="store_true")
+    parser.add_argument(
+        "-f", "--file", help="File or directory name to scan (if directory name is provided, make sure -r is used")
+    args = parser.parse_args()
 
-            for __file in file_list:
-                full_path = base_path + __file
-                if os.path.isfile(full_path):
-                    main(full_path)
-        else:
-            main(sys.argv[1])
+    __filename = args.file
+    __scanned_files = 1
+    __found_entries = 0
 
-        print
+    if args.recursive:
+        for root, subdirs, files in os.walk('.'):
+            for f in files:
+                res = main(os.path.join(root, f))
+                __found_entries = __found_entries + res
+                __scanned_files = __scanned_files + 1
     else:
-        print "Enter PHP or directory name with file(s) to analyse"
-        print "single file: pef filename.php"
-        print "directory: pef -R dirname"
+        main(__filename)
+
+    print beautyConsole.getColor("green")
+    print "\n{} files scanned.".format(__scanned_files)
+    print "{} interesting entries found\n\n".format(__found_entries)
+    exit(0)
