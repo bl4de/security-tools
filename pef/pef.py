@@ -85,22 +85,24 @@ def main(src):
         i += 1
         __line = _line.strip()
         for _fn in pefdefs.exploitableFunctions:
-            if _fn in __line.replace(" ", ""):
+            _fn = " {}".format(_fn) # there has to be space before function call; prevents from false-positives strings contains PHP function names
+            if _fn in __line:
                 total += 1
                 printcodeline(_line, i, _fn + ')',
                               beautyConsole.efMsgFound, prev_line, next_line, prev_prev_line, next_next_line)
         for _dp in pefdefs.fileInclude:
-            if _dp in __line.replace(" ", ""):
+            _dp = " {}".formast(_dp) # there has to be space before function call; prevents from false-positives strings contains PHP function names
+            if _dp in __line.repalce(" ", ""): # remove spaces to allow detection eg. include(  $_GET['something]  )
                 total += 1
                 printcodeline(_line, i, _dp + '()',
                               beautyConsole.fiMsgFound, prev_line, next_line, prev_prev_line, next_next_line)
         for _global in pefdefs.globalVars:
-            if _global in __line.replace(" ", ""):
+            if _global in __line:
                 total += 1
                 printcodeline(_line, i, _global,
                               beautyConsole.efMsgGlobalFound, prev_line, next_line, prev_prev_line, next_next_line)
         for _refl in pefdefs.reflectedProperties:
-            if _refl in __line.replace(" ", ""):
+            if _refl in __line:
                 total += 1
                 printcodeline(_line, i, _refl,
                               beautyConsole.eReflFound, prev_line, next_line, prev_prev_line, next_next_line)
