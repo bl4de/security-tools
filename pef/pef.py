@@ -146,7 +146,7 @@ if __name__ == "__main__":
                 __found_entries = __found_entries + res
                 __scanned_files = __scanned_files + 1
     else:
-        main(__filename)
+        __found_entries = main(__filename)
 
     print beautyConsole.getColor("green")
     print "\n ===> {} files scanned".format(__scanned_files)
