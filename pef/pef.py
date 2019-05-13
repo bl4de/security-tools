@@ -136,20 +136,21 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     __filename = args.file
-    __scanned_files = 1
+    __scanned_files = 0
     __found_entries = 0
 
     if args.recursive:
         for root, subdirs, files in os.walk('.'):
             for f in files:
+                __scanned_files = __scanned_files + 1
                 res = main(os.path.join(root, f))
                 __found_entries = __found_entries + res
-                __scanned_files = __scanned_files + 1
     else:
+        __scanned_files = __scanned_files + 1
         __found_entries = main(__filename)
 
     print beautyConsole.getColor("green")
-    print "\n ===> {} files scanned".format(__scanned_files)
+    print "\n ===> {} file(s) scanned".format(__scanned_files)
     if __found_entries > 0:
         print "{} ===> {} interesting entries found\n\n".format(beautyConsole.getColor("red"), __found_entries)
     else:
