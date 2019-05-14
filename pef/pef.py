@@ -129,11 +129,12 @@ def main(src):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
+    __filename = '.' # initial value for file/dir to scan is current directory
 
     parser.add_argument(
         "-r", "--recursive", help="scan PHP files recursively in current directory", action="store_true")
     parser.add_argument(
-        "-f", "--file", help="File or directory name to scan (if directory name is provided, make sure -r is used")
+        "-f", "--file", help="File or directory name to scan (if directory name is provided, make sure -r/--recursive is set")
     args = parser.parse_args()
 
     __filename = args.file
@@ -141,7 +142,7 @@ if __name__ == "__main__":
     __found_entries = 0
 
     if args.recursive:
-        for root, subdirs, files in os.walk('.'):
+        for root, subdirs, files in os.walk(__filename):
             for f in files:
                 __scanned_files = __scanned_files + 1
                 res = main(os.path.join(root, f))
