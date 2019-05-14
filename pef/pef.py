@@ -71,6 +71,8 @@ def main(src):
     next_line = ""
     next_next_line = ""
 
+    print "FILE: \33[33m%s\33[0m " % os.path.realpath(_file.name), "\n"
+
     for _line in all_lines:
         if i > 2:
             prev_prev_line = all_lines[i - 2].rstrip()
@@ -109,13 +111,17 @@ def main(src):
                 printcodeline(_line, i, _refl,
                               beautyConsole.eReflFound, prev_line, next_line, prev_prev_line, next_next_line)
 
-    if total > 0:
-        print "FILE: \33[33m%s\33[0m " % os.path.realpath(_file.name), "\n"
+    if total < 1:
+        print beautyConsole.getColor("green") + \
+            "No exploitable functions found" + \
+            beautyConsole.getSpecialChar("endline")
+    else:
         print beautyConsole.getColor("red") + \
             "Found %d exploitable function(s)\n" % (total) + \
             beautyConsole.getSpecialChar("endline")
-        print beautyConsole.getColor("white") + "-" * 100
-        
+
+    print beautyConsole.getColor("white") + "-" * 100
+
     return total  # return how many findings in current file
 
 
