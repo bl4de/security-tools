@@ -90,7 +90,7 @@ def main(src):
             _fn = " {}".format(_fn)
             if _fn in __line:
                 total += 1
-                printcodeline(_line, i, _fn + ')',
+                printcodeline(_line, i, _fn + (')' if '(' in _fn else ''),
                               beautyConsole.efMsgFound, prev_line, next_line, prev_prev_line, next_next_line)
         for _dp in pefdefs.fileInclude:
             # there has to be space before function call; prevents from false-positives strings contains PHP function names
