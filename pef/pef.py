@@ -15,6 +15,7 @@ import os
 import argparse
 
 from imports import pefdefs
+from imports import pefdocs
 from imports.beautyConsole import beautyConsole
 
 
@@ -28,14 +29,25 @@ def banner():
     print "-" * 100, "\33[0m\n"
 
 
-def printcodeline(_line, i, _fn, _message, prev_line="", next_line="", prev_prev_line="", next_next_line=""):
+def printcodeline(_line, i, _fn, _message, prev_line="", next_line="", prev_prev_line="", next_next_line="", __severity={}):
     """
     Formats and prints line of output
     """
+
     print "::  line %d ::   \33[33;1m%s\33[0m %s found " % (i, _fn, _message)
-    if _fn and pefdefs.exploitableFunctionsDesc.has_key(_fn):
-        print "\t\t" + beautyConsole.getColor("white") + pefdefs.exploitableFunctionsDesc.get(
-            _fn) + beautyConsole.getSpecialChar("endline")
+    if _fn and _fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
+        print "\n  " + beautyConsole.getColor("white") + pefdocs.exploitableFunctionsDesc.get(
+            _fn.strip())[0] + beautyConsole.getSpecialChar("endline")
+        print "  " + beautyConsole.getColor("grey") + pefdocs.exploitableFunctionsDesc.get(
+            _fn.strip())[1] + beautyConsole.getSpecialChar("endline")
+        print "  Potential impact: " + beautyConsole.getColor("red") + pefdocs.exploitableFunctionsDesc.get(
+            _fn.strip())[2] + beautyConsole.getSpecialChar("endline")
+        if pefdocs.exploitableFunctionsDesc.get(_fn.strip())[3] not in __severity.keys():
+            __severity[pefdocs.exploitableFunctionsDesc.get(_fn.strip())[
+                3]] = 1
+        else:
+            __severity[pefdocs.exploitableFunctionsDesc.get(_fn.strip(
+            ))[3]] = __severity[pefdocs.exploitableFunctionsDesc.get(_fn.strip())[3]] + 1
 
     print "\n"
     if prev_prev_line:
@@ -55,7 +67,7 @@ def printcodeline(_line, i, _fn, _message, prev_line="", next_line="", prev_prev
     print "\n"
 
 
-def main(src):
+def main(src, __severity):
     """
     performs code analysis, line by line
     """
@@ -91,7 +103,7 @@ def main(src):
             if _fn in __line:
                 total += 1
                 printcodeline(_line, i, _fn + (')' if '(' in _fn else ''),
-                              beautyConsole.efMsgFound, prev_line, next_line, prev_prev_line, next_next_line)
+                              beautyConsole.efMsgFound, prev_line, next_line, prev_prev_line, next_next_line, __severity)
         for _dp in pefdefs.fileInclude:
             # there has to be space before function call; prevents from false-positives strings contains PHP function names
             _dp = " {}".format(_dp)
@@ -99,17 +111,17 @@ def main(src):
             if _dp in __line.replace(" ", ""):
                 total += 1
                 printcodeline(_line, i, _dp + '()',
-                              beautyConsole.fiMsgFound, prev_line, next_line, prev_prev_line, next_next_line)
+                              beautyConsole.fiMsgFound, prev_line, next_line, prev_prev_line, next_next_line, __severity)
         for _global in pefdefs.globalVars:
             if _global in __line:
                 total += 1
                 printcodeline(_line, i, _global,
-                              beautyConsole.efMsgGlobalFound, prev_line, next_line, prev_prev_line, next_next_line)
+                              beautyConsole.efMsgGlobalFound, prev_line, next_line, prev_prev_line, next_next_line, __severity)
         for _refl in pefdefs.reflectedProperties:
             if _refl in __line:
                 total += 1
                 printcodeline(_line, i, _refl,
-                              beautyConsole.eReflFound, prev_line, next_line, prev_prev_line, next_next_line)
+                              beautyConsole.eReflFound, prev_line, next_line, prev_prev_line, next_next_line, __severity)
 
     if total < 1:
         print beautyConsole.getColor("green") + \
@@ -129,7 +141,7 @@ def main(src):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    __filename = '.' # initial value for file/dir to scan is current directory
+    __filename = '.'  # initial value for file/dir to scan is current directory
 
     parser.add_argument(
         "-r", "--recursive", help="scan PHP files recursively in current directory", action="store_true")
@@ -140,23 +152,37 @@ if __name__ == "__main__":
     __filename = args.file
     __scanned_files = 0
     __found_entries = 0
+    __severity = {
+        "high": 0,
+        "medium": 0,
+        "low": 0
+    }
 
     if args.recursive:
         for root, subdirs, files in os.walk(__filename):
             for f in files:
                 __scanned_files = __scanned_files + 1
-                res = main(os.path.join(root, f))
+                res = main(os.path.join(root, f), __severity)
                 __found_entries = __found_entries + res
     else:
         __scanned_files = __scanned_files + 1
-        __found_entries = main(__filename)
+        __found_entries = main(__filename, __severity)
 
     print beautyConsole.getColor("green")
-    print "\n ===> {} file(s) scanned".format(__scanned_files)
+    print "\n  {}file(s) scanned".format(__scanned_files)
     if __found_entries > 0:
-        print "{} ===> {} interesting entries found\n\n".format(
+        print "{}  {} interesting entries found\n".format(
             beautyConsole.getColor("red"), __found_entries)
     else:
-        print " ===> No interesting entries found :( \n\n"
+        print "  No interesting entries found :( \n"
+
+    print "    {}{}: {}".format(
+        beautyConsole.getColor("red"), "HIGH", __severity.get("high"))
+    print "    {}{}: {}".format(beautyConsole.getColor(
+        "yellow"), "MEDIUM", __severity.get("medium"))
+    print "    {}{}: {}".format(beautyConsole.getColor(
+        "green"), "LOW", __severity.get("low"))
+
+    print "\n"
 
     exit(0)
