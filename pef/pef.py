@@ -169,7 +169,7 @@ if __name__ == "__main__":
         __found_entries = main(__filename, __severity)
 
     print beautyConsole.getColor("green")
-    print "\n  {}file(s) scanned".format(__scanned_files)
+    print "\n  {} file(s) scanned".format(__scanned_files)
     if __found_entries > 0:
         print "{}  {} interesting entries found\n".format(
             beautyConsole.getColor("red"), __found_entries)

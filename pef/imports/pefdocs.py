@@ -34,5 +34,29 @@ exploitableFunctionsDesc = {
         "fopen ( string $filename , string $mode [, bool $use_include_path = FALSE [, resource $context ]] ) : resource",
         "Local File Include; Remote File Include",
         "high"
+    ],
+    "popen()": [
+        "Opens process file pointer. Opens a pipe to a process executed by forking the command given by command",
+        "popen ( string $command , string $mode ) : resource",
+        "RCE",
+        "high"
+    ],
+    "pcntl_exec()": [
+        "Executes specified program in current process space with the given arguments",
+        "pcntl_exec ( string $path [, array $args [, array $envs ]] ) : void",
+        "RCE",
+        "high"
+    ],
+    "eval()" : [
+        "Evaluate a string as PHP code",
+        "eval ( string $code ) : mixed",
+        "RCE",
+        "high"
+    ],
+    "preg_replace": [
+        "Perform a regular expression search and replace. Searches subject for matches to pattern and replaces them with replacement",
+        "preg_replace ( mixed $pattern , mixed $replacement , mixed $subject [, int $limit = -1 [, int &$count ]] ) : mixed",
+        "RCE (in certain conditions)",
+        "medium"
     ]
 }
