@@ -196,7 +196,7 @@ def main():
         os.mkdir('report')
 
     # starts output HTML
-    html_output = open('report/denumerator_report.html', 'w+')
+    html_output = open('report/__denumerator_report.html', 'w+')
     create_output_header(html_output)
     # main loop
     enumerate_domains(domains, output_file, html_output, show)
