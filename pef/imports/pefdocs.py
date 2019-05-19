@@ -5,6 +5,12 @@
 # 2nd element - syntax
 # 3rd element - possible vulnerability classes
 exploitableFunctionsDesc = {
+    "system()": [
+        "Allows to execute system command passed as an argument",
+        "system ( string $command [, int &$return_var ] ) : string",
+        "RCE",
+        "high"
+    ],
     "exec()": [
         "exec - Execute an external program",
         "exec ( string $command [, array &$output [, int &$return_var ]] ) : string",
@@ -21,12 +27,6 @@ exploitableFunctionsDesc = {
         "when parse_str(arg, [target]) parses URL-like string, it sets variables in current scope WITHOUT initializing it",
         "parse_str ( string $encoded_string [, array &$result ] ) : void"
         "Code Injection",
-        "high"
-    ],
-    "system()": [
-        "Allows to execute system command passed as an argument",
-        "system ( string $command [, int &$return_var ] ) : string",
-        "RCE",
         "high"
     ],
     "fopen()": [
@@ -53,10 +53,34 @@ exploitableFunctionsDesc = {
         "RCE",
         "high"
     ],
-    "preg_replace": [
+    "preg_replace()": [
         "Perform a regular expression search and replace. Searches subject for matches to pattern and replaces them with replacement",
         "preg_replace ( mixed $pattern , mixed $replacement , mixed $subject [, int $limit = -1 [, int &$count ]] ) : mixed",
         "RCE (in certain conditions)",
         "medium"
+    ],
+    "create_function()": [
+        "DEPRECATED as of PHP 7.2.0 - Create an anonymous (lambda-style) function. Creates an anonymous function from the parameters passed, and returns a unique name for it.",
+        "create_function ( string $args , string $code ) : string",
+        "Code Injection, RCE",
+        "medium"
+    ],
+    "include()": [
+        "The include statement includes and evaluates the specified file.",
+        "",
+        "Code Injection, RCE",
+        "high"
+    ],
+    "require()": [
+        "The include statement includes and evaluates the specified file.",
+        "",
+        "Code Injection, RCE",
+        "high"
+    ],
+    "passthru()": [
+        "Execute an external program and display raw output",
+        "passthru ( string $command [, int &$return_var ] ) : void",
+        "RCE",
+        "high"
     ]
 }
