@@ -67,6 +67,14 @@ def printcodeline(_line, i, _fn, _message, prev_line="", next_line="", prev_prev
     print "\n"
 
 
+def header_print(file_name, header_printed):
+    if header_printed == False:
+        print beautyConsole.getColor("white") + "-" * 100
+        print "FILE: \33[33m%s\33[0m " % os.path.realpath(file_name), "\n"
+        header_printed = True
+    return header_printed
+
+
 def main(src, __severity):
     """
     performs code analysis, line by line
@@ -78,12 +86,11 @@ def main(src, __severity):
     linelength = 97
     all_lines = _file.readlines()
 
+    header_printed = False
     prev_prev_line = ""
     prev_line = ""
     next_line = ""
     next_next_line = ""
-
-    print "FILE: \33[33m%s\33[0m " % os.path.realpath(_file.name), "\n"
 
     for _line in all_lines:
         if i > 2:
@@ -101,6 +108,7 @@ def main(src, __severity):
             # there has to be space before function call; prevents from false-positives strings contains PHP function names
             _fn = " {}".format(_fn)
             if _fn in __line:
+                header_printed = header_print(_file.name, header_printed)
                 total += 1
                 printcodeline(_line, i, _fn + (')' if '(' in _fn else ''),
                               beautyConsole.efMsgFound, prev_line, next_line, prev_prev_line, next_next_line, __severity)
@@ -109,30 +117,29 @@ def main(src, __severity):
             _dp = " {}".format(_dp)
             # remove spaces to allow detection eg. include(  $_GET['something]  )
             if _dp in __line.replace(" ", ""):
+                header_printed = header_print(_file.name, header_printed)
                 total += 1
                 printcodeline(_line, i, _dp + '()',
                               beautyConsole.fiMsgFound, prev_line, next_line, prev_prev_line, next_next_line, __severity)
         for _global in pefdefs.globalVars:
             if _global in __line:
+                header_printed = header_print(_file.name, header_printed)
                 total += 1
                 printcodeline(_line, i, _global,
                               beautyConsole.efMsgGlobalFound, prev_line, next_line, prev_prev_line, next_next_line, __severity)
         for _refl in pefdefs.reflectedProperties:
             if _refl in __line:
+                header_printed = header_print(_file.name, header_printed)
                 total += 1
                 printcodeline(_line, i, _refl,
                               beautyConsole.eReflFound, prev_line, next_line, prev_prev_line, next_next_line, __severity)
 
     if total < 1:
-        print beautyConsole.getColor("green") + \
-            "No exploitable functions found" + \
-            beautyConsole.getSpecialChar("endline")
+        pass
     else:
         print beautyConsole.getColor("red") + \
             "Found %d exploitable function(s)\n" % (total) + \
             beautyConsole.getSpecialChar("endline")
-
-    print beautyConsole.getColor("white") + "-" * 100
 
     return total  # return how many findings in current file
 
@@ -168,6 +175,8 @@ if __name__ == "__main__":
         __scanned_files = __scanned_files + 1
         __found_entries = main(__filename, __severity)
 
+    print beautyConsole.getColor("white") + "-" * 100
+
     print beautyConsole.getColor("green")
     print "\n  {} file(s) scanned".format(__scanned_files)
     if __found_entries > 0:
@@ -176,11 +185,11 @@ if __name__ == "__main__":
     else:
         print "  No interesting entries found :( \n"
 
-    print "    {}{}: {}".format(
+    print "   {}{}: {}".format(
         beautyConsole.getColor("red"), "HIGH", __severity.get("high"))
-    print "    {}{}: {}".format(beautyConsole.getColor(
+    print "   {}{}: {}".format(beautyConsole.getColor(
         "yellow"), "MEDIUM", __severity.get("medium"))
-    print "    {}{}: {}".format(beautyConsole.getColor(
+    print "   {}{}: {}".format(beautyConsole.getColor(
         "green"), "LOW", __severity.get("low"))
 
     print "\n"
