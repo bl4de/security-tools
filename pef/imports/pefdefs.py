@@ -16,7 +16,6 @@ exploitableFunctions = [
     "popen(",
     "proc_open(",
     "pcntl_exec(",
-    "asset(",
     "extract(",
     "parse_str(",
     "putenv(",

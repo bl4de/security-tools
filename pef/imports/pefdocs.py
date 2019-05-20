@@ -82,5 +82,59 @@ exploitableFunctionsDesc = {
         "passthru ( string $command [, int &$return_var ] ) : void",
         "RCE",
         "high"
+    ],
+    "shell_exec()": [
+        "Execute command via shell and return the complete output as a string. This function is identical to the backtick operator.",
+        "shell_exec ( string $cmd ) : string",
+        "RCE",
+        "high"
+    ],
+    "popen()": [
+        "Opens process file pointer. Opens a pipe to a process executed by forking the command given by command.",
+        "popen ( string $command , string $mode ) : resource",
+        "Code Injection",
+        "medium"
+    ],
+    "proc_open()": [
+        "Execute a command and open file pointers for input/output. proc_open() is similar to popen() but provides a much greater degree of control over the program execution.",
+        "proc_open ( string $cmd , array $descriptorspec , array &$pipes [, string $cwd = NULL [, array $env = NULL [, array $other_options = NULL ]]] ) : resource",
+        "Code Injection",
+        "medium"
+    ],
+    "pcntl_exec()": [
+        "Executes the program with the given arguments.",
+        "pcntl_exec ( string $path [, array $args [, array $envs ]] ) : void",
+        "RCE",
+        "high"
+    ],
+    "extract()" :[
+        "Import variables into the current symbol table from an array",
+        "extract ( array &$array [, int $flags = EXTR_OVERWRITE [, string $prefix = NULL ]] ) : int",
+        "Code Injection",
+        "medium"
+    ],
+    "parse_str()" :[
+        "Parses encoded_string as if it were the query string passed via a URL and sets variables in the current scope (or in the array if result is provided).",
+        "parse_str ( string $encoded_string [, array &$result ] ) : void",
+        "Code Injection",
+        "medium"
+    ],
+    "putenv()":[
+        "Sets the value of an environment variable",
+        "putenv ( string $setting ) : bool",
+        "Code Injection",
+        "low"
+    ],
+    "ini_set()": [
+        "Sets the value of the given configuration option. The configuration option will keep this new value during the script's execution, and will be restored at the script's ending.",
+        "ini_set ( string $varname , string $newvalue ) : string",
+        "PHP Interpreter behavior change; application settings overwrite",
+        "low"
+    ],
+    "mail()":[
+        "Sends an email.",
+        "mail ( string $to , string $subject , string $message [, mixed $additional_headers [, string $additional_parameters ]] ) : bool",
+        "Arbitrary mail sending",
+        "low"
     ]
 }
