@@ -33,10 +33,3 @@ class beautyConsole:
         if char_name in beautyConsole.characters:
             return beautyConsole.characters[char_name]
         return ""
-
-
-    efMsgFound = " - potential vulnerable code"
-    eKeyWordFound = "keyword with possibly critical meaning in code"
-    efMsgGlobalFound = "global variable explicit call"
-    fiMsgFound = "file include pattern found; potential LFI/RFI detected"
-    eReflFound = "reflected property found; check for XSS"

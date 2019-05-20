@@ -29,25 +29,35 @@ def banner():
     print "-" * 100, "\33[0m\n"
 
 
-def printcodeline(_line, i, _fn, _message, prev_line="", next_line="", prev_prev_line="", next_next_line="", __severity={}):
+def printcodeline(_line, i, _fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", __severity={}):
     """
     Formats and prints line of output
     """
+    __impact_color = {
+        "low": "green",
+        "medium": "yellow",
+        "high": "red"
+    }
 
-    print "::  line %d ::   \33[33;1m%s\33[0m %s found " % (i, _fn, _message)
+    print "::  line %d ::   \33[33;1m%s\33[0m " % (i, _fn)
+
+    # print legend only if there i sentry in pefdocs.py
     if _fn and _fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
-        print "\n  " + beautyConsole.getColor("white") + pefdocs.exploitableFunctionsDesc.get(
-            _fn.strip())[0] + beautyConsole.getSpecialChar("endline")
-        print "  " + beautyConsole.getColor("grey") + pefdocs.exploitableFunctionsDesc.get(
-            _fn.strip())[1] + beautyConsole.getSpecialChar("endline")
-        print "  Potential impact: " + beautyConsole.getColor("red") + pefdocs.exploitableFunctionsDesc.get(
-            _fn.strip())[2] + beautyConsole.getSpecialChar("endline")
-        if pefdocs.exploitableFunctionsDesc.get(_fn.strip())[3] not in __severity.keys():
-            __severity[pefdocs.exploitableFunctionsDesc.get(_fn.strip())[
-                3]] = 1
+        __impact = pefdocs.exploitableFunctionsDesc.get(_fn.strip())[3]
+        __description = pefdocs.exploitableFunctionsDesc.get(_fn.strip())[0]
+        __syntax = pefdocs.exploitableFunctionsDesc.get(_fn.strip())[1]
+        __vuln_class = pefdocs.exploitableFunctionsDesc.get(_fn.strip())[2]
+
+        print "\n  {}{}{}".format(beautyConsole.getColor(
+            "white"), __description, beautyConsole.getSpecialChar("endline"))
+        print "  {}{}{}".format(beautyConsole.getColor(
+            "grey"), __syntax, beautyConsole.getSpecialChar("endline"))
+        print "  Potential impact: {}{}{}".format(beautyConsole.getColor(
+            __impact_color[__impact]), __vuln_class, beautyConsole.getSpecialChar("endline"))
+        if __impact not in __severity.keys():
+            __severity[__impact] = 1
         else:
-            __severity[pefdocs.exploitableFunctionsDesc.get(_fn.strip(
-            ))[3]] = __severity[pefdocs.exploitableFunctionsDesc.get(_fn.strip())[3]] + 1
+            __severity[__impact] = __severity[__impact] + 1
 
     print "\n"
     if prev_prev_line:
@@ -110,8 +120,8 @@ def main(src, __severity):
             if _fn in __line:
                 header_printed = header_print(_file.name, header_printed)
                 total += 1
-                printcodeline(_line, i, _fn + (')' if '(' in _fn else ''),
-                              beautyConsole.efMsgFound, prev_line, next_line, prev_prev_line, next_next_line, __severity)
+                printcodeline(_line, i, _fn + (')' if '(' in _fn else ''), prev_line,
+                              next_line, prev_prev_line, next_next_line, __severity)
         for _dp in pefdefs.fileInclude:
             # there has to be space before function call; prevents from false-positives strings contains PHP function names
             _dp = " {}".format(_dp)
@@ -119,20 +129,20 @@ def main(src, __severity):
             if _dp in __line.replace(" ", ""):
                 header_printed = header_print(_file.name, header_printed)
                 total += 1
-                printcodeline(_line, i, _dp + '()',
-                              beautyConsole.fiMsgFound, prev_line, next_line, prev_prev_line, next_next_line, __severity)
+                printcodeline(_line, i, _dp + '()', prev_line, next_line,
+                              prev_prev_line, next_next_line, __severity)
         for _global in pefdefs.globalVars:
             if _global in __line:
                 header_printed = header_print(_file.name, header_printed)
                 total += 1
-                printcodeline(_line, i, _global,
-                              beautyConsole.efMsgGlobalFound, prev_line, next_line, prev_prev_line, next_next_line, __severity)
+                printcodeline(_line, i, _global, prev_line, next_line,
+                              prev_prev_line, next_next_line, __severity)
         for _refl in pefdefs.reflectedProperties:
             if _refl in __line:
                 header_printed = header_print(_file.name, header_printed)
                 total += 1
-                printcodeline(_line, i, _refl,
-                              beautyConsole.eReflFound, prev_line, next_line, prev_prev_line, next_next_line, __severity)
+                printcodeline(_line, i, _refl, prev_line, next_line,
+                              prev_prev_line, next_next_line, __severity)
 
     if total < 1:
         pass

@@ -136,5 +136,11 @@ exploitableFunctionsDesc = {
         "mail ( string $to , string $subject , string $message [, mixed $additional_headers [, string $additional_parameters ]] ) : bool",
         "Arbitrary mail sending",
         "low"
+    ],
+    "echo": [
+        "Outputs all parameters. No additional newline is appended.",
+        "echo ( string $arg1 [, string $... ] ) : void",
+        "XSS, HTML Injection, Content Injection etc.",
+        "low"
     ]
 }
