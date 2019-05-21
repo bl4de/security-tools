@@ -142,5 +142,11 @@ exploitableFunctionsDesc = {
         "echo ( string $arg1 [, string $... ] ) : void",
         "XSS, HTML Injection, Content Injection etc.",
         "low"
+    ],
+    "header()" : [
+        "header() is used to send a raw HTTP header.",
+        "header ( string $header [, bool $replace = TRUE [, int $http_response_code ]] ) : void",
+        "Header Injection (?)",
+        "low"
     ]
 }
