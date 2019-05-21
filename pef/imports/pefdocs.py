@@ -148,5 +148,11 @@ exploitableFunctionsDesc = {
         "header ( string $header [, bool $replace = TRUE [, int $http_response_code ]] ) : void",
         "Header Injection (?)",
         "low"
+    ],
+    "unserialize()": [
+        "unserialize() takes a single serialized variable and converts it back into a PHP value.",
+        "unserialize ( string $str [, array $options ] ) : mixed",
+        "Code Injection, RCE (in certain conditions)",
+        "high"
     ]
 }
