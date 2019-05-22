@@ -47,7 +47,7 @@ exploitableFunctionsDesc = {
         "RCE",
         "high"
     ],
-    "eval()" : [
+    "eval()": [
         "Evaluate a string as PHP code",
         "eval ( string $code ) : mixed",
         "RCE",
@@ -107,19 +107,19 @@ exploitableFunctionsDesc = {
         "RCE",
         "high"
     ],
-    "extract()" :[
+    "extract()": [
         "Import variables into the current symbol table from an array",
         "extract ( array &$array [, int $flags = EXTR_OVERWRITE [, string $prefix = NULL ]] ) : int",
         "Code Injection",
         "medium"
     ],
-    "parse_str()" :[
+    "parse_str()": [
         "Parses encoded_string as if it were the query string passed via a URL and sets variables in the current scope (or in the array if result is provided).",
         "parse_str ( string $encoded_string [, array &$result ] ) : void",
         "Code Injection",
         "medium"
     ],
-    "putenv()":[
+    "putenv()": [
         "Sets the value of an environment variable",
         "putenv ( string $setting ) : bool",
         "Code Injection",
@@ -131,7 +131,7 @@ exploitableFunctionsDesc = {
         "PHP Interpreter behavior change; application settings overwrite",
         "low"
     ],
-    "mail()":[
+    "mail()": [
         "Sends an email.",
         "mail ( string $to , string $subject , string $message [, mixed $additional_headers [, string $additional_parameters ]] ) : bool",
         "Arbitrary mail sending",
@@ -143,7 +143,7 @@ exploitableFunctionsDesc = {
         "XSS, HTML Injection, Content Injection etc.",
         "low"
     ],
-    "header()" : [
+    "header()": [
         "header() is used to send a raw HTTP header.",
         "header ( string $header [, bool $replace = TRUE [, int $http_response_code ]] ) : void",
         "Header Injection (?)",
@@ -167,13 +167,13 @@ exploitableFunctionsDesc = {
         "Code Injection",
         "medium"
     ],
-    "ereg_replace()" :[
+    "ereg_replace()": [
         "This function scans string for matches to pattern, then replaces the matched text with replacement (DEPRECATED in PHP 5.3.0, and REMOVED in PHP 7.0.0.)",
         "ereg_replace ( string $pattern , string $replacement , string $string ) : string",
         "Code Injection",
         "low"
     ],
-    "eregi_replace()" :[
+    "eregi_replace()": [
         "This function is identical to ereg_replace() except that this ignores case distinction when matching alphabetic characters. (DEPRECATED in PHP 5.3.0, and REMOVED in PHP 7.0.0)",
         "eregi_replace ( string $pattern , string $replacement , string $string ) : string",
         "Code Injection",
@@ -191,31 +191,31 @@ exploitableFunctionsDesc = {
         "Code Injection",
         "low"
     ],
-    "virtual()" : [
+    "virtual()": [
         "Perform an Apache sub-request (calls url passed as an argument). This function is supported when PHP is installed as an Apache module or by the NSAPI server module",
         "virtual ( string $filename ) : bool",
         "Local File Include, Remote File Include",
         "low"
     ],
-    "readfile()":[
+    "readfile()": [
         "Reads a file and writes it to the output buffer.",
         "readfile ( string $filename [, bool $use_include_path = FALSE [, resource $context ]] ) : int",
         "Code Injection, LFI, RFI",
         "medium"
     ],
-    "file_get_contents()":[
+    "file_get_contents()": [
         "This function is similar to file(), except that file_get_contents() returns the file in a string, starting at the specified offset up to maxlen bytes. On failure, file_get_contents() will return FALSE.",
         "file_get_contents ( string $filename [, bool $use_include_path = FALSE [, resource $context [, int $offset = 0 [, int $maxlen ]]]] ) : string",
         "Code Injection, LFI, RFI",
         "medium"
     ],
-    "show_source()":[
+    "show_source()": [
         "(Alias for highlight_file()) Prints out or returns a syntax highlighted version of the code contained in filename using the colors defined in the built-in syntax highlighter for PHP.",
         "show_source ( string $filename [, bool $return = FALSE ] ) : mixed",
         "Information Disclosure",
         "low"
     ],
-    "highlight_file()":[
+    "highlight_file()": [
         "Prints out or returns a syntax highlighted version of the code contained in filename using the colors defined in the built-in syntax highlighter for PHP.",
         "highlight_file ( string $filename [, bool $return = FALSE ] ) : mixed",
         "Information Disclosure",
@@ -251,7 +251,7 @@ exploitableFunctionsDesc = {
         "Code Injection, LFI (depends on context)",
         "low"
     ],
-    "gzread()":[
+    "gzread()": [
         "gzread() reads up to length bytes from the given gz-file pointer. Reading stops when length (uncompressed) bytes have been read or EOF is reached, whichever comes first.",
         "gzread ( resource $zp , int $length ) : string",
         "Code Injection, LFI",
@@ -263,7 +263,7 @@ exploitableFunctionsDesc = {
         "Code Injection, LFI",
         "low"
     ],
-    "gzpassthru()":[
+    "gzpassthru()": [
         "Output all remaining data on a gz-file pointer. Reads to EOF on the given gz-file pointer from the current position and writes the (uncompressed) results to standard output.",
         "gzpassthru ( resource $zp ) : int",
         "Code Injection, LFI",
@@ -275,7 +275,7 @@ exploitableFunctionsDesc = {
         "Code Injection, LFI, RCE",
         "medium"
     ],
-    "mssql_query()" : [
+    "mssql_query()": [
         "Send MS SQL query to the currently active database on the server that's associated with the specified link identifier. This function was REMOVED in PHP 7.0.0.",
         "mssql_query ( string $query [, resource $link_identifier [, int $batch_size = 0 ]] ) : mixed",
         "SQL Injection",
@@ -293,13 +293,13 @@ exploitableFunctionsDesc = {
         "SQL Injection",
         "medium"
     ],
-    "PDO::query()":[
+    "PDO::query()": [
         "PDO::query() executes an SQL statement in a single function call, returning the result set (if any) returned by the statement as a PDOStatement object.",
         "public PDO::query ( string $statement , int $PDO::FETCH_CLASS , string $classname , array $ctorargs ) : PDOStatement",
         "SQL Injection",
         "medium"
     ],
-    "move_uploaded_file()":[
+    "move_uploaded_file()": [
         "This function checks to ensure that the file designated by filename is a valid upload file (meaning that it was uploaded via PHP's HTTP POST upload mechanism). If the file is valid, it will be moved to the filename given by destination.",
         "move_uploaded_file ( string $filename , string $destination ) : bool",
         "File Include",
@@ -319,7 +319,7 @@ exploitableFunctionsDesc = {
     ],
     "ldap_search()": [
         "Performs the search for a specified filter on the directory with the scope of LDAP_SCOPE_SUBTREE. This is equivalent to searching the entire directory.",
-        "ldap_search ( resource $link_identifier , string $base_dn , string $filter [, array $attributes = array("*") [, int $attrsonly = 0 [, int $sizelimit = -1 [, int $timelimit = -1 [, int $deref = LDAP_DEREF_NEVER [, array $serverctrls = array() ]]]]]] ) : resource",
+        "ldap_search ( resource $link_identifier , string $base_dn , string $filter [, array $attributes = array() [, int $attrsonly = 0 [, int $sizelimit = -1 [, int $timelimit = -1 [, int $deref = LDAP_DEREF_NEVER [, array $serverctrls = array() ]]]]]] ) : resource",
         "unknown?",
         "low"
     ],
@@ -330,7 +330,7 @@ exploitableFunctionsDesc = {
         "low"
     ],
     "sqlite_query()": [
-        "SQLiteDatabase::query — Executes a query against a given database and returns a result handle",
+        "SQLiteDatabase::query - Executes a query against a given database and returns a result handle",
         "sqlite_query ( string $query , resource $dbhandle [, int $result_type = SQLITE_BOTH [, string &$error_msg ]] ) : resource",
         "SQL Injection",
         "medium"
@@ -340,8 +340,8 @@ exploitableFunctionsDesc = {
         "pg_query ([ resource $connection ], string $query ) : resource",
         "SQL Injection",
         "medium"
-    ]
-    "mysql_query()":[
+    ],
+    "mysql_query()": [
         "mysql_query() sends a unique query (multiple queries are not supported) to the currently active database on the server that's associated with the specified link_identifier.(deprecated in PHP 5.5.0, and it was removed in PHP 7.0.0)",
         "mysql_query ( string $query [, resource $link_identifier = NULL ] ) : mixed",
         "SQL Injection",
@@ -371,7 +371,7 @@ exploitableFunctionsDesc = {
         "Code Injection, RCE (in certain conditions)",
         "low"
     ],
-    "escapeshellarg()" : [
+    "escapeshellarg()": [
         "Escape a string to be used as a shell argument",
         "escapeshellarg ( string $arg ) : string",
         "",
@@ -395,7 +395,7 @@ exploitableFunctionsDesc = {
         "Information Disclosure",
         "low"
     ],
-    "getcwd()":[
+    "getcwd()": [
         "Gets the current working directory",
         "getcwd ( void ) : string",
         "Information Disclosure",
@@ -407,7 +407,7 @@ exploitableFunctionsDesc = {
         "Information Disclosure",
         "low"
     ],
-    "ini_set()":[
+    "ini_set()": [
         "Sets the value of the given configuration option. The configuration option will keep this new value during the script's execution, and will be restored at the script's ending.",
         "ini_set ( string $varname , string $newvalue ) : string",
         "Configuration Arbitrary Change in runtime",
