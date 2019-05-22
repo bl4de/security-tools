@@ -154,5 +154,47 @@ exploitableFunctionsDesc = {
         "unserialize ( string $str [, array $options ] ) : mixed",
         "Code Injection, RCE (in certain conditions)",
         "high"
+    ],
+    "assert()": [
+        "assert() will check the given assertion and take appropriate action if its result is FALSE. If the assertion is given as a string it will be evaluated as PHP code by assert() - ONLY PNP <7.2.0",
+        "assert ( mixed $assertion [, string $description ] ) : bool (PHP 5,7) assert ( mixed $assertion [, Throwable $exception ] ) : bool (PHP 7)",
+        "RCE, Code Injection (in certain conditions)",
+        "low"
+    ],
+    "call_user_func()": [
+        "Calls the callback given by the first parameter and passes the remaining parameters as arguments.",
+        "call_user_func ( callable $callback [, mixed $... ] ) : mixed",
+        "Code Injection",
+        "medium"
+    ],
+    "ereg_replace()" :[
+        "This function scans string for matches to pattern, then replaces the matched text with replacement (DEPRECATED in PHP 5.3.0, and REMOVED in PHP 7.0.0.)",
+        "ereg_replace ( string $pattern , string $replacement , string $string ) : string",
+        "Code Injection",
+        "low"
+    ],
+    "eregi_replace()" :[
+        "This function is identical to ereg_replace() except that this ignores case distinction when matching alphabetic characters. (DEPRECATED in PHP 5.3.0, and REMOVED in PHP 7.0.0)",
+        "eregi_replace ( string $pattern , string $replacement , string $string ) : string",
+        "Code Injection",
+        "low"
+    ],
+    "mb_ereg_replace()": [
+        "Scans string for matches to pattern, then replaces the matched text with replacement. Never use the e modifier when working on untrusted input. No automatic escaping will happen (as known from preg_replace()).",
+        "mb_ereg_replace ( string $pattern , string $replacement , string $string [, string $option = \"msr\" ] ) : string",
+        "Code Injection",
+        "low"
+    ],
+    "mb_eregi_replace()": [
+        "Scans string for matches to pattern, then replaces the matched text with replacement. Never use the e modifier when working on untrusted input. No automatic escaping will happen (as known from preg_replace()).",
+        "mb_eregi_replace ( string $pattern , string $replace , string $string [, string $option = \"msri\" ] ) : string",
+        "Code Injection",
+        "low"
+    ],
+    "virtual()" : [
+        "Perform an Apache sub-request (calls url passed as an argument). This function is supported when PHP is installed as an Apache module or by the NSAPI server module",
+        "virtual ( string $filename ) : bool",
+        "Local File Include, Remote File Include",
+        "low"
     ]
 }

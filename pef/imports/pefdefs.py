@@ -23,8 +23,6 @@ exploitableFunctions = [
     "mail(",
     "header(",
     "unserialize(",
-    "apache_child_terminate(",
-    "apache_get_modules(",
     "assert(",
     "call_user_func(",
     "call_user_func_array(",
