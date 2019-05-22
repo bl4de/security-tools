@@ -196,5 +196,251 @@ exploitableFunctionsDesc = {
         "virtual ( string $filename ) : bool",
         "Local File Include, Remote File Include",
         "low"
+    ],
+    "readfile()":[
+        "Reads a file and writes it to the output buffer.",
+        "readfile ( string $filename [, bool $use_include_path = FALSE [, resource $context ]] ) : int",
+        "Code Injection, LFI, RFI",
+        "medium"
+    ],
+    "file_get_contents()":[
+        "This function is similar to file(), except that file_get_contents() returns the file in a string, starting at the specified offset up to maxlen bytes. On failure, file_get_contents() will return FALSE.",
+        "file_get_contents ( string $filename [, bool $use_include_path = FALSE [, resource $context [, int $offset = 0 [, int $maxlen ]]]] ) : string",
+        "Code Injection, LFI, RFI",
+        "medium"
+    ],
+    "show_source()":[
+        "(Alias for highlight_file()) Prints out or returns a syntax highlighted version of the code contained in filename using the colors defined in the built-in syntax highlighter for PHP.",
+        "show_source ( string $filename [, bool $return = FALSE ] ) : mixed",
+        "Information Disclosure",
+        "low"
+    ],
+    "highlight_file()":[
+        "Prints out or returns a syntax highlighted version of the code contained in filename using the colors defined in the built-in syntax highlighter for PHP.",
+        "highlight_file ( string $filename [, bool $return = FALSE ] ) : mixed",
+        "Information Disclosure",
+        "low"
+    ],
+    "fopen()": [
+        "fopen() binds a named resource, specified by filename, to a stream.",
+        "fopen ( string $filename , string $mode [, bool $use_include_path = FALSE [, resource $context ]] ) : resource",
+        "Code Injection, LFI, RFI",
+        "low"
+    ],
+    "file()": [
+        "Reads an entire file into an array.",
+        "ile ( string $filename [, int $flags = 0 [, resource $context ]] ) : array",
+        "Code Injection, LFI, RFI",
+        "low"
+    ],
+    "fpassthru()": [
+        "Reads to EOF on the given file pointer from the current position and writes the results to the output buffer.",
+        "fpassthru ( resource $handle ) : int",
+        "Code Injection, LFI, RFI, RCE (depending on the context)",
+        "low"
+    ],
+    "fsockopen()": [
+        "Initiates a socket connection to the resource specified by hostname.",
+        "fsockopen ( string $hostname [, int $port = -1 [, int &$errno [, string &$errstr [, float $timeout = ini_get(\"default_socket_timeout\") ]]]] ) : resource",
+        "RCE (depends on context)",
+        "low"
+    ],
+    "gzopen()": [
+        "Opens a gzip (.gz) file for reading or writing.",
+        "gzopen ( string $filename , string $mode [, int $use_include_path = 0 ] ) : resource",
+        "Code Injection, LFI (depends on context)",
+        "low"
+    ],
+    "gzread()":[
+        "gzread() reads up to length bytes from the given gz-file pointer. Reading stops when length (uncompressed) bytes have been read or EOF is reached, whichever comes first.",
+        "gzread ( resource $zp , int $length ) : string",
+        "Code Injection, LFI",
+        "low"
+    ],
+    "gzfile()": [
+        "Read entire gz-file into an array. This function is identical to readgzfile(), except that it returns the file in an array.",
+        "gzfile ( string $filename [, int $use_include_path = 0 ] ) : array",
+        "Code Injection, LFI",
+        "low"
+    ],
+    "gzpassthru()":[
+        "Output all remaining data on a gz-file pointer. Reads to EOF on the given gz-file pointer from the current position and writes the (uncompressed) results to standard output.",
+        "gzpassthru ( resource $zp ) : int",
+        "Code Injection, LFI",
+        "low"
+    ],
+    "readgzfile()": [
+        "Output a gz-file. Reads a file, decompresses it and writes it to standard output.",
+        "readgzfile ( string $filename [, int $use_include_path = 0 ] ) : int",
+        "Code Injection, LFI, RCE",
+        "medium"
+    ],
+    "mssql_query()" : [
+        "Send MS SQL query to the currently active database on the server that's associated with the specified link identifier. This function was REMOVED in PHP 7.0.0.",
+        "mssql_query ( string $query [, resource $link_identifier [, int $batch_size = 0 ]] ) : mixed",
+        "SQL Injection",
+        "high"
+    ],
+    "odbc_exec()": [
+        "Sends an SQL statement to the database server.",
+        "odbc_exec ( resource $connection_id , string $query_string [, int $flags ] ) : resource",
+        "SQL Injection",
+        "high"
+    ],
+    "sqlsrv_query()": [
+        "Prepares and executes a query",
+        "sqlsrv_query ( resource $conn , string $sql [, array $params [, array $options ]] ) : mixed",
+        "SQL Injection",
+        "medium"
+    ],
+    "PDO::query()":[
+        "PDO::query() executes an SQL statement in a single function call, returning the result set (if any) returned by the statement as a PDOStatement object.",
+        "public PDO::query ( string $statement , int $PDO::FETCH_CLASS , string $classname , array $ctorargs ) : PDOStatement",
+        "SQL Injection",
+        "medium"
+    ],
+    "move_uploaded_file()":[
+        "This function checks to ensure that the file designated by filename is a valid upload file (meaning that it was uploaded via PHP's HTTP POST upload mechanism). If the file is valid, it will be moved to the filename given by destination.",
+        "move_uploaded_file ( string $filename , string $destination ) : bool",
+        "File Include",
+        "low"
+    ],
+    "print()": [
+        "Outputs arg. print is not actually a real function (it is a language construct) so you are not required to use parentheses with its argument list.",
+        "print ( string $arg ) : int",
+        "XSS, Content/HTML Injection",
+        "low"
+    ],
+    "printf()": [
+        "Produces output according to format.",
+        "printf ( string $format [, mixed $... ] ) : int",
+        "XSS, Content/HTML Injection",
+        "low"
+    ],
+    "ldap_search()": [
+        "Performs the search for a specified filter on the directory with the scope of LDAP_SCOPE_SUBTREE. This is equivalent to searching the entire directory.",
+        "ldap_search ( resource $link_identifier , string $base_dn , string $filter [, array $attributes = array("*") [, int $attrsonly = 0 [, int $sizelimit = -1 [, int $timelimit = -1 [, int $deref = LDAP_DEREF_NEVER [, array $serverctrls = array() ]]]]]] ) : resource",
+        "unknown?",
+        "low"
+    ],
+    "header()": [
+        "Send a raw HTTP header",
+        "header ( string $header [, bool $replace = TRUE [, int $http_response_code ]] ) : void",
+        "Header Injection, Open Redirect",
+        "low"
+    ],
+    "sqlite_query()": [
+        "SQLiteDatabase::query — Executes a query against a given database and returns a result handle",
+        "sqlite_query ( string $query , resource $dbhandle [, int $result_type = SQLITE_BOTH [, string &$error_msg ]] ) : resource",
+        "SQL Injection",
+        "medium"
+    ],
+    "pg_query()": [
+        "pg_query() executes the query on the specified database connection. pg_query_params() should be preferred in most cases.",
+        "pg_query ([ resource $connection ], string $query ) : resource",
+        "SQL Injection",
+        "medium"
+    ]
+    "mysql_query()":[
+        "mysql_query() sends a unique query (multiple queries are not supported) to the currently active database on the server that's associated with the specified link_identifier.(deprecated in PHP 5.5.0, and it was removed in PHP 7.0.0)",
+        "mysql_query ( string $query [, resource $link_identifier = NULL ] ) : mixed",
+        "SQL Injection",
+        "high"
+    ],
+    "mysqli_query()": [
+        "Performs a query against the database.",
+        "mysqli_query ( mysqli $link , string $query [, int $resultmode = MYSQLI_STORE_RESULT ] ) : mixed",
+        "SQL Injection",
+        "medium"
+    ],
+    "mysqli::query()": [
+        "Performs a query against the database.",
+        "mysqli::query ( string $query [, int $resultmode = MYSQLI_STORE_RESULT ] ) : mixed",
+        "SQL Injection",
+        "medium"
+    ],
+    "apache_setenv()": [
+        "Sets the value of the Apache environment variable specified by variable.",
+        "apache_setenv ( string $variable , string $value [, bool $walk_to_top = FALSE ] ) : bool",
+        "ENV server variables overwrite",
+        "low"
+    ],
+    "dl()": [
+        "Loads a PHP extension at runtime",
+        "dl ( string $library ) : bool",
+        "Code Injection, RCE (in certain conditions)",
+        "low"
+    ],
+    "escapeshellarg()" : [
+        "Escape a string to be used as a shell argument",
+        "escapeshellarg ( string $arg ) : string",
+        "",
+        "low"
+    ],
+    "escapeshellcmd()": [
+        "Escapes any characters in a string that might be used to trick a shell command into executing arbitrary commands",
+        "escapeshellcmd ( string $command ) : string",
+        "",
+        "low"
+    ],
+    "get_cfg_var()": [
+        "Gets the value of a PHP configuration option",
+        "get_cfg_var ( string $option ) : mixed",
+        "Information Disclosure",
+        "low"
+    ],
+    "get_current_user()": [
+        "Gets the name of the owner of the current PHP script",
+        "get_current_user ( void ) : string",
+        "Information Disclosure",
+        "low"
+    ],
+    "getcwd()":[
+        "Gets the current working directory",
+        "getcwd ( void ) : string",
+        "Information Disclosure",
+        "low"
+    ],
+    "getenv()": [
+        " Gets the value of an environment variable",
+        "getenv ( string $varname [, bool $local_only = FALSE ] ) : string",
+        "Information Disclosure",
+        "low"
+    ],
+    "ini_set()":[
+        "Sets the value of the given configuration option. The configuration option will keep this new value during the script's execution, and will be restored at the script's ending.",
+        "ini_set ( string $varname , string $newvalue ) : string",
+        "Configuration Arbitrary Change in runtime",
+        "low"
+    ],
+    "php_uname()": [
+        "Returns information about the operating system PHP is running on",
+        "php_uname ([ string $mode = \"a\" ] ) : string",
+        "Information Disclosure",
+        "low"
+    ],
+    "phpinfo()": [
+        "Outputs information about PHP's configuration",
+        "phpinfo ([ int $what = INFO_ALL ] ) : bool",
+        "Information Disclosure",
+        "medium"
+    ],
+    "putenv()": [
+        "Adds setting to the server environment. The environment variable will only exist for the duration of the current request. At the end of the request the environment is restored to its original state.",
+        "putenv ( string $setting ) : bool",
+        "ENV variable create/owerwrite",
+        "low"
+    ],
+    "symlink()": [
+        "Creates a symbolic link to the existing target with the specified name link.",
+        "symlink ( string $target , string $link ) : bool",
+        "LFI (in certain conditions)",
+        "low"
+    ],
+    "syslog()": [
+        "Generate a system log message",
+        "syslog ( int $priority , string $message ) : bool",
+        "Log poisoning",
+        "low"
     ]
 }

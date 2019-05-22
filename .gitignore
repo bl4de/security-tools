@@ -11,5 +11,5 @@ sword/OUTPUT
 /dirscan/1000folders.txt
 *.pyc
 *.log
+.vscode
 
-denumerator_output.txt
