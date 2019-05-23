@@ -3,9 +3,10 @@
 # AEM (Adobe Experience Manager) vulnerable instance directory tree explorer
 import requests
 import json
+import sys
 
-host = 'roche-eu-elb1euwe-edbsgup20jrh-484431596.eu-west-1.elb.amazonaws.com'
-bypass = '/.childrenlist.json'
+host = sys.argv[0]
+bypass = sys.argv[1] # .childrenlist.json,  .1.json etc.
 
 headers = {
     'Host': host,
