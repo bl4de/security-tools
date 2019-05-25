@@ -29,7 +29,7 @@ def banner():
     print "-" * 100, "\33[0m\n"
 
 
-def printcodeline(_line, i, _fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", __severity={}):
+def printcodeline(_line, i, _fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", __severity={}, __verbose=False):
     """
     Formats and prints line of output
     """
@@ -39,42 +39,50 @@ def printcodeline(_line, i, _fn, prev_line="", next_line="", prev_prev_line="", 
         "high": "red"
     }
 
-    print "::  line %d ::   \33[33;1m%s\33[0m " % (i, _fn)
+    if __verbose == True:
+        print " line %d :: \33[33;1m%s\33[0m " % (i, _fn)
+    else:
+        print "{}line {} :: {}{} ".format(beautyConsole.getColor(
+            "white"), i, beautyConsole.getColor("grey"), _line.strip())
 
     # print legend only if there i sentry in pefdocs.py
     if _fn and _fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
         __impact = pefdocs.exploitableFunctionsDesc.get(_fn.strip())[3]
-        __description = pefdocs.exploitableFunctionsDesc.get(_fn.strip())[0]
+        __description = pefdocs.exploitableFunctionsDesc.get(_fn.strip())[
+            0]
         __syntax = pefdocs.exploitableFunctionsDesc.get(_fn.strip())[1]
         __vuln_class = pefdocs.exploitableFunctionsDesc.get(_fn.strip())[2]
 
-        print "\n  {}{}{}".format(beautyConsole.getColor(
-            "white"), __description, beautyConsole.getSpecialChar("endline"))
-        print "  {}{}{}".format(beautyConsole.getColor(
-            "grey"), __syntax, beautyConsole.getSpecialChar("endline"))
-        print "  Potential impact: {}{}{}".format(beautyConsole.getColor(
-            __impact_color[__impact]), __vuln_class, beautyConsole.getSpecialChar("endline"))
+        if __verbose == True:
+            print "\n  {}{}{}".format(beautyConsole.getColor(
+                "white"), __description, beautyConsole.getSpecialChar("endline"))
+            print "  {}{}{}".format(beautyConsole.getColor(
+                "grey"), __syntax, beautyConsole.getSpecialChar("endline"))
+            print "  Potential impact: {}{}{}".format(beautyConsole.getColor(
+                __impact_color[__impact]), __vuln_class, beautyConsole.getSpecialChar("endline"))
+                
         if __impact not in __severity.keys():
             __severity[__impact] = 1
         else:
             __severity[__impact] = __severity[__impact] + 1
 
-    print "\n"
-    if prev_prev_line:
-        print str(i-2) + "  " + beautyConsole.getColor("grey") + prev_prev_line + \
+    if __verbose == True:
+        print "\n"
+        if prev_prev_line:
+            print str(i-2) + "  " + beautyConsole.getColor("grey") + prev_prev_line + \
+                beautyConsole.getSpecialChar("endline")
+        if prev_line:
+            print str(i-1) + "  " + beautyConsole.getColor("grey") + prev_line + \
+                beautyConsole.getSpecialChar("endline")
+        print str(i) + "  " + beautyConsole.getColor("green") + _line.rstrip() + \
             beautyConsole.getSpecialChar("endline")
-    if prev_line:
-        print str(i-1) + "  " + beautyConsole.getColor("grey") + prev_line + \
-            beautyConsole.getSpecialChar("endline")
-    print str(i) + "  " + beautyConsole.getColor("green") + _line.rstrip() + \
-        beautyConsole.getSpecialChar("endline")
-    if next_line:
-        print str(i+1) + "  " + beautyConsole.getColor("grey") + next_line + \
-            beautyConsole.getSpecialChar("endline")
-    if next_next_line:
-        print str(i+2) + "  " + beautyConsole.getColor("grey") + next_next_line + \
-            beautyConsole.getSpecialChar("endline")
-    print "\n"
+        if next_line:
+            print str(i+1) + "  " + beautyConsole.getColor("grey") + next_line + \
+                beautyConsole.getSpecialChar("endline")
+        if next_next_line:
+            print str(i+2) + "  " + beautyConsole.getColor("grey") + next_next_line + \
+                beautyConsole.getSpecialChar("endline")
+        print "\n"
 
 
 def header_print(file_name, header_printed):
@@ -85,7 +93,7 @@ def header_print(file_name, header_printed):
     return header_printed
 
 
-def main(src, __severity):
+def main(src, __severity, __verbose, __functions_only):
     """
     performs code analysis, line by line
     """
@@ -121,28 +129,32 @@ def main(src, __severity):
                 header_printed = header_print(_file.name, header_printed)
                 total += 1
                 printcodeline(_line, i, _fn + (')' if '(' in _fn else ''), prev_line,
-                              next_line, prev_prev_line, next_next_line, __severity)
-        for _dp in pefdefs.fileInclude:
-            # there has to be space before function call; prevents from false-positives strings contains PHP function names
-            _dp = " {}".format(_dp)
-            # remove spaces to allow detection eg. include(  $_GET['something]  )
-            if _dp in __line.replace(" ", ""):
-                header_printed = header_print(_file.name, header_printed)
-                total += 1
-                printcodeline(_line, i, _dp + '()', prev_line, next_line,
-                              prev_prev_line, next_next_line, __severity)
-        for _global in pefdefs.globalVars:
-            if _global in __line:
-                header_printed = header_print(_file.name, header_printed)
-                total += 1
-                printcodeline(_line, i, _global, prev_line, next_line,
-                              prev_prev_line, next_next_line, __severity)
-        for _refl in pefdefs.reflectedProperties:
-            if _refl in __line:
-                header_printed = header_print(_file.name, header_printed)
-                total += 1
-                printcodeline(_line, i, _refl, prev_line, next_line,
-                              prev_prev_line, next_next_line, __severity)
+                              next_line, prev_prev_line, next_next_line, __severity, __verbose)
+
+        if __functions_only == False:
+            for _dp in pefdefs.fileInclude:
+                # there has to be space before function call; prevents from false-positives strings contains PHP function names
+                _dp = " {}".format(_dp)
+                # remove spaces to allow detection eg. include(  $_GET['something]  )
+                if _dp in __line.replace(" ", ""):
+                    header_printed = header_print(_file.name, header_printed)
+                    total += 1
+                    printcodeline(_line, i, _dp + '()', prev_line, next_line,
+                                  prev_prev_line, next_next_line, __severity, __verbose)
+
+            for _global in pefdefs.globalVars:
+                if _global in __line:
+                    header_printed = header_print(_file.name, header_printed)
+                    total += 1
+                    printcodeline(_line, i, _global, prev_line, next_line,
+                                  prev_prev_line, next_next_line, __severity, __verbose)
+
+            for _refl in pefdefs.reflectedProperties:
+                if _refl in __line:
+                    header_printed = header_print(_file.name, header_printed)
+                    total += 1
+                    printcodeline(_line, i, _refl, prev_line, next_line,
+                                  prev_prev_line, next_next_line, __severity, __verbose)
 
     if total < 1:
         pass
@@ -163,9 +175,15 @@ if __name__ == "__main__":
     parser.add_argument(
         "-r", "--recursive", help="scan PHP files recursively in current directory", action="store_true")
     parser.add_argument(
+        "-v", "--verbose", help="print verbose output (more code, docs)", action="store_true")
+    parser.add_argument(
+        "-c", "--code", help="only functions (no $_XXX)", action="store_true")
+    parser.add_argument(
         "-f", "--file", help="File or directory name to scan (if directory name is provided, make sure -r/--recursive is set")
     args = parser.parse_args()
 
+    __verbose = True if args.verbose else False
+    __functions_only = True if args.code else False
     __filename = args.file
     __scanned_files = 0
     __found_entries = 0
@@ -179,7 +197,8 @@ if __name__ == "__main__":
         for root, subdirs, files in os.walk(__filename):
             for f in files:
                 __scanned_files = __scanned_files + 1
-                res = main(os.path.join(root, f), __severity)
+                res = main(os.path.join(root, f), __severity,
+                           __verbose, __functions_only)
                 __found_entries = __found_entries + res
     else:
         __scanned_files = __scanned_files + 1
