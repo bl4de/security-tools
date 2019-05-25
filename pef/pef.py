@@ -60,7 +60,7 @@ def printcodeline(_line, i, _fn, prev_line="", next_line="", prev_prev_line="", 
                 "grey"), __syntax, beautyConsole.getSpecialChar("endline"))
             print "  Potential impact: {}{}{}".format(beautyConsole.getColor(
                 __impact_color[__impact]), __vuln_class, beautyConsole.getSpecialChar("endline"))
-                
+
         if __impact not in __severity.keys():
             __severity[__impact] = 1
         else:
@@ -173,13 +173,13 @@ if __name__ == "__main__":
     __filename = '.'  # initial value for file/dir to scan is current directory
 
     parser.add_argument(
-        "-r", "--recursive", help="scan PHP files recursively in current directory", action="store_true")
+        "-r", "--recursive", help="scan PHP files recursively in directory pointed by -f/--file", action="store_true")
     parser.add_argument(
         "-v", "--verbose", help="print verbose output (more code, docs)", action="store_true")
     parser.add_argument(
         "-c", "--code", help="only functions (no $_XXX)", action="store_true")
     parser.add_argument(
-        "-f", "--file", help="File or directory name to scan (if directory name is provided, make sure -r/--recursive is set")
+        "-f", "--file", help="File or directory name to scan (if directory name is provided, make sure -r/--recursive is set)")
     args = parser.parse_args()
 
     __verbose = True if args.verbose else False
