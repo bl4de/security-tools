@@ -88,7 +88,8 @@ exploitableFunctions = [
     "__wakeup(",
     "__destruct(",
     "__sleep(",
-    "filter_var("
+    "filter_var(",
+    "file_put_contents("
 ]
 
 # dangerous global(s)

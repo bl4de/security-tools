@@ -472,5 +472,11 @@ exploitableFunctionsDesc = {
         "filter_var ( mixed $variable [, int $filter = FILTER_DEFAULT [, mixed $options ]] ) : mixed",
         "Validation bypass (in certain conditions)",
         "low"
+    ],
+    "file_put_contents()":[
+        "Write data to a file",
+        "file_put_contents ( string $filename , mixed $data [, int $flags = 0 [, resource $context ]] ) : int",
+        "Arbitrary file write",
+        "medium"
     ]
 }
