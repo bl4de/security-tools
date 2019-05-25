@@ -87,7 +87,8 @@ exploitableFunctions = [
     "curl_exec(",
     "__wakeup(",
     "__destruct(",
-    "__sleep("
+    "__sleep(",
+    "filter_var("
 ]
 
 # dangerous global(s)

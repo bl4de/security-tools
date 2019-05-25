@@ -452,19 +452,25 @@ exploitableFunctionsDesc = {
     "__destruct()":[
         "unserialize() checks if your class has a function with the magic name __destruct(). If so, that function is executed after unserialization",
         "__destruct ( void ) : void",
-        "ROP, Object Injection; RCE via unserialize()",
+        "Object Injection; RCE via unserialize() + POP gadget chain",
         "medium"
     ],
     "__wakeup()":[
         "serialize() checks if your class has a function with the magic name __wakeup(). If so, that function is executed prior to any serialization",
         "__wakeup ( void ) : void",
-        "ROP, Object Injection; RCE via unserialize()",
+        "Object Injection; RCE via unserialize() + POP gadget chain",
         "medium"
     ],
     "__sleep()": [
         "serialize() checks if your class has a function with the magic name __sleep(). If so, that function is executed prior to any serialization",
         "public __sleep ( void ) : array",
-        "ROP, Object Injection; RCE via unserialize()",
+        "Object Injection; RCE via unserialize() + POP gadget chain",
         "medium"
+    ],
+    "filter_var()":[
+        "Filters a variable with a specified filter",
+        "filter_var ( mixed $variable [, int $filter = FILTER_DEFAULT [, mixed $options ]] ) : mixed",
+        "Validation bypass (in certain conditions)",
+        "low"
     ]
 }
