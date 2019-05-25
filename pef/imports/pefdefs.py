@@ -84,6 +84,10 @@ exploitableFunctions = [
     "putenv(",
     "symlink(",
     "syslog(",
+    "curl_exec(",
+    "__wakeup(",
+    "__destruct(",
+    "__sleep("
 ]
 
 # dangerous global(s)

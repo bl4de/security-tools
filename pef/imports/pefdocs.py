@@ -442,5 +442,29 @@ exploitableFunctionsDesc = {
         "syslog ( int $priority , string $message ) : bool",
         "Log poisoning",
         "low"
+    ],
+    "curl_exec()": [
+        "Execute the given cURL session. This function should be called after initializing a cURL session and all the options for the session are set.",
+        "curl_exec ( resource $ch ) : mixed",
+        "SSRF",
+        "medium"
+    ],
+    "__destruct()":[
+        "unserialize() checks if your class has a function with the magic name __destruct(). If so, that function is executed after unserialization",
+        "__destruct ( void ) : void",
+        "ROP, Object Injection; RCE via unserialize()",
+        "medium"
+    ],
+    "__wakeup()":[
+        "serialize() checks if your class has a function with the magic name __wakeup(). If so, that function is executed prior to any serialization",
+        "__wakeup ( void ) : void",
+        "ROP, Object Injection; RCE via unserialize()",
+        "medium"
+    ],
+    "__sleep()": [
+        "serialize() checks if your class has a function with the magic name __sleep(). If so, that function is executed prior to any serialization",
+        "public __sleep ( void ) : array",
+        "ROP, Object Injection; RCE via unserialize()",
+        "medium"
     ]
 }
