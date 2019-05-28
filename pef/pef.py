@@ -163,7 +163,7 @@ def main(src, __severity, __verbose, __functions_only):
         pass
     else:
         print beautyConsole.getColor("red") + \
-            "Found %d exploitable function(s)\n" % (total) + \
+            "Found %d interesting entries\n" % (total) + \
             beautyConsole.getSpecialChar("endline")
 
     return total  # return how many findings in current file
@@ -210,18 +210,18 @@ if __name__ == "__main__":
     print beautyConsole.getColor("white") + "-" * 100
 
     print beautyConsole.getColor("green")
-    print "\n  {} file(s) scanned".format(__scanned_files)
+    print "\n>>>  {} file(s) scanned".format(__scanned_files)
     if __found_entries > 0:
-        print "{}  {} interesting entries found\n".format(
+        print "{}>>>  {} interesting entries found\n".format(
             beautyConsole.getColor("red"), __found_entries)
     else:
         print "  No interesting entries found :( \n"
 
-    print "   {}{}: {}".format(
+    print "{}==>  {}:\t {}".format(
         beautyConsole.getColor("red"), "HIGH", __severity.get("high"))
-    print "   {}{}: {}".format(beautyConsole.getColor(
+    print "{}==>  {}:\t {}".format(beautyConsole.getColor(
         "yellow"), "MEDIUM", __severity.get("medium"))
-    print "   {}{}: {}".format(beautyConsole.getColor(
+    print "{}==>  {}:\t {}".format(beautyConsole.getColor(
         "green"), "LOW", __severity.get("low"))
 
     print "\n"
