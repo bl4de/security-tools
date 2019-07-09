@@ -28,14 +28,18 @@ $ ./denumerator.py -f DOMAINS_LIST -t 5
 
 colors = {
     "white": '\33[37m',
-    500: '\33[31m',
     200: '\33[32m',
+    204: '\33[32m',
     302: '\33[33m',
     304: '\33[33m',
     302: '\33[33m',
     401: '\33[94m',
     403: '\33[94m',
     404: '\33[94m',
+    405: '\33[94m',
+    415: '\33[94m',
+    422: '\33[94m',
+    500: '\33[31m',
     "magenta": '\33[35m',
     "cyan": '\33[36m',
     "grey": '\33[90m',
@@ -44,7 +48,7 @@ colors = {
 }
 
 requests.packages.urllib3.disable_warnings()
-allowed_http_responses = [200, 302, 304, 401, 404, 403, 500]
+allowed_http_responses = [200, 204, 403, 404, 405, 415, 422, 500]
 timeout = 2
 
 
@@ -77,10 +81,15 @@ def append_to_output(html_output, url, http_status_code):
         './report/' + screenshot_name)
     os.system(screenshot_cmd + url)
 
+    # base color for all responses
     http_status_code_color = "000"
+
+    # green - 200 OK
     if http_status_code == 200:
         http_status_code_color = "0c0"
-    if http_status_code == 403 or http_status_code == 500:
+    
+    # red - error responses, but HTTP server exists
+    if http_status_code in [403, 415, 422, 500]:
         http_status_code_color = "c00"
 
     html = """
@@ -114,6 +123,9 @@ def send_request(proto, domain, output_file, html_output):
         'http': 'http://',
         'https': 'https://'
     }
+    
+    print '\t--> {}{}'.format(protocols.get(proto.lower()), domain)
+
     resp = requests.get(protocols.get(proto.lower()) + domain,
                         timeout=timeout,
                         allow_redirects=False,
@@ -124,7 +136,7 @@ def send_request(proto, domain, output_file, html_output):
         print '[+] {}HTTP {}{}:\t {}'.format(
             colors[resp.status_code], resp.status_code, colors['white'], domain)
 
-        if resp.status_code in [200, 403, 404, 500]:
+        if resp.status_code in allowed_http_responses:
             append_to_output(html_output, protocols.get(
                 proto.lower()) + domain, resp.status_code)
 

@@ -124,8 +124,8 @@ def main(src, __severity, __verbose, __functions_only):
         __line = _line.rstrip()
         for _fn in pefdefs.exploitableFunctions:
             # there has to be space before function call; prevents from false-positives strings contains PHP function names
-            _fn = " {}".format(_fn)
             _at_fn = "@{}".format(_fn)
+            _fn = " {}".format(_fn)
             # also, it has to checked agains @ at the beginning of the function name
             # @ prevents from output being echoed
             if _fn in __line or _at_fn in __line:
