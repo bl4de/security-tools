@@ -123,3 +123,9 @@ reflectedProperties = [
     "$_SERVER[\"REQUEST_URI\"]",
     "$_SERVER[\"HTTP_USER_AGENT\"]"
 ]
+
+# other patterns
+otherPatterns = [
+    "SELECT.*FROM",
+    "INSERT.*INTO"
+]

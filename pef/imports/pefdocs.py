@@ -478,5 +478,17 @@ exploitableFunctionsDesc = {
         "file_put_contents ( string $filename , mixed $data [, int $flags = 0 [, resource $context ]] ) : int",
         "Arbitrary file write",
         "medium"
-    ]
+    ],
+    "SELECT.*FROM":[
+        "SQL syntax found.",
+        "This is likely a raw SQL query, which can be filled with user provided input or not implemented as prepared statement",
+        "SQL Injection",
+        "medium"
+    ],
+    "INSERT.*INTO":[
+        "SQL syntax found.",
+        "This is likely a raw SQL query, which can be filled with user provided input or not implemented as prepared statement",
+        "SQL Injection",
+        "medium"
+    ],
 }

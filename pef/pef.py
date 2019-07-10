@@ -12,6 +12,7 @@ GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com
 """
 import sys
 import os
+import re
 import argparse
 
 from imports import pefdefs
@@ -93,7 +94,7 @@ def header_print(file_name, header_printed):
     return header_printed
 
 
-def main(src, __severity, __verbose, __functions_only):
+def main(src, __severity, __verbose, __functions_only, __queries):
     """
     performs code analysis, line by line
     """
@@ -159,6 +160,16 @@ def main(src, __severity, __verbose, __functions_only):
                     printcodeline(_line, i, _refl, prev_line, next_line,
                                   prev_prev_line, next_next_line, __severity, __verbose)
 
+            if __queries == True:
+                for _refl in pefdefs.otherPatterns:
+                    p = re.compile(_refl)
+                    if p.search(_line):
+                        header_printed = header_print(
+                            _file.name, header_printed)
+                        total += 1
+                        printcodeline(_line, i, _refl, prev_line, next_line,
+                                      prev_prev_line, next_next_line, __severity, __verbose)
+
     if total < 1:
         pass
     else:
@@ -178,6 +189,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "-r", "--recursive", help="scan PHP files recursively in directory pointed by -f/--file", action="store_true")
     parser.add_argument(
+        "-q", "--queries", help="look for raw SQL queries", action="store_true")
+    parser.add_argument(
         "-v", "--verbose", help="print verbose output (more code, docs)", action="store_true")
     parser.add_argument(
         "-c", "--code", help="only functions (no $_XXX)", action="store_true")
@@ -187,6 +200,7 @@ if __name__ == "__main__":
 
     __verbose = True if args.verbose else False
     __functions_only = True if args.code else False
+    __queries = True if args.queries else False
     __filename = args.file
     __scanned_files = 0
     __found_entries = 0
@@ -201,7 +215,7 @@ if __name__ == "__main__":
             for f in files:
                 __scanned_files = __scanned_files + 1
                 res = main(os.path.join(root, f), __severity,
-                           __verbose, __functions_only)
+                           __verbose, __functions_only, __queries)
                 __found_entries = __found_entries + res
     else:
         __scanned_files = __scanned_files + 1
