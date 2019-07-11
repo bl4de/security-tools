@@ -127,5 +127,7 @@ reflectedProperties = [
 # other patterns
 otherPatterns = [
     "SELECT.*FROM",
-    "INSERT.*INTO"
+    "INSERT.*INTO",
+    "UPDATE.*",
+    "DELETE.*FROM"
 ]

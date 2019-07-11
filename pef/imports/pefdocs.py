@@ -491,4 +491,16 @@ exploitableFunctionsDesc = {
         "SQL Injection",
         "medium"
     ],
+    "UPDATE.*":[
+        "SQL syntax found.",
+        "This is likely a raw SQL query, which can be filled with user provided input or not implemented as prepared statement",
+        "SQL Injection",
+        "medium"
+    ],
+    "DELETE.*FROM":[
+        "SQL syntax found.",
+        "This is likely a raw SQL query, which can be filled with user provided input or not implemented as prepared statement",
+        "SQL Injection",
+        "medium"
+    ]
 }
