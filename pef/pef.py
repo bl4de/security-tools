@@ -94,7 +94,7 @@ def header_print(file_name, header_printed):
     return header_printed
 
 
-def main(src, __severity, __verbose, __functions_only, __queries):
+def main(src, __severity, __verbose = False, __sql = False, __critical = False):
     """
     performs code analysis, line by line
     """
@@ -123,19 +123,33 @@ def main(src, __severity, __verbose, __functions_only, __queries):
 
         i += 1
         __line = _line.rstrip()
-        for _fn in pefdefs.exploitableFunctions:
-            # there has to be space before function call; prevents from false-positives strings contains PHP function names
-            _at_fn = "@{}".format(_fn)
-            _fn = " {}".format(_fn)
-            # also, it has to checked agains @ at the beginning of the function name
-            # @ prevents from output being echoed
-            if _fn in __line or _at_fn in __line:
-                header_printed = header_print(_file.name, header_printed)
-                total += 1
-                printcodeline(_line, i, _fn + (')' if '(' in _fn else ''), prev_line,
-                              next_line, prev_prev_line, next_next_line, __severity, __verbose)
 
-        if __functions_only == False:
+        if __critical:
+            for _fn in pefdefs.critical:
+                # there has to be space before function call; prevents from false-positives strings contains PHP function names
+                _at_fn = "@{}".format(_fn)
+                _fn = " {}".format(_fn)
+                # also, it has to checked agains @ at the beginning of the function name
+                # @ prevents from output being echoed
+                if _fn in __line or _at_fn in __line:
+                    header_printed = header_print(_file.name, header_printed)
+                    total += 1
+                    printcodeline(_line, i, _fn + (')' if '(' in _fn else ''), prev_line,
+                                  next_line, prev_prev_line, next_next_line, __severity, __verbose)
+        else:
+            for _fn in pefdefs.exploitableFunctions:
+                # there has to be space before function call; prevents from false-positives strings contains PHP function names
+                _at_fn = "@{}".format(_fn)
+                _fn = " {}".format(_fn)
+                # also, it has to checked agains @ at the beginning of the function name
+                # @ prevents from output being echoed
+                if _fn in __line or _at_fn in __line:
+                    header_printed = header_print(_file.name, header_printed)
+                    total += 1
+                    printcodeline(_line, i, _fn + (')' if '(' in _fn else ''), prev_line,
+                                  next_line, prev_prev_line, next_next_line, __severity, __verbose)
+
+        if __critical == False:
             for _dp in pefdefs.fileInclude:
                 # there has to be space before function call; prevents from false-positives strings contains PHP function names
                 _dp = " {}".format(_dp)
@@ -160,7 +174,7 @@ def main(src, __severity, __verbose, __functions_only, __queries):
                     printcodeline(_line, i, _refl, prev_line, next_line,
                                   prev_prev_line, next_next_line, __severity, __verbose)
 
-            if __queries == True:
+            if __sql == True:
                 for _refl in pefdefs.otherPatterns:
                     p = re.compile(_refl)
                     if p.search(_line):
@@ -189,21 +203,25 @@ if __name__ == "__main__":
     parser.add_argument(
         "-r", "--recursive", help="scan PHP files recursively in directory pointed by -f/--file", action="store_true")
     parser.add_argument(
-        "-q", "--queries", help="look for raw SQL queries", action="store_true")
+        "-c", "--critical", help="look only for critical functions", action="store_true")
+    parser.add_argument(
+        "-s", "--sql", help="look for raw SQL queries", action="store_true")
     parser.add_argument(
         "-v", "--verbose", help="print verbose output (more code, docs)", action="store_true")
     parser.add_argument(
-        "-c", "--code", help="only functions (no $_XXX)", action="store_true")
+        "-n", "--noglobals", help="only functions (no $_XXX)", action="store_true")
     parser.add_argument(
         "-f", "--file", help="File or directory name to scan (if directory name is provided, make sure -r/--recursive is set)")
     args = parser.parse_args()
 
     __verbose = True if args.verbose else False
-    __functions_only = True if args.code else False
-    __queries = True if args.queries else False
+    __sql = True if args.sql else False
+    __critical = True if args.critical else False
     __filename = args.file
+
     __scanned_files = 0
     __found_entries = 0
+
     __severity = {
         "high": 0,
         "medium": 0,
@@ -215,7 +233,7 @@ if __name__ == "__main__":
             for f in files:
                 __scanned_files = __scanned_files + 1
                 res = main(os.path.join(root, f), __severity,
-                           __verbose, __functions_only, __queries)
+                           __verbose, __sql, __critical)
                 __found_entries = __found_entries + res
     else:
         __scanned_files = __scanned_files + 1

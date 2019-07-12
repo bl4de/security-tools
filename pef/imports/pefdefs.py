@@ -67,7 +67,6 @@ exploitableFunctions = [
     "dl(",
     "escapeshellarg(",
     "escapeshellcmd(",
-    "exec(",
     "extract(",
     "get_cfg_var(",
     "get_current_user(",
@@ -85,6 +84,33 @@ exploitableFunctions = [
     "symlink(",
     "syslog(",
     "curl_exec(",
+    "__wakeup(",
+    "__destruct(",
+    "__sleep(",
+    "filter_var(",
+    "file_put_contents("
+]
+
+# only high severity functions, for quick scan of large codebase
+# to find oversighted leading to RCE, LFI, Command Injections, SQLi etc.
+critical = [
+    "system(",
+    "exec(",
+    "popen(",
+    "pcntl_exec(",
+    "eval(",
+    "passthru(",
+    "shell_exec(",
+    "extract(",
+    "parse_str(",
+    "putenv(",
+    "unserialize(",
+    "readfile(",
+    "file_get_contents(",
+    "mysql_query(",
+    "mssql_query(",
+    "sqlite_query(",
+    "pg_query(",
     "__wakeup(",
     "__destruct(",
     "__sleep(",
