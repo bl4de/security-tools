@@ -77,57 +77,58 @@ class PefEngine:
         """
         runs scanning
         """
-        if args.recursive:
-            for root, subdirs, files in os.walk(__filename):
+        if self.recursive:
+            for root, subdirs, files in os.walk(self.filename):
                 for f in files:
-                    __scanned_files = __scanned_files + 1
+                    self.scanned_files = self.scanned_files + 1
                     res = main(os.path.join(root, f), __severity,
-                               __verbose, __sql, __critical)
-                    __found_entries = __found_entries + res
+
+                               verbose, sql, critical)
+                    self.found_entries = self.found_entries + res
         else:
-            __scanned_files = __scanned_files + 1
-            __found_entries = main(__filename, __severity)
+            self.scanned_files = self.scanned_files + 1
+            self.found_entries = main(self.filename, __severity)
         return
 
 
-def printcodeline(_line, i, _fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", __severity={}, __verbose=False):
+def printcodeline(_line, i, fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", severity={}, verbose=False):
     """
     Formats and prints line of output
     """
-    __impact_color = {
+    impact_color = {
         "low": "green",
         "medium": "yellow",
         "high": "red"
     }
 
-    if __verbose == True:
-        print " line %d :: \33[33;1m%s\33[0m " % (i, _fn)
+    if verbose == True:
+        print " line %d :: \33[33;1m%s\33[0m " % (i, fn)
     else:
         print "{}line {} :: {}{} ".format(beautyConsole.getColor(
             "white"), i, beautyConsole.getColor("grey"), _line.strip())
 
     # print legend only if there i sentry in pefdocs.py
-    if _fn and _fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
-        __impact = pefdocs.exploitableFunctionsDesc.get(_fn.strip())[3]
-        __description = pefdocs.exploitableFunctionsDesc.get(_fn.strip())[
+    if fn and fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
+        impact = pefdocs.exploitableFunctionsDesc.get(fn.strip())[3]
+        description = pefdocs.exploitableFunctionsDesc.get(fn.strip())[
             0]
-        __syntax = pefdocs.exploitableFunctionsDesc.get(_fn.strip())[1]
-        __vuln_class = pefdocs.exploitableFunctionsDesc.get(_fn.strip())[2]
+        syntax = pefdocs.exploitableFunctionsDesc.get(fn.strip())[1]
+        vuln_class = pefdocs.exploitableFunctionsDesc.get(fn.strip())[2]
 
-        if __verbose == True:
+        if verbose == True:
             print "\n  {}{}{}".format(beautyConsole.getColor(
-                "white"), __description, beautyConsole.getSpecialChar("endline"))
+                "white"), description, beautyConsole.getSpecialChar("endline"))
             print "  {}{}{}".format(beautyConsole.getColor(
-                "grey"), __syntax, beautyConsole.getSpecialChar("endline"))
+                "grey"), syntax, beautyConsole.getSpecialChar("endline"))
             print "  Potential impact: {}{}{}".format(beautyConsole.getColor(
-                __impact_color[__impact]), __vuln_class, beautyConsole.getSpecialChar("endline"))
+                impact_color[impact]), vuln_class, beautyConsole.getSpecialChar("endline"))
 
-        if __impact not in __severity.keys():
-            __severity[__impact] = 1
+        if impact not in severity.keys():
+            severity[impact] = 1
         else:
-            __severity[__impact] = __severity[__impact] + 1
+            severity[impact] = severity[impact] + 1
 
-    if __verbose == True:
+    if verbose == True:
         print "\n"
         if prev_prev_line:
             print str(i-2) + "  " + beautyConsole.getColor("grey") + prev_prev_line + \
@@ -154,16 +155,16 @@ def header_print(file_name, header_printed):
     return header_printed
 
 
-def main(src, __severity, __verbose=False, __sql=False, __critical=False):
+def main(src, severity, verbose=False, sql=False, critical=False):
     """
     performs code analysis, line by line
     """
-    _file = open(src, "r")
+    f = open(src, "r")
     i = 0
     total = 0
     filenamelength = len(src)
     linelength = 97
-    all_lines = _file.readlines()
+    all_lines = f.readlines()
 
     header_printed = False
     prev_prev_line = ""
@@ -171,7 +172,7 @@ def main(src, __severity, __verbose=False, __sql=False, __critical=False):
     next_line = ""
     next_next_line = ""
 
-    for _line in all_lines:
+    for l in all_lines:
         if i > 2:
             prev_prev_line = all_lines[i - 2].rstrip()
         if i > 1:
@@ -182,67 +183,73 @@ def main(src, __severity, __verbose=False, __sql=False, __critical=False):
             next_next_line = all_lines[i + 2].rstrip()
 
         i += 1
-        __line = _line.rstrip()
+        line = l.rstrip()
 
-        if __critical:
-            for _fn in pefdefs.critical:
+        if critical:
+            for fn in pefdefs.critical:
                 # there has to be space before function call; prevents from false-positives strings contains PHP function names
-                _at_fn = "@{}".format(_fn)
-                _fn = " {}".format(_fn)
+                atfn = "@{}".format(fn)
+                fn = " {}".format(fn)
                 # also, it has to checked agains @ at the beginning of the function name
                 # @ prevents from output being echoed
-                if _fn in __line or _at_fn in __line:
-                    header_printed = header_print(_file.name, header_printed)
+                if fn in line or atfn in line:
+                    header_printed = header_print(f.name, header_printed)
                     total += 1
-                    printcodeline(_line, i, _fn + (')' if '(' in _fn else ''), prev_line,
-                                  next_line, prev_prev_line, next_next_line, __severity, __verbose)
+                    printcodeline(l, i, fn + (')' if '(' in fn else ''), prev_line,
+                                  next_line, prev_prev_line, next_next_line, severity,
+                                  verbose)
         else:
-            for _fn in pefdefs.exploitableFunctions:
+            for fn in pefdefs.exploitableFunctions:
                 # there has to be space before function call; prevents from false-positives strings contains PHP function names
-                _at_fn = "@{}".format(_fn)
-                _fn = " {}".format(_fn)
+                atfn = "@{}".format(fn)
+                fn = " {}".format(fn)
                 # also, it has to checked agains @ at the beginning of the function name
                 # @ prevents from output being echoed
-                if _fn in __line or _at_fn in __line:
-                    header_printed = header_print(_file.name, header_printed)
+                if fn in line or atfn in line:
+                    header_printed = header_print(f.name, header_printed)
                     total += 1
-                    printcodeline(_line, i, _fn + (')' if '(' in _fn else ''), prev_line,
-                                  next_line, prev_prev_line, next_next_line, __severity, __verbose)
+                    printcodeline(l, i, fn + (')' if '(' in fn else ''), prev_line,
+                                  next_line, prev_prev_line, next_next_line, severity,
+                                  verbose)
 
-        if __critical == False:
-            for _dp in pefdefs.fileInclude:
+        if critical == False:
+            for dp in pefdefs.fileInclude:
                 # there has to be space before function call; prevents from false-positives strings contains PHP function names
-                _dp = " {}".format(_dp)
+                dp = " {}".format(dp)
                 # remove spaces to allow detection eg. include(  $_GET['something]  )
-                if _dp in __line.replace(" ", ""):
-                    header_printed = header_print(_file.name, header_printed)
+                if dp in line.replace(" ", ""):
+                    header_printed = header_print(f.name, header_printed)
                     total += 1
-                    printcodeline(_line, i, _dp + '()', prev_line, next_line,
-                                  prev_prev_line, next_next_line, __severity, __verbose)
+                    printcodeline(l, i, dp + '()', prev_line, next_line,
+                                  prev_prev_line, next_next_line, severity,
+                                  verbose)
 
-            for _global in pefdefs.globalVars:
-                if _global in __line:
-                    header_printed = header_print(_file.name, header_printed)
+            for globalvars in pefdefs.globalVars:
+                if globalvars in line:
+                    header_printed = header_print(f.name, header_printed)
                     total += 1
-                    printcodeline(_line, i, _global, prev_line, next_line,
-                                  prev_prev_line, next_next_line, __severity, __verbose)
+                    printcodeline(l, i, globalvars, prev_line, next_line,
+                                  prev_prev_line, next_next_line, severity,
+                                  verbose)
 
-            for _refl in pefdefs.reflectedProperties:
-                if _refl in __line:
-                    header_printed = header_print(_file.name, header_printed)
+            for refl in pefdefs.reflectedProperties:
+                if refl in line:
+                    header_printed = header_print(f.name, header_printed)
                     total += 1
-                    printcodeline(_line, i, _refl, prev_line, next_line,
-                                  prev_prev_line, next_next_line, __severity, __verbose)
+                    printcodeline(l, i, refl, prev_line, next_line,
+                                  prev_prev_line, next_next_line, severity,
+                                  verbose)
 
-            if __sql == True:
-                for _refl in pefdefs.otherPatterns:
-                    p = re.compile(_refl)
-                    if p.search(_line):
+            if sql == True:
+                for refl in pefdefs.otherPatterns:
+                    p = re.compile(refl)
+                    if p.search(l):
                         header_printed = header_print(
-                            _file.name, header_printed)
+                            f.name, header_printed)
                         total += 1
-                        printcodeline(_line, i, _refl, prev_line, next_line,
-                                      prev_prev_line, next_next_line, __severity, __verbose)
+                        printcodeline(l, i, refl, prev_line, next_line,
+                                      prev_prev_line, next_next_line, severity,
+                                      verbose)
 
     if total < 1:
         pass
