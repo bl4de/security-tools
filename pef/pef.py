@@ -35,10 +35,24 @@ class PefEngine:
     implements pef engine
     """
 
-    def __init__(self):
+    def __init__(self, recursive, verbose, critical, sql, filename):
         """
         constructor
         """
+        self.recursive = recursive  # recursive scan files in folder(s)
+        self.verbose = verbose      # show prev/next lines
+        self.critical = critical    # scan only for critical set of functions
+        self.sql = sql              # scan for inline SQL queries
+        self.filename = filename    # name of file/folder to scan
+
+        self.scanned_files = 0    # number of scanned files in total
+        self.found_entries = 0    # total number of findings
+
+        self.severity = {         # severity scale
+            "high": 0,
+            "medium": 0,
+            "low": 0
+        }
         return
 
     def header_print(self):
@@ -57,6 +71,22 @@ class PefEngine:
         """
         main engine loop
         """
+        return
+
+    def run(self):
+        """
+        runs scanning
+        """
+        if args.recursive:
+            for root, subdirs, files in os.walk(__filename):
+                for f in files:
+                    __scanned_files = __scanned_files + 1
+                    res = main(os.path.join(root, f), __severity,
+                               __verbose, __sql, __critical)
+                    __found_entries = __found_entries + res
+        else:
+            __scanned_files = __scanned_files + 1
+            __found_entries = main(__filename, __severity)
         return
 
 
@@ -228,7 +258,7 @@ def main(src, __severity, __verbose=False, __sql=False, __critical=False):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    __filename = '.'  # initial value for file/dir to scan is current directory
+    filename = '.'  # initial value for file/dir to scan is current directory
 
     parser.add_argument(
         "-r", "--recursive", help="scan PHP files recursively in directory pointed by -f/--file", action="store_true")
@@ -244,48 +274,51 @@ if __name__ == "__main__":
         "-f", "--file", help="File or directory name to scan (if directory name is provided, make sure -r/--recursive is set)")
     args = parser.parse_args()
 
-    __verbose = True if args.verbose else False
-    __sql = True if args.sql else False
-    __critical = True if args.critical else False
-    __filename = args.file
+    verbose = True if args.verbose else False
+    sql = True if args.sql else False
+    critical = True if args.critical else False
+    filename = args.file
 
-    __scanned_files = 0
-    __found_entries = 0
+    scanned_files = 0
+    found_entries = 0
 
-    __severity = {
+    severity = {
         "high": 0,
         "medium": 0,
         "low": 0
     }
 
     if args.recursive:
-        for root, subdirs, files in os.walk(__filename):
+        for root, subdirs, files in os.walk(filename):
             for f in files:
-                __scanned_files = __scanned_files + 1
-                res = main(os.path.join(root, f), __severity,
-                           __verbose, __sql, __critical)
-                __found_entries = __found_entries + res
+                scanned_files = scanned_files + 1
+                res = main(os.path.join(root, f), severity,
+                           verbose, sql, critical)
+                found_entries = found_entries + res
     else:
-        __scanned_files = __scanned_files + 1
-        __found_entries = main(__filename, __severity)
+        scanned_files = scanned_files + 1
+        found_entries = main(filename, severity)
 
     print beautyConsole.getColor("white") + "-" * 100
 
     print beautyConsole.getColor("green")
-    print "\n>>>  {} file(s) scanned".format(__scanned_files)
-    if __found_entries > 0:
+    print "\n>>>  {} file(s) scanned".format(scanned_files)
+    if found_entries > 0:
         print "{}>>>  {} interesting entries found\n".format(
-            beautyConsole.getColor("red"), __found_entries)
+            beautyConsole.getColor("red"), found_entries)
     else:
         print "  No interesting entries found :( \n"
 
     print "{}==>  {}:\t {}".format(
-        beautyConsole.getColor("red"), "HIGH", __severity.get("high"))
+        beautyConsole.getColor("red"), "HIGH", severity.get("high"))
     print "{}==>  {}:\t {}".format(beautyConsole.getColor(
-        "yellow"), "MEDIUM", __severity.get("medium"))
+        "yellow"), "MEDIUM", severity.get("medium"))
     print "{}==>  {}:\t {}".format(beautyConsole.getColor(
-        "green"), "LOW", __severity.get("low"))
+        "green"), "LOW", severity.get("low"))
 
     print "\n"
+
+    # REFACTORED STARTS HERE
+    engine = PefEngine(args.recursive, verbose, critical, sql, filename)
 
     exit(0)
