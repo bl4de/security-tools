@@ -30,6 +30,36 @@ def banner():
     print "-" * 100, "\33[0m\n"
 
 
+class PefEngine:
+    """
+    implements pef engine
+    """
+
+    def __init__(self):
+        """
+        constructor
+        """
+        return
+
+    def header_print(self):
+        """
+        prints file header
+        """
+        return
+
+    def printcodeline(self):
+        """
+        prints formatted code line
+        """
+        return
+
+    def main(self):
+        """
+        main engine loop
+        """
+        return
+
+
 def printcodeline(_line, i, _fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", __severity={}, __verbose=False):
     """
     Formats and prints line of output
@@ -94,7 +124,7 @@ def header_print(file_name, header_printed):
     return header_printed
 
 
-def main(src, __severity, __verbose = False, __sql = False, __critical = False):
+def main(src, __severity, __verbose=False, __sql=False, __critical=False):
     """
     performs code analysis, line by line
     """
