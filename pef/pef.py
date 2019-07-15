@@ -67,7 +67,7 @@ class PefEngine:
         """
         return
 
-    def main(self):
+    def main(self, src):
         """
         main engine loop
         """
@@ -81,13 +81,11 @@ class PefEngine:
             for root, subdirs, files in os.walk(self.filename):
                 for f in files:
                     self.scanned_files = self.scanned_files + 1
-                    res = main(os.path.join(root, f), __severity,
-
-                               verbose, sql, critical)
+                    res = self.main(os.path.join(root, f))
                     self.found_entries = self.found_entries + res
         else:
             self.scanned_files = self.scanned_files + 1
-            self.found_entries = main(self.filename, __severity)
+            self.found_entries = self.main(self.filename)
         return
 
 
@@ -325,7 +323,12 @@ if __name__ == "__main__":
 
     print "\n"
 
+
+
+
     # REFACTORED STARTS HERE
     engine = PefEngine(args.recursive, verbose, critical, sql, filename)
+    engine.run()
+
 
     exit(0)
