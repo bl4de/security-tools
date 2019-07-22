@@ -35,7 +35,7 @@ class PefEngine:
     implements pef engine
     """
 
-    def __init__(self, recursive, verbose, critical, sql, filename):
+    def __init__(self, recursive, verbose, critical, sql, filename, pattern):
         """
         constructor
         """
@@ -44,6 +44,7 @@ class PefEngine:
         self.critical = critical    # scan only for critical set of functions
         self.sql = sql              # scan for inline SQL queries
         self.filename = filename    # name of file/folder to scan
+        self.pattern = pattern      # pattern(s) to look for, if set
 
         self.scanned_files = 0    # number of scanned files in total
         self.found_entries = 0    # total number of findings
@@ -153,7 +154,8 @@ class PefEngine:
             i += 1
             line = l.rstrip()
 
-            if critical:
+
+            if self.critical:
                 for fn in pefdefs.critical:
                     # there has to be space before function call; prevents from false-positives strings contains PHP function names
                     atfn = "@{}".format(fn)
@@ -167,8 +169,8 @@ class PefEngine:
                         self.print_code_line(l, i, fn + (')' if '(' in fn else ''), prev_line,
                                              next_line, prev_prev_line, next_next_line, self.severity,
                                              verbose)
-            else:
-                for fn in pefdefs.exploitableFunctions:
+            else:                    
+                for fn in (self.pattern if self.pattern else pefdefs.exploitableFunctions):
                     # there has to be space before function call; prevents from false-positives strings contains PHP function names
                     atfn = "@{}".format(fn)
                     fn = " {}".format(fn)
@@ -182,7 +184,7 @@ class PefEngine:
                                              next_line, prev_prev_line, next_next_line, self.severity,
                                              verbose)
 
-            if critical == False:
+            if self.critical == False and not self.pattern:
                 for dp in pefdefs.fileInclude:
                     # there has to be space before function call; prevents from false-positives strings contains PHP function names
                     dp = " {}".format(dp)
@@ -278,6 +280,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "-c", "--critical", help="look only for critical functions", action="store_true")
     parser.add_argument(
+        "-p", "--pattern", help="look only for particular code pattern(s)")
+    parser.add_argument(
         "-s", "--sql", help="look for raw SQL queries", action="store_true")
     parser.add_argument(
         "-v", "--verbose", help="print verbose output (more code, docs)", action="store_true")
@@ -290,9 +294,10 @@ if __name__ == "__main__":
     verbose = True if args.verbose else False
     sql = True if args.sql else False
     critical = True if args.critical else False
+    pattern = args.pattern.split(',') if args.pattern else []
     filename = args.file
 
-    engine = PefEngine(args.recursive, verbose, critical, sql, filename)
+    engine = PefEngine(args.recursive, verbose, critical, sql, filename, pattern)
     engine.run()
 
     exit(0)
