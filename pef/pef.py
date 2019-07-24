@@ -68,6 +68,27 @@ class PefEngine:
             self.header_printed = True
         return self.header_printed
 
+    def analyse_line(self, l, i, fn, f, line, prev_line, next_line, prev_prev_line, next_next_line, verbose, total):
+        """
+        analysis of single line of code; searches for pattern (passed as fn and atfn) occurence
+
+        if occurence found, output is printed
+        """
+
+        # there has to be space before function call; prevents from false-positives strings contains PHP function names
+        atfn = "@{}".format(fn)
+        fn = " {}".format(fn)
+        # also, it has to checked agains @ at the beginning of the function name
+        # @ prevents from output being echoed
+        
+        if fn in line or atfn in line:
+            self.header_printed = self.header_print(
+                f.name, self.header_printed)
+            total += 1
+            self.print_code_line(l, i, fn + (')' if '(' in fn else ''), prev_line,
+                                 next_line, prev_prev_line, next_next_line, self.severity,
+                                 verbose)
+
     def print_code_line(self, _line, i, fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", severity={}, verbose=False):
         """
         prints formatted code line
@@ -154,22 +175,11 @@ class PefEngine:
             i += 1
             line = l.rstrip()
 
-
             if self.critical:
                 for fn in pefdefs.critical:
-                    # there has to be space before function call; prevents from false-positives strings contains PHP function names
-                    atfn = "@{}".format(fn)
-                    fn = " {}".format(fn)
-                    # also, it has to checked agains @ at the beginning of the function name
-                    # @ prevents from output being echoed
-                    if fn in line or atfn in line:
-                        self.header_printed = self.header_print(
-                            f.name, self.header_printed)
-                        total += 1
-                        self.print_code_line(l, i, fn + (')' if '(' in fn else ''), prev_line,
-                                             next_line, prev_prev_line, next_next_line, self.severity,
-                                             verbose)
-            else:                    
+                    self.analyse_line(l, i, fn, f, line, prev_line,
+                                      next_line, prev_prev_line, next_next_line, verbose, total)
+            else:
                 for fn in (self.pattern if self.pattern else pefdefs.exploitableFunctions):
                     # there has to be space before function call; prevents from false-positives strings contains PHP function names
                     atfn = "@{}".format(fn)
@@ -297,7 +307,8 @@ if __name__ == "__main__":
     pattern = args.pattern.split(',') if args.pattern else []
     filename = args.file
 
-    engine = PefEngine(args.recursive, verbose, critical, sql, filename, pattern)
+    engine = PefEngine(args.recursive, verbose,
+                       critical, sql, filename, pattern)
     engine.run()
 
     exit(0)
