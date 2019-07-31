@@ -8,7 +8,7 @@
 """
 pef.py - PHP static code analysis tool (very, very simple)
 by bl4de
-GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com
+GitHub: bl4de | bloorq@gmail.com
 """
 import sys
 import os
@@ -282,7 +282,9 @@ class PefEngine:
 # main program
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description=sys.modules[__name__].__doc__
+    )
     filename = '.'  # initial value for file/dir to scan is current directory
 
     parser.add_argument(
@@ -307,6 +309,7 @@ if __name__ == "__main__":
     pattern = args.pattern.split(',') if args.pattern else []
     filename = args.file
 
+    # main orutine starts here
     engine = PefEngine(args.recursive, verbose,
                        critical, sql, filename, pattern)
     engine.run()
