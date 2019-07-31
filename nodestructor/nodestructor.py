@@ -107,7 +107,7 @@ BROWSER_PATTERNS = [
     ".*\.replaceWith\(",
     ".*\.wrap\(",
     ".*\.wrapAll\(",
-    ".*\.dangerouslytSetInnerHTML\(",
+    ".*\.dangerouslySetInnerHTML\(",
     ".*\.bypassSecurityTrust.*\(",
     ".*localStorage\.",
     ".*sessionStorage\.",
