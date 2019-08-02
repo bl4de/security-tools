@@ -88,6 +88,8 @@ class PefEngine:
             self.print_code_line(l, i, fn + (')' if '(' in fn else ''), prev_line,
                                  next_line, prev_prev_line, next_next_line, self.severity,
                                  verbose)
+        return total
+
 
     def print_code_line(self, _line, i, fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", severity={}, verbose=False):
         """
@@ -177,64 +179,30 @@ class PefEngine:
 
             if self.critical:
                 for fn in pefdefs.critical:
-                    self.analyse_line(l, i, fn, f, line, prev_line,
+                    total = self.analyse_line(l, i, fn, f, line, prev_line,
                                       next_line, prev_prev_line, next_next_line, verbose, total)
             else:
                 for fn in (self.pattern if self.pattern else pefdefs.exploitableFunctions):
-                    # there has to be space before function call; prevents from false-positives strings contains PHP function names
-                    atfn = "@{}".format(fn)
-                    fn = " {}".format(fn)
-                    # also, it has to checked agains @ at the beginning of the function name
-                    # @ prevents from output being echoed
-                    if fn in line or atfn in line:
-                        self.header_printed = self.header_print(
-                            f.name, self.header_printed)
-                        total += 1
-                        self.print_code_line(l, i, fn + (')' if '(' in fn else ''), prev_line,
-                                             next_line, prev_prev_line, next_next_line, self.severity,
-                                             verbose)
+                    total = self.analyse_line(l, i, fn, f, line, prev_line,
+                                      next_line, prev_prev_line, next_next_line, verbose, total)
 
             if self.critical == False and not self.pattern:
                 for dp in pefdefs.fileInclude:
-                    # there has to be space before function call; prevents from false-positives strings contains PHP function names
-                    dp = " {}".format(dp)
-                    # remove spaces to allow detection eg. include(  $_GET['something]  )
-                    if dp in line.replace(" ", ""):
-                        self.header_printed = self.header_print(
-                            f.name, self.header_printed)
-                        total += 1
-                        self.print_code_line(l, i, dp + '()', prev_line, next_line,
-                                             prev_prev_line, next_next_line, self.severity,
-                                             verbose)
+                    total = self.analyse_line(l, i, dp, f, line, prev_line,
+                                      next_line, prev_prev_line, next_next_line, verbose, total)
 
                 for globalvars in pefdefs.globalVars:
-                    if globalvars in line:
-                        self.header_printed = self.header_print(
-                            f.name, self.header_printed)
-                        total += 1
-                        self.print_code_line(l, i, globalvars, prev_line, next_line,
-                                             prev_prev_line, next_next_line, self.severity,
-                                             verbose)
+                    total = self.analyse_line(l, i, globalvars, f, line, prev_line,
+                                      next_line, prev_prev_line, next_next_line, verbose, total)
 
                 for refl in pefdefs.reflectedProperties:
-                    if refl in line:
-                        self.header_printed = self.header_print(
-                            f.name, self.header_printed)
-                        total += 1
-                        self.print_code_line(l, i, refl, prev_line, next_line,
-                                             prev_prev_line, next_next_line, self.severity,
-                                             verbose)
+                    total = self.analyse_line(l, i, refl, f, line, prev_line,
+                                      next_line, prev_prev_line, next_next_line, verbose, total)
 
                 if sql == True:
                     for refl in pefdefs.otherPatterns:
-                        p = re.compile(refl)
-                        if p.search(l):
-                            self.header_printed = self.header_print(
-                                f.name, self.header_printed)
-                            total += 1
-                            self.print_code_line(l, i, refl, prev_line, next_line,
-                                                 prev_prev_line, next_next_line, self.severity,
-                                                 verbose)
+                        total = self.analyse_line(l, i, refl, f, line, prev_line,
+                                      next_line, prev_prev_line, next_next_line, verbose, total)
 
         if total < 1:
             pass
