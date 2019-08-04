@@ -277,9 +277,13 @@ if __name__ == "__main__":
     pattern = args.pattern.split(',') if args.pattern else []
     filename = args.file
 
-    # main orutine starts here
-    engine = PefEngine(args.recursive, verbose,
-                       critical, sql, filename, pattern)
-    engine.run()
-
-    exit(0)
+    try:
+        # main orutine starts here
+        engine = PefEngine(args.recursive, verbose,
+                        critical, sql, filename, pattern)
+        engine.run()
+    except Exception as e:
+        print "Unexpected error:"
+        print type(e)
+        print e.args
+        print e
