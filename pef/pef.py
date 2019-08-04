@@ -287,3 +287,9 @@ if __name__ == "__main__":
         print type(e)
         print e.args
         print e
+    finally:
+        ### cleaning up
+
+        ### exiting
+        print "[+] Done"
+        exit(0)
