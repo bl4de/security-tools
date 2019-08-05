@@ -160,7 +160,7 @@ def show_banner():
     """
     Prints welcome banner with contact info
     """
-    print beautyConsole.getColor("cyan")
+    print (beautyConsole.getColor("cyan"))
     print BANNER
     print beautyConsole.getColor("white")
 
