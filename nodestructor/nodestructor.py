@@ -60,7 +60,7 @@ NODEJS_PATTERNS = [
     # ".*setInterval\(",
     ".*setImmediate\(",
     ".*newBuffer\(",
-    ".*constructor\("
+    ".*\.constructor\("
 ]
 
 NPM_PATTERNS = [
