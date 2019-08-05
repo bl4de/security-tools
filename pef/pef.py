@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 #
 # PHP Exploitable Functions/Vars Scanner
 # bl4de | bloorq@gmail.com | Twitter: @_bl4de
@@ -24,10 +24,11 @@ def banner():
     """
     Prints welcome banner with contact info
     """
-    print beautyConsole.getColor("green") + "\n\n", "-" * 100
-    print "-" * 6, " PEF | PHP Exploitable Functions scanner", " " * 35, "-" * 16
-    print "-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ", " " * 22, "-" * 16
-    print "-" * 100, "\33[0m\n"
+    print(beautyConsole.getColor("green") + "\n\n", "-" * 100)
+    print("-" * 6, " PEF | PHP Exploitable Functions scanner", " " * 35, "-" * 16)
+    print("-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ",
+          " " * 22, "-" * 16)
+    print("-" * 100, "\33[0m\n")
 
 
 class PefEngine:
@@ -63,8 +64,8 @@ class PefEngine:
         prints file header
         """
         if self.header_printed == False:
-            print beautyConsole.getColor("white") + "-" * 100
-            print "FILE: \33[33m%s\33[0m " % os.path.realpath(file_name), "\n"
+            print(beautyConsole.getColor("white") + "-" * 100)
+            print("FILE: \33[33m%s\33[0m " % os.path.realpath(file_name), "\n")
             self.header_printed = True
         return self.header_printed
 
@@ -80,7 +81,7 @@ class PefEngine:
         fn = " {}".format(fn)
         # also, it has to checked agains @ at the beginning of the function name
         # @ prevents from output being echoed
-        
+
         if fn in line or atfn in line:
             self.header_printed = self.header_print(
                 f.name, self.header_printed)
@@ -89,7 +90,6 @@ class PefEngine:
                                  next_line, prev_prev_line, next_next_line, self.severity,
                                  verbose)
         return total
-
 
     def print_code_line(self, _line, i, fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", severity={}, verbose=False):
         """
@@ -102,10 +102,10 @@ class PefEngine:
         }
 
         if verbose == True:
-            print " line %d :: \33[33;1m%s\33[0m " % (i, fn)
+            print(" line %d :: \33[33;1m%s\33[0m " % (i, fn))
         else:
-            print "{}line {} :: {}{} ".format(beautyConsole.getColor(
-                "white"), i, beautyConsole.getColor("grey"), _line.strip())
+            print("{}line {} :: {}{} ".format(beautyConsole.getColor(
+                "white"), i, beautyConsole.getColor("grey"), _line.strip()))
 
         # print legend only if there i sentry in pefdocs.py
         if fn and fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
@@ -116,12 +116,12 @@ class PefEngine:
             vuln_class = pefdocs.exploitableFunctionsDesc.get(fn.strip())[2]
 
             if verbose == True:
-                print "\n  {}{}{}".format(beautyConsole.getColor(
-                    "white"), description, beautyConsole.getSpecialChar("endline"))
-                print "  {}{}{}".format(beautyConsole.getColor(
-                    "grey"), syntax, beautyConsole.getSpecialChar("endline"))
-                print "  Potential impact: {}{}{}".format(beautyConsole.getColor(
-                    impact_color[impact]), vuln_class, beautyConsole.getSpecialChar("endline"))
+                print("\n  {}{}{}".format(beautyConsole.getColor(
+                    "white"), description, beautyConsole.getSpecialChar("endline")))
+                print("  {}{}{}".format(beautyConsole.getColor(
+                    "grey"), syntax, beautyConsole.getSpecialChar("endline")))
+                print("  Potential impact: {}{}{}".format(beautyConsole.getColor(
+                    impact_color[impact]), vuln_class, beautyConsole.getSpecialChar("endline")))
 
             if impact not in severity.keys():
                 severity[impact] = 1
@@ -129,22 +129,22 @@ class PefEngine:
                 severity[impact] = severity[impact] + 1
 
         if verbose == True:
-            print "\n"
+            print("\n")
             if prev_prev_line:
-                print str(i-2) + "  " + beautyConsole.getColor("grey") + prev_prev_line + \
-                    beautyConsole.getSpecialChar("endline")
+                print(str(i-2) + "  " + beautyConsole.getColor("grey") + prev_prev_line +
+                      beautyConsole.getSpecialChar("endline"))
             if prev_line:
-                print str(i-1) + "  " + beautyConsole.getColor("grey") + prev_line + \
-                    beautyConsole.getSpecialChar("endline")
-            print str(i) + "  " + beautyConsole.getColor("green") + _line.rstrip() + \
-                beautyConsole.getSpecialChar("endline")
+                print(str(i-1) + "  " + beautyConsole.getColor("grey") + prev_line +
+                      beautyConsole.getSpecialChar("endline"))
+            print(str(i) + "  " + beautyConsole.getColor("green") + _line.rstrip() +
+                  beautyConsole.getSpecialChar("endline"))
             if next_line:
-                print str(i+1) + "  " + beautyConsole.getColor("grey") + next_line + \
-                    beautyConsole.getSpecialChar("endline")
+                print(str(i+1) + "  " + beautyConsole.getColor("grey") + next_line +
+                      beautyConsole.getSpecialChar("endline"))
             if next_next_line:
-                print str(i+2) + "  " + beautyConsole.getColor("grey") + next_next_line + \
-                    beautyConsole.getSpecialChar("endline")
-            print "\n"
+                print(str(i+2) + "  " + beautyConsole.getColor("grey") + next_next_line +
+                      beautyConsole.getSpecialChar("endline"))
+            print("\n")
             return
 
     def main(self, src):
@@ -180,36 +180,36 @@ class PefEngine:
             if self.critical:
                 for fn in pefdefs.critical:
                     total = self.analyse_line(l, i, fn, f, line, prev_line,
-                                      next_line, prev_prev_line, next_next_line, verbose, total)
+                                              next_line, prev_prev_line, next_next_line, verbose, total)
             else:
                 for fn in (self.pattern if self.pattern else pefdefs.exploitableFunctions):
                     total = self.analyse_line(l, i, fn, f, line, prev_line,
-                                      next_line, prev_prev_line, next_next_line, verbose, total)
+                                              next_line, prev_prev_line, next_next_line, verbose, total)
 
             if self.critical == False and not self.pattern:
                 for dp in pefdefs.fileInclude:
                     total = self.analyse_line(l, i, dp, f, line, prev_line,
-                                      next_line, prev_prev_line, next_next_line, verbose, total)
+                                              next_line, prev_prev_line, next_next_line, verbose, total)
 
                 for globalvars in pefdefs.globalVars:
                     total = self.analyse_line(l, i, globalvars, f, line, prev_line,
-                                      next_line, prev_prev_line, next_next_line, verbose, total)
+                                              next_line, prev_prev_line, next_next_line, verbose, total)
 
                 for refl in pefdefs.reflectedProperties:
                     total = self.analyse_line(l, i, refl, f, line, prev_line,
-                                      next_line, prev_prev_line, next_next_line, verbose, total)
+                                              next_line, prev_prev_line, next_next_line, verbose, total)
 
                 if sql == True:
                     for refl in pefdefs.otherPatterns:
                         total = self.analyse_line(l, i, refl, f, line, prev_line,
-                                      next_line, prev_prev_line, next_next_line, verbose, total)
+                                                  next_line, prev_prev_line, next_next_line, verbose, total)
 
         if total < 1:
             pass
         else:
-            print beautyConsole.getColor("red") + \
-                "Found %d interesting entries\n" % (total) + \
-                beautyConsole.getSpecialChar("endline")
+            print(beautyConsole.getColor("red") +
+                  "Found %d interesting entries\n" % (total) +
+                  beautyConsole.getSpecialChar("endline"))
 
         return total  # return how many findings in current file
 
@@ -227,24 +227,24 @@ class PefEngine:
             self.scanned_files = self.scanned_files + 1
             self.found_entries = self.main(self.filename)
 
-        print beautyConsole.getColor("white") + "-" * 100
+        print(beautyConsole.getColor("white") + "-" * 100)
 
-        print beautyConsole.getColor("green")
-        print "\n>>>  {} file(s) scanned".format(self.scanned_files)
+        print(beautyConsole.getColor("green"))
+        print("\n>>>  {} file(s) scanned".format(self.scanned_files))
         if self.found_entries > 0:
-            print "{}>>>  {} interesting entries found\n".format(
-                beautyConsole.getColor("red"), self.found_entries)
+            print("{}>>>  {} interesting entries found\n".format(
+                beautyConsole.getColor("red"), self.found_entries))
         else:
-            print "  No interesting entries found :( \n"
+            print("  No interesting entries found :( \n")
 
-        print "{}==>  {}:\t {}".format(
-            beautyConsole.getColor("red"), "HIGH", self.severity.get("high"))
-        print "{}==>  {}:\t {}".format(beautyConsole.getColor(
-            "yellow"), "MEDIUM", self.severity.get("medium"))
-        print "{}==>  {}:\t {}".format(beautyConsole.getColor(
-            "green"), "LOW", self.severity.get("low"))
+        print("{}==>  {}:\t {}".format(
+            beautyConsole.getColor("red"), "HIGH", self.severity.get("high")))
+        print("{}==>  {}:\t {}".format(beautyConsole.getColor(
+            "yellow"), "MEDIUM", self.severity.get("medium")))
+        print("{}==>  {}:\t {}".format(beautyConsole.getColor(
+            "green"), "LOW", self.severity.get("low")))
 
-        print "\n"
+        print("\n")
 
 
 # main program
@@ -280,16 +280,16 @@ if __name__ == "__main__":
     try:
         # main orutine starts here
         engine = PefEngine(args.recursive, verbose,
-                        critical, sql, filename, pattern)
+                           critical, sql, filename, pattern)
         engine.run()
     except Exception as e:
-        print "Unexpected error:"
-        print type(e)
-        print e.args
-        print e
+        print("Unexpected error:")
+        print(type(e))
+        print(e.args)
+        print(e)
     finally:
-        ### cleaning up
+        # cleaning up
 
-        ### exiting
-        print "[+] Done"
+        # exiting
+        print("[+] Done")
         exit(0)
