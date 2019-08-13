@@ -1,10 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 #
 # nodestructor
 # Node.js application static code analysis tool
 #
 # bl4de | bloorq@gmail.com | Twitter: @_bl4de
-#
+## pylint: disable=W1401
+## pylint: disable=C
 """
 nodestructor.py - static code analysis for Node.js applications
 by bl4de
@@ -18,7 +19,7 @@ import argparse
 from imports.beautyConsole import beautyConsole
 
 
-BANNER = """
+banner = r"""
                                                                     
                     (                )                    )           
                     )\ )   (      ( /( (      (        ( /(      (    
@@ -40,7 +41,7 @@ example usages:
             $ ./nodestructor -R ./node_modules --pattern="obj.dangerousFn\("
 """
 
-NODEJS_PATTERNS = [
+nodejs_patterns = [
     ".*url.parse\(",
     ".*[pP]ath.normalize\(",
     ".*fs.*File.*\(",
@@ -63,13 +64,13 @@ NODEJS_PATTERNS = [
     ".*\.constructor\("
 ]
 
-NPM_PATTERNS = [
+npm_patterns = [
     ".*serialize\(",
     ".*unserialize\("
 ]
 
-BROWSER_PATTERNS = [
-    ".*URLSearchParams\(",
+browser_patterns = [
+    ".*urlsearchParams\(",
     ".*innerHTML",
     ".*innerText",
     ".*textContent",
@@ -127,104 +128,107 @@ BROWSER_PATTERNS = [
     ".*\.SafeString\("
 ]
 
-URL_REGEX = re.compile("(https|http):\/\/[a-zA-Z0-9#=\-\?\&\/\.]+")
-URLS = []
+url_regex = re.compile("(https|http):\/\/[a-zA-Z0-9#=\-\?\&\/\.]+")
+urls = []
 
-PATTERNS = NODEJS_PATTERNS + NPM_PATTERNS
-TOTAL_FILES = 0
-PATTERNS_IDENTIFIED = 0
-FILES_WITH_IDENTIFIED_PATTERNS = 0
+patterns = nodejs_patterns + npm_patterns
+total_files = 0
+patterns_identified = 0
+files_with_identified_patterns = 0
 
 # some files not to loking in:
-EXTENSIONS_TO_IGNORE = ['md', 'txt', 'map', 'jpg', 'png']
-MINIFIED_EXT = ['.min.js']
+extensions_to_ignore = ['md', 'txt', 'map', 'jpg', 'png']
+minified_ext = ['.min.js']
 SKIP_ALWAYS = ['package.json', 'README.md']
 TEST_FILES = ['test.js', 'tests.js']
-SKIP_NODE_MODULES = False
-SKIP_TEST_FILES = False
-IDENTIFY_URLS = False
-EXCLUDE = []
-EXCLUDE_ALWAYS = ['babel', 'lodash', 'ansi', 'array', 'core-util', '.bin',
+skip_node_modules = False
+skip_test_files = False
+identify_urls = False
+exclude = []
+exclude_always = ['babel', 'lodash', 'ansi', 'array', 'core-util', '.bin',
                   'babylon', 'next-tick',
                   'core-js', 'es5', 'es6', 'convert-source-map', 'source-map-',
                   'mime',
                   'to-fast-properties', 'json5', 'async', 'http-proxy',
                   'mkdirp', 'loose-envify',
                   '.git', '.idea']
-INCLUDE = []
-PATTERN = ""
-EXCLUDE_PATTERNS = []
+include = []
+pattern = ""
+EXCLUDE_patterns = []
 
 
 def show_banner():
     """
     Prints welcome banner with contact info
     """
-    print (beautyConsole.getColor("cyan"))
-    print BANNER
-    print beautyConsole.getColor("white")
+    global banner
+    print(beautyConsole.getColor("cyan"))
+    print(banner)
+    print(beautyConsole.getColor("white"))
 
 
-def printcodeline(_line, i, _fn, _message, _code=[]):
+def printcodeline(_line, i, _fn, _message, _code, verbose):
     """
     Formats and prints line of output
     """
     _fn = _fn.replace("*", "").replace("\\", "").replace(".(", '(')[0:len(_fn)]
-    print "\n::  line %d :: \33[33;1m%s\33[0m %s \n" % (i, _fn, _message)
+    print("::  line %d :: \33[33;1m%s\33[0m %s " % (i, _fn, _message))
 
-    if i > 3:
-        print str(i - 3) + '   ' + beautyConsole.getColor("grey") + _code[i-3].rstrip() + \
-            beautyConsole.getSpecialChar("endline")
-    if i > 2:
-        print str(i - 2) + '   ' + beautyConsole.getColor("grey") + _code[i-2].rstrip() + \
-            beautyConsole.getSpecialChar("endline")
+    if verbose:
+        if i > 3:
+            print(str(i - 3) + '   ' + beautyConsole.getColor("grey") + _code[i-3].rstrip() +
+                  beautyConsole.getSpecialChar("endline"))
+        if i > 2:
+            print(str(i - 2) + '   ' + beautyConsole.getColor("grey") + _code[i-2].rstrip() +
+                  beautyConsole.getSpecialChar("endline"))
 
-    print str(i) + '   ' + beautyConsole.getColor("green") + _line.rstrip() + \
-        beautyConsole.getSpecialChar("endline")
-    
-    if i < len(_code) - 1:
-        print str(i + 1) + '   ' + beautyConsole.getColor("grey") + _code[i+1].rstrip() + \
-            beautyConsole.getSpecialChar("endline")
-    if i < len(_code) - 2:
-        print str(i + 2) + '   ' + beautyConsole.getColor("grey") + _code[i+2].rstrip() + \
-            beautyConsole.getSpecialChar("endline")
+        print(str(i) + '   ' + beautyConsole.getColor("green") + _line.rstrip() +
+              beautyConsole.getSpecialChar("endline"))
+
+        if i < len(_code) - 1:
+            print(str(i + 1) + '   ' + beautyConsole.getColor("grey") + _code[i+1].rstrip() +
+                  beautyConsole.getSpecialChar("endline"))
+        if i < len(_code) - 2:
+            print(str(i + 2) + '   ' + beautyConsole.getColor("grey") + _code[i+2].rstrip() +
+                  beautyConsole.getSpecialChar("endline"))
 
 
-def process_files(subdirectory, sd_files, pattern=""):
+def process_files(subdirectory, sd_files, pattern="", verbose=False):
     """
     recursively iterates ofer all files and checks those which meet 
     criteria set by options only
     """
-    global TOTAL_FILES
+    global total_files
     for __file in sd_files:
         current_filename = os.path.join(subdirectory, __file)
-        if (current_filename[-3:] not in EXTENSIONS_TO_IGNORE
+        if (current_filename[-3:] not in extensions_to_ignore
                 and current_filename not in SKIP_ALWAYS
-                and current_filename[-2:] not in EXTENSIONS_TO_IGNORE
-                and current_filename[-7:] not in MINIFIED_EXT):
+                and current_filename[-2:] not in extensions_to_ignore
+                and current_filename[-7:] not in minified_ext):
 
-            if not '/node_modules/' in subdirectory or ('/node_modules/' in subdirectory and SKIP_NODE_MODULES is False):
-                if (SKIP_TEST_FILES is False):
-                    perform_code_analysis(current_filename, pattern)
-                    TOTAL_FILES = TOTAL_FILES + 1
+            if not '/node_modules/' in subdirectory or ('/node_modules/' in subdirectory and skip_node_modules is False):
+                if (skip_test_files is False):
+                    perform_code_analysis(current_filename, pattern, verbose)
+                    total_files = total_files + 1
                 else:
                     if __file not in TEST_FILES and "/test" not in current_filename and "/tests" not in current_filename:
-                        perform_code_analysis(current_filename, pattern)
-                        TOTAL_FILES = TOTAL_FILES + 1
+                        perform_code_analysis(
+                            current_filename, pattern, verbose)
+                        total_files = total_files + 1
 
 
-def perform_code_analysis(src, pattern=""):
+def perform_code_analysis(src, pattern="", verbose=False):
     """
     performs code analysis, line by line
     """
-    global PATTERNS_IDENTIFIED
-    global FILES_WITH_IDENTIFIED_PATTERNS
-    global PATTERNS
+    global patterns
+    global patterns_identified
+    global files_with_identified_patterns
 
-    # if -P / --pattern is defined, overwrite PATTERNS with user defined
+    # if -P / --pattern is defined, overwrite patterns with user defined
     # value(s)
     if pattern:
-        PATTERNS = [".*" + pattern]
+        patterns = [".*" + pattern]
 
     print_filename = True
 
@@ -236,32 +240,33 @@ def perform_code_analysis(src, pattern=""):
     for _line in _code:
         i += 1
         __line = _line.strip()
-        for __pattern in PATTERNS:
+        for __pattern in patterns:
             __rex = re.compile(__pattern)
             if __rex.match(__line.replace(' ', '')):
                 if print_filename:
-                    FILES_WITH_IDENTIFIED_PATTERNS = FILES_WITH_IDENTIFIED_PATTERNS + 1
-                    print "FILE: \33[33m{}\33[0m\n".format(src)
+                    files_with_identified_patterns = files_with_identified_patterns + 1
+                    print("FILE: \33[33m{}\33[0m\n".format(src))
                     print_filename = False
                 patterns_found_in_file += 1
                 printcodeline(_line, i, __pattern,
-                              ' code pattern identified: ', _code)
+                              ' code pattern identified: ', _code, verbose)
 
             # URL searching
-            if IDENTIFY_URLS == True:
-                if URL_REGEX.search(__line):
-                    __url = URL_REGEX.search(__line).group(0)
+            if identify_urls == True:
+                if url_regex.search(__line):
+                    __url = url_regex.search(__line).group(0)
                     # show each unique URL only once
-                    if __url not in URLS:
-                        printcodeline(__url, i, __url, ' URL found: ', _code)
-                        URLS.append(__url)
+                    if __url not in urls:
+                        printcodeline(__url, i, __url,
+                                      ' URL found: ', _code, verbose)
+                        urls.append(__url)
 
     if patterns_found_in_file > 0:
-        PATTERNS_IDENTIFIED = PATTERNS_IDENTIFIED + patterns_found_in_file
-        print beautyConsole.getColor("red") + \
-            "\nIdentified %d code pattern(s)\n" % (patterns_found_in_file) + \
-            beautyConsole.getSpecialChar("endline")
-        print beautyConsole.getColor("white") + "-" * 100
+        patterns_identified = patterns_identified + patterns_found_in_file
+        print(beautyConsole.getColor("red") +
+              "\nIdentified %d code pattern(s)\n" % (patterns_found_in_file) +
+              beautyConsole.getSpecialChar("endline"))
+        print(beautyConsole.getColor("white") + "-" * 100)
 
 
 # main program
@@ -271,71 +276,73 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("filename", help="Specify a file or directory to scan")
     parser.add_argument(
-        "-R", "--recursive", help="check files recursively", action="store_true")
+        "-r", "--recursive", help="check files recursively", action="store_true")
     parser.add_argument(
-        "-E", "--exclude", help="comma separated list of packages to exclude from scanning (eg. babel excludes ALL packages with babel in name, like babel-register, babel-types etc.")
+        "-v", "--verbose", help="verbose output - show code before/after vulnerable line", action="store_true")
     parser.add_argument(
-        "-I", "--include", help="comma separated list of selected packages for scanning. Might be useful in projects where there are hundreds of dependiences and only some of them needs to be processed")
+        "-e", "--exclude", help="comma separated list of packages to exclude from scanning (eg. babel excludes ALL packages with babel in name, like babel-register, babel-types etc.")
     parser.add_argument(
-        "-S", "--skip-node-modules", help="when scanning recursively, do not scan ./node_modules folder", action="store_true")
+        "-i", "--include", help="comma separated list of selected packages for scanning. Might be useful in projects where there are hundreds of dependiences and only some of them needs to be processed")
     parser.add_argument(
-        "-T", "--skip-test-files", help="when scanning recursively, do not check test files (usually test.js)", action="store_true")
+        "-s", "--skip-node-modules", help="when scanning recursively, do not scan ./node_modules folder", action="store_true")
     parser.add_argument(
-        "-H", "--include-html-patterns", help="include HTML patterns, like <a href=, <img src=, <iframe src= etc.", action="store_true")
+        "-t", "--skip-test-files", help="when scanning recursively, do not check test files (usually test.js)", action="store_true")
     parser.add_argument(
-        "-U", "--include-urls", help="identify URLs", action="store_true")
+        "-b", "--include-browser-patterns", help="include HTML patterns, like <a href=, <img src=, <iframe src= etc.", action="store_true")
     parser.add_argument(
-        "-P", "--pattern", help="define your own pattern to look for. Pattern has to be a RegEx, like '.*fork\('. nodestructor removes whiitespaces, so if you want to look for 'new fn()', your pattern should look like this: '.*newfn\(\)' (all special characters for RegEx have to be escaped with \ )")
+        "-u", "--include-urls", help="identify URLs", action="store_true")
+    parser.add_argument(
+        "-p", "--pattern", help="define your own pattern to look for. Pattern has to be a RegEx, like '.*fork\('. nodestructor removes whiitespaces, so if you want to look for 'new fn()', your pattern should look like this: '.*newfn\(\)' (all special characters for RegEx have to be escaped with \ )")
 
-    ARGS = parser.parse_args()
+    args = parser.parse_args()
 
     try:
-        BASE_PATH = ARGS.filename
-        if ARGS.recursive:
-            FILE_LIST = os.listdir(ARGS.filename)
+        base_path = args.filename
+        if args.recursive:
+            FILE_LIST = os.listdir(args.filename)
 
-        PATTERN = ARGS.pattern if ARGS.pattern else ""
+        pattern = args.pattern if args.pattern else ""
 
-        EXCLUDE = [e for e in ARGS.exclude.split(
-            ',')] + EXCLUDE_ALWAYS if ARGS.exclude else EXCLUDE_ALWAYS
-        INCLUDE = [i for i in ARGS.include.split(',')] if ARGS.include else []
+        exclude = [e for e in args.exclude.split(
+            ',')] + exclude_always if args.exclude else exclude_always
+        include = [i for i in args.include.split(',')] if args.include else []
+        verbose = args.verbose
 
-        SKIP_NODE_MODULES = ARGS.skip_node_modules
-        SKIP_TEST_FILES = ARGS.skip_test_files
-        IDENTIFY_URLS = ARGS.include_urls
+        skip_node_modules = args.skip_node_modules
+        skip_test_files = args.skip_test_files
+        identify_urls = args.include_urls
 
-        if ARGS.include_html_patterns:
-            PATTERNS = PATTERNS + BROWSER_PATTERNS
+        if args.include_browser_patterns:
+            patterns = patterns + browser_patterns
 
-        if ARGS.recursive:
-            for subdir, dirs, files in os.walk(BASE_PATH):
-                if not INCLUDE:
-                    if not True in [e in subdir for e in EXCLUDE]:
-                        process_files(subdir, files, PATTERN)
+        if args.recursive:
+            for subdir, dirs, files in os.walk(base_path):
+                if not include:
+                    if not True in [e in subdir for e in exclude]:
+                        process_files(subdir, files, pattern, verbose)
                 else:
-                    if True in [i in subdir for i in INCLUDE]:
-                        process_files(subdir, files, PATTERN)
+                    if True in [i in subdir for i in include]:
+                        process_files(subdir, files, pattern, verbose)
         else:
             # process only single file
-            S_FILENAME = ARGS.filename
-            if (S_FILENAME[-3:] not in EXTENSIONS_TO_IGNORE
-                and S_FILENAME[-2:] not in EXTENSIONS_TO_IGNORE
-                    and S_FILENAME[-7:] not in MINIFIED_EXT):
-                perform_code_analysis(S_FILENAME, PATTERN)
-                TOTAL_FILES = TOTAL_FILES + 1
+            s_filename = args.filename
+            if (s_filename[-3:] not in extensions_to_ignore
+                and s_filename[-2:] not in extensions_to_ignore
+                    and s_filename[-7:] not in minified_ext):
+                perform_code_analysis(s_filename, pattern)
+                total_files = total_files + 1
 
     except Exception as ex:
-        print beautyConsole.getColor(
-            "red"), "An exception occured: {}\n\n".format(ex)
+        print("{}An exception occured: {}\n\n".format(
+            beautyConsole.getColor("red"), ex))
         exit(1)
 
-    print beautyConsole.getColor("cyan")
-    print " {} file(s) scanned in total".format(TOTAL_FILES)
-    if PATTERNS_IDENTIFIED > 0:
-        print beautyConsole.getColor("red")
-        print "Identified {} code pattern(s) in {} file(s)".format(
-            PATTERNS_IDENTIFIED, FILES_WITH_IDENTIFIED_PATTERNS)
+    print(beautyConsole.getColor("cyan"))
+    print(" {} file(s) scanned in total".format(total_files))
+    if patterns_identified > 0:
+        print(beautyConsole.getColor("red"))
+        print("Identified {} code pattern(s) in {} file(s)".format(
+            patterns_identified, files_with_identified_patterns))
     else:
-        print beautyConsole.getColor(
-            "green"), "No code pattern identified"
-    print beautyConsole.getColor("white")
+        print(beautyConsole.getColor("green"), "No code pattern identified")
+    print(beautyConsole.getColor("white"))
