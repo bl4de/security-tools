@@ -306,11 +306,11 @@ if __name__ == "__main__":
         exclude = [e for e in args.exclude.split(
             ',')] + exclude_always if args.exclude else exclude_always
         include = [i for i in args.include.split(',')] if args.include else []
-        verbose = args.verbose
 
         skip_node_modules = args.skip_node_modules
         skip_test_files = args.skip_test_files
         identify_urls = args.include_urls
+        verbose = args.verbose
 
         if args.include_browser_patterns:
             patterns = patterns + browser_patterns
@@ -329,7 +329,7 @@ if __name__ == "__main__":
             if (s_filename[-3:] not in extensions_to_ignore
                 and s_filename[-2:] not in extensions_to_ignore
                     and s_filename[-7:] not in minified_ext):
-                perform_code_analysis(s_filename, pattern)
+                perform_code_analysis(s_filename, pattern, verbose)
                 total_files = total_files + 1
 
     except Exception as ex:
