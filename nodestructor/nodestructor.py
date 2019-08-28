@@ -4,8 +4,8 @@
 # Node.js application static code analysis tool
 #
 # bl4de | bloorq@gmail.com | Twitter: @_bl4de
-## pylint: disable=W1401
-## pylint: disable=C
+# pylint: disable=W1401
+# pylint: disable=C
 """
 nodestructor.py - static code analysis for Node.js applications
 by bl4de
@@ -20,19 +20,19 @@ from imports.beautyConsole import beautyConsole
 
 
 banner = r"""
-                                                                    
-                    (                )                    )           
-                    )\ )   (      ( /( (      (        ( /(      (    
-        (      (   (()/(  ))\ (   )\()))(    ))\   (   )\()) (   )(   
-        )\ )   )\   ((_))/((_))\ (_))/(()\  /((_)  )\ (_))/  )\ (()\  
-        _(_/(  ((_)  _| |(_)) ((_)| |_  ((_)(_))(  ((_)| |_  ((_) ((_) 
-        | ' \))/ _ \/ _` |/ -_)(_-<|  _|| '_|| || |/ _| |  _|/ _ \| '_| 
-        |_||_| \___/\__,_|\___|/__/ \__||_|   \_,_|\__|  \__|\___/|_|   
-                                                                
+
+                    (                )                    )
+                    )\ )   (      ( /( (      (        ( /(      (
+        (      (   (()/(  ))\ (   )\()))(    ))\   (   )\()) (   )(
+        )\ )   )\   ((_))/((_))\ (_))/(()\  /((_)  )\ (_))/  )\ (()\
+        _(_/(  ((_)  _| |(_)) ((_)| |_  ((_)(_))(  ((_)| |_  ((_) ((_)
+        | ' \))/ _ \/ _` |/ -_)(_-<|  _|| '_|| || |/ _| |  _|/ _ \| '_|
+        |_||_| \___/\__,_|\___|/__/ \__||_|   \_,_|\__|  \__|\___/|_|
+
 #####    static code analysis for Node.js and other JavaScript apps        #####
 #####    GitHub.com/bl4de | twitter.com/_bl4de | hackerone.com/bl4de       #####
 
-example usages:   
+example usages:
             $ ./nodestructor filename.js
             $ ./nodestructor -R ./dirname
             $ ./nodestructor -R ./dirname --skip-node-modules --skip-test-files
@@ -46,7 +46,6 @@ nodejs_patterns = [
     ".*[pP]ath.normalize\(",
     ".*fs.*File.*\(",
     ".*fs.*Read.*\(",
-    ".*process.cwd\(",
     ".*pipe\(res",
     ".*bodyParser\(",
     ".*eval\(",
@@ -136,8 +135,6 @@ total_files = 0
 patterns_identified = 0
 files_with_identified_patterns = 0
 
-# some files not to loking in:
-extensions_to_ignore = ['md', 'txt', 'map', 'jpg', 'png']
 minified_ext = ['.min.js']
 SKIP_ALWAYS = ['package.json', 'README.md']
 TEST_FILES = ['test.js', 'tests.js']
@@ -195,26 +192,22 @@ def printcodeline(_line, i, _fn, _message, _code, verbose):
 
 def process_files(subdirectory, sd_files, pattern="", verbose=False):
     """
-    recursively iterates ofer all files and checks those which meet 
+    recursively iterates ofer all files and checks those which meet
     criteria set by options only
     """
     global total_files
     for __file in sd_files:
         current_filename = os.path.join(subdirectory, __file)
-        if (current_filename[-3:] not in extensions_to_ignore
-                and current_filename not in SKIP_ALWAYS
-                and current_filename[-2:] not in extensions_to_ignore
-                and current_filename[-7:] not in minified_ext):
-
+        if current_filename[-3:] == '.js':
             if not '/node_modules/' in subdirectory or ('/node_modules/' in subdirectory and skip_node_modules is False):
                 if (skip_test_files is False):
                     perform_code_analysis(current_filename, pattern, verbose)
-                    total_files = total_files + 1
+                    total_files=total_files + 1
                 else:
                     if __file not in TEST_FILES and "/test" not in current_filename and "/tests" not in current_filename:
                         perform_code_analysis(
                             current_filename, pattern, verbose)
-                        total_files = total_files + 1
+                        total_files=total_files + 1
 
 
 def perform_code_analysis(src, pattern="", verbose=False):
@@ -228,25 +221,25 @@ def perform_code_analysis(src, pattern="", verbose=False):
     # if -P / --pattern is defined, overwrite patterns with user defined
     # value(s)
     if pattern:
-        patterns = [".*" + pattern]
+        patterns=[".*" + pattern]
 
-    print_filename = True
+    print_filename=True
 
-    _file = open(src, "r")
-    _code = _file.readlines()
-    i = 0
-    patterns_found_in_file = 0
+    _file=open(src, "r")
+    _code=_file.readlines()
+    i=0
+    patterns_found_in_file=0
 
     for _line in _code:
         i += 1
-        __line = _line.strip()
+        __line=_line.strip()
         for __pattern in patterns:
-            __rex = re.compile(__pattern)
+            __rex=re.compile(__pattern)
             if __rex.match(__line.replace(' ', '')):
                 if print_filename:
-                    files_with_identified_patterns = files_with_identified_patterns + 1
+                    files_with_identified_patterns=files_with_identified_patterns + 1
                     print("FILE: \33[33m{}\33[0m\n".format(src))
-                    print_filename = False
+                    print_filename=False
                 patterns_found_in_file += 1
                 printcodeline(_line, i, __pattern,
                               ' code pattern identified: ', _code, verbose)
@@ -254,7 +247,7 @@ def perform_code_analysis(src, pattern="", verbose=False):
             # URL searching
             if identify_urls == True:
                 if url_regex.search(__line):
-                    __url = url_regex.search(__line).group(0)
+                    __url=url_regex.search(__line).group(0)
                     # show each unique URL only once
                     if __url not in urls:
                         printcodeline(__url, i, __url,
@@ -262,7 +255,7 @@ def perform_code_analysis(src, pattern="", verbose=False):
                         urls.append(__url)
 
     if patterns_found_in_file > 0:
-        patterns_identified = patterns_identified + patterns_found_in_file
+        patterns_identified=patterns_identified + patterns_found_in_file
         print(beautyConsole.getColor("red") +
               "\nIdentified %d code pattern(s)\n" % (patterns_found_in_file) +
               beautyConsole.getSpecialChar("endline"))
@@ -273,7 +266,7 @@ def perform_code_analysis(src, pattern="", verbose=False):
 if __name__ == "__main__":
     show_banner()
 
-    parser = argparse.ArgumentParser()
+    parser=argparse.ArgumentParser()
     parser.add_argument("filename", help="Specify a file or directory to scan")
     parser.add_argument(
         "-r", "--recursive", help="check files recursively", action="store_true")
@@ -294,26 +287,26 @@ if __name__ == "__main__":
     parser.add_argument(
         "-p", "--pattern", help="define your own pattern to look for. Pattern has to be a RegEx, like '.*fork\('. nodestructor removes whiitespaces, so if you want to look for 'new fn()', your pattern should look like this: '.*newfn\(\)' (all special characters for RegEx have to be escaped with \ )")
 
-    args = parser.parse_args()
+    args=parser.parse_args()
 
     try:
-        base_path = args.filename
+        base_path=args.filename
         if args.recursive:
-            FILE_LIST = os.listdir(args.filename)
+            FILE_LIST=os.listdir(args.filename)
 
-        pattern = args.pattern if args.pattern else ""
+        pattern=args.pattern if args.pattern else ""
 
-        exclude = [e for e in args.exclude.split(
+        exclude=[e for e in args.exclude.split(
             ',')] + exclude_always if args.exclude else exclude_always
-        include = [i for i in args.include.split(',')] if args.include else []
+        include=[i for i in args.include.split(',')] if args.include else []
 
-        skip_node_modules = args.skip_node_modules
-        skip_test_files = args.skip_test_files
-        identify_urls = args.include_urls
-        verbose = args.verbose
+        skip_node_modules=args.skip_node_modules
+        skip_test_files=args.skip_test_files
+        identify_urls=args.include_urls
+        verbose=args.verbose
 
         if args.include_browser_patterns:
-            patterns = patterns + browser_patterns
+            patterns=patterns + browser_patterns
 
         if args.recursive:
             for subdir, dirs, files in os.walk(base_path):
@@ -325,12 +318,10 @@ if __name__ == "__main__":
                         process_files(subdir, files, pattern, verbose)
         else:
             # process only single file
-            s_filename = args.filename
-            if (s_filename[-3:] not in extensions_to_ignore
-                and s_filename[-2:] not in extensions_to_ignore
-                    and s_filename[-7:] not in minified_ext):
+            s_filename=args.filename
+            if s_filename[-3:] == '.js':
                 perform_code_analysis(s_filename, pattern, verbose)
-                total_files = total_files + 1
+                total_files=total_files + 1
 
     except Exception as ex:
         print("{}An exception occured: {}\n\n".format(
