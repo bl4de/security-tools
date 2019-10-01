@@ -5,6 +5,14 @@
 #
 
 # pylint: disable=C0103
+
+# //TODO:
+# - handle exceptions: "Unexpected error: <class 'UnicodeDecodeError'>"
+# - allow to scan folder without subdirs
+# - allow to scan files by pattern, eg. *.php
+# - exclude 'echo' lines without HTML tags
+
+
 """
 pef.py - PHP static code analysis tool (very, very simple)
 by bl4de
@@ -220,9 +228,10 @@ class PefEngine:
         if self.recursive:
             for root, subdirs, files in os.walk(self.filename):
                 for f in files:
-                    self.scanned_files = self.scanned_files + 1
-                    res = self.main(os.path.join(root, f))
-                    self.found_entries = self.found_entries + res
+                    if f.find('php') > 0:
+                        self.scanned_files = self.scanned_files + 1
+                        res = self.main(os.path.join(root, f))
+                        self.found_entries = self.found_entries + res
         else:
             self.scanned_files = self.scanned_files + 1
             self.found_entries = self.main(self.filename)
@@ -282,6 +291,9 @@ if __name__ == "__main__":
         engine = PefEngine(args.recursive, verbose,
                            critical, sql, filename, pattern)
         engine.run()
+    except UnicodeDecodeError as e:
+        print("UnicodeDecodeError in {}: {}".format(filename, e))
+        pass
     except Exception as e:
         print("Unexpected error:")
         print(type(e))
