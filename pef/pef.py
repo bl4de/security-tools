@@ -7,7 +7,6 @@
 # pylint: disable=C0103
 
 # //TODO:
-# - handle exceptions: "Unexpected error: <class 'UnicodeDecodeError'>"
 # - allow to scan folder without subdirs
 # - allow to scan files by pattern, eg. *.php
 # - exclude 'echo' lines without HTML tags
@@ -86,7 +85,7 @@ class PefEngine:
 
         # there has to be space before function call; prevents from false-positives strings contains PHP function names
         atfn = "@{}".format(fn)
-        fn = " {}".format(fn)
+        fn = "{}".format(fn)
         # also, it has to checked agains @ at the beginning of the function name
         # @ prevents from output being echoed
 
@@ -110,7 +109,7 @@ class PefEngine:
         }
 
         if verbose == True:
-            print(" line %d :: \33[33;1m%s\33[0m " % (i, fn))
+            print("line %d :: \33[33;1m%s\33[0m " % (i, fn))
         else:
             print("{}line {} :: {}{} ".format(beautyConsole.getColor(
                 "white"), i, beautyConsole.getColor("grey"), _line.strip()))
@@ -137,7 +136,7 @@ class PefEngine:
                 severity[impact] = severity[impact] + 1
 
         if verbose == True:
-            print("\n")
+            print()
             if prev_prev_line:
                 print(str(i-2) + "  " + beautyConsole.getColor("grey") + prev_prev_line +
                       beautyConsole.getSpecialChar("endline"))
@@ -152,7 +151,7 @@ class PefEngine:
             if next_next_line:
                 print(str(i+2) + "  " + beautyConsole.getColor("grey") + next_next_line +
                       beautyConsole.getSpecialChar("endline"))
-            print("\n")
+            print()
             return
 
     def main(self, src):
