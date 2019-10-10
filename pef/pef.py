@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 # PHP Exploitable Functions/Vars Scanner
-# bl4de | bloorq@gmail.com | Twitter: @_bl4de
+# bl4de | github.com/bl4de | hackerone.com/bl4de
 #
 
 # pylint: disable=C0103
@@ -13,9 +13,7 @@
 
 
 """
-pef.py - PHP static code analysis tool (very, very simple)
-by bl4de
-GitHub: bl4de | bloorq@gmail.com
+pef.py - PHP source code advanced grep utility
 """
 import sys
 import os
@@ -32,7 +30,7 @@ def banner():
     Prints welcome banner with contact info
     """
     print(beautyConsole.getColor("green") + "\n\n", "-" * 100)
-    print("-" * 6, " PEF | PHP Exploitable Functions scanner", " " * 35, "-" * 16)
+    print("-" * 6, " PEF | PHP Exploitable Functions source code advanced grep utility", " " * 35, "-" * 16)
     print("-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ",
           " " * 22, "-" * 16)
     print("-" * 100, "\33[0m\n")
