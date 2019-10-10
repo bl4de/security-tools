@@ -89,13 +89,24 @@ class PefEngine:
         # also, it has to checked agains @ at the beginning of the function name
         # @ prevents from output being echoed
 
-        if fn in line or atfn in line:
-            self.header_printed = self.header_print(
-                f.name, self.header_printed)
-            total += 1
-            self.print_code_line(l, i, fn + (')' if '(' in fn else ''), prev_line,
-                                 next_line, prev_prev_line, next_next_line, self.severity,
-                                 verbose)
+        # try to match --pattern if set, using RegExp
+        if self.pattern:
+            pattern = re.compile(self.pattern[0])
+            if re.match(pattern, line):
+                self.header_printed = self.header_print(
+                    f.name, self.header_printed)
+                total += 1
+                self.print_code_line(l, i, fn + (')' if '(' in fn else ''), prev_line,
+                                     next_line, prev_prev_line, next_next_line, self.severity,
+                                     verbose)
+        else:
+            if fn in line or atfn in line:
+                self.header_printed = self.header_print(
+                    f.name, self.header_printed)
+                total += 1
+                self.print_code_line(l, i, fn + (')' if '(' in fn else ''), prev_line,
+                                     next_line, prev_prev_line, next_next_line, self.severity,
+                                     verbose)
         return total
 
     def print_code_line(self, _line, i, fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", severity={}, verbose=False):
@@ -108,11 +119,14 @@ class PefEngine:
             "high": "red"
         }
 
+        if len(_line) > 255:
+            _line = _line[:120] + \
+                f" (...truncated -> line is {len(_line)} characters long)"
         if verbose == True:
             print("line %d :: \33[33;1m%s\33[0m " % (i, fn))
         else:
             print("{}line {} :: {}{} ".format(beautyConsole.getColor(
-                "white"), i, beautyConsole.getColor("grey"), _line.strip()))
+                "white"), i, beautyConsole.getColor("grey"), _line.strip()[:255]))
 
         # print legend only if there i sentry in pefdocs.py
         if fn and fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
@@ -170,7 +184,6 @@ class PefEngine:
         prev_line = ""
         next_line = ""
         next_next_line = ""
-
         for l in all_lines:
             if i > 2:
                 prev_prev_line = all_lines[i - 2].rstrip()
@@ -183,7 +196,6 @@ class PefEngine:
 
             i += 1
             line = l.rstrip()
-
             if self.critical:
                 for fn in pefdefs.critical:
                     total = self.analyse_line(l, i, fn, f, line, prev_line,
@@ -295,6 +307,8 @@ if __name__ == "__main__":
         pass
     except FileNotFoundError as e:
         print("Requested file not found, check the path :)")
+    except IsADirectoryError as e:
+        print(f"{filename} is a directory and requires -r flag")
     except Exception as e:
         print("Unexpected error:")
         print(type(e))
