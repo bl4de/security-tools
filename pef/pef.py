@@ -237,11 +237,11 @@ class PefEngine:
 
         print(beautyConsole.getColor("white") + "-" * 100)
 
-        print(beautyConsole.getColor("green"))
-        print("\n>>>  {} file(s) scanned".format(self.scanned_files))
+        print(
+            f"{beautyConsole.getColor('green')}\n>>>  {self.scanned_files} file(s) scanned")
         if self.found_entries > 0:
-            print("{}>>>  {} interesting entries found\n".format(
-                beautyConsole.getColor("red"), self.found_entries))
+            print(
+                f"{beautyConsole.getColor('red')}>>>  {self.found_entries} interesting entries found\n")
         else:
             print("  No interesting entries found :( \n")
 
@@ -293,6 +293,8 @@ if __name__ == "__main__":
     except UnicodeDecodeError as e:
         print("UnicodeDecodeError in {}: {}".format(filename, e))
         pass
+    except FileNotFoundError as e:
+        print("Requested file not found, check the path :)")
     except Exception as e:
         print("Unexpected error:")
         print(type(e))

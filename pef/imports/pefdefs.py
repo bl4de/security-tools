@@ -114,6 +114,8 @@ critical = [
     "__wakeup(",
     "__destruct(",
     "__sleep(",
+    "__call(",
+    "__callStatic(",
     "filter_var(",
     "file_put_contents("
 ]
