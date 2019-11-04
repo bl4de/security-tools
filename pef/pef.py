@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 # PHP Exploitable Functions/Vars Scanner
-# bl4de | bloorq@gmail.com | Twitter: @_bl4de
+# bl4de | github.com/bl4de | hackerone.com/bl4de
 #
 
 # pylint: disable=C0103
@@ -13,9 +13,7 @@
 
 
 """
-pef.py - PHP static code analysis tool (very, very simple)
-by bl4de
-GitHub: bl4de | bloorq@gmail.com
+pef.py - PHP source code advanced grep utility
 """
 import sys
 import os
@@ -32,7 +30,7 @@ def banner():
     Prints welcome banner with contact info
     """
     print(beautyConsole.getColor("green") + "\n\n", "-" * 100)
-    print("-" * 6, " PEF | PHP Exploitable Functions scanner", " " * 35, "-" * 16)
+    print("-" * 6, " PEF | PHP Exploitable Functions source code advanced grep utility", " " * 35, "-" * 16)
     print("-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ",
           " " * 22, "-" * 16)
     print("-" * 100, "\33[0m\n")
@@ -89,13 +87,24 @@ class PefEngine:
         # also, it has to checked agains @ at the beginning of the function name
         # @ prevents from output being echoed
 
-        if fn in line or atfn in line:
-            self.header_printed = self.header_print(
-                f.name, self.header_printed)
-            total += 1
-            self.print_code_line(l, i, fn + (')' if '(' in fn else ''), prev_line,
-                                 next_line, prev_prev_line, next_next_line, self.severity,
-                                 verbose)
+        # try to match --pattern if set, using RegExp
+        if self.pattern:
+            pattern = re.compile(self.pattern[0])
+            if re.match(pattern, line):
+                self.header_printed = self.header_print(
+                    f.name, self.header_printed)
+                total += 1
+                self.print_code_line(l, i, fn + (')' if '(' in fn else ''), prev_line,
+                                     next_line, prev_prev_line, next_next_line, self.severity,
+                                     verbose)
+        else:
+            if fn in line or atfn in line:
+                self.header_printed = self.header_print(
+                    f.name, self.header_printed)
+                total += 1
+                self.print_code_line(l, i, fn + (')' if '(' in fn else ''), prev_line,
+                                     next_line, prev_prev_line, next_next_line, self.severity,
+                                     verbose)
         return total
 
     def print_code_line(self, _line, i, fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", severity={}, verbose=False):
@@ -108,11 +117,14 @@ class PefEngine:
             "high": "red"
         }
 
+        if len(_line) > 255:
+            _line = _line[:120] + \
+                f" (...truncated -> line is {len(_line)} characters long)"
         if verbose == True:
             print("line %d :: \33[33;1m%s\33[0m " % (i, fn))
         else:
             print("{}line {} :: {}{} ".format(beautyConsole.getColor(
-                "white"), i, beautyConsole.getColor("grey"), _line.strip()))
+                "white"), i, beautyConsole.getColor("grey"), _line.strip()[:255]))
 
         # print legend only if there i sentry in pefdocs.py
         if fn and fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
@@ -170,7 +182,6 @@ class PefEngine:
         prev_line = ""
         next_line = ""
         next_next_line = ""
-
         for l in all_lines:
             if i > 2:
                 prev_prev_line = all_lines[i - 2].rstrip()
@@ -183,7 +194,6 @@ class PefEngine:
 
             i += 1
             line = l.rstrip()
-
             if self.critical:
                 for fn in pefdefs.critical:
                     total = self.analyse_line(l, i, fn, f, line, prev_line,
@@ -237,11 +247,11 @@ class PefEngine:
 
         print(beautyConsole.getColor("white") + "-" * 100)
 
-        print(beautyConsole.getColor("green"))
-        print("\n>>>  {} file(s) scanned".format(self.scanned_files))
+        print(
+            f"{beautyConsole.getColor('green')}\n>>>  {self.scanned_files} file(s) scanned")
         if self.found_entries > 0:
-            print("{}>>>  {} interesting entries found\n".format(
-                beautyConsole.getColor("red"), self.found_entries))
+            print(
+                f"{beautyConsole.getColor('red')}>>>  {self.found_entries} interesting entries found\n")
         else:
             print("  No interesting entries found :( \n")
 
@@ -293,6 +303,10 @@ if __name__ == "__main__":
     except UnicodeDecodeError as e:
         print("UnicodeDecodeError in {}: {}".format(filename, e))
         pass
+    except FileNotFoundError as e:
+        print("Requested file not found, check the path :)")
+    except IsADirectoryError as e:
+        print(f"{filename} is a directory and requires -r flag")
     except Exception as e:
         print("Unexpected error:")
         print(type(e))

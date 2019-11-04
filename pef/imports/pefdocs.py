@@ -467,6 +467,18 @@ exploitableFunctionsDesc = {
         "Object Injection; RCE via unserialize() + POP gadget chain",
         "medium"
     ],
+    "__call()": [
+        "Triggered when invoking inaccessible methods in an object context",
+        "public __call ( string $name , array $arguments ) : mixed",
+        "Object Injection; RCE via unserialize() + POP gadget chain",
+        "medium"
+    ],
+    "__callStatic()": [
+        "Triggered when invoking inaccessible methods in a static context.",
+        "public static __callStatic ( string $name , array $arguments ) : mixed",
+        "Object Injection; RCE via unserialize() + POP gadget chain",
+        "medium"
+    ],
     "filter_var()":[
         "Filters a variable with a specified filter",
         "filter_var ( mixed $variable [, int $filter = FILTER_DEFAULT [, mixed $options ]] ) : mixed",
