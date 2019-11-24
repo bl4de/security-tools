@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # pylint: disable=invalid-name
 """
 --- dENUMerator ---
@@ -48,7 +48,8 @@ colors = {
 }
 
 requests.packages.urllib3.disable_warnings()
-allowed_http_responses = [200, 302, 403, 404, 405, 415, 422, 500]
+# allowed_http_responses = [200, 302, 403, 404, 405, 415, 422, 500]
+allowed_http_responses = [200]
 timeout = 2
 
 
@@ -56,7 +57,7 @@ def usage():
     """
     prints welcome message
     """
-    print welcome
+    print(welcome)
 
 
 def create_output_header(html_output):
@@ -87,7 +88,7 @@ def append_to_output(html_output, url, http_status_code):
     # green - 200 OK
     if http_status_code == 200:
         http_status_code_color = "0c0"
-    
+
     # red - error responses, but HTTP server exists
     if http_status_code in [403, 415, 422, 500]:
         http_status_code_color = "c00"
@@ -123,8 +124,8 @@ def send_request(proto, domain, output_file, html_output):
         'http': 'http://',
         'https': 'https://'
     }
-    
-    print '\t--> {}{}'.format(protocols.get(proto.lower()), domain)
+
+    print('\t--> {}{}'.format(protocols.get(proto.lower()), domain))
 
     resp = requests.get(protocols.get(proto.lower()) + domain,
                         timeout=timeout,
@@ -133,8 +134,8 @@ def send_request(proto, domain, output_file, html_output):
                         headers={'Host': domain})
 
     if resp.status_code in allowed_http_responses:
-        print '[+] {}HTTP {}{}:\t {}'.format(
-            colors[resp.status_code], resp.status_code, colors['white'], domain)
+        print('[+] {}HTTP {}{}:\t {}'.format(
+            colors[resp.status_code], resp.status_code, colors['white'], domain))
 
         if resp.status_code in allowed_http_responses:
             append_to_output(html_output, protocols.get(
@@ -159,20 +160,20 @@ def enumerate_domains(domains, output_file, html_output, show=False):
 
         except requests.exceptions.InvalidURL:
             if show is True:
-                print '[-] {} is not a valid URL :/'.format(d)
+                print('[-] {} is not a valid URL :/'.format(d))
         except requests.exceptions.ConnectTimeout:
             if show is True:
-                print '[-] {} :('.format(d)
+                print('[-] {} :('.format(d))
             continue
         except requests.exceptions.ConnectionError:
             if show is True:
-                print '[-] connection to {} aborted :/'.format(d)
+                print('[-] connection to {} aborted :/'.format(d))
         except requests.exceptions.ReadTimeout:
             if show is True:
-                print '[-] {} read timeout :/'.format(d)
+                print('[-] {} read timeout :/'.format(d))
         except requests.exceptions.TooManyRedirects:
             if show is True:
-                print '[-] {} probably went into redirects loop :('.format(d)
+                print('[-] {} probably went into redirects loop :('.format(d))
         else:
             pass
 
@@ -201,7 +202,7 @@ def main():
 
     # set options
     show = True if args.success else False
-    domains = open(args.file, 'rw').readlines()
+    domains = open(args.file, 'r').readlines()
 
     # create dir for HTML report
     if os.path.isdir('report') == False:
