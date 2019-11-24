@@ -24,14 +24,21 @@ def decode_part(part):
 
 
 def encode_part(part):
-    return base64.urlsafe_b64encode(part).decode('utf-8').replace('=', '')
+    return base64.urlsafe_b64encode(part).replace(b'=', b'')
 
 
+# doesn't work, needs to be fixed, one day :P
 def build_jwt(header, payload, key, alg='hmac'):
-    message = f'{encode_part(header)}.{encode_part(payload)}'.encode()
+    message = b'.'.join([
+        encode_part(header),
+        encode_part(payload)
+    ])
+
+    print(message)
     if alg == 'hmac':
         signature = hmac.new(key.encode(), message,
                              hashlib.sha256).hexdigest()
+        print(encode_part(bytes(signature, encoding='utf8')))
     elif alg == 'none':
         # if alg is set to 'none'
         signature = ''
@@ -47,7 +54,3 @@ print(header)
 
 payload = decode_part(parts['payload'])
 print(payload)
-
-
-jwt = build_jwt(header, payload, 'secrety')
-print(jwt)
