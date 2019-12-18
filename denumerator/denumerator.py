@@ -83,6 +83,16 @@ def create_output_header(html_output):
     return
 
 
+def create_summary(html_output):
+    html = """
+    <div>
+        <h4>Denumerator Summary</h4>
+    </div>
+
+    """
+    html_output.write(html)
+
+
 def append_to_output(html_output, url, http_status_code):
     screenshot_name = url.replace('https', '').replace(
         'http', '').replace('://', '') + '.png'
@@ -224,6 +234,9 @@ def main():
     # main loop
     enumerate_domains(domains, output_file, html_output, show)
 
+    # summary
+    create_summary(html_output)
+    
     # finish HTML output
     create_output_footer(html_output)
     html_output.close()
