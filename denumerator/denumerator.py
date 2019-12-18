@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # pylint: disable=invalid-name
 """
+@TODO
+- results summary
+- disable/enable by HTTP Response Code (200/500/404/403/302)
+- HTTP response headers
+
+
+"""
+
+
+"""
 --- dENUMerator ---
 
 by bl4de | bloorq@gmail.com | Twitter: @_bl4de | HackerOne: bl4de
@@ -48,10 +58,8 @@ colors = {
 }
 
 requests.packages.urllib3.disable_warnings()
-# allowed_http_responses = [200, 302, 403, 404, 405, 415, 422, 500]
-allowed_http_responses = [200]
+allowed_http_responses = [200, 302, 403, 404, 405, 415, 422, 500]
 timeout = 2
-
 
 def usage():
     """
@@ -174,6 +182,8 @@ def enumerate_domains(domains, output_file, html_output, show=False):
         except requests.exceptions.TooManyRedirects:
             if show is True:
                 print('[-] {} probably went into redirects loop :('.format(d))
+        except UnicodeError:
+            pass
         else:
             pass
 
