@@ -59,6 +59,7 @@ colors = {
 
 requests.packages.urllib3.disable_warnings()
 allowed_http_responses = [200, 302, 403, 404, 405, 415, 422, 500]
+# allowed_http_responses = [200]
 timeout = 2
 
 def usage():
