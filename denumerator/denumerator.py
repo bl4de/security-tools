@@ -13,7 +13,7 @@
 """
 --- dENUMerator ---
 
-by bl4de | bloorq@gmail.com | Twitter: @_bl4de | HackerOne: bl4de
+by bl4de | bloorq@gmail.com | HackerOne: bl4de
 
 Enumerates list of subdomains (output from tools like Sublist3r or subbrute)
 and creates output file with servers responding on port 80/HTTP
