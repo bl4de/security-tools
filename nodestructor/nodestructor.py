@@ -49,6 +49,7 @@ nodejs_patterns = [
     ".*pipe\(res",
     ".*bodyParser\(",
     ".*eval\(",
+    ".*exec\(",
     ".*res.write\(",
     ".*child_process",
     ".*child_process.exec\(",
