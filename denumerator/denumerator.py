@@ -23,12 +23,12 @@ This indicates (in most caes) working webserver
 usage:
 $ ./denumerator.py [domain_list_file]
 """
+
 import argparse
 import sys
 import os
 import time
 import requests
-
 welcome = """
 --- dENUMerator ---
 usage:
@@ -56,11 +56,10 @@ colors = {
     "lightgrey": '\33[37m',
     "lightblue": '\33[94'
 }
-
 requests.packages.urllib3.disable_warnings()
-allowed_http_responses = [200, 302, 403, 404, 405, 415, 422, 500]
-# allowed_http_responses = [200]
+
 timeout = 2
+
 
 def usage():
     """
@@ -135,7 +134,7 @@ def create_output_footer(html_output):
     return
 
 
-def send_request(proto, domain, output_file, html_output):
+def send_request(proto, domain, output_file, html_output, allowed_http_responses):
     """
     sends request to check if server is alive
     """
@@ -151,12 +150,11 @@ def send_request(proto, domain, output_file, html_output):
                         allow_redirects=False,
                         verify=False,
                         headers={'Host': domain})
-
-    if resp.status_code in allowed_http_responses:
+    if str(resp.status_code) in allowed_http_responses:
         print('[+] {}HTTP {}{}:\t {}'.format(
             colors[resp.status_code], resp.status_code, colors['white'], domain))
 
-        if resp.status_code in allowed_http_responses:
+        if str(resp.status_code) in allowed_http_responses:
             append_to_output(html_output, protocols.get(
                 proto.lower()) + domain, resp.status_code)
 
@@ -167,15 +165,17 @@ def send_request(proto, domain, output_file, html_output):
     return resp.status_code
 
 
-def enumerate_domains(domains, output_file, html_output, show=False):
+def enumerate_domains(domains, output_file, html_output, allowed_http_responses, show=False):
     """
     enumerates domain from domains
     """
     for d in domains:
         try:
             d = d.strip('\n').strip('\r')
-            send_request('http', d, output_file, html_output)
-            send_request('https', d, output_file, html_output)
+            send_request('http', d, output_file,
+                         html_output, allowed_http_responses)
+            send_request('https', d, output_file,
+                         html_output, allowed_http_responses)
 
         except requests.exceptions.InvalidURL:
             if show is True:
@@ -202,6 +202,7 @@ def enumerate_domains(domains, output_file, html_output, show=False):
 def main():
 
     parser = argparse.ArgumentParser()
+    allowed_http_responses = []
 
     parser.add_argument(
         "-f", "--file", help="File with list of hostnames")
@@ -211,6 +212,9 @@ def main():
         "-s", "--success", help="Show all responses, including exceptions")
     parser.add_argument(
         "-o", "--output", help="Path to output file")
+    parser.add_argument(
+        "-c", "--code", help="Show only selected HTTP response status codes, comma separated"
+    )
 
     args = parser.parse_args()
     if args.timeout:
@@ -220,6 +224,11 @@ def main():
         output_file = open(args.output, 'w+')
     else:
         output_file = False
+
+    if args.code:
+        allowed_http_responses = args.code.split(',')
+    else:
+        allowed_http_responses = [200]
 
     # set options
     show = True if args.success else False
@@ -233,11 +242,12 @@ def main():
     html_output = open('report/__denumerator_report.html', 'w+')
     create_output_header(html_output)
     # main loop
-    enumerate_domains(domains, output_file, html_output, show)
+    enumerate_domains(domains, output_file, html_output,
+                      allowed_http_responses, show)
 
     # summary
     create_summary(html_output)
-    
+
     # finish HTML output
     create_output_footer(html_output)
     html_output.close()
