@@ -228,7 +228,7 @@ def main():
     if args.code:
         allowed_http_responses = args.code.split(',')
     else:
-        allowed_http_responses = [200]
+        allowed_http_responses = ['200']
 
     # set options
     show = True if args.success else False

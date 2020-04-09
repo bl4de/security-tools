@@ -7,9 +7,7 @@ import time
 import os
 import argparse
 
-
 virus_total_api_key = os.environ['VIRUS_TOTAL_API_KEY']
-
 
 def process(cidr, logfile='virustotal.log'):
     total_found_domains = 0
@@ -28,7 +26,7 @@ def process(cidr, logfile='virustotal.log'):
             domains = json.loads(resp)
 
             if (domains['response_code'] == 0):
-                print "[-] Empty response for {}".format(str(ip))
+                print("[-] Empty response for {}".format(str(ip)))
                 time.sleep(15)
                 continue
 
@@ -39,12 +37,12 @@ def process(cidr, logfile='virustotal.log'):
                 found_domains = found_domains + 1
                 f.write("{}\n".format(d['hostname']))
 
-            print "[+] Found {} domain(s) on {}".format(found_domains, str(ip))
+            print("[+] Found {} domain(s) on {}".format(found_domains, str(ip)))
             print("[+] Waiting 15 sec. until next request (VirusTotal API restriction)")
             total_found_domains = total_found_domains + found_domains
             f.close()
         else:
-            print "[-] Empty response for {}".format(str(ip))
+            print("[-] Empty response for {}".format(str(ip)))
 
         time.sleep(15)
 
