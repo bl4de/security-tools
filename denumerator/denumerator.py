@@ -27,6 +27,7 @@ $ ./denumerator.py [domain_list_file]
 import argparse
 import sys
 import os
+import subprocess
 import time
 import requests
 welcome = """
@@ -75,25 +76,40 @@ def create_output_header(html_output):
 <head>
     <meta charset="utf8">
     <title>denumerator output</title>
+    <style>
+        * {
+            font-family: Verdana, Helvetica, Arial;
+            font-size: 12px;
+        }
+
+        H4 {
+            font-size: 14px;
+            color: #777;
+            font-weight: bold;
+        }
+
+        P {
+            line-height: 1em;
+            color:#121212;
+        }
+
+        TD {
+            vertical-align: top;
+            text-align: left;
+            padding: 10px;
+            border-top: 10px solid #6e6f6f;
+        }
+    </style>
 </head>
 
 <body>
+    <table cellpadding="2" cellspacing="2">
     """
     html_output.write(html)
     return
 
 
-def create_summary(html_output):
-    html = """
-    <div>
-        <h4>Denumerator Summary</h4>
-    </div>
-
-    """
-    html_output.write(html)
-
-
-def append_to_output(html_output, url, http_status_code):
+def append_to_output(html_output, url, http_status_code, response_headers, nmap_output, ip_addresses):
     screenshot_name = url.replace('https', '').replace(
         'http', '').replace('://', '') + '.png'
     screenshot_cmd = '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --user-agent="bl4de/HackerOne" --disable-gpu --screenshot={} '.format(
@@ -111,15 +127,54 @@ def append_to_output(html_output, url, http_status_code):
     if http_status_code in [403, 415, 422, 500]:
         http_status_code_color = "c00"
 
+    # IP address information
+    ip_html = "<div>"
+    ips = [ip for ip in ip_addresses.split(b"\n")]
+    for ip in ips:
+        if ip.find(b"address") > 0:
+            ip_html = ip_html + "<p>IP: <strong style='font-size:15px;'>{}</strong></p>".format( ip.split(b"address")[1].decode("utf-8") )
+    ip_html = ip_html + "</div>"
+
+    # nmap scan results
+    open_ports = [port for port in nmap_output.stdout.split(
+        b"\n") if port.find(b"open") > 0]
+    nmap_html = "<div>"
+    for port in open_ports:
+        nmap_html = nmap_html + \
+            "<p style='font-weight: bold;'>{}</p>".format(port.decode("utf-8"))
+    nmap_html = nmap_html + "</div>"
+
+    # HTTP response headers
+    response_headers_html = ""
+    for header in response_headers.keys():
+        response_headers_html = response_headers_html + "<p><strong>{}</strong> : {}</p>".format(
+            header, response_headers[header]
+        )
+
     html = """
-<div style="padding:10px; border-top:1px solid #3e3e3e; margin-top:20px;">
-    <h4>HTTP Response Status: <strong style="color:#{};">{}</strong></h4>
-    <p>
-        <a href="{}" target="_blank">{}</a>
-    </p>
-    <img style="width:360px; border:1px solid #cecece; margin:10px;" src="{}" />
-</div>
-    """.format(http_status_code_color, http_status_code, url, url, screenshot_name)
+        <tr>
+            <td style="width:35%; margin-right:20px; border-right: 1px solid #0c0c0c;">
+                <h4>HTTP Response Status: <strong style="color:#{};">{}</strong></h4>
+                <p>
+                    <a href="{}" target="_blank">{}</a>
+                </p>
+                <img style="width:360px; border:1px solid #cecece; margin:10px;" src="{}" />
+            </td>
+
+            <td style="width:35%; margin-right:20px; border-right: 1px solid #0c0c0c;"">
+                <h4>HTTP Response Headers</h4>
+                {}
+            </td>
+            
+            <td>
+                <h4>IP host addresses</h4>
+                {}
+                <hr>
+                <h4>nmap scan results</h4>
+                {}
+            </td>
+        </tr>
+    """.format(http_status_code_color, http_status_code, url, url, screenshot_name, response_headers_html, ip_html, nmap_html)
     html_output.write(html)
     html_output.flush()
     return
@@ -127,14 +182,15 @@ def append_to_output(html_output, url, http_status_code):
 
 def create_output_footer(html_output):
     html = """
-</body>
-</html>
+            </table>
+        </body>
+    </html>
     """
     html_output.write(html)
     return
 
 
-def send_request(proto, domain, output_file, html_output, allowed_http_responses):
+def send_request(proto, domain, output_file, html_output, allowed_http_responses, nmap_output, ip):
     """
     sends request to check if server is alive
     """
@@ -156,7 +212,7 @@ def send_request(proto, domain, output_file, html_output, allowed_http_responses
 
         if str(resp.status_code) in allowed_http_responses:
             append_to_output(html_output, protocols.get(
-                proto.lower()) + domain, resp.status_code)
+                proto.lower()) + domain, resp.status_code, resp.headers, nmap_output, ip)
 
         if output_file:
             output_file.write('{}\n'.format(domain))
@@ -165,17 +221,27 @@ def send_request(proto, domain, output_file, html_output, allowed_http_responses
     return resp.status_code
 
 
-def enumerate_domains(domains, output_file, html_output, allowed_http_responses, show=False):
+def enumerate_domains(domains, output_file, html_output, allowed_http_responses, nmap_top_ports, show=False):
     """
     enumerates domain from domains
     """
     for d in domains:
         try:
             d = d.strip('\n').strip('\r')
+
+            # IP address
+            ip = subprocess.run(["host", d], capture_output=True).stdout
+            
+            # perform nmap scan
+            nmap_output = subprocess.run(
+                ["nmap", "--top-ports", str(nmap_top_ports), "-n", d], capture_output=True)
+            print([port.decode("utf-8")
+                   for port in nmap_output.stdout.split(b"\n") if port.find(b"open") > 0])
+
             send_request('http', d, output_file,
-                         html_output, allowed_http_responses)
+                         html_output, allowed_http_responses, nmap_output, ip)
             send_request('https', d, output_file,
-                         html_output, allowed_http_responses)
+                         html_output, allowed_http_responses, nmap_output, ip)
 
         except requests.exceptions.InvalidURL:
             if show is True:
@@ -213,7 +279,11 @@ def main():
     parser.add_argument(
         "-o", "--output", help="Path to output file")
     parser.add_argument(
-        "-c", "--code", help="Show only selected HTTP response status codes, comma separated"
+        "-c", "--code", help="Show only selected HTTP response status codes, comma separated", default='200'
+    )
+
+    parser.add_argument(
+        "-p", "--ports", help="--top-ports option for nmap (default = 100)", default=100
     )
 
     args = parser.parse_args()
@@ -230,6 +300,8 @@ def main():
     else:
         allowed_http_responses = ['200']
 
+    nmap_top_ports = args.ports
+
     # set options
     show = True if args.success else False
     domains = open(args.file, 'r').readlines()
@@ -243,10 +315,7 @@ def main():
     create_output_header(html_output)
     # main loop
     enumerate_domains(domains, output_file, html_output,
-                      allowed_http_responses, show)
-
-    # summary
-    create_summary(html_output)
+                      allowed_http_responses, nmap_top_ports, show)
 
     # finish HTML output
     create_output_footer(html_output)
