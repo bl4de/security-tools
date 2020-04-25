@@ -13,3 +13,4 @@ sword/OUTPUT
 *.log
 .vscode
 
+.history/

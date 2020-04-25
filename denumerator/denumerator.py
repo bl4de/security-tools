@@ -97,7 +97,7 @@ def create_output_header(html_output):
             vertical-align: top;
             text-align: left;
             padding: 10px;
-            border-top: 10px solid #6e6f6f;
+            border-top: 12px solid #6e6f6f;
         }
     </style>
 </head>
