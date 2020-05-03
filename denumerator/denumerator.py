@@ -230,7 +230,7 @@ def enumerate_domains(domains, output_file, html_output, allowed_http_responses,
             d = d.strip('\n').strip('\r')
 
             # IP address
-            ip = subprocess.run(["host", d], capture_output=True).stdout
+            ip = subprocess.run(["host", d], capture_output=True, timeout=15).stdout
             
             # perform nmap scan
             nmap_output = subprocess.run(
@@ -260,6 +260,8 @@ def enumerate_domains(domains, output_file, html_output, allowed_http_responses,
             if show is True:
                 print('[-] {} probably went into redirects loop :('.format(d))
         except UnicodeError:
+            pass
+        except subprocess.TimeoutExpired:
             pass
         else:
             pass
