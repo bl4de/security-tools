@@ -9,7 +9,7 @@ import argparse
 
 virus_total_api_key = os.environ['VIRUS_TOTAL_API_KEY']
 
-def process(cidr, logfile='virustotal.log'):
+def process(cidr, logfile):
     total_found_domains = 0
     ips = IPSet([cidr])
 
@@ -52,7 +52,7 @@ def process(cidr, logfile='virustotal.log'):
 def main():
 
     parser = argparse.ArgumentParser()
-    logfile = ''
+    logfile = 'virustotal.log'
 
     parser.add_argument(
         "-c", "--cidr", help="Network CIDR")
