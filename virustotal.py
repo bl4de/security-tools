@@ -52,12 +52,12 @@ def process(cidr, logfile):
 def main():
 
     parser = argparse.ArgumentParser()
-    logfile = 'virustotal.log'
+    logfile = 'virustotal.domains'
 
     parser.add_argument(
         "-c", "--cidr", help="Network CIDR")
     parser.add_argument(
-        "-o", "--output", help="Log filename (default - virustotal.log)")
+        "-o", "--output", help="Log filename (default - virustotal.domains)")
 
     args = parser.parse_args()
 
