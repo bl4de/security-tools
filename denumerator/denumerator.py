@@ -285,7 +285,7 @@ def main():
     )
 
     parser.add_argument(
-        "-p", "--ports", help="--top-ports option for nmap (default = 100)", default=100
+        "-p", "--ports", help="--top-ports option for nmap (default = 1000)", default=1000
     )
 
     args = parser.parse_args()

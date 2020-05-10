@@ -50,6 +50,7 @@ nodejs_patterns = [
     ".*bodyParser\(",
     ".*eval\(",
     ".*exec\(",
+    ".*execSync\(",
     ".*res.write\(",
     ".*child_process",
     ".*child_process.exec\(",
@@ -57,8 +58,6 @@ nodejs_patterns = [
     ".*execFile\(",
     ".*spawn\(",
     ".*fork\(",
-    # ".*setTimeout\(",
-    # ".*setInterval\(",
     ".*setImmediate\(",
     ".*newBuffer\(",
     ".*\.constructor\("
