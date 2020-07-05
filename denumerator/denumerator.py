@@ -30,6 +30,7 @@ import os
 import subprocess
 import time
 import requests
+from datetime import datetime
 welcome = """
 --- dENUMerator ---
 usage:
@@ -207,8 +208,8 @@ def send_request(proto, domain, output_file, html_output, allowed_http_responses
                         verify=False,
                         headers={'Host': domain})
     if str(resp.status_code) in allowed_http_responses:
-        print('[+] {}HTTP {}{}:\t {}'.format(
-            colors[resp.status_code], resp.status_code, colors['white'], domain))
+        print('[+] {} {}HTTP {}{}:\t {}'.format(
+            datetime.now().strftime("%H:%M:%S"), colors[resp.status_code], resp.status_code, colors['white'], domain))
 
         if str(resp.status_code) in allowed_http_responses:
             append_to_output(html_output, protocols.get(
