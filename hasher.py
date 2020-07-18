@@ -1,5 +1,4 @@
 #!/usr/bin/python
-### created by bl4de | bloorq@gmail.com | twitter.com/_bl4de    ###
 ### github.com/bl4de | hackerone.com/bl4de                      ###
 
 import sys
