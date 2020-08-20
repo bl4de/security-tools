@@ -300,6 +300,26 @@ s3go() {
     fi
 }
 
+dex_to_jar() {
+    clear
+    echo -e "$BLUE[+] Exporting $1 into .jar...$CLR"
+    d2j-dex2jar  --force $1
+    if [[ "$?" == 0 ]]; then
+        echo -e "\n$GREEN+ Ok, we have JAR, now opening it in JD-Gui...$CLR"
+        DEX_FILENAME=$(echo "$1"| cut -d'.' -f 1)
+        java -jar /Users/bl4de/hacking/tools/Java_Decompilers/jd-gui-1.6.3.jar "$DEX_FILENAME"-dex2jar.jar
+    elif [[ "$?" != 0 ]]; then
+        echo -e "\n$RED- there was an error and .jar file probably was not created :/... :/$CLR"
+    fi
+}
+
+decompile_jar() {
+    clear
+    echo -e "$BLUE[+] Opening $1 in JD-Gui...$CLR"
+    java -jar /Users/bl4de/hacking/tools/Java_Decompilers/jd-gui-1.6.3.jar $1
+}
+
+
 cmd=$1
 clear
 echo "$__logo"
@@ -324,6 +344,12 @@ case "$cmd" in
     ;;
     javascript_sca)
         javascript_sca "$2"
+    ;;
+    dex_to_jar)
+        dex_to_jar "$2"
+    ;;
+    decompile_jar)
+        decompile_jar "$2"
     ;;
     privesc_tools_linux)
         privesc_tools_linux
@@ -383,8 +409,10 @@ case "$cmd" in
         echo -e "\trockyou_john [TYPE] [HASHES]\t\t\t -> runs john+rockyou against [HASHES] file with hashes of type [TYPE]"
         echo -e "\tssh_to_john [ID_RSA]\t\t\t\t -> id_rsa to JTR SSH hash file for SSH key password cracking"
         echo -e "\n::$BLUE STATIC CODE ANALYSIS ::$CLR"
-        echo -e "\tnpm_scan [MODULE_NAME]\t\t\t\t -> static code analysis of MODULE_NAME npm module with nodestructor and semgrep"
-        echo -e "\tjavascript_sca [FILE_NAME]\t\t\t -> static code analysis of single JavaScript file with nodestructor and semgrep"
+        echo -e "\tnpm_scan [MODULE_NAME]\t\t\t\t -> static code analysis of MODULE_NAME npm module with nodestructor"
+        echo -e "\tjavascript_sca [FILE_NAME]\t\t\t -> static code analysis of single JavaScript file with nodestructor"
+        echo -e "\tdex_to_jar [.dex file]\t\t\t\t -> exports .dex file into .jar and open it in JD-Gui"
+        echo -e "\tdecompile_jar [.jar FILE]\t\t\t\t -> open FILE.jar file in JD-Gui"
         echo -e "\n\n--------------------------------------------------------------------------------------------------------------"
         echo -e "$GREEN\nHack The Planet!\n$CLR"
     ;;
