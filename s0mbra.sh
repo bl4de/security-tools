@@ -319,6 +319,18 @@ decompile_jar() {
     java -jar /Users/bl4de/hacking/tools/Java_Decompilers/jd-gui-1.6.3.jar $1
 }
 
+apk() {
+    clear
+    echo -e "$BLUE[+] OK, let's see this APK...$CLR"
+    unzip $1
+    if [[ "$?" == 0 ]]; then
+        echo -e "\n$GREEN+ Unizpped, now run apktool on it...$CLR"
+        apktool d $1
+    elif [[ "$?" != 0 ]]; then
+        echo -e "\n$RED- unzipping .apk failed :/... :/$CLR"
+    fi
+}
+
 
 cmd=$1
 clear
@@ -347,6 +359,9 @@ case "$cmd" in
     ;;
     dex_to_jar)
         dex_to_jar "$2"
+    ;;
+    apk)
+        apk "$2"
     ;;
     decompile_jar)
         decompile_jar "$2"
@@ -388,7 +403,7 @@ case "$cmd" in
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}"
         echo -e "\t s0mbra.sh interactive {IP} (interactive mode)$CLR"  # interactive\t\t -> TBD
         echo -e "\nAvailable commands:"
-        echo -e "\n::$BLUE COMMANDS IN FOR INTERACTIVE MODE ::$CLR"
+        echo -e "\n::$BLUE COMMANDS IN INTERACTIVE MODE ::$CLR"
         echo -e "\tset_ip [IP]\t\t\t\t\t -> sets IP in current Bash session to use by other bbbcpthmts commands"
         echo -e "\n::$BLUE RECON ::$CLR"
         echo -e "\tfull_nmap_scan [IP]\t\t\t\t -> nmap -p- to enumerate ports + -sV -sC -A on found open ports"
@@ -412,7 +427,8 @@ case "$cmd" in
         echo -e "\tnpm_scan [MODULE_NAME]\t\t\t\t -> static code analysis of MODULE_NAME npm module with nodestructor"
         echo -e "\tjavascript_sca [FILE_NAME]\t\t\t -> static code analysis of single JavaScript file with nodestructor"
         echo -e "\tdex_to_jar [.dex file]\t\t\t\t -> exports .dex file into .jar and open it in JD-Gui"
-        echo -e "\tdecompile_jar [.jar FILE]\t\t\t\t -> open FILE.jar file in JD-Gui"
+        echo -e "\tapk [.apk FILE]\t\t\t\t\t -> extracts APK file and run apktool on it"
+        echo -e "\tdecompile_jar [.jar FILE]\t\t\t -> open FILE.jar file in JD-Gui"
         echo -e "\n\n--------------------------------------------------------------------------------------------------------------"
         echo -e "$GREEN\nHack The Planet!\n$CLR"
     ;;
