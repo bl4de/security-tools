@@ -26,14 +26,7 @@ term = {
 
 def print_banner():
     """Prints credits :)"""
-    print "\n\n", "#" * 78
-    print "###", " " * 70, "###"
-    print "###", " " * 70, "###"
-    print "###         diggit.py  |  Twitter: @_bl4de  " \
-          "| GitHub: bl4de                ###"
-    print "###", " " * 70, "###"
-    print "###", " " * 70, "###"
-    print "#" * 78
+    pass
 
 
 def print_object_details(objtype, objcontent, objhash, objfilename):

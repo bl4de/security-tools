@@ -5,6 +5,7 @@
 # @licence: MIT
 #
 
+HOME=/Users/bl4de
 
 ## create domains/ folder
 create_domains_folder() {
@@ -20,7 +21,7 @@ enumerate_domain() {
     local DOMAIN=$1
     echo -e "$(date) started enumerate $DOMAIN" >> subdomain_enum.log
     sublister -d $DOMAIN -o domains/$DOMAIN.sublister
-    amass enum -brute -min-for-recursive 1 -d $DOMAIN -o domains/$DOMAIN.amass
+    amass enum -config $HOME/.config/amass/amass.ini -brute -min-for-recursive 1 -d $DOMAIN -o domains/$DOMAIN.amass
     
     if [ -s domains/$DOMAIN.sublister ] || [ -s domains/$DOMAIN.amass ]; then
         cat domains/$DOMAIN.* > domains/$DOMAIN.all
