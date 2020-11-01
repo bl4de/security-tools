@@ -37,11 +37,13 @@ usage:
 $ ./denumerator.py -f DOMAINS_LIST -t 5
 """
 
+DEFAULT_DIRECTORY = 'report'
 
 colors = {
     "white": '\33[37m',
     200: '\33[32m',
     204: '\33[32m',
+    301: '\33[33m',
     302: '\33[33m',
     304: '\33[33m',
     302: '\33[33m',
@@ -110,11 +112,11 @@ def create_output_header(html_output):
     return
 
 
-def append_to_output(html_output, url, http_status_code, response_headers, nmap_output, ip_addresses):
+def append_to_output(html_output, url, http_status_code, response_headers, nmap_output, ip_addresses, output_directory):
     screenshot_name = url.replace('https', '').replace(
         'http', '').replace('://', '') + '.png'
     screenshot_cmd = '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --user-agent="bl4de/HackerOne" --disable-gpu --screenshot={} '.format(
-        './report/' + screenshot_name)
+        './reports/{}/'.format(output_directory) + screenshot_name)
     os.system(screenshot_cmd + url)
 
     # base color for all responses
@@ -191,7 +193,7 @@ def create_output_footer(html_output):
     return
 
 
-def send_request(proto, domain, output_file, html_output, allowed_http_responses, nmap_output, ip):
+def send_request(proto, domain, output_file, html_output, allowed_http_responses, nmap_output, ip, output_directory):
     """
     sends request to check if server is alive
     """
@@ -213,7 +215,7 @@ def send_request(proto, domain, output_file, html_output, allowed_http_responses
 
         if str(resp.status_code) in allowed_http_responses:
             append_to_output(html_output, protocols.get(
-                proto.lower()) + domain, resp.status_code, resp.headers, nmap_output, ip)
+                proto.lower()) + domain, resp.status_code, resp.headers, nmap_output, ip, output_directory)
 
         if output_file:
             output_file.write('{}\n'.format(domain))
@@ -222,7 +224,7 @@ def send_request(proto, domain, output_file, html_output, allowed_http_responses
     return resp.status_code
 
 
-def enumerate_domains(domains, output_file, html_output, allowed_http_responses, nmap_top_ports, show=False):
+def enumerate_domains(domains, output_file, html_output, allowed_http_responses, nmap_top_ports, output_directory, show=False):
     """
     enumerates domain from domains
     """
@@ -240,9 +242,9 @@ def enumerate_domains(domains, output_file, html_output, allowed_http_responses,
                    for port in nmap_output.stdout.split(b"\n") if port.find(b"open") > 0])
 
             send_request('http', d, output_file,
-                         html_output, allowed_http_responses, nmap_output, ip)
+                         html_output, allowed_http_responses, nmap_output, ip, output_directory)
             send_request('https', d, output_file,
-                         html_output, allowed_http_responses, nmap_output, ip)
+                         html_output, allowed_http_responses, nmap_output, ip, output_directory)
 
         except requests.exceptions.InvalidURL:
             if show is True:
@@ -282,11 +284,13 @@ def main():
     parser.add_argument(
         "-o", "--output", help="Path to output file")
     parser.add_argument(
+        "-d", "--dir", help="Output directory name (default: report/")
+    parser.add_argument(
         "-c", "--code", help="Show only selected HTTP response status codes, comma separated", default='200'
     )
 
     parser.add_argument(
-        "-p", "--ports", help="--top-ports option for nmap (default = 1000)", default=1000
+        "-p", "--ports", help="--top-ports option for nmap (default = 100)", default=100
     )
 
     args = parser.parse_args()
@@ -297,6 +301,11 @@ def main():
         output_file = open(args.output, 'w+')
     else:
         output_file = False
+
+    if args.dir:
+        output_directory = args.dir
+    else:
+        output_directory = DEFAULT_DIRECTORY
 
     if args.code:
         allowed_http_responses = args.code.split(',')
@@ -310,15 +319,17 @@ def main():
     domains = open(args.file, 'r').readlines()
 
     # create dir for HTML report
-    if os.path.isdir('report') == False:
-        os.mkdir('report')
+    if os.path.isdir('reports') == False:
+        os.mkdir('reports')
+    if os.path.isdir('reports/{}'.format(output_directory)) == False:
+        os.mkdir('reports/{}'.format(output_directory))
 
     # starts output HTML
-    html_output = open('report/__denumerator_report.html', 'w+')
+    html_output = open('reports/{}/__denumerator_report.html'.format(output_directory), 'w+')
     create_output_header(html_output)
     # main loop
     enumerate_domains(domains, output_file, html_output,
-                      allowed_http_responses, nmap_top_ports, show)
+                      allowed_http_responses, nmap_top_ports, output_directory, show)
 
     # finish HTML output
     create_output_footer(html_output)

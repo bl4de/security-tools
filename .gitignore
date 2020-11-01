@@ -14,3 +14,4 @@ sword/OUTPUT
 .vscode
 
 .history/
+.env

@@ -48,7 +48,7 @@ create_list_of_domains() {
 ## runs denumerator
 run_denumerator() {
     echo -e "$(date) denumerator started" >> subdomain_enum.log
-    denumerator -f domains/__domains.final -c 200,302,403,500
+    denumerator -f domains/__domains.final -c 200,203,206,301,302,403,500 -d $1
     echo -e "$(date) denumerator finished" >> subdomain_enum.log
     echo -e "$(date) total webservers enumerated and saved to report: $(ls -l report/ | wc -l)" >> subdomain_enum.log
 }
@@ -68,8 +68,11 @@ run_virustotal_enum() {
 # list of domains - text file, one domain in single line
 DOMAINS=$1
 
+# output directory for denumerator
+OUTPUT_DIR=$2
+
 # IP address range
-CIDR=$2
+CIDR=$3
 
 echo -e "$(date) subdomain_enum.sh started" > subdomain_enum.log
 
@@ -90,7 +93,7 @@ create_list_of_domains
 echo -e "\n[+} DONE. Found $(wc -l domains/__domains.final) unique subdomains"
 
 # run denumerator on the domains/domains.final output file
-run_denumerator
+run_denumerator $OUTPUT_DIR
 
 echo -e "\n[+} DONE."
 
