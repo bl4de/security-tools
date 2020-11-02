@@ -115,9 +115,15 @@ def create_output_header(html_output):
 def append_to_output(html_output, url, http_status_code, response_headers, nmap_output, ip_addresses, output_directory):
     screenshot_name = url.replace('https', '').replace(
         'http', '').replace('://', '') + '.png'
-    screenshot_cmd = '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --user-agent="bl4de/HackerOne" --disable-gpu --screenshot={} '.format(
+    screenshot_cmd = '/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary --headless --user-agent="HackerOne" --dns-prefetch-disable --log-level=0 --timeout=30000 --screenshot={} '.format(
         './reports/{}/'.format(output_directory) + screenshot_name)
-    os.system(screenshot_cmd + url)
+    
+    # os.system(screenshot_cmd + url)
+    subprocess.run(
+        screenshot_cmd + url,
+        shell=True,
+        timeout=30
+    )
 
     # base color for all responses
     http_status_code_color = "000"
@@ -228,24 +234,30 @@ def enumerate_domains(domains, output_file, html_output, allowed_http_responses,
     """
     enumerates domain from domains
     """
+    iterator = 0
+    number_of_domains = len(domains)
     for d in domains:
+        iterator = iterator + 1
         try:
             d = d.strip('\n').strip('\r')
-
+            print('\n{}[+] Checking domain {} from {}...{}'.format(colors['grey'], iterator, number_of_domains, colors['white']))
             # IP address
             ip = subprocess.run(["host", d], capture_output=True, timeout=15).stdout
             
             # perform nmap scan
             nmap_output = subprocess.run(
                 ["nmap", "--top-ports", str(nmap_top_ports), "-n", d], capture_output=True)
-            print([port.decode("utf-8")
-                   for port in nmap_output.stdout.split(b"\n") if port.find(b"open") > 0])
+            print('{}  nmap: '.format(colors['grey']), [port.decode("utf-8")
+                   for port in nmap_output.stdout.split(b"\n") if port.find(b"open") > 0], '{}'.format(colors['white']))
 
             send_request('http', d, output_file,
                          html_output, allowed_http_responses, nmap_output, ip, output_directory)
+            time.sleep(1)
+    
             send_request('https', d, output_file,
                          html_output, allowed_http_responses, nmap_output, ip, output_directory)
-
+            time.sleep(1)
+    
         except requests.exceptions.InvalidURL:
             if show is True:
                 print('[-] {} is not a valid URL :/'.format(d))
