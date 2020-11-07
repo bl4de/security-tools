@@ -322,7 +322,7 @@ def main():
     if args.code:
         allowed_http_responses = args.code.split(',')
     else:
-        allowed_http_responses = ['200']
+        allowed_http_responses = ['200','301','500']
 
     nmap_top_ports = args.ports
 
