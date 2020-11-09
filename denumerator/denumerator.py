@@ -328,7 +328,11 @@ def main():
 
     # set options
     show = True if args.success else False
-    domains = open(args.file, 'r').readlines()
+
+    if args.file is not None and os.path.isfile(args.file):
+        domains = open(args.file, 'r').readlines()
+    else:
+        exit('[-] Can not open {} file with domains list  :/'.format(args.file))
 
     # create dir for HTML report
     if os.path.isdir('reports') == False:
