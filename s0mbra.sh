@@ -113,6 +113,14 @@ rockyou_john() {
     cat "$HACKING_HOME"/tools/jtr/run/john.pot
 }
 
+# ZIP password cracking with rockyou.txt
+rockyou_zip() {
+    echo -e "$BLUE[+] Running $MAGENTA zip2john $BLUE and prepare hash for hashcat..."
+    "$HACKING_HOME"/tools/jtr/run/zip2john "$1" | cut -d ':' -f 2 > ./hashes.txt
+    echo -e "$BLUE[+] Starting $MAGENTA hashcat $BLUE (using $YELLOW rockyou.txt $BLUE dictionary against $YELLOW hashes.txt $BLUE file)...$CLR"
+    hashcat -m 13600 ./hashes.txt ~/hacking/dictionaries/rockyou.txt
+}
+
 # converts id_rsa to JTR format for cracking SSH key
 ssh_to_john() {
     echo -e "$BLUE[+] Converting SSH id_rsa key to JTR format to crack it$CLR"
@@ -384,6 +392,9 @@ case "$cmd" in
     rockyou_john)
         rockyou_john "$2" "$3"
     ;;
+    rockyou_zip)
+        rockyou_zip "$2"
+    ;;
     ssh_to_john)
         ssh_to_john "$2"
     ;;
@@ -463,6 +474,7 @@ case "$cmd" in
         echo -e "\n::$BLUE PASSWORDS CRACKIN' ::$CLR"
         echo -e "\trockyou_john [TYPE] [HASHES]\t\t\t -> runs john+rockyou against [HASHES] file with hashes of type [TYPE]"
         echo -e "\tssh_to_john [ID_RSA]\t\t\t\t -> id_rsa to JTR SSH hash file for SSH key password cracking"
+        echo -e "\trockyou_zip [ZIP file]\t\t\t\t -> crack ZIP password"
         echo -e "\n::$BLUE STATIC CODE ANALYSIS ::$CLR"
         echo -e "\tnpm_scan [MODULE_NAME]\t\t\t\t -> static code analysis of MODULE_NAME npm module with nodestructor"
         echo -e "\tjavascript_sca [FILE_NAME]\t\t\t -> static code analysis of single JavaScript file with nodestructor"

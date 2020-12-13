@@ -300,7 +300,6 @@ def main():
     parser.add_argument(
         "-c", "--code", help="Show only selected HTTP response status codes, comma separated", default='200'
     )
-
     parser.add_argument(
         "-p", "--ports", help="--top-ports option for nmap (default = 100)", default=100
     )

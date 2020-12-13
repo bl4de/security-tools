@@ -21,7 +21,7 @@ enumerate_domain() {
     local DOMAIN=$1
     echo -e "$(date) started enumerate $DOMAIN" >> subdomain_enum.log
     sublister -d $DOMAIN -o domains/$DOMAIN.sublister
-    amass enum -config $HOME/.config/amass/amass.ini -brute -min-for-recursive 1 -d $DOMAIN -o domains/$DOMAIN.amass
+    # amass enum -config $HOME/.config/amass/amass.ini -brute -min-for-recursive 1 -d $DOMAIN -o domains/$DOMAIN.amass
     
     if [ -s domains/$DOMAIN.sublister ] || [ -s domains/$DOMAIN.amass ]; then
         cat domains/$DOMAIN.* > domains/$DOMAIN.all
@@ -48,7 +48,7 @@ create_list_of_domains() {
 ## runs denumerator
 run_denumerator() {
     echo -e "$(date) denumerator started" >> subdomain_enum.log
-    denumerator -f domains/__domains.final -c 200,203,206,301,302,403,500 -d $1
+    denumerator -f domains/__domains.final -c 200,403,500,301,302,304,404,206,405,411,415 -d $1
     echo -e "$(date) denumerator finished" >> subdomain_enum.log
     echo -e "$(date) total webservers enumerated and saved to report: $(ls -l report/ | wc -l)" >> subdomain_enum.log
 }
