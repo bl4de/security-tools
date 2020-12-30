@@ -5,7 +5,7 @@ import argparse
 
 from imports.beautyConsole import beautyConsole
 
-jsfile = open('/Users/bl4de/tmp/AppMeasurement.js', 'r')
+jsfile = open('/Users/bl4de/hacking/bugbounty/Roche_Private/src/admin-client.js', 'r')
 file_read = jsfile.readlines()
 
 
@@ -34,17 +34,17 @@ ARGS = parser.parse_args()
 if ARGS.variable:
     variable_to_trace = ARGS.variable.strip()
 
-print "\n\n[+] STARTING ANALYSIS...\n"
+print("\n\n[+] STARTING ANALYSIS...\n")
 for line in file_read:
     line = line.replace('\n', '')
     line_no = line_no + 1
 
-    # print "line {}: {}".format(line_no, line)
     res = re.search(variable_definition_regex, line)
     if res:
         variable_name = res.group(2)
         if variable_name == variable_to_trace:
-            print "\n[+] found {} variable definition in line {}:\n {}".format(decorate_varname(variable_name), line_no, decorate_source(line))
+            print("\n[+] found {} variable definition in line {}:\n {}"\
+                .format(decorate_varname(variable_name), line_no, decorate_source(line)))
             inner_line_no = 0
 
             if variable_name == variable_to_trace:
@@ -52,8 +52,8 @@ for line in file_read:
                     inner_line = inner_line.replace('\n', '')
                     inner_line_no = inner_line_no + 1
                     if variable_name + '=' in inner_line.replace(' ', ''):
-                        print "\n\t{} used in assignment in line {}:\n\t{}\n".format(decorate_varname(variable_name), inner_line_no, decorate_source(inner_line))
+                        print("\n\t{} used in assignment in line {}:\n\t{}\n".format(decorate_varname(variable_name), inner_line_no, decorate_source(inner_line)))
                     if '({})'.format(variable_name) in inner_line.replace(' ', ''):
-                        print "\n\t{} used in function call as an argument in line {}:\n\t{}\n".format(decorate_varname(variable_name), inner_line_no, decorate_source(inner_line))
+                        print("\n\t{} used in function call as an argument in line {}:\n\t{}\n".format(decorate_varname(variable_name), inner_line_no, decorate_source(inner_line)))
 
-print "\n\n[+] DONE\n"
+print("\n\n[+] DONE\n")

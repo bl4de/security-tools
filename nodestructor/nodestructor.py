@@ -16,7 +16,7 @@ import os
 import re
 import argparse
 
-from imports.beautyConsole import beautyConsole
+from .imports.beautyConsole import beautyConsole
 
 
 banner = r"""
