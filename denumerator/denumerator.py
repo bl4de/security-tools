@@ -63,7 +63,7 @@ colors = {
 requests.packages.urllib3.disable_warnings()
 
 timeout = 2
-
+nmap = False
 
 def usage():
     """
@@ -144,14 +144,15 @@ def append_to_output(html_output, url, http_status_code, response_headers, nmap_
             ip_html = ip_html + "<p>IP: <strong style='font-size:15px;'>{}</strong></p>".format( ip.split(b"address")[1].decode("utf-8") )
     ip_html = ip_html + "</div>"
 
-    # nmap scan results
-    open_ports = [port for port in nmap_output.stdout.split(
-        b"\n") if port.find(b"open") > 0]
-    nmap_html = "<div>"
-    for port in open_ports:
-        nmap_html = nmap_html + \
-            "<p style='font-weight: bold;'>{}</p>".format(port.decode("utf-8"))
-    nmap_html = nmap_html + "</div>"
+    if nmap == True:
+        # nmap scan results
+        open_ports = [port for port in nmap_output.stdout.split(
+            b"\n") if port.find(b"open") > 0]
+        nmap_html = "<div>"
+        for port in open_ports:
+            nmap_html = nmap_html + \
+                "<p style='font-weight: bold;'>{}</p>".format(port.decode("utf-8"))
+        nmap_html = nmap_html + "</div>"
 
     # HTTP response headers
     response_headers_html = ""
@@ -243,12 +244,14 @@ def enumerate_domains(domains, output_file, html_output, allowed_http_responses,
             print('\n{}[+] Checking domain {} from {}...{}'.format(colors['grey'], iterator, number_of_domains, colors['white']))
             # IP address
             ip = subprocess.run(["host", d], capture_output=True, timeout=15).stdout
+            nmap_output = ''
             
-            # perform nmap scan
-            nmap_output = subprocess.run(
-                ["nmap", "--top-ports", str(nmap_top_ports), "-n", d], capture_output=True)
-            print('{}  nmap: '.format(colors['grey']), [port.decode("utf-8")
-                   for port in nmap_output.stdout.split(b"\n") if port.find(b"open") > 0], '{}'.format(colors['white']))
+            if nmap == True:
+                # perform nmap scan
+                nmap_output = subprocess.run(
+                    ["nmap", "--top-ports", str(nmap_top_ports), "-n", d], capture_output=True)
+                print('{}  nmap: '.format(colors['grey']), [port.decode("utf-8")
+                    for port in nmap_output.stdout.split(b"\n") if port.find(b"open") > 0], '{}'.format(colors['white']))
 
             send_request('http', d, output_file,
                          html_output, allowed_http_responses, nmap_output, ip, output_directory)
@@ -301,12 +304,18 @@ def main():
         "-c", "--code", help="Show only selected HTTP response status codes, comma separated", default='200'
     )
     parser.add_argument(
+        "-n", "--nmap", help="use nmap for port scanning (slows down the whole eenumeration A LOT, so be warned!)", default=100
+    )
+    parser.add_argument(
         "-p", "--ports", help="--top-ports option for nmap (default = 100)", default=100
     )
 
     args = parser.parse_args()
     if args.timeout:
         timeout = args.timeout
+
+    if args.nmap:
+        nmap = True
 
     if args.output:
         output_file = open(args.output, 'w+')
