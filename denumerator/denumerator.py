@@ -144,15 +144,15 @@ def append_to_output(html_output, url, http_status_code, response_headers, nmap_
             ip_html = ip_html + "<p>IP: <strong style='font-size:15px;'>{}</strong></p>".format( ip.split(b"address")[1].decode("utf-8") )
     ip_html = ip_html + "</div>"
 
+    nmap_html = "<div>"
     if nmap == True:
         # nmap scan results
         open_ports = [port for port in nmap_output.stdout.split(
             b"\n") if port.find(b"open") > 0]
-        nmap_html = "<div>"
         for port in open_ports:
             nmap_html = nmap_html + \
                 "<p style='font-weight: bold;'>{}</p>".format(port.decode("utf-8"))
-        nmap_html = nmap_html + "</div>"
+    nmap_html = nmap_html + "</div>"
 
     # HTTP response headers
     response_headers_html = ""
