@@ -20,7 +20,7 @@ class beautyConsole:
         "cyan": '\33[36m',
         "grey": '\33[90m',
         "lightgrey": '\33[37m',
-        "lightblue": '\33[94'
+        "lightblue": '\33[36'
     }
 
     characters = {

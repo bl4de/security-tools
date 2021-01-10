@@ -317,11 +317,6 @@ def main():
     if args.nmap:
         nmap = True
 
-    if args.output:
-        output_file = open(args.output, 'w+')
-    else:
-        output_file = False
-
     if args.dir:
         output_directory = args.dir
     else:
@@ -351,6 +346,14 @@ def main():
     # starts output HTML
     html_output = open('reports/{}/__denumerator_report.html'.format(output_directory), 'w+')
     create_output_header(html_output)
+
+    # if output filename was specified, create it and use to write report result
+    if args.output:
+        output_filename = os.path.join('reports', output_directory, args.output)
+        output_file = open(output_filename, 'w+')
+    else:
+        output_file = '__enumerated_domains.txt'
+
     # main loop
     enumerate_domains(domains, output_file, html_output,
                       allowed_http_responses, nmap_top_ports, output_directory, show)

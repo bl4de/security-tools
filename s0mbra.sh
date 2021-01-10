@@ -277,10 +277,11 @@ s3() {
         "list-objects"
     )
     for cmd in "${s3api[@]}"; do
+        echo -e "---------------------------------------------------------------------------------"
         aws s3api "$cmd" --bucket "$1" --no-sign-request 2> /dev/null
         if [[ "$?" == 0 ]]; then
-            echo -e "\n$GREEN+  $cmd works!$CLR\n"
-            aws s3api "$cmd" --bucket "$1" --no-sign-request
+            echo -e "\n\n$GREEN+  $cmd works!$CLR\n"
+            aws s3api "$cmd" --bucket "$1" --no-sign-request 2> /dev/null
         elif [[ "$?" != 0 ]]; then
             echo -e "\n$RED- nope, $cmd does not seem to be working... :/$CLR"
         fi
