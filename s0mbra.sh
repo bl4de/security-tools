@@ -89,9 +89,9 @@ interactive() {
 full_nmap_scan() {
     echo -e "$BLUE[+] Running full nmap scan against $1 ...$CLR"
     echo -e "\t\t -> search all open ports..."
-    ports=$(nmap -Pn -p- --min-rate=1000 "$1" | grep open | cut -d'/' -f 1 | tr '\n' ',')
+    ports=$(nmap -p- "$1" | grep open | cut -d'/' -f 1 | tr '\n' ',')
     echo -e "\t\t -> run version detection + nse scripts against $ports..."
-    nmap -p"$ports" -sV -sC -A -Pn -n "$1" -oN ./"$1".log
+    nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log
     echo -e "[+] Done!"
 }
 
@@ -376,11 +376,41 @@ generate_shells() {
     echo -e "$NEWLINE"
 }
 
+php7() {
+    echo -e "$BLUE[+] Switching PHP version to 7.x ...\n$YELLOW"
+    brew unlink php@8.0 && brew link --force php@7.4
+    echo -e "$BLUE[+] Changing httpd.conf...$YELLOW"
+    sudo cp /private/etc/apache2/httpd.conf.php7 /private/etc/apache2/httpd.conf
+    echo -e "$BLUE[+] Restarting Apache...$YELLOW"
+    sudo apachectl -k restart
+    echo -e "$BLUE[+] All done, current PHP version is:\n$GREEN"
+    php -v
+    echo -e "$CLR"
+}
+
+php8() {
+    echo -e "$BLUE[+] Switching PHP version to 8.x ...\n$YELLOW"
+    brew unlink php@7.4 && brew link --force php@8.0
+    echo -e "$BLUE[+] Changing httpd.conf...$YELLOW"
+    sudo cp /private/etc/apache2/httpd.conf.php8 /private/etc/apache2/httpd.conf
+    echo -e "$BLUE[+] Restarting Apache...$YELLOW"
+    sudo apachectl -k restart
+    echo -e "$BLUE[+] All done, current PHP version is:\n$GREEN"
+    php -v
+    echo -e "$CLR"
+}
+
 
 cmd=$1
 clear
 echo "$__logo"
 case "$cmd" in
+    php7)
+        php7
+    ;;
+    php8)
+        php8
+    ;;
     set_ip)
         set_ip "$2"
     ;;
@@ -482,6 +512,9 @@ case "$cmd" in
         echo -e "\tdex_to_jar [.dex file]\t\t\t\t -> exports .dex file into .jar and open it in JD-Gui"
         echo -e "\tapk [.apk FILE]\t\t\t\t\t -> extracts APK file and run apktool on it"
         echo -e "\tdecompile_jar [.jar FILE]\t\t\t -> open FILE.jar file in JD-Gui"
+        echo -e "\n::$BLUE MISC ::$CLR"
+        echo -e "\tphp7 \t\t\t\t\t\t -> switch PHP to version 7.x"
+        echo -e "\tphp8 \t\t\t\t\t\t -> switch PHP to version 8.x"
         echo -e "\n\n--------------------------------------------------------------------------------------------------------------"
         echo -e "$GREEN\nHack The Planet!\n$CLR"
     ;;
