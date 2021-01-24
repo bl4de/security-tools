@@ -346,6 +346,22 @@ apk() {
     fi
 }
 
+abe() {
+    clear
+    echo -e "$BLUE[+] Extracting $1.ab backup into $1.tar...$CLR"
+    java -jar /Users/bl4de/hacking/tools/Java_Decompilers/android-backup-extractor/build/libs/abe.jar unpack $1.ab $1.tar
+    if [[ "$?" == 0 ]]; then
+        echo -e "\n$GREEN[+] Success! $1.ab unpacked and $1.tar was created..."
+        echo -e "[+] Let's untar some files, shall we?$CLR"
+        rm -rf $1_extracted && mkdir ./$1_extracted
+        tar -xf $1.tar -C $1_extracted
+        echo -e "\n$GREEN[+] tar extracted, folder(s) created:$CLR"
+        ls -l $1_extracted
+    elif [[ "$?" != 0 ]]; then
+        echo -e "\n$RED- Damn... :/$CLR"
+    fi
+}
+
 generate_shells() {
     clear
     port=$2
@@ -441,6 +457,9 @@ case "$cmd" in
     apk)
         apk "$2"
     ;;
+    abe)
+        abe "$2"
+    ;;
     decompile_jar)
         decompile_jar "$2"
     ;;
@@ -512,6 +531,7 @@ case "$cmd" in
         echo -e "\tdex_to_jar [.dex file]\t\t\t\t -> exports .dex file into .jar and open it in JD-Gui"
         echo -e "\tapk [.apk FILE]\t\t\t\t\t -> extracts APK file and run apktool on it"
         echo -e "\tdecompile_jar [.jar FILE]\t\t\t -> open FILE.jar file in JD-Gui"
+        echo -e "\tabe [.ab FILE]\t\t\t\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
         echo -e "\n::$BLUE MISC ::$CLR"
         echo -e "\tphp7 \t\t\t\t\t\t -> switch PHP to version 7.x"
         echo -e "\tphp8 \t\t\t\t\t\t -> switch PHP to version 8.x"
