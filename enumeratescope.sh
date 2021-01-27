@@ -47,10 +47,11 @@ create_list_of_domains() {
 
 ## runs denumerator
 run_denumerator() {
+    echo $1
     echo -e "$(date) denumerator started" >> subdomain_enum.log
-    denumerator -f domains/__domains.final -c 200,403,500,301,302,304,404,206,405,411,415 -d $1
+    denumerator -f domains/__domains.final -c 200,403,500,301,302,304,404,206,405,411,415 --dir $1 --output __$1.log
     echo -e "$(date) denumerator finished" >> subdomain_enum.log
-    echo -e "$(date) total webservers enumerated and saved to report: $(ls -l report/ | wc -l)" >> subdomain_enum.log
+    echo -e "$(date) total webservers enumerated and saved to report: $(ls -l reports/$1 | wc -l)" >> subdomain_enum.log
 }
 
 

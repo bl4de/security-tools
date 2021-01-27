@@ -242,6 +242,16 @@ nfs_enum() {
     echo -e "\n[+] Done."
 }
 
+
+# if RPC on port 111 shows in rpcinfo that nfs on port 2049 is available
+# we can enumerate nfs shares available:
+subdomenum() {
+    echo -e "$BLUE[+] Running subdomain enumeration and HTTP(S) web servers discovery on $1 scope file..."
+    enumeratescope $1 $2
+    echo -e "\n[+] Done."
+}
+
+
 # checking AWS S3 bucket
 s3() {
     echo -e "$BLUE[+] Checking AWS S3 $1 bucket$CLR"
@@ -434,6 +444,9 @@ case "$cmd" in
     set_ip)
         set_ip "$2"
     ;;
+    subdomenum)
+        subdomenum "$2" "$3"
+    ;;
     full_nmap_scan)
         full_nmap_scan "$2"
     ;;
@@ -512,6 +525,7 @@ case "$cmd" in
         echo -e "\n$BLUE:: COMMANDS IN INTERACTIVE MODE ::$CLR"
         echo -e "\tset_ip [IP]\t\t\t\t\t -> sets IP in current Bash session to use by other s0mbra commands"
         echo -e "$BLUE:: RECON ::$CLR"
+        echo -e "\tsubdomenum [SCOPE_FILE] [OUTPUT_DIR]\t\t -> full scope subdomain enumeration + HTTP(S) denumerator on all identified domains"
         echo -e "\tfull_nmap_scan [IP]\t\t\t\t -> nmap -p- to enumerate ports + -sV -sC -A on found open ports"
         echo -e "\tnfs_enum [IP]\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
         echo -e "$BLUE:: AMAZON AWS S3 ::$CLR"
@@ -545,6 +559,6 @@ case "$cmd" in
         echo -e "\tphp7 \t\t\t\t\t\t -> switch PHP to version 7.x"
         echo -e "\tphp8 \t\t\t\t\t\t -> switch PHP to version 8.x"
         echo -e "\n\n--------------------------------------------------------------------------------------------------------------"
-        echo -e "$GREEN\nHack The Planet!\n$CLR"
+        echo -e "$GREEN Hack The Planet!\n$CLR"
     ;;
 esac
