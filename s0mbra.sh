@@ -360,6 +360,12 @@ abe() {
     fi
 }
 
+fu() {
+    clear
+    echo -e "$BLUE[+] Enumerate web resources on $1 with $2.txt dictionary; matching only HTTP 200 and 500...$CLR"
+    ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1/FUZZ -mc 200,500
+}
+
 generate_shells() {
     clear
     port=$2
@@ -485,6 +491,9 @@ case "$cmd" in
     s3)
         s3 "$2"
     ;;
+    fu)
+        fu "$2" "$3"
+    ;;
     s3go)
         s3go "$2" "$3"
     ;;
@@ -530,6 +539,8 @@ case "$cmd" in
         echo -e "\tdex_to_jar [.dex file]\t\t\t\t -> exports .dex file into .jar and open it in JD-Gui"
         echo -e "\tapk [.apk FILE]\t\t\t\t\t -> extracts APK file and run apktool on it"
         echo -e "\tabe [.ab FILE]\t\t\t\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
+        echo -e "$BLUE:: WEB ::$CLR"
+        echo -e "\tfu [URL] [DICT]\t\t\t\t\t -> web application enumeration (dict: starter,lowercase,wordlist)"
         echo -e "$BLUE:: MISC ::$CLR"
         echo -e "\tphp7 \t\t\t\t\t\t -> switch PHP to version 7.x"
         echo -e "\tphp8 \t\t\t\t\t\t -> switch PHP to version 8.x"
