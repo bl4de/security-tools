@@ -342,6 +342,18 @@ decompile_jar() {
     java -jar /Users/bl4de/hacking/tools/Java_Decompilers/jd-gui-1.6.3.jar $1
 }
 
+bcviewer() {
+    clear
+    echo -e "$BLUE[+] Opening $1 in BytecodeViewer...$CLR"
+    java -jar /Users/bl4de/hacking/tools/Java_Decompilers/BytecodeViewer/Bytecode-Viewer-2.9.22.jar $1
+}
+
+jadx() {
+    clear
+    echo -e "$BLUE[+] Opening $1 in JADX...$CLR"
+    /Users/bl4de/hacking/tools/Java_Decompilers/jadx/bin/jadx-gui $1
+}
+
 apk() {
     clear
     echo -e "$BLUE[+] OK, let's see this APK...$CLR"
@@ -471,6 +483,12 @@ case "$cmd" in
     dex_to_jar)
         dex_to_jar "$2"
     ;;
+    bcviewer)
+        bcviewer "$2"
+    ;;
+    jadx)
+        jadx "$2"
+    ;;
     apk)
         apk "$2"
     ;;
@@ -550,11 +568,13 @@ case "$cmd" in
         echo -e "\t$YELLOW(JavaScript)$CLR\tjavascript_sca [FILE_NAME]\t -> static code analysis of single JavaScript file with nodestructor"
         echo -e "\t$YELLOW(Java)$CLR\t\tdecompile_jar [.jar FILE]\t -> open FILE.jar file in JD-Gui"
         echo -e "$BLUE:: ANDROID ::$CLR"
+        echo -e "\t$YELLOW(Java)$CLR\t\tbcviewer [.apk FILE]\t\t -> open FILE.apk file in BytecodeViewer GUI"
+        echo -e "\t$YELLOW(Java)$CLR\t\tjadx [.apk FILE]\t\t -> open FILE.apk file in JADX GUI"
         echo -e "\tdex_to_jar [.dex file]\t\t\t\t -> exports .dex file into .jar and open it in JD-Gui"
         echo -e "\tapk [.apk FILE]\t\t\t\t\t -> extracts APK file and run apktool on it"
         echo -e "\tabe [.ab FILE]\t\t\t\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
         echo -e "$BLUE:: WEB ::$CLR"
-        echo -e "\tfu [URL] [DICT]\t\t\t\t\t -> web application enumeration (dict: starter,lowercase,wordlist)"
+        echo -e "\tfu [URL] [DICT]\t\t\t\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
         echo -e "$BLUE:: MISC ::$CLR"
         echo -e "\tphp7 \t\t\t\t\t\t -> switch PHP to version 7.x"
         echo -e "\tphp8 \t\t\t\t\t\t -> switch PHP to version 8.x"
