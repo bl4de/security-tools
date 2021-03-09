@@ -327,13 +327,6 @@ dex_to_jar() {
     clear
     echo -e "$BLUE[+] Exporting $1 into .jar...$CLR"
     d2j-dex2jar  --force $1
-    if [[ "$?" == 0 ]]; then
-        echo -e "\n$GREEN+ Ok, we have JAR, now opening it in JD-Gui...$CLR"
-        DEX_FILENAME=$(echo "$1"| cut -d'.' -f 1)
-        java -jar /Users/bl4de/hacking/tools/Java_Decompilers/jd-gui-1.6.3.jar "$DEX_FILENAME"-dex2jar.jar
-    elif [[ "$?" != 0 ]]; then
-        echo -e "\n$RED- there was an error and .jar file probably was not created :/... :/$CLR"
-    fi
 }
 
 decompile_jar() {
@@ -555,12 +548,12 @@ case "$cmd" in
         echo -e "\tssh_to_john [ID_RSA]\t\t\t\t -> id_rsa to JTR SSH hash file for SSH key password cracking"
         echo -e "\trockyou_zip [ZIP file]\t\t\t\t -> crack ZIP password"
         echo -e "$BLUE:: STATIC CODE ANALYSIS ::$CLR"
-        echo -e "\t$YELLOW(JavaScript)$CLR\tnpm_scan [MODULE_NAME]\t\t -> static code analysis of MODULE_NAME npm module with nodestructor"
-        echo -e "\t$YELLOW(JavaScript)$CLR\tjavascript_sca [FILE_NAME]\t -> static code analysis of single JavaScript file with nodestructor"
-        echo -e "\t$YELLOW(Java)$CLR\t\tdecompile_jar [.jar FILE]\t -> open FILE.jar file in JD-Gui"
+        echo -e "\tnpm_scan [MODULE_NAME]\t\t$YELLOW(JavaScript)$CLR\t -> static code analysis of MODULE_NAME npm module with nodestructor"
+        echo -e "\tjavascript_sca [FILE_NAME]\t$YELLOW(JavaScript)$CLR\t -> static code analysis of single JavaScript file with nodestructor"
+        echo -e "\tdecompile_jar [.jar FILE]\t$YELLOW(Java)$CLR\t\t -> open FILE.jar file in JD-Gui"
         echo -e "$BLUE:: ANDROID ::$CLR"
-        echo -e "\t$YELLOW(Java)$CLR\t\tjadx [.apk FILE]\t\t -> open FILE.apk file in JADX GUI"
-        echo -e "\tdex_to_jar [.dex file]\t\t\t\t -> exports .dex file into .jar and open it in JD-Gui"
+        echo -e "\tjadx [.apk FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.apk file in JADX GUI"
+        echo -e "\tdex_to_jar [.dex file]\t\t\t\t -> exports .dex file into .jar"
         echo -e "\tapk [.apk FILE]\t\t\t\t\t -> extracts APK file and run apktool on it"
         echo -e "\tabe [.ab FILE]\t\t\t\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
         echo -e "$BLUE:: WEB ::$CLR"

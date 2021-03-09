@@ -266,8 +266,8 @@ def extract_shellcode(start, end, read_binary):
         else:
             shellcode = shellcode + "{}".format(COLORS['yellow']) + str(
                 hex(ord(c))).replace("0x", "\\x") + "{}".format(COLORS['white'])
-    print "\n{}[+] Shellcode extracted from byte(s) {:#08x} to {:#08x}:{}".format(COLORS['cyan'], start, end, COLORS['white'])
-    print "\n{}\n".format(shellcode)
+    print("\n{}[+] Shellcode extracted from byte(s) {:#08x} to {:#08x}:{}".format(COLORS['cyan'], start, end, COLORS['white']))
+    print("\n{}\n".format(shellcode))
 
 if __name__ == "__main__":
     """
@@ -304,7 +304,7 @@ if __name__ == "__main__":
     
     if args.file:
         # read first 8 bytes to recognize file type
-        print file_type(open(args.file, 'rb').read(8))
+        print(file_type(open(args.file, 'rb').read(8)))
 
         with open(args.file, 'rb') as infile:
             if args.start > -1 and args.end and (int(args.start, 16) > -1 and int(args.end, 16) > int(args.start, 16)):
@@ -323,7 +323,7 @@ if __name__ == "__main__":
 
             offset = __FROM
 
-            print "{}[+] Hex dump: {}\n".format(COLORS['cyan'], COLORS['white'])
+            print("{}[+] Hex dump: {}\n".format(COLORS['cyan'], COLORS['white']))
             while offset < __TO:
                 chunk = infile.read(b)
 
@@ -379,9 +379,9 @@ if __name__ == "__main__":
                     if args.diff:
                         output += df_output
 
-                print output
+                print(output)
                 offset += 16
 
             print
     else:
-        print parser.usage
+        print(parser.usage)
