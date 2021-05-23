@@ -293,13 +293,11 @@ def main():
     parser.add_argument(
         "-f", "--file", help="File with list of hostnames")
     parser.add_argument(
-        "-t", "--timeout", help="Max. request timeout (default = 2)")
-    parser.add_argument(
         "-s", "--success", help="Show all responses, including exceptions")
     parser.add_argument(
         "-o", "--output", help="Path to output file")
     parser.add_argument(
-        "-d", "--dir", help="Output directory name (default: report/")
+        "-d", "--dir", help="Output directory name (default: report/)")
     parser.add_argument(
         "-c", "--code", help="Show only selected HTTP response status codes, comma separated", default='200'
     )
@@ -311,8 +309,6 @@ def main():
     )
 
     args = parser.parse_args()
-    if args.timeout:
-        timeout = args.timeout
 
     if args.nmap:
         nmap = True
