@@ -30,7 +30,8 @@ def banner():
     Prints welcome banner with contact info
     """
     print(beautyConsole.getColor("green") + "\n\n", "-" * 100)
-    print("-" * 6, " PEF | PHP Exploitable Functions source code advanced grep utility", " " * 35, "-" * 16)
+    print("-" * 6, " PEF | PHP Exploitable Functions source code advanced grep utility",
+          " " * 35, "-" * 16)
     print("-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ",
           " " * 22, "-" * 16)
     print("-" * 100, "\33[0m\n")
@@ -237,7 +238,8 @@ class PefEngine:
         if self.recursive:
             for root, subdirs, files in os.walk(self.filename):
                 for f in files:
-                    if f.find('php') > 0:
+                    extension = f.split('.')[-1:][0]
+                    if extension in ['php', 'inc', 'php3', 'php4', 'php5', 'phtml']:
                         self.scanned_files = self.scanned_files + 1
                         res = self.main(os.path.join(root, f))
                         self.found_entries = self.found_entries + res

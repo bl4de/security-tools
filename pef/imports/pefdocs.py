@@ -29,24 +29,6 @@ exploitableFunctionsDesc = {
         "Code Injection",
         "high"
     ],
-    "fopen()": [
-        "Opens file or URL",
-        "fopen ( string $filename , string $mode [, bool $use_include_path = FALSE [, resource $context ]] ) : resource",
-        "Local File Include; Remote File Include",
-        "high"
-    ],
-    "popen()": [
-        "Opens process file pointer. Opens a pipe to a process executed by forking the command given by command",
-        "popen ( string $command , string $mode ) : resource",
-        "RCE",
-        "high"
-    ],
-    "pcntl_exec()": [
-        "Executes specified program in current process space with the given arguments",
-        "pcntl_exec ( string $path [, array $args [, array $envs ]] ) : void",
-        "RCE",
-        "high"
-    ],
     "eval()": [
         "Evaluate a string as PHP code",
         "eval ( string $code ) : mixed",
@@ -113,18 +95,6 @@ exploitableFunctionsDesc = {
         "Code Injection",
         "medium"
     ],
-    "parse_str()": [
-        "Parses encoded_string as if it were the query string passed via a URL and sets variables in the current scope (or in the array if result is provided).",
-        "parse_str ( string $encoded_string [, array &$result ] ) : void",
-        "Code Injection",
-        "medium"
-    ],
-    "putenv()": [
-        "Sets the value of an environment variable",
-        "putenv ( string $setting ) : bool",
-        "Code Injection",
-        "low"
-    ],
     "ini_set()": [
         "Sets the value of the given configuration option. The configuration option will keep this new value during the script's execution, and will be restored at the script's ending.",
         "ini_set ( string $varname , string $newvalue ) : string",
@@ -141,12 +111,6 @@ exploitableFunctionsDesc = {
         "Outputs all parameters. No additional newline is appended.",
         "echo ( string $arg1 [, string $... ] ) : void",
         "XSS, HTML Injection, Content Injection etc.",
-        "low"
-    ],
-    "header()": [
-        "header() is used to send a raw HTTP header.",
-        "header ( string $header [, bool $replace = TRUE [, int $http_response_code ]] ) : void",
-        "Header Injection (?)",
         "low"
     ],
     "unserialize()": [
@@ -405,12 +369,6 @@ exploitableFunctionsDesc = {
         " Gets the value of an environment variable",
         "getenv ( string $varname [, bool $local_only = FALSE ] ) : string",
         "Information Disclosure",
-        "low"
-    ],
-    "ini_set()": [
-        "Sets the value of the given configuration option. The configuration option will keep this new value during the script's execution, and will be restored at the script's ending.",
-        "ini_set ( string $varname , string $newvalue ) : string",
-        "Configuration Arbitrary Change in runtime",
         "low"
     ],
     "php_uname()": [
