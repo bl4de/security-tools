@@ -43,6 +43,7 @@ colors = {
     "white": '\33[37m',
     200: '\33[32m',
     204: '\33[32m',
+    206: '\33[32m',
     301: '\33[33m',
     302: '\33[33m',
     304: '\33[33m',
@@ -51,6 +52,8 @@ colors = {
     403: '\33[94m',
     404: '\33[94m',
     405: '\33[94m',
+    411: '\33[94m',
+    412: '\33[94m',
     415: '\33[94m',
     422: '\33[94m',
     500: '\33[31m',
@@ -64,6 +67,7 @@ requests.packages.urllib3.disable_warnings()
 
 timeout = 2
 nmap = False
+
 
 def usage():
     """
@@ -115,9 +119,9 @@ def create_output_header(html_output):
 def append_to_output(html_output, url, http_status_code, response_headers, nmap_output, ip_addresses, output_directory):
     screenshot_name = url.replace('https', '').replace(
         'http', '').replace('://', '') + '.png'
-    screenshot_cmd = '/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary --headless --user-agent="HackerOne" --dns-prefetch-disable --log-level=0 --timeout=30000 --screenshot={} '.format(
+    screenshot_cmd = '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --user-agent="HackerOne" --disable-gpu --dns-prefetch-disable --log-level=0 --timeout=30000 --virtual-time-budget=999999 --run-all-compositor-stages-before-draw --screenshot={} '.format(
         './reports/{}/'.format(output_directory) + screenshot_name)
-    
+
     # os.system(screenshot_cmd + url)
     subprocess.run(
         screenshot_cmd + url,
@@ -141,7 +145,8 @@ def append_to_output(html_output, url, http_status_code, response_headers, nmap_
     ips = [ip for ip in ip_addresses.split(b"\n")]
     for ip in ips:
         if ip.find(b"address") > 0:
-            ip_html = ip_html + "<p>IP: <strong style='font-size:15px;'>{}</strong></p>".format( ip.split(b"address")[1].decode("utf-8") )
+            ip_html = ip_html + "<p>IP: <strong style='font-size:15px;'>{}</strong></p>".format(
+                ip.split(b"address")[1].decode("utf-8"))
     ip_html = ip_html + "</div>"
 
     nmap_html = "<div>"
@@ -151,7 +156,8 @@ def append_to_output(html_output, url, http_status_code, response_headers, nmap_
             b"\n") if port.find(b"open") > 0]
         for port in open_ports:
             nmap_html = nmap_html + \
-                "<p style='font-weight: bold;'>{}</p>".format(port.decode("utf-8"))
+                "<p style='font-weight: bold;'>{}</p>".format(
+                    port.decode("utf-8"))
     nmap_html = nmap_html + "</div>"
 
     # HTTP response headers
@@ -241,26 +247,28 @@ def enumerate_domains(domains, output_file, html_output, allowed_http_responses,
         iterator = iterator + 1
         try:
             d = d.strip('\n').strip('\r')
-            print('\n{}[+] Checking domain {} from {}...{}'.format(colors['grey'], iterator, number_of_domains, colors['white']))
+            print('\n{}[+] Checking domain {} from {}...{}'.format(colors['grey'],
+                                                                   iterator, number_of_domains, colors['white']))
             # IP address
-            ip = subprocess.run(["host", d], capture_output=True, timeout=15).stdout
+            ip = subprocess.run(
+                ["host", d], capture_output=True, timeout=15).stdout
             nmap_output = ''
-            
+
             if nmap == True:
                 # perform nmap scan
                 nmap_output = subprocess.run(
                     ["nmap", "--top-ports", str(nmap_top_ports), "-n", d], capture_output=True)
                 print('{}  nmap: '.format(colors['grey']), [port.decode("utf-8")
-                    for port in nmap_output.stdout.split(b"\n") if port.find(b"open") > 0], '{}'.format(colors['white']))
+                                                            for port in nmap_output.stdout.split(b"\n") if port.find(b"open") > 0], '{}'.format(colors['white']))
 
             send_request('http', d, output_file,
                          html_output, allowed_http_responses, nmap_output, ip, output_directory)
             time.sleep(1)
-    
+
             send_request('https', d, output_file,
                          html_output, allowed_http_responses, nmap_output, ip, output_directory)
             time.sleep(1)
-    
+
         except requests.exceptions.InvalidURL:
             if show is True:
                 print('[-] {} is not a valid URL :/'.format(d))
@@ -295,7 +303,7 @@ def main():
     parser.add_argument(
         "-s", "--success", help="Show all responses, including exceptions")
     parser.add_argument(
-        "-o", "--output", help="Path to output file")
+        "-o", "--output", help="Path to text output file with all domains with identified web servers")
     parser.add_argument(
         "-d", "--dir", help="Output directory name (default: report/)")
     parser.add_argument(
@@ -321,7 +329,7 @@ def main():
     if args.code:
         allowed_http_responses = args.code.split(',')
     else:
-        allowed_http_responses = ['200','301','500']
+        allowed_http_responses = ['200', '301', '500']
 
     nmap_top_ports = args.ports
 
@@ -340,15 +348,17 @@ def main():
         os.mkdir('reports/{}'.format(output_directory))
 
     # starts output HTML
-    html_output = open('reports/{}/__denumerator_report.html'.format(output_directory), 'w+')
+    html_output = open(
+        'reports/{}/__denumerator_report.html'.format(output_directory), 'w+')
     create_output_header(html_output)
 
     # if output filename was specified, create it and use to write report result
     if args.output:
-        output_filename = os.path.join('reports', output_directory, args.output)
+        output_filename = os.path.join(
+            'reports', output_directory, args.output)
         output_file = open(output_filename, 'w+')
     else:
-        output_file = '__enumerated_domains.txt'
+        output_file = open('__enumerated_domains.txt', 'w+')
 
     # main loop
     enumerate_domains(domains, output_file, html_output,

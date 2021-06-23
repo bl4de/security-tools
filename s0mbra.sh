@@ -93,6 +93,17 @@ full_nmap_scan() {
     echo -e "[+] Done!"
 }
 
+
+# runs --top-ports 1000 against IP; then -sV -sC -A against every open port found
+quick_nmap_scan() {
+    echo -e "$BLUE[+] Running nmap scan against top $2 ports on $1 ...$CLR"
+    echo -e "\t\t -> search top $2 open ports..."
+    ports=$(nmap --top-ports $2 "$1" | grep open | cut -d'/' -f 1 | tr '\n' ',')
+    echo -e "\t\t -> run version detection + nse scripts against $ports..."
+    nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log
+    echo -e "[+] Done!"
+}
+
 # runs Python 3 built-in HTTP server on [PORT]
 http_server() {
     echo -e "$BLUE[+] Running Simple HTTP Server in current directory on port $1$CLR"
@@ -449,6 +460,9 @@ case "$cmd" in
     full_nmap_scan)
         full_nmap_scan "$2"
     ;;
+    quick_nmap_scan)
+        quick_nmap_scan "$2" "$3"
+    ;;
     http_server)
         http_server "$2"
     ;;
@@ -529,6 +543,7 @@ case "$cmd" in
         echo -e "$BLUE:: RECON ::$CLR"
         echo -e "\tsubdomenum [SCOPE_FILE] [OUTPUT_DIR]\t\t -> full scope subdomain enumeration + HTTP(S) denumerator on all identified domains"
         echo -e "\tfull_nmap_scan [IP]\t\t\t\t -> nmap -p- to enumerate ports + -sV -sC -A on found open ports"
+        echo -e "\tquick_nmap_scan [IP][PORTS]\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate N-ports + -sV -sC -A on found open ports"
         echo -e "\tnfs_enum [IP]\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
         echo -e "$BLUE:: AMAZON AWS S3 ::$CLR"
         echo -e "\ts3 [bucket]\t\t\t\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
