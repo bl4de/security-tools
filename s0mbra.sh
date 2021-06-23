@@ -107,6 +107,9 @@ quick_nmap_scan() {
 # runs Python 3 built-in HTTP server on [PORT]
 http_server() {
     echo -e "$BLUE[+] Running Simple HTTP Server in current directory on port $1$CLR"
+    echo -e "$YELLOW available files/folders in SERVER ROOT: $CLR"
+    ls -l
+    echo -e "\n\n"
     python3 -m http.server "$1"
 }
 
