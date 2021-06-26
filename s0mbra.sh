@@ -83,24 +83,22 @@ interactive() {
     esac
 }
 
-# runs -p- against IP; then -sV -sC -A against every open port found
+# runs $2 port(s) against IP; then -sV -sC -A against every open port found
 full_nmap_scan() {
-    echo -e "$BLUE[+] Running full nmap scan against $1 ...$CLR"
+    echo -e "$BLUE[+] Running full nmap scan against $2 port(s) on $1 ...$CLR"
     echo -e "\t\t -> search all open ports..."
-    ports=$(nmap -p- "$1" | grep open | cut -d'/' -f 1 | tr '\n' ',')
+    ports=$(nmap --top-ports "$2" $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
     echo -e "\t\t -> run version detection + nse scripts against $ports..."
-    nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log
+    nmap -p"$ports" -sV -sC -A -v -n "$1" -oN ./"$1".log -oX ./"$1".xml
     echo -e "[+] Done!"
 }
 
 
-# runs --top-ports 1000 against IP; then -sV -sC -A against every open port found
+# runs --top-ports $2 against IP
 quick_nmap_scan() {
     echo -e "$BLUE[+] Running nmap scan against top $2 ports on $1 ...$CLR"
     echo -e "\t\t -> search top $2 open ports..."
-    ports=$(nmap --top-ports $2 "$1" | grep open | cut -d'/' -f 1 | tr '\n' ',')
-    echo -e "\t\t -> run version detection + nse scripts against $ports..."
-    nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log
+    nmap --top-ports $2 $1
     echo -e "[+] Done!"
 }
 
@@ -461,7 +459,7 @@ case "$cmd" in
         subdomenum "$2" "$3"
     ;;
     full_nmap_scan)
-        full_nmap_scan "$2"
+        full_nmap_scan "$2" "$3"
     ;;
     quick_nmap_scan)
         quick_nmap_scan "$2" "$3"
@@ -545,8 +543,8 @@ case "$cmd" in
         echo -e "\tset_ip [IP]\t\t\t\t\t -> sets IP in current Bash session to use by other s0mbra commands"
         echo -e "$BLUE:: RECON ::$CLR"
         echo -e "\tsubdomenum [SCOPE_FILE] [OUTPUT_DIR]\t\t -> full scope subdomain enumeration + HTTP(S) denumerator on all identified domains"
-        echo -e "\tfull_nmap_scan [IP]\t\t\t\t -> nmap -p- to enumerate ports + -sV -sC -A on found open ports"
-        echo -e "\tquick_nmap_scan [IP][PORTS]\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate N-ports + -sV -sC -A on found open ports"
+        echo -e "\tfull_nmap_scan [IP] [PORTS]\t\t\t -> nmap --top-ports [PORTS] to enumerate ports + -sV -sC -A on found open ports"
+        echo -e "\tquick_nmap_scan [IP] [PORTS]\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
         echo -e "\tnfs_enum [IP]\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
         echo -e "$BLUE:: AMAZON AWS S3 ::$CLR"
         echo -e "\ts3 [bucket]\t\t\t\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
