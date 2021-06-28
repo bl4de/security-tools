@@ -87,7 +87,7 @@ interactive() {
 full_nmap_scan() {
     echo -e "$BLUE[+] Running full nmap scan against $2 port(s) on $1 ...$CLR"
     echo -e "\t\t -> search all open ports..."
-    ports=$(nmap --top-ports "$2" $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
+    ports=$(nmap --top-ports "$2" $1 -v | grep open | cut -d'/' -f 1 | tr '\n' ',')
     echo -e "\t\t -> run version detection + nse scripts against $ports..."
     nmap -p"$ports" -sV -sC -A -v -n "$1" -oN ./"$1".log -oX ./"$1".xml
     echo -e "[+] Done!"
@@ -98,17 +98,24 @@ full_nmap_scan() {
 quick_nmap_scan() {
     echo -e "$BLUE[+] Running nmap scan against top $2 ports on $1 ...$CLR"
     echo -e "\t\t -> search top $2 open ports..."
-    nmap --top-ports $2 $1
+    nmap -v --top-ports $2 $1
     echo -e "[+] Done!"
 }
 
 # runs Python 3 built-in HTTP server on [PORT]
-http_server() {
+http() {
     echo -e "$BLUE[+] Running Simple HTTP Server in current directory on port $1$CLR"
-    echo -e "$YELLOW available files/folders in SERVER ROOT: $CLR"
+    echo -e "$GRAY\navailable network interfaces:$YELLOW"
+    ifconfig | grep -e 'inet\s' |cut -d' ' -f 2
+    echo -e "$GRAY\navailable files/folders in SERVER ROOT: $CLR"
     ls -l
     echo -e "\n\n"
-    python3 -m http.server "$1"
+    if [[ -z "$1" ]]; then 
+        PORT=7777; 
+    else
+        PORT=$1    
+    fi
+    python3 -m http.server $PORT
 }
 
 # runs john with rockyou.txt against hash type [FORMAT] and file [HASHES]
@@ -167,7 +174,7 @@ privesc_tools_linux() {
     echo -e "$BLUE[+] Available tools:$CLR"
     tree -L 2 .
     echo -e "$BLUE[+] Starting HTTP server on port 9119...$CLR"
-    http_server 9119
+    http 9119
 }
 
 
@@ -177,7 +184,7 @@ privesc_tools_windows() {
     echo -e "$BLUE[+] Available tools:$CLR"
     ls -lR .
     echo -e "$BLUE[+] Starting HTTP server on port 9119...$CLR"
-    http_server 9119
+    http 9119
 }
 
 # enumerates SMB shares on [IP] - port 445 has to be open
@@ -464,8 +471,8 @@ case "$cmd" in
     quick_nmap_scan)
         quick_nmap_scan "$2" "$3"
     ;;
-    http_server)
-        http_server "$2"
+    http)
+        http "$2"
     ;;
     rockyou_john)
         rockyou_john "$2" "$3"
@@ -550,7 +557,7 @@ case "$cmd" in
         echo -e "\ts3 [bucket]\t\t\t\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
         echo -e "\ts3go [bucket] [key]\t\t\t\t -> get object identified by [key] from AWS S3 [bucket]"
         echo -e "$BLUE:: PENTEST TOOLS ::$CLR"
-        echo -e "\thttp_server [PORT]\t\t\t\t -> runs HTTP server on [PORT] TCP port"
+        echo -e "\thttp [PORT]\t\t\t\t -> runs HTTP server on [PORT] TCP port"
         echo -e "\tprivesc_tools_linux \t\t\t\t -> runs HTTP server on port 9119 in directory with Linux PrivEsc tools"
         echo -e "\tprivesc_tools_windows \t\t\t\t -> runs HTTP server on port 9119 in directory with Windows PrivEsc tools"
         echo -e "\tgenerate_shells [IP] [PORT] \t\t\t -> generates ready-to-use reverse shells in various languages for given IP:PORT"
