@@ -61,7 +61,7 @@ interactive() {
     trap '' SIGINT SIGQUIT SIGTSTP
     set_ip "$1"
     local choice
-    echo "$__logo"
+    # echo "$__logo"
     echo -e "$BLUE------------------------------------------------------------------------------------------------------"
     echo -e "Interactive mode\tTarget: $GREEN$IP$CLR"
     echo -e "$BLUE------------------------------------------------------------------------------------------------------"
@@ -86,10 +86,10 @@ interactive() {
 # runs $2 port(s) against IP; then -sV -sC -A against every open port found
 full_nmap_scan() {
     echo -e "$BLUE[+] Running full nmap scan against $2 port(s) on $1 ...$CLR"
-    echo -e "\t\t -> search all open ports..."
-    ports=$(nmap --top-ports "$2" $1 -v | grep open | cut -d'/' -f 1 | tr '\n' ',')
+    echo -e "\t\t -> search open ports..."
+    ports=$(nmap --top-ports "$2" $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
     echo -e "\t\t -> run version detection + nse scripts against $ports..."
-    nmap -p"$ports" -sV -sC -A -v -n "$1" -oN ./"$1".log -oX ./"$1".xml
+    nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log -oX ./"$1".xml
     echo -e "[+] Done!"
 }
 
@@ -98,7 +98,7 @@ full_nmap_scan() {
 quick_nmap_scan() {
     echo -e "$BLUE[+] Running nmap scan against top $2 ports on $1 ...$CLR"
     echo -e "\t\t -> search top $2 open ports..."
-    nmap -v --top-ports $2 $1
+    nmap --top-ports $2 $1
     echo -e "[+] Done!"
 }
 
@@ -451,7 +451,7 @@ php8() {
 
 cmd=$1
 clear
-echo "$__logo"
+# echo "$__logo"
 case "$cmd" in
     php7)
         php7
