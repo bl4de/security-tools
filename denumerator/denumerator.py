@@ -307,7 +307,7 @@ def main():
     parser.add_argument(
         "-d", "--dir", help="Output directory name (default: report/)")
     parser.add_argument(
-        "-c", "--code", help="Show only selected HTTP response status codes, comma separated", default='200'
+        "-c", "--code", help="Show only selected HTTP response status codes, comma separated", default='200,206,301,302,403,422,500'
     )
     parser.add_argument(
         "-n", "--nmap", help="use nmap for port scanning (slows down the whole eenumeration A LOT, so be warned!)", default=100
