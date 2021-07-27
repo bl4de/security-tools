@@ -56,33 +56,6 @@ set_ip() {
     export IP="$1"
 }
 
-interactive() {
-    clear
-    trap '' SIGINT SIGQUIT SIGTSTP
-    set_ip "$1"
-    local choice
-    # echo "$__logo"
-    echo -e "$BLUE------------------------------------------------------------------------------------------------------"
-    echo -e "Interactive mode\tTarget: $GREEN$IP$CLR"
-    echo -e "$BLUE------------------------------------------------------------------------------------------------------"
-    echo -e "$YELLOW[1]$CLR\t\t $GRAY-> run full nmap scan + -sV -sC on open port(s)$CLR"
-    echo -e "$YELLOW[2]$CLR\t\t $GRAY-> run SMB enumeration (if port 445 is open)$CLR"
-    echo -e "$YELLOW[3]$CLR\t\t $GRAY-> run nfs scan (port 2049 open)$CLR"
-    echo -e "$YELLOW[4]$CLR\t\t $GRAY-> run nikto against HTTP server on port 80 with default plugins$CLR"
-    echo -e ""
-    echo -e "$YELLOW[0]$CLR\t\t $GRAY-> Quit"
-    echo -e "$BLUE------------------------------------------------------------------------------------------------------"
-    read -p ">> " choice
-    case $choice in
-        1) full_nmap_scan "$IP" ;;
-        2) smb_enum "$IP" ;;
-        3) nfs_enum "$IP" ;;
-        4) nikto -host "$IP" -Plugins tests ;;
-        0) exit ;;
-        *) interactive "$IP"
-    esac
-}
-
 # runs $2 port(s) against IP; then -sV -sC -A against every open port found
 full_nmap_scan() {
     if [[ -z "$2" ]]; then 
@@ -406,8 +379,8 @@ abe() {
 
 fu() {
     clear
-    echo -e "$BLUE[+] Enumerate web resources on $1 with $2.txt dictionary; matching only HTTP 200 and 500...$CLR"
-    ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1/FUZZ -mc 200,500
+    echo -e "$BLUE[+] Enumerate web resources on $1 with $2.txt dictionary; matching only HTTP 200...$CLR"
+    ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1/FUZZ -mc 200
 }
 
 generate_shells() {
@@ -464,11 +437,17 @@ php8() {
     echo -e "$CLR"
 }
 
+pwn() {
+    echo -e "$BLUE[+] Running automated recon on $1...\n    Puede tomar un poco tiempo, tienes que ser paciente... ;)  $YELLOW"
+}
 
 cmd=$1
 clear
 # echo "$__logo"
 case "$cmd" in
+    pwn)
+        pwn "$2"
+    ;;
     php7)
         php7
     ;;
@@ -553,17 +532,13 @@ case "$cmd" in
     generate_shells)
         generate_shells "$2" "$3"
     ;;
-    interactive)
-        interactive "$2"
-    ;;
     *)
         clear
         echo -e "$GREEN I'm guessing there's no chance we can take care of this quietly, is there? - S0mbra$CLR"
         echo -e "--------------------------------------------------------------------------------------------------------------"
-        echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}"
-        echo -e "\t s0mbra.sh interactive {IP} (interactive mode)$CLR"  # interactive\t\t -> TBD
-        echo -e "\n$BLUE:: COMMANDS IN INTERACTIVE MODE ::$CLR"
-        echo -e "\tset_ip [IP]\t\t\t\t\t -> sets IP in current Bash session to use by other s0mbra commands"
+        echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}\n"
+        echo -e "$BLUE:: PWN ::$CLR"
+        echo -e "\tpwn [DOMAIN]\t\t\t\t\t -> runs automated recon + pwning on DOMAIN"
         echo -e "$BLUE:: RECON ::$CLR"
         echo -e "\tsubdomenum [SCOPE_FILE] [OUTPUT_DIR]\t\t -> full scope subdomain enumeration + HTTP(S) denumerator on all identified domains"
         echo -e "\tfull_nmap_scan [IP] [PORTS]\t\t\t -> nmap --top-ports [PORTS] to enumerate ports + -sV -sC -A on found open ports"
@@ -573,7 +548,7 @@ case "$cmd" in
         echo -e "\ts3 [bucket]\t\t\t\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
         echo -e "\ts3go [bucket] [key]\t\t\t\t -> get object identified by [key] from AWS S3 [bucket]"
         echo -e "$BLUE:: PENTEST TOOLS ::$CLR"
-        echo -e "\thttp [PORT]\t\t\t\t -> runs HTTP server on [PORT] TCP port"
+        echo -e "\thttp [PORT]\t\t\t\t\t -> runs HTTP server on [PORT] TCP port"
         echo -e "\tprivesc_tools_linux \t\t\t\t -> runs HTTP server on port 9119 in directory with Linux PrivEsc tools"
         echo -e "\tprivesc_tools_windows \t\t\t\t -> runs HTTP server on port 9119 in directory with Windows PrivEsc tools"
         echo -e "\tgenerate_shells [IP] [PORT] \t\t\t -> generates ready-to-use reverse shells in various languages for given IP:PORT"

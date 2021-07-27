@@ -108,7 +108,7 @@ class PefEngine:
                                      verbose)
         return total
 
-    def print_code_line(self, _line, i, fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", severity={}, verbose=False):
+    def print_code_line(self, _line, i, fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", severity=None, verbose=False):
         """
         prints formatted code line
         """
@@ -222,9 +222,7 @@ class PefEngine:
                         total = self.analyse_line(l, i, refl, f, line, prev_line,
                                                   next_line, prev_prev_line, next_next_line, verbose, total)
 
-        if total < 1:
-            pass
-        else:
+        if total > 0:
             print(beautyConsole.getColor("red") +
                   "Found %d interesting entries\n" % (total) +
                   beautyConsole.getSpecialChar("endline"))
@@ -257,11 +255,13 @@ class PefEngine:
         else:
             print("  No interesting entries found :( \n")
 
-        print("{}==>  {}:\t {}".format(
+        SUMMARY = "{}==>  {}:\t {}"
+
+        print(SUMMARY.format(
             beautyConsole.getColor("red"), "HIGH", self.severity.get("high")))
-        print("{}==>  {}:\t {}".format(beautyConsole.getColor(
+        print(SUMMARY.format(beautyConsole.getColor(
             "yellow"), "MEDIUM", self.severity.get("medium")))
-        print("{}==>  {}:\t {}".format(beautyConsole.getColor(
+        print(SUMMARY.format(beautyConsole.getColor(
             "green"), "LOW", self.severity.get("low")))
 
         print("\n")
@@ -304,7 +304,6 @@ if __name__ == "__main__":
         engine.run()
     except UnicodeDecodeError as e:
         print("UnicodeDecodeError in {}: {}".format(filename, e))
-        pass
     except FileNotFoundError as e:
         print("Requested file not found, check the path :)")
     except IsADirectoryError as e:

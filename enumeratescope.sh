@@ -55,14 +55,6 @@ run_denumerator() {
 }
 
 
-## performs nmap scan
-run_virustotal_enum() {
-    echo -e "$(date) virustotal $CIDR enumeration started" >> subdomain_enum.log
-    # run virustotal.py reverse domain search
-    virustotal --cidr $CIDR --output domains/virustotal.domains
-    echo -e "$(date) virustotal $CIDR enumeration finished, $(cat domains/virustotal.domains|wc -l) domains found" >> subdomain_enum.log
-}
-
 
 ## -----------------------------------------------------------------------------
 
@@ -79,10 +71,6 @@ echo -e "$(date) subdomain_enum.sh started" > subdomain_enum.log
 
 # enusre that domains/ folder exists, if not create one
 create_domains_folder
-
-if [[ -n $CIDR ]]; then
-    run_virustotal_enum
-fi
 
 cat $DOMAINS | while read DOMAIN
 do
