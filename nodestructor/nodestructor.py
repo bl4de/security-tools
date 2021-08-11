@@ -34,11 +34,11 @@ banner = r"""
 
 example usages:
             $ ./nodestructor filename.js
-            $ ./nodestructor -R ./dirname
-            $ ./nodestructor -R ./dirname --skip-node-modules --skip-test-files
-            $ ./nodestructor -R ./node_modules --exclude=babel,lodash,ansi
-            $ ./nodestructor -R ./node_modules --include=body-parser,chalk,commander
-            $ ./nodestructor -R ./node_modules --pattern="obj.dangerousFn\("
+            $ ./nodestructor -r ./dirname
+            $ ./nodestructor -r ./dirname --skip-node-modules --skip-test-files
+            $ ./nodestructor -r ./node_modules --exclude=babel,lodash,ansi
+            $ ./nodestructor -r ./node_modules --include=body-parser,chalk,commander
+            $ ./nodestructor -r ./node_modules --pattern="obj.dangerousFn\("
 """
 
 nodejs_patterns = [

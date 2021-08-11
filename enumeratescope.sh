@@ -21,9 +21,10 @@ enumerate_domain() {
     local DOMAIN=$1
     echo -e "$(date) started enumerate $DOMAIN" >> subdomain_enum.log
     sublister -d $DOMAIN -o domains/$DOMAIN.sublister
-    # amass enum -config $HOME/.config/amass/amass.ini -brute -min-for-recursive 1 -d $DOMAIN -o domains/$DOMAIN.amass
+    subfinder -d $DOMAIN -o domains/$DOMAIN.subfinder
+    amass enum -config $HOME/.config/amass/amass.ini -brute -min-for-recursive 1 -d $DOMAIN -o domains/$DOMAIN.amass
     
-    if [ -s domains/$DOMAIN.sublister ] || [ -s domains/$DOMAIN.amass ]; then
+    if [ -s domains/$DOMAIN.sublister ] || [ -s domains/$DOMAIN.amass ] || [ -s domains/$DOMAIN.subfinder ]; then
         cat domains/$DOMAIN.* > domains/$DOMAIN.all
         sort -u -k 1 domains/$DOMAIN.all > domains/$DOMAIN
     fi
@@ -58,11 +59,16 @@ run_denumerator() {
 
 ## -----------------------------------------------------------------------------
 
-# list of domains - text file, one domain in single line
+# list of domains - text file, one domain per line
 DOMAINS=$1
 
 # output directory for denumerator
-OUTPUT_DIR=$2
+if [ -z $2 ]; then
+    OUTPUT_DIR="report"
+else
+    OUTPUT_DIR=$2
+fi
+
 
 # IP address range
 CIDR=$3

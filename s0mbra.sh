@@ -352,7 +352,7 @@ jadx() {
 apk() {
     clear
     echo -e "$BLUE[+] OK, let's see this APK...$CLR"
-    unzip $1
+    unzip -d unzipped $1
     if [[ "$?" == 0 ]]; then
         echo -e "\n$GREEN+ Unizpped, now run apktool on it...$CLR"
         apktool d $1
@@ -537,8 +537,6 @@ case "$cmd" in
         echo -e "$GREEN I'm guessing there's no chance we can take care of this quietly, is there? - S0mbra$CLR"
         echo -e "--------------------------------------------------------------------------------------------------------------"
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}\n"
-        echo -e "$BLUE:: PWN ::$CLR"
-        echo -e "\tpwn [DOMAIN]\t\t\t\t\t -> runs automated recon + pwning on DOMAIN"
         echo -e "$BLUE:: RECON ::$CLR"
         echo -e "\tsubdomenum [SCOPE_FILE] [OUTPUT_DIR]\t\t -> full scope subdomain enumeration + HTTP(S) denumerator on all identified domains"
         echo -e "\tfull_nmap_scan [IP] [PORTS]\t\t\t -> nmap --top-ports [PORTS] to enumerate ports + -sV -sC -A on found open ports"
