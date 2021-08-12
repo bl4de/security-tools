@@ -22,7 +22,7 @@ enumerate_domain() {
     echo -e "$(date) started enumerate $DOMAIN" >> subdomain_enum.log
     sublister -d $DOMAIN -o domains/$DOMAIN.sublister
     subfinder -d $DOMAIN -o domains/$DOMAIN.subfinder
-    amass enum -config $HOME/.config/amass/amass.ini -brute -min-for-recursive 1 -d $DOMAIN -o domains/$DOMAIN.amass
+    amass enum -config $HOME/.config/amass/amass.ini -d $DOMAIN -o domains/$DOMAIN.amass
     
     if [ -s domains/$DOMAIN.sublister ] || [ -s domains/$DOMAIN.amass ] || [ -s domains/$DOMAIN.subfinder ]; then
         cat domains/$DOMAIN.* > domains/$DOMAIN.all
@@ -40,9 +40,9 @@ create_list_of_domains() {
     cat domains/*.* > domains/domains.all
     sort -u -k 1 domains/domains.all > domains/__domains
     # remove odd <BR> left by Sublist3r or amass :P
-    sed 's/<BR>/#/g' domains/__domains | tr '#' '\n' > domains/__domains.final
+    sed 's/<BR>/#/g' domains/__domains | tr '#' '\n' > domains/final
     rm -f domains/domains.all
-    echo -e "$(date) ... Done! $(cat domains/__domains.final|wc -l) unique domains gathered \o/" >> subdomain_enum.log
+    echo -e "$(date) ... Done! $(cat domains/final|wc -l) unique domains gathered \o/" >> subdomain_enum.log
 }
 
 
@@ -50,7 +50,7 @@ create_list_of_domains() {
 run_denumerator() {
     echo $1
     echo -e "$(date) denumerator started" >> subdomain_enum.log
-    denumerator -f domains/__domains.final -c 200,403,500,301,302,304,404,206,405,411,415 --dir $1 --output __$1.log
+    denumerator -f domains/final -c 200,403,500,301,302,304,404,206,405,411,415,422 --dir $1 --output __$1.log
     echo -e "$(date) denumerator finished" >> subdomain_enum.log
     echo -e "$(date) total webservers enumerated and saved to report: $(ls -l reports/$1 | wc -l)" >> subdomain_enum.log
 }
@@ -85,7 +85,7 @@ done
 
 # concatenate and sort all domains from the target
 create_list_of_domains
-echo -e "\n[+} DONE. Found $(wc -l domains/__domains.final) unique subdomains"
+echo -e "\n[+} DONE. Found $(wc -l domains/final) unique subdomains"
 
 # run denumerator on the domains/domains.final output file
 run_denumerator $OUTPUT_DIR
