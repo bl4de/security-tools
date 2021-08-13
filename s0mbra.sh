@@ -380,7 +380,7 @@ abe() {
 fu() {
     clear
     echo -e "$BLUE[+] Enumerate web resources on $1 with $2.txt dictionary; matching only HTTP 200...$CLR"
-    ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1/FUZZ -mc 200,422,500
+    ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc 200,422,500
 }
 
 generate_shells() {
