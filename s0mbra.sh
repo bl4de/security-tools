@@ -379,8 +379,19 @@ abe() {
 
 fu() {
     clear
-    echo -e "$BLUE[+] Enumerate web resources on $1 with $2.txt dictionary; matching only HTTP 200...$CLR"
-    ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc 200,422,500
+    echo -e "$BLUE[+] Enumerate web resources on $1 with $2.txt dictionary; matching HTTP 200,422,500...$CLR"
+    if [[ -n $3 ]]; then
+        if [[ $3 == "/" ]]; then
+            # if $3 arg passed to fu equals / - add at the end of the path (for dir enumerations where sometimes
+            # dir path has to end with / to be identified
+            ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ/ -mc 200,422,500
+        else
+            # if $3 arg is not /, treat it as file extension to enumerate files:
+            ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ.$3 -mc 200,422,500
+        fi
+    else
+        ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc 200,422,500
+    fi
 }
 
 generate_shells() {
@@ -524,7 +535,7 @@ case "$cmd" in
         s3 "$2"
     ;;
     fu)
-        fu "$2" "$3"
+        fu "$2" "$3" "$4"
     ;;
     s3go)
         s3go "$2" "$3"
@@ -539,8 +550,8 @@ case "$cmd" in
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}\n"
         echo -e "$BLUE:: RECON ::$CLR"
         echo -e "\tsubdomenum [SCOPE_FILE] [OUTPUT_DIR]\t\t -> full scope subdomain enumeration + HTTP(S) denumerator on all identified domains"
-        echo -e "\tfull_nmap_scan [IP] [PORTS]\t\t\t -> nmap --top-ports [PORTS] to enumerate ports + -sV -sC -A on found open ports"
-        echo -e "\tquick_nmap_scan [IP] [PORTS]\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
+        echo -e "\tquick_nmap_scan [IP] [*PORTS]\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
+        echo -e "\tfull_nmap_scan [IP] [*PORTS]\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A on found open ports"
         echo -e "\tnfs_enum [IP]\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
         echo -e "$BLUE:: AMAZON AWS S3 ::$CLR"
         echo -e "\ts3 [bucket]\t\t\t\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
@@ -569,7 +580,7 @@ case "$cmd" in
         echo -e "\tapk [.apk FILE]\t\t\t\t\t -> extracts APK file and run apktool on it"
         echo -e "\tabe [.ab FILE]\t\t\t\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
         echo -e "$BLUE:: WEB ::$CLR"
-        echo -e "\tfu [URL] [DICT]\t\t\t\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
+        echo -e "\tfu [URL] [DICT] [*EXT/*ENDSLASH]\t\t\t\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
         echo -e "$BLUE:: MISC ::$CLR"
         echo -e "\tphp7 \t\t\t\t\t\t -> switch PHP to version 7.x"
         echo -e "\tphp8 \t\t\t\t\t\t -> switch PHP to version 8.x"
