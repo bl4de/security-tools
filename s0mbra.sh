@@ -60,15 +60,14 @@ set_ip() {
 full_nmap_scan() {
     if [[ -z "$2" ]]; then 
         echo -e "$BLUE[+] Running full nmap scan against all ports on $1 ...$CLR"
-        echo -e "\t\t -> search open ports..."
         ports=$(nmap -p- $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
-        echo -e "\t\t -> run version detection + nse scripts against $ports..."
+        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CLR"
         nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log -oX ./"$1".xml
     else
         echo -e "$BLUE[+] Running full nmap scan against $2 port(s) on $1 ...$CLR"
         echo -e "\t\t -> search open ports..."
         ports=$(nmap --top-ports "$2" $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
-        echo -e "\t\t -> run version detection + nse scripts against $ports..."
+        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CLR"
         nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log -oX ./"$1".xml
     fi
 
@@ -80,11 +79,9 @@ full_nmap_scan() {
 quick_nmap_scan() {
     if [[ -z "$2" ]]; then 
         echo -e "$BLUE[+] Running nmap scan against all ports on $1 ...$CLR"
-        echo -e "\t\t -> search open ports..."
         nmap -p- $1 
     else
         echo -e "$BLUE[+] Running nmap scan against top $2 ports on $1 ...$CLR"
-        echo -e "\t\t -> search top $2 open ports..."
         nmap --top-ports $2 $1
     fi
     

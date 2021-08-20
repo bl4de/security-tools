@@ -22,7 +22,7 @@ enumerate_domain() {
     echo -e "$(date) started enumerate $DOMAIN" >> subdomain_enum.log
     sublister -d $DOMAIN -o domains/$DOMAIN.sublister
     subfinder -d $DOMAIN -o domains/$DOMAIN.subfinder
-    # amass enum -config $HOME/.config/amass/amass.ini -d $DOMAIN -o domains/$DOMAIN.amass
+    amass enum -config $HOME/.config/amass/amass.ini -d $DOMAIN -o domains/$DOMAIN.amass
     
     if [ -s domains/$DOMAIN.sublister ] || [ -s domains/$DOMAIN.amass ] || [ -s domains/$DOMAIN.subfinder ]; then
         cat domains/$DOMAIN.* > domains/$DOMAIN.all
