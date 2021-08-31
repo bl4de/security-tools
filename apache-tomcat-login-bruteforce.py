@@ -102,7 +102,6 @@ credentials = [
     'demo:demo'
 ]
 
-
 def brute(args):
     """
     Iterate over login:password pairs from credentials array and send GET request to 

@@ -12,6 +12,12 @@ by bl4de
 GitHub: bl4de | Twitter: @_bl4de | hackerone.com/bl4de  bloorq@gmail.com
 """
 
+
+"""
+some ideas:
+https://attacker-codeninja.github.io/2021-08-24-code-review-notes-from-bug-bounty-bootcamp/
+
+"""
 import os
 import re
 import argparse
