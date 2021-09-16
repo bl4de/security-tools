@@ -7,6 +7,8 @@ exploitableFunctions = [
     "popen(",
     "pcntl_exec(",
     "eval(",
+    "arse_str(", # use arse_str(, because somehow, parse_str causes "IndexError: list index out of range" o_O
+    "parse_url(",
     "preg_replace(",
     "create_function(",
     "include(",
@@ -17,7 +19,6 @@ exploitableFunctions = [
     "proc_open(",
     "pcntl_exec(",
     "extract(",
-    "parse_str(",
     "putenv(",
     "ini_set(",
     "mail(",
@@ -102,7 +103,6 @@ critical = [
     "passthru(",
     "shell_exec(",
     "extract(",
-    "parse_str(",
     "putenv(",
     "unserialize(",
     "readfile(",
@@ -116,7 +116,6 @@ critical = [
     "__sleep(",
     "__call(",
     "__callStatic(",
-    "filter_var(",
     "file_put_contents("
 ]
 

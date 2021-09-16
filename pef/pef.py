@@ -302,6 +302,8 @@ if __name__ == "__main__":
         engine = PefEngine(args.recursive, verbose,
                            critical, sql, filename, pattern)
         engine.run()
+    except IndexError as e:
+        print("IndexError in {}: {}".format(filename, e))
     except UnicodeDecodeError as e:
         print("UnicodeDecodeError in {}: {}".format(filename, e))
     except FileNotFoundError as e:

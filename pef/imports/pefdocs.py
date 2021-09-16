@@ -23,6 +23,12 @@ exploitableFunctionsDesc = {
         "RCE",
         "high"
     ],
+    "parse_url()": [
+        "parse_url — Parse a URL and return its components",
+        "parse_url(string $url, int $component = -1): mixed",
+        "SSRF, Filter Bypass",
+        "medium"
+    ],
     "parse_str()": [
         "when parse_str(arg, [target]) parses URL-like string, it sets variables in current scope WITHOUT initializing it",
         "parse_str ( string $encoded_string [, array &$result ] ) : void"
@@ -407,13 +413,13 @@ exploitableFunctionsDesc = {
         "SSRF",
         "medium"
     ],
-    "__destruct()":[
+    "__destruct()": [
         "unserialize() checks if your class has a function with the magic name __destruct(). If so, that function is executed after unserialization",
         "__destruct ( void ) : void",
         "Object Injection; RCE via unserialize() + POP gadget chain",
         "medium"
     ],
-    "__wakeup()":[
+    "__wakeup()": [
         "serialize() checks if your class has a function with the magic name __wakeup(). If so, that function is executed prior to any serialization",
         "__wakeup ( void ) : void",
         "Object Injection; RCE via unserialize() + POP gadget chain",
@@ -437,37 +443,37 @@ exploitableFunctionsDesc = {
         "Object Injection; RCE via unserialize() + POP gadget chain",
         "medium"
     ],
-    "filter_var()":[
+    "filter_var()": [
         "Filters a variable with a specified filter",
         "filter_var ( mixed $variable [, int $filter = FILTER_DEFAULT [, mixed $options ]] ) : mixed",
         "Validation bypass (in certain conditions)",
         "low"
     ],
-    "file_put_contents()":[
+    "file_put_contents()": [
         "Write data to a file",
         "file_put_contents ( string $filename , mixed $data [, int $flags = 0 [, resource $context ]] ) : int",
         "Arbitrary file write",
         "medium"
     ],
-    "SELECT.*FROM":[
+    "SELECT.*FROM": [
         "SQL syntax found.",
         "This is likely a raw SQL query, which can be filled with user provided input or not implemented as prepared statement",
         "SQL Injection",
         "medium"
     ],
-    "INSERT.*INTO":[
+    "INSERT.*INTO": [
         "SQL syntax found.",
         "This is likely a raw SQL query, which can be filled with user provided input or not implemented as prepared statement",
         "SQL Injection",
         "medium"
     ],
-    "UPDATE.*":[
+    "UPDATE.*": [
         "SQL syntax found.",
         "This is likely a raw SQL query, which can be filled with user provided input or not implemented as prepared statement",
         "SQL Injection",
         "medium"
     ],
-    "DELETE.*FROM":[
+    "DELETE.*FROM": [
         "SQL syntax found.",
         "This is likely a raw SQL query, which can be filled with user provided input or not implemented as prepared statement",
         "SQL Injection",
