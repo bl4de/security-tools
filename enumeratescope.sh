@@ -16,13 +16,13 @@ create_domains_folder() {
 }
 
 
-## perform sublist3r and amass enumeration on each domain passed as an argument
+## perform sublist3r, subfinder and amass enumeration on each domain passed as an argument
 enumerate_domain() {
     local DOMAIN=$1
     echo -e "$(date) started enumerate $DOMAIN" >> subdomain_enum.log
     sublister -d $DOMAIN -o domains/$DOMAIN.sublister
     subfinder -d $DOMAIN -o domains/$DOMAIN.subfinder
-    amass enum -config $HOME/.config/amass/amass.ini -d $DOMAIN -o domains/$DOMAIN.amass
+    # amass enum -config $HOME/.config/amass/amass.ini -d $DOMAIN -o domains/$DOMAIN.amass
     
     if [ -s domains/$DOMAIN.sublister ] || [ -s domains/$DOMAIN.amass ] || [ -s domains/$DOMAIN.subfinder ]; then
         cat domains/$DOMAIN.* > domains/$DOMAIN.all
@@ -32,16 +32,18 @@ enumerate_domain() {
     echo -e "$(date) finished enumerate $DOMAIN, total number of unique domains found: $(cat domains/$DOMAIN|wc -l)" >> subdomain_enum.log
 }
 
-## processing all outputed list of domains into one, removing dups
-## and sorting
+## creates list of uniqe, sorted domains obtained from subdomain enum tools:
 create_list_of_domains() {
     echo -e "$(date) create final list of domains found..." >> subdomain_enum.log
     # concatenate and sort all domains from the target
-    cat domains/*.* > domains/domains.all
-    sort -u -k 1 domains/domains.all > domains/__domains
-    # remove odd <BR> left by Sublist3r or amass :P
-    sed 's/<BR>/#/g' domains/__domains | tr '#' '\n' > domains/final
-    rm -f domains/domains.all
+    cat domains/*.* > domains/all
+    # remove <BR> left from DNS records into unsorted list with dups:
+    sed 's/<BR>/#/g' domains/all | tr '#' '\n' > domains/unsorted
+    # remove dups and create final list of domains:
+    sort -u -k 1 domains/unsorted > domains/final
+    # remove temporary files
+    rm -f domains/all domains/unsorted
+    # show how many uniq domains were found:
     echo -e "$(date) ... Done! $(cat domains/final|wc -l) unique domains gathered \o/" >> subdomain_enum.log
 }
 

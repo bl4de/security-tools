@@ -577,7 +577,7 @@ case "$cmd" in
         echo -e "\tapk [.apk FILE]\t\t\t\t\t -> extracts APK file and run apktool on it"
         echo -e "\tabe [.ab FILE]\t\t\t\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
         echo -e "$BLUE:: WEB ::$CLR"
-        echo -e "\tfu [URL] [DICT] [*EXT/*ENDSLASH]\t\t\t\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
+        echo -e "\tfu [URL] [DICT] [*EXT/*ENDSLASH]\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
         echo -e "$BLUE:: MISC ::$CLR"
         echo -e "\tphp7 \t\t\t\t\t\t -> switch PHP to version 7.x"
         echo -e "\tphp8 \t\t\t\t\t\t -> switch PHP to version 8.x"
