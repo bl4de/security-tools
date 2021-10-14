@@ -65,7 +65,8 @@ colors = {
 requests.packages.urllib3.disable_warnings()
 
 timeout = 2
-nmap = False
+nmap = True
+element_class_name_iterator = 1
 
 
 def usage():
@@ -88,6 +89,27 @@ def create_output_header(html_output):
             font-size: 12px;
         }
 
+        BODY {
+            margin:0px;
+        }
+
+        DIV#header {
+            position: fixed; 
+            padding-left: 30px;
+            top: 0px; 
+            height:70px; 
+            width: 100%; 
+            background-color:#09a; 
+            border-bottom:2px solid #ccc;
+        }
+
+        DIV#container {
+            margin-top:100px; 
+            width: 100%; 
+            padding:10px;
+            text-align:center;
+        }
+
         H4 {
             font-size: 14px;
             color: #777;
@@ -103,19 +125,100 @@ def create_output_header(html_output):
             vertical-align: top;
             text-align: left;
             padding: 10px;
-            border-top: 12px solid #6e6f6f;
+        }
+
+        TD.boundary {
+            border-top: 5px solid #6e6f6f;
+            border-bottom: 2px solid #6e6f6f;
+            padding-left: 20px;
+            background-color: #fafff4;
+        }
+
+        .fold {
+            display: none;
+        }
+
+        .unfold {
+            display: block;
+            background-color: #f9f9db;
+        }
+
+        A.toggle {
+            margin-left:30px; 
+            font-size: 18px;
+            font-weight:bold;
+            cursor: pointer;
+            padding:5px 20px;
+            border:1px solid #dadede;
+            
+            border-radius: 10px;
+        }
+
+        A.off {
+            background-color: #f1f1fa;
+        }
+
+        A.on {
+            background-color: #c4f3c5;
+        }
+
+        A.url {
+            font-weight: bold;
+            font-size:16px;
+            text-decoration:none;
+            margin-left: 120px;
         }
     </style>
 </head>
 
 <body>
-    <table cellpadding="2" cellspacing="2">
+
+    <script>
+        function toggleFold(className, evtTarget = null) {
+            const elements = document.getElementsByClassName(className);
+            if (elements.length > 0) {
+                [].forEach.call(elements, element => {
+                    if (element.classList.contains('fold')) {
+                        element.classList.remove('fold');
+                        element.classList.add('unfold');
+                        if (evtTarget) {
+                            evtTarget.classList.remove('off');
+                            evtTarget.classList.add('on');
+                        } 
+                    } else {
+                        element.classList.remove('unfold');
+                        element.classList.add('fold');
+                        if (evtTarget) {
+                            evtTarget.classList.remove('on');
+                            evtTarget.classList.add('off');
+                        } 
+                    }
+                });
+            }
+        }
+    </script>
+
+    <div id="header">
+        <p>
+            <h6>Show: 
+                <a onclick="toggleFold('http_code_2', this);" class="toggle off" style="color:#0c0;">2xx </a>
+                <a onclick="toggleFold('http_code_3', this);" class="toggle off" style="color:#000;">3xx</a>
+                <a onclick="toggleFold('http_code_4', this);" class="toggle off" style="color:#c00;">4xx</a>
+                <a onclick="toggleFold('http_code_5', this);" class="toggle off" style="color:#c00;">5xx</a>
+            </h6>
+        </p>
+    </div>
+
+    <div id="container" style="margin-top:100px; width: 100%; padding:10px;">
+        <table cellpadding="2" cellspacing="2">
     """
     html_output.write(html)
     return
 
 
 def append_to_output(html_output, url, http_status_code, response_headers, nmap_output, ip_addresses, output_directory):
+    global element_class_name_iterator
+
     screenshot_name = url.replace('https', '').replace(
         'http', '').replace('://', '') + '.png'
     screenshot_cmd = '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --user-agent="HackerOne" --disable-gpu --dns-prefetch-disable --log-level=0 --timeout=30000 --virtual-time-budget=999999 --run-all-compositor-stages-before-draw --screenshot={} '.format(
@@ -162,17 +265,23 @@ def append_to_output(html_output, url, http_status_code, response_headers, nmap_
     # HTTP response headers
     response_headers_html = ""
     for header in response_headers.keys():
-        response_headers_html = response_headers_html + "<p><strong>{}</strong> : {}</p>".format(
+        response_headers_html = response_headers_html + "<p style='width: 720px; overflow-wrap: break-word;'><strong>{}</strong> : {}</p>".format(
             header, response_headers[header]
         )
+    element_class_name = 'result_{}'.format(element_class_name_iterator)
+    element_class_name_iterator += 1
 
     html = """
         <tr>
-            <td style="width:35%; margin-right:20px; border-right: 1px solid #0c0c0c;">
-                <h4>HTTP Response Status: <strong style="color:#{};">{}</strong></h4>
-                <p>
-                    <a href="{}" target="_blank">{}</a>
-                </p>
+            <td colspan="3" class="boundary">
+                <h4>
+                    HTTP Response Status: <strong style="font-size:18px; color:#{}; cursor:pointer;" onclick="toggleFold('{}', this);">{}</strong> 
+                    <a class="url" href="{}" target="_blank">{}</a>
+                </h4>
+            </td>
+        </tr>
+        <tr class="http_code_{} {} fold">
+            <td style="width:35%; margin-right:20px; border-right: 1px solid #0c0c0c; width:480px;">
                 <img style="width:360px; border:1px solid #cecece; margin:10px;" src="{}" />
             </td>
 
@@ -189,7 +298,19 @@ def append_to_output(html_output, url, http_status_code, response_headers, nmap_
                 {}
             </td>
         </tr>
-    """.format(http_status_code_color, http_status_code, url, url, screenshot_name, response_headers_html, ip_html, nmap_html)
+    """.format(
+        http_status_code_color,
+        element_class_name,
+        http_status_code,
+        url,
+        url,
+        (http_status_code//100),
+        element_class_name,
+        screenshot_name,
+        response_headers_html,
+        ip_html,
+        nmap_html
+    )
     html_output.write(html)
     html_output.flush()
     return
@@ -197,7 +318,8 @@ def append_to_output(html_output, url, http_status_code, response_headers, nmap_
 
 def create_output_footer(html_output):
     html = """
-            </table>
+                </table>
+            </div>
         </body>
     </html>
     """
