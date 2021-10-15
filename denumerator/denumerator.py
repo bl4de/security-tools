@@ -3,10 +3,6 @@
 """
 @TODO
 - results summary
-- disable/enable by HTTP Response Code (200/500/404/403/302)
-- HTTP response headers
-
-
 """
 
 
