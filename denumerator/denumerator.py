@@ -25,6 +25,8 @@ import os
 import subprocess
 import time
 import requests
+import json
+
 from datetime import datetime
 welcome = """
 --- dENUMerator ---
@@ -410,13 +412,37 @@ def enumerate_domains(domains, output_file, html_output, allowed_http_responses,
             pass
 
 
+def enumerate_from_crt_sh(domain):
+    '''
+        Perform subdomains enumeration using crt.sh service
+    '''
+    base_url = "https://crt.sh/?q={}&output=json".format(domain)
+    data = {}
+    extracted_domains = []
+
+    resp = requests.get(base_url)
+
+    if resp.status_code == 200:
+        data = json.loads(resp.content.decode('utf-8'))
+        for elem in data:
+            if elem['name_value'] not in extracted_domains:
+                extracted_domains.append(elem['name_value'])
+
+        print(extracted_domains)
+    else:
+        print("[-] No data retrieved for domain {}".format(domain))
+
+    return []
+
 def main():
 
     parser = argparse.ArgumentParser()
     allowed_http_responses = []
 
     parser.add_argument(
-        "-f", "--file", help="File with list of hostnames")
+        "-f", "--file", help="File with list of hostnames to check (-t/--target will be ignored")
+    parser.add_argument(
+        "-t", "--target", help="Target domain - will use crt.sh to perform subdomain enumeration (-f/--file will be ignored)")
     parser.add_argument(
         "-s", "--success", help="Show all responses, including exceptions")
     parser.add_argument(
@@ -453,10 +479,13 @@ def main():
     # set options
     show = True if args.success else False
 
-    if args.file is not None and os.path.isfile(args.file):
+    # use provided file with list of hostnames or perform subdomain enumeration with crt.sh:
+    if args.target is None and args.file is not None and os.path.isfile(args.file):
         domains = open(args.file, 'r').readlines()
+    elif args.target is not None and args.file is  None:
+        domains = enumerate_from_crt_sh(args.target)
     else:
-        exit('[-] Can not open {} file with domains list  :/'.format(args.file))
+        exit('[-] No file with hostnames or domain to recon. Use either -f or -t option')
 
     # create dir for HTML report
     if os.path.isdir('reports') == False:
