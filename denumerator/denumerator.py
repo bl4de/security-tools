@@ -20,13 +20,13 @@ usage:
 $ ./denumerator.py [domain_list_file]
 """
 
+
 import argparse
 import os
 import subprocess
 import time
 import requests
 import json
-
 from datetime import datetime
 welcome = """
 --- dENUMerator ---
@@ -57,8 +57,7 @@ colors = {
     "magenta": '\33[35m',
     "cyan": '\33[36m',
     "grey": '\33[90m',
-    "lightgrey": '\33[37m',
-    "lightblue": '\33[94'
+    "lightgrey": '\33[37m'
 }
 requests.packages.urllib3.disable_warnings()
 
@@ -334,7 +333,7 @@ def send_request(proto, domain, output_file, html_output, allowed_http_responses
         'https': 'https://'
     }
 
-    print('\t--> {}{}'.format(protocols.get(proto.lower()), domain))
+    print('\t--> {}{}{}{}'.format(colors['magenta'], protocols.get(proto.lower()), domain, colors['white']))
 
     resp = requests.get(protocols.get(proto.lower()) + domain,
                         timeout=timeout,
@@ -418,21 +417,23 @@ def enumerate_from_crt_sh(domain):
     '''
     base_url = "https://crt.sh/?q={}&output=json".format(domain)
     data = {}
-    extracted_domains = []
+    enumerated_subdomains = []
 
     resp = requests.get(base_url)
 
     if resp.status_code == 200:
         data = json.loads(resp.content.decode('utf-8'))
         for elem in data:
-            if elem['name_value'] not in extracted_domains:
-                extracted_domains.append(elem['name_value'])
+            if elem['common_name'] not in enumerated_subdomains:
+                enumerated_subdomains.append(elem['common_name'])
 
-        print(extracted_domains)
+        if len(enumerated_subdomains) > 0:
+            print("{}[+] Done! Found {} subdomains, performing HTTP servers enumeration...{}".format(
+                colors['cyan'], len(enumerated_subdomains), colors['white']))
+            return enumerated_subdomains
     else:
-        print("[-] No data retrieved for domain {}".format(domain))
+        exit("[-] No data retrieved for domain {}".format(domain))
 
-    return []
 
 def main():
 
@@ -482,7 +483,7 @@ def main():
     # use provided file with list of hostnames or perform subdomain enumeration with crt.sh:
     if args.target is None and args.file is not None and os.path.isfile(args.file):
         domains = open(args.file, 'r').readlines()
-    elif args.target is not None and args.file is  None:
+    elif args.target is not None and args.file is None:
         domains = enumerate_from_crt_sh(args.target)
     else:
         exit('[-] No file with hostnames or domain to recon. Use either -f or -t option')
