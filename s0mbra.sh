@@ -11,12 +11,15 @@
 
 HACKING_HOME="/Users/bl4de/hacking"
 
-GREEN='\033[1;32m'
 GRAY='\033[1;30m'
 RED='\033[1;31m'
+GREEN='\033[1;32m'
+LIGHTGREEN='\033[32m'
 YELLOW='\033[1;33m'
 BLUE='\033[1;34m'
+LIGHTBLUE='\033[34m'
 MAGENTA='\033[1;35m'
+CYAN='\033[36m'
 
 CLR='\033[0m'
 NEWLINE='\n'
@@ -545,41 +548,41 @@ case "$cmd" in
         echo -e "--------------------------------------------------------------------------------------------------------------"
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}\n"
         echo -e "$BLUE:: RECON ::$CLR"
-        echo -e "\tsubdomenum [SCOPE_FILE] [OUTPUT_DIR]\t\t -> full scope subdomain enumeration + HTTP(S) denumerator on all identified domains"
-        echo -e "\tquick_nmap_scan [IP] [*PORTS]\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
-        echo -e "\tfull_nmap_scan [IP] [*PORTS]\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A on found open ports"
-        echo -e "\tnfs_enum [IP]\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
+        echo -e "\t$CYAN subdomenum $GRAY[SCOPE_FILE] [OUTPUT_DIR]$CLR\t\t -> full scope subdomain enumeration + HTTP(S) denumerator on all identified domains"
+        echo -e "\t$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
+        echo -e "\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A on found open ports"
+        echo -e "\t$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
         echo -e "$BLUE:: AMAZON AWS S3 ::$CLR"
-        echo -e "\ts3 [bucket]\t\t\t\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
-        echo -e "\ts3go [bucket] [key]\t\t\t\t -> get object identified by [key] from AWS S3 [bucket]"
+        echo -e "\t$CYAN s3 $GRAY[bucket]$CLR\t\t\t\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
+        echo -e "\t$CYAN s3go $GRAY[bucket] [key]$CLR\t\t\t\t -> get object identified by [key] from AWS S3 [bucket]"
         echo -e "$BLUE:: PENTEST TOOLS ::$CLR"
-        echo -e "\thttp [PORT]\t\t\t\t\t -> runs HTTP server on [PORT] TCP port"
-        echo -e "\tprivesc_tools_linux \t\t\t\t -> runs HTTP server on port 9119 in directory with Linux PrivEsc tools"
-        echo -e "\tprivesc_tools_windows \t\t\t\t -> runs HTTP server on port 9119 in directory with Windows PrivEsc tools"
-        echo -e "\tgenerate_shells [IP] [PORT] \t\t\t -> generates ready-to-use reverse shells in various languages for given IP:PORT"
+        echo -e "\t$CYAN http $GRAY[PORT]$CLR\t\t\t\t\t -> runs HTTP server on [PORT] TCP port"
+        echo -e "\t$CYAN privesc_tools_linux $CLR\t\t\t\t -> runs HTTP server on port 9119 in directory with Linux PrivEsc tools"
+        echo -e "\t$CYAN privesc_tools_windows $CLR\t\t\t\t -> runs HTTP server on port 9119 in directory with Windows PrivEsc tools"
+        echo -e "\t$CYAN generate_shells $GRAY[IP] [PORT] $CLR\t\t\t -> generates ready-to-use reverse shells in various languages for given IP:PORT"
         echo -e "$BLUE:: SMB SUITE ::$CLR"
-        echo -e "\tsmb_enum [IP] [USER] [PASSWORD]\t\t\t -> enumerates SMB shares on [IP] as [USER] (eg. null) (445 port has to be open)"
-        echo -e "\tsmb_get_file [IP] [user] [password] [PATH] \t -> downloads file from SMB share [PATH] on [IP]"
-        echo -e "\tsmb_mount [IP] [SHARE] [USER]\t\t\t -> mounts SMB share at ./mnt/shares"
-        echo -e "\tsmb_umount\t\t\t\t\t -> unmounts SMB share from ./mnt/shares and deletes it"
+        echo -e "\t$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR\t\t\t -> enumerates SMB shares on [IP] as [USER] (eg. null) (445 port has to be open)"
+        echo -e "\t$CYAN smb_get_file $GRAY[IP] [user] [password] [PATH] $CLR\t -> downloads file from SMB share [PATH] on [IP]"
+        echo -e "\t$CYAN smb_mount $GRAY[IP] [SHARE] [USER]$CLR\t\t\t -> mounts SMB share at ./mnt/shares"
+        echo -e "\t$CYAN smb_umount $CLR\t\t\t\t\t -> unmounts SMB share from ./mnt/shares and deletes it"
         echo -e "$BLUE:: PASSWORDS CRACKIN' ::$CLR"
-        echo -e "\trockyou_john [TYPE] [HASHES]\t\t\t -> runs john+rockyou against [HASHES] file with hashes of type [TYPE]"
-        echo -e "\tssh_to_john [ID_RSA]\t\t\t\t -> id_rsa to JTR SSH hash file for SSH key password cracking"
-        echo -e "\trockyou_zip [ZIP file]\t\t\t\t -> crack ZIP password"
+        echo -e "\t$CYAN rockyou_john $GRAY[TYPE] [HASHES]$CLR\t\t\t -> runs john+rockyou against [HASHES] file with hashes of type [TYPE]"
+        echo -e "\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR\t\t\t\t -> id_rsa to JTR SSH hash file for SSH key password cracking"
+        echo -e "\t$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t -> crack ZIP password"
         echo -e "$BLUE:: STATIC CODE ANALYSIS ::$CLR"
-        echo -e "\tnpm_scan [MODULE_NAME]\t\t$YELLOW(JavaScript)$CLR\t -> static code analysis of MODULE_NAME npm module with nodestructor"
-        echo -e "\tjavascript_sca [FILE_NAME]\t$YELLOW(JavaScript)$CLR\t -> static code analysis of single JavaScript file with nodestructor"
-        echo -e "\tdecompile_jar [.jar FILE]\t$YELLOW(Java)$CLR\t\t -> open FILE.jar file in JD-Gui"
+        echo -e "\t$CYAN npm_scan $GRAY[MODULE_NAME]\t\t$YELLOW(JavaScript)$CLR\t -> static code analysis of MODULE_NAME npm module with nodestructor"
+        echo -e "\t$CYAN javascript_sca $GRAY[FILE_NAME]\t$YELLOW(JavaScript)$CLR\t -> static code analysis of single JavaScript file with nodestructor"
+        echo -e "\t$CYAN decompile_jar $GRAY[.jar FILE]\t$YELLOW(Java)$CLR\t\t -> open FILE.jar file in JD-Gui"
         echo -e "$BLUE:: ANDROID ::$CLR"
-        echo -e "\tjadx [.apk FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.apk file in JADX GUI"
-        echo -e "\tdex_to_jar [.dex file]\t\t\t\t -> exports .dex file into .jar"
-        echo -e "\tapk [.apk FILE]\t\t\t\t\t -> extracts APK file and run apktool on it"
-        echo -e "\tabe [.ab FILE]\t\t\t\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
+        echo -e "\t$CYAN jadx $GRAY[.apk FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.apk file in JADX GUI"
+        echo -e "\t$CYAN dex_to_jar $GRAY[.dex file]$CLR\t\t\t\t -> exports .dex file into .jar"
+        echo -e "\t$CYAN apk $GRAY[.apk FILE]$CLR\t\t\t\t\t -> extracts APK file and run apktool on it"
+        echo -e "\t$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
         echo -e "$BLUE:: WEB ::$CLR"
-        echo -e "\tfu [URL] [DICT] [*EXT/*ENDSLASH]\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
+        echo -e "\t$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH]$CLR\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
         echo -e "$BLUE:: MISC ::$CLR"
-        echo -e "\tphp7 \t\t\t\t\t\t -> switch PHP to version 7.x"
-        echo -e "\tphp8 \t\t\t\t\t\t -> switch PHP to version 8.x"
+        echo -e "\t$CYAN php7 $CLR\t\t\t\t\t\t -> switch PHP to version 7.x"
+        echo -e "\t$CYAN php8 $CLR\t\t\t\t\t\t -> switch PHP to version 8.x"
         echo -e "\n\n--------------------------------------------------------------------------------------------------------------"
         echo -e "$GREEN Hack The Planet!\n$CLR"
     ;;
