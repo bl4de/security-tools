@@ -82,6 +82,7 @@ browser_patterns = [
     ".*outerHTML",
     ".*appendChild\(",
     ".*document.write\(",
+    ".*document.writeln\(",
     ".*document.location",
     ".*document.URL",
     ".*document.documentURI",
