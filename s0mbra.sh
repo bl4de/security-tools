@@ -379,13 +379,13 @@ fu() {
         if [[ $3 == "/" ]]; then
             # if $3 arg passed to fu equals / - add at the end of the path (for dir enumerations where sometimes
             # dir path has to end with / to be identified
-            ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ/ -mc 200,422,500
+            ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ/ -mc 200,422,500 -H "X-Hackerone: bl4de"
         else
             # if $3 arg is not /, treat it as file extension to enumerate files:
-            ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ.$3 -mc 200,422,500
+            ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ.$3 -mc 200,422,500 -H "X-Hackerone: bl4de"
         fi
     else
-        ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc 200,422,500
+        ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc 200,422,500 -H "X-Hackerone: bl4de"
     fi
 }
 
