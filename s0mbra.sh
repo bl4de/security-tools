@@ -60,34 +60,57 @@ set_ip() {
 }
 
 # runs $2 port(s) against IP; then -sV -sC -A against every open port found
+# --script vuln  ???
 full_nmap_scan() {
     if [[ -z "$2" ]]; then 
-        echo -e "$BLUE[+] Running full nmap scan against all ports on $1 ...$CLR"
+        echo -e "$BLUE[+] Running full nmap scan against all ports on $1 ...$CYAN"
         ports=$(nmap -p- $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
-        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CLR"
+        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CYAN"
         nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log -oX ./"$1".xml
     else
-        echo -e "$BLUE[+] Running full nmap scan against $2 port(s) on $1 ...$CLR"
-        echo -e "\t\t -> search open ports..."
+        echo -e "$BLUE[+] Running full nmap scan against $2 port(s) on $1 ..."
+        echo -e "   ...search open ports...$CYAN"
         ports=$(nmap --top-ports "$2" $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
-        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CLR"
+        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CYAN"
         nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log -oX ./"$1".xml
     fi
 
-    echo -e "[+] Done!"
+    echo -e "$BLUE\n[+] Done! $CLR"
 }
+
+# --script=vulscan/vulscan.nse
+# requires: https://github.com/scipag/vulscan
+nmap_vuln_scan() {
+    if [[ -z "$2" ]]; then 
+        echo -e "$BLUE[+] Running full nmap scan with vulnerability scanning against all ports on $1"
+        echo -e "   Will probably take a while, so go grab some coffee or something.... $CYAN"
+        ports=$(nmap -p- $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
+        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CYAN"
+        nmap -p"$ports" -sV -sC -A -n --script=vulscan/vulscan.nse "$1" -oN ./"$1".log -oX ./"$1".xml
+    else
+        echo -e "$BLUE[+] Running full nmap scan with vulnerability scanning  against $2 port(s) on $1 ..."
+        echo -e "   Will probably take a while, so go grab some coffee or something...."
+        echo -e "   ...search open ports... $CYAN"
+        ports=$(nmap --top-ports "$2" $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
+        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CYAN"
+        nmap -p"$ports" -sV -sC -A -n --script=vulscan/vulscan.nse "$1" -oN ./"$1".log -oX ./"$1".xml
+    fi
+
+    echo -e "$BLUE\n[+] Done! $CLR"
+}
+
 
 # runs --top-ports $2 against IP
 quick_nmap_scan() {
     if [[ -z "$2" ]]; then 
-        echo -e "$BLUE[+] Running nmap scan against all ports on $1 ...$CLR"
+        echo -e "$BLUE[+] Running nmap scan against all ports on $1 ...$CYAN"
         nmap -p- $1 
     else
-        echo -e "$BLUE[+] Running nmap scan against top $2 ports on $1 ...$CLR"
+        echo -e "$BLUE[+] Running nmap scan against top $2 ports on $1 ...$CYAN"
         nmap --top-ports $2 $1
     fi
     
-    echo -e "[+] Done!"
+    echo -e "$BLUE\n[+] Done! $CLR"
 }
 
 # runs Python 3 built-in HTTP server on [PORT]
@@ -476,6 +499,9 @@ case "$cmd" in
     quick_nmap_scan)
         quick_nmap_scan "$2" "$3"
     ;;
+    nmap_vuln_scan)
+        nmap_vuln_scan "$2" "$3"
+    ;;
     http)
         http "$2"
     ;;
@@ -551,6 +577,7 @@ case "$cmd" in
         echo -e "\t$CYAN subdomenum $GRAY[SCOPE_FILE] [OUTPUT_DIR]$CLR\t\t -> full scope subdomain enumeration + HTTP(S) denumerator on all identified domains"
         echo -e "\t$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
         echo -e "\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A on found open ports"
+        echo -e "\t$CYAN nmap_vuln_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A --script=vulscan/vulscan.nse on found open ports"
         echo -e "\t$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
         echo -e "$BLUE:: AMAZON AWS S3 ::$CLR"
         echo -e "\t$CYAN s3 $GRAY[bucket]$CLR\t\t\t\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
@@ -561,7 +588,7 @@ case "$cmd" in
         echo -e "\t$CYAN privesc_tools_windows $CLR\t\t\t\t -> runs HTTP server on port 9119 in directory with Windows PrivEsc tools"
         echo -e "\t$CYAN generate_shells $GRAY[IP] [PORT] $CLR\t\t\t -> generates ready-to-use reverse shells in various languages for given IP:PORT"
         echo -e "$BLUE:: SMB SUITE ::$CLR"
-        echo -e "\t$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR\t\t\t -> enumerates SMB shares on [IP] as [USER] (eg. null) (445 port has to be open)"
+        echo -e "\t$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR\t\t -> enumerates SMB shares on [IP] as [USER] (eg. null) (445 port has to be open)"
         echo -e "\t$CYAN smb_get_file $GRAY[IP] [user] [password] [PATH] $CLR\t -> downloads file from SMB share [PATH] on [IP]"
         echo -e "\t$CYAN smb_mount $GRAY[IP] [SHARE] [USER]$CLR\t\t\t -> mounts SMB share at ./mnt/shares"
         echo -e "\t$CYAN smb_umount $CLR\t\t\t\t\t -> unmounts SMB share from ./mnt/shares and deletes it"
