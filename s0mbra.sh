@@ -53,14 +53,12 @@ __logo="
                        ,B@B
 "
 
-
 # config commands
 set_ip() {
     export IP="$1"
 }
 
 # runs $2 port(s) against IP; then -sV -sC -A against every open port found
-# --script vuln  ???
 full_nmap_scan() {
     if [[ -z "$2" ]]; then 
         echo -e "$BLUE[+] Running full nmap scan against all ports on $1 ...$CYAN"
@@ -98,7 +96,6 @@ nmap_vuln_scan() {
 
     echo -e "$BLUE\n[+] Done! $CLR"
 }
-
 
 # runs --top-ports $2 against IP
 quick_nmap_scan() {
@@ -410,6 +407,14 @@ fu() {
     else
         ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc 200,422,500 -H "X-Hackerone: bl4de"
     fi
+    echo -e "$BLUE\n[+] Done! $CLR"
+}
+
+fufu() {
+    clear
+    echo -e "$BLUE[+] Enumerate web resources on $1 with starter.txt dictionary; matching HTTP $2...$CLR"
+    ffuf -c -w /Users/bl4de/hacking/dictionaries/starter.txt -u $1FUZZ -mc $2 -H "X-Hackerone: bl4de"   
+    echo -e "$BLUE\n[+] Done! $CLR"
 }
 
 generate_shells() {
@@ -562,6 +567,9 @@ case "$cmd" in
     fu)
         fu "$2" "$3" "$4"
     ;;
+    fufu)
+        fufu "$2" "$3"
+    ;;
     s3go)
         s3go "$2" "$3"
     ;;
@@ -607,6 +615,7 @@ case "$cmd" in
         echo -e "\t$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
         echo -e "$BLUE:: WEB ::$CLR"
         echo -e "\t$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH]$CLR\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
+        echo -e "\t$CYAN fufu $GRAY[URL] [HTTP RESPONSE CODE(S)]$CLR\t\t -> web application enumeration with starter.txt"
         echo -e "$BLUE:: MISC ::$CLR"
         echo -e "\t$CYAN php7 $CLR\t\t\t\t\t\t -> switch PHP to version 7.x"
         echo -e "\t$CYAN php8 $CLR\t\t\t\t\t\t -> switch PHP to version 8.x"
