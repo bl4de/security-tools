@@ -9,7 +9,19 @@ import re
 Vi.py - an automated script to extract all inteersting information from website
 
 @author: bl4de <bl4de@wearehackerone.com>
+
+@TBD:
+- refactor scafolding code
+- extract JavaScript files -> scan them for stuff 
+  (API endpoints, secrets, hardcoded information etc.)
+- parse HTML for stuff
+- harvest useful information from any comment found (in HTML and JS alike)
+- other? (TBA)
+
+- add as a submodule (enabled by cmd option) to denumerator.py 
+  and perform full recon of every website found in scope
 '''
+
 user_url = str(input('[+] Enter Target URL To Scan: '))
 urls = deque([user_url])
 MAX_COUNT = 10
