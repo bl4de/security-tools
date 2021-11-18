@@ -41,64 +41,67 @@ def extract_javascript_files(javascript_files: set, http_response: requests.Resp
         to already found set of javascript_files
     '''
     javascript_files.update(set(re.findall(
-        r"[a-z0-9\.\-_]+\.js", response.text, re.IGNORECASE
+        r"[a-z0-9\.\-_]+\.js", http_response.text, re.IGNORECASE
     )))
     return javascript_files
 
 
+def proceed():
+
+    user_url = str(input('[+] Enter Target URL To Scan: '))
+    urls = deque([user_url])
+    MAX_COUNT = 5
+
+    scraped_urls = set()
+    emails = set()
+    javascript_files = set()
+
+    count = 0
+
+    try:
+        '''
+            main execution loop
+        '''
+        while len(urls):
+            count += 1
+            if count == MAX_COUNT:
+                break
+            url = urls.popleft()
+            scraped_urls.add(url)
+
+            parts = urllib.parse.urlsplit(url)
+            base_url = '{0.scheme}://{0.netloc}'.format(parts)
+
+            path = url[:url.rfind('/')+1] if '/' in parts.path else url
+
+            print('[%d] Processing %s' % (count, url))
+            try:
+                response = requests.get(url)
+            except (requests.exceptions.MissingSchema, requests.exceptions.ConnectionError):
+                continue
+
+            emails = extract_emails(emails, response)
+            javascript_files = extract_javascript_files(
+                javascript_files, response)
+
+            soup = BeautifulSoup(response.text, features="lxml")
+
+            for anchor in soup.find_all("a"):
+                link = anchor.attrs['href'] if 'href' in anchor.attrs else ''
+                if link.startswith('/'):
+                    link = base_url + link
+                elif not link.startswith('http'):
+                    link = path + link
+                if not link in urls and not link in scraped_urls:
+                    urls.append(link)
+    except KeyboardInterrupt:
+        print('[-] Closing!')
+
+    for mail in emails:
+        print(mail)
+    for js_file in javascript_files:
+        print(js_file)
+
+
 if __name__ == "__main__":
-    def main():
-
-        user_url = str(input('[+] Enter Target URL To Scan: '))
-        urls = deque([user_url])
-        MAX_COUNT = 10
-
-        scraped_urls = set()
-        emails = set()
-        javascript_files = set()
-
-        count = 0
-
-        try:
-            '''
-                main execution loop
-            '''
-            while len(urls):
-                count += 1
-                if count == MAX_COUNT:
-                    break
-                url = urls.popleft()
-                scraped_urls.add(url)
-
-                parts = urllib.parse.urlsplit(url)
-                base_url = '{0.scheme}://{0.netloc}'.format(parts)
-
-                path = url[:url.rfind('/')+1] if '/' in parts.path else url
-
-                print('[%d] Processing %s' % (count, url))
-                try:
-                    response = requests.get(url)
-                except (requests.exceptions.MissingSchema, requests.exceptions.ConnectionError):
-                    continue
-
-                emails = extract_emails(emails, response)
-                javascript_files = extract_javascript_files(
-                    javascript_files, response)
-
-                soup = BeautifulSoup(response.text, features="lxml")
-
-                for anchor in soup.find_all("a"):
-                    link = anchor.attrs['href'] if 'href' in anchor.attrs else ''
-                    if link.startswith('/'):
-                        link = base_url + link
-                    elif not link.startswith('http'):
-                        link = path + link
-                    if not link in urls and not link in scraped_urls:
-                        urls.append(link)
-        except KeyboardInterrupt:
-            print('[-] Closing!')
-
-        for mail in emails:
-            print(mail)
-        for js_file in javascript_files:
-            print(js_file)
+    proceed()
