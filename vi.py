@@ -11,7 +11,9 @@ Vi.py - an automated script to extract all inteersting information from website
 @author: bl4de <bl4de@wearehackerone.com>
 
 @TBD:
-- refactor scafolding code
+- refactor scafolding code [In progress]
+- add argparser
+
 - extract JavaScript files -> scan them for stuff 
   (API endpoints, secrets, hardcoded information etc.)
 - parse HTML for stuff
@@ -21,6 +23,28 @@ Vi.py - an automated script to extract all inteersting information from website
 - add as a submodule (enabled by cmd option) to denumerator.py 
   and perform full recon of every website found in scope
 '''
+
+
+def extract_emails(emails: set, http_response: requests.Response) -> set:
+    '''
+        Extracts emails from provided HTTP response body and append them
+        to already found set of emails
+    '''
+    emails.update(set(re.findall(
+        r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", http_response.text, re.IGNORECASE)))
+    return emails
+
+
+def extract_javascript_files(javascript_files: set, http_response: requests.Response) -> set:
+    '''
+        Extracts JavaScript files urls from provided HTTP response body and append them
+        to already found set of javascript_files
+    '''
+    javascript_files.update(set(re.findall(
+        r"[a-z0-9\.\-_]+\.js", response.text, re.IGNORECASE
+    )))
+    return javascript_files
+
 
 user_url = str(input('[+] Enter Target URL To Scan: '))
 urls = deque([user_url])
@@ -50,14 +74,8 @@ try:
         except (requests.exceptions.MissingSchema, requests.exceptions.ConnectionError):
             continue
 
-        new_emails = set(re.findall(
-            r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", response.text, re.IGNORECASE))
-        emails.update(new_emails)
-
-        new_javascripts = set(re.findall(
-            r"[a-z0-9\.\-_]+\.js", response.text, re.IGNORECASE
-        ))
-        javascript_files.update(new_javascripts)
+        emails = extract_emails(emails, response)
+        javascript_files = extract_javascript_files(javascript_files, response)
 
         soup = BeautifulSoup(response.text, features="lxml")
 
