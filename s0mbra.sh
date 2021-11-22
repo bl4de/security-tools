@@ -1,10 +1,6 @@
 #!/bin/bash
 # shellcheck disable=SC1087,SC2181,SC2162,SC2013
-###          ###
 ###  S0mbra  ###
-###          ###
-
-
 # BugBounty/CTF/PenTest/Hacking suite 
 # collection of various wrappers, multi-commands, tips&tricks, shortcuts etc.
 # CTX: bl4de@wearehackerone.com

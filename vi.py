@@ -46,15 +46,35 @@ def extract_javascript_files(javascript_files: set, http_response: requests.Resp
     return javascript_files
 
 
-def proceed():
+def parse_javascript_file(js_filename: str):
+    '''
+        Parse JavaScript file for interesting stuff    
+    '''
+    TYPE = 'DEBUG'
+    print(f"[{TYPE}] parsing {js_filename} for interesting stuff...")
+    pass
 
+
+def extract():
+    '''
+        Performs data extraction stage
+    '''
+    for js_filename in javascript_files:
+        parse_javascript_file(js_filename)
+
+    pass
+
+
+def recon(emails: set, javascript_files: set):
+    '''
+        Creates list of resources; some will be proceeded later in next 
+        steps
+    '''
     user_url = str(input('[+] Enter Target URL To Scan: '))
     urls = deque([user_url])
-    MAX_COUNT = 5
+    MAX_COUNT = 2
 
     scraped_urls = set()
-    emails = set()
-    javascript_files = set()
 
     count = 0
 
@@ -104,4 +124,12 @@ def proceed():
 
 
 if __name__ == "__main__":
-    proceed()
+
+    emails = set()
+    javascript_files = set()
+
+    # go through provided url; find emails, javascript files etc.
+    recon(emails, javascript_files)
+
+    # extract sensitive and interesting information from what was found
+    extract()
