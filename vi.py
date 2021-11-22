@@ -55,7 +55,7 @@ def parse_javascript_file(js_filename: str):
     pass
 
 
-def extract():
+def tear_off():
     '''
         Performs data extraction stage
     '''
@@ -132,4 +132,4 @@ if __name__ == "__main__":
     recon(emails, javascript_files)
 
     # extract sensitive and interesting information from what was found
-    extract()
+    tear_off()
