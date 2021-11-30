@@ -140,6 +140,14 @@ def create_output_header(html_output):
             background-color: #f9f9db;
         }
 
+        TR.visible {
+            display: block;
+        }
+
+        TR.hidden {
+            display: none;
+        }
+        
         A.toggle {
             margin-left:30px; 
             font-size: 18px;
@@ -193,15 +201,39 @@ def create_output_header(html_output):
                 });
             }
         }
+        
+        
+        function showOnly(className, evtTarget = null) {
+            const elements = document.getElementsByClassName(className);
+            if (elements.length > 0) {
+                [].forEach.call(elements, element => {
+                    if (element.classList.contains('hidden')) {
+                        element.classList.remove('hidden');
+                        element.classList.add('visible');
+                        if (evtTarget) {
+                            evtTarget.classList.remove('off');
+                            evtTarget.classList.add('on');
+                        } 
+                    } else {
+                        element.classList.remove('visible');
+                        element.classList.add('hidden');
+                        if (evtTarget) {
+                            evtTarget.classList.remove('on');
+                            evtTarget.classList.add('off');
+                        } 
+                    }
+                });
+            }
+        }
     </script>
 
     <div id="header">
         <p>
             <h6>Show: 
-                <a onclick="toggleFold('http_code_2', this);" class="toggle off" style="color:#0c0;">2xx </a>
-                <a onclick="toggleFold('http_code_3', this);" class="toggle off" style="color:#000;">3xx</a>
-                <a onclick="toggleFold('http_code_4', this);" class="toggle off" style="color:#c00;">4xx</a>
-                <a onclick="toggleFold('http_code_5', this);" class="toggle off" style="color:#c00;">5xx</a>
+                <a onclick="showOnly('http_code_2_main', this);" class="toggle off" style="color:#0c0;">2xx </a>
+                <a onclick="showOnly('http_code_3_main', this);" class="toggle off" style="color:#000;">3xx</a>
+                <a onclick="showOnly('http_code_4_main', this);" class="toggle off" style="color:#c00;">4xx</a>
+                <a onclick="showOnly('http_code_5_main', this);" class="toggle off" style="color:#c00;">5xx</a>
             </h6>
         </p>
     </div>
@@ -269,7 +301,7 @@ def append_to_output(html_output, url, http_status_code, response_headers, nmap_
     element_class_name_iterator += 1
 
     html = """
-        <tr>
+        <tr class="http_code_{}_main">
             <td colspan="3" class="boundary">
                 <h4>
                     HTTP Response Status: <strong style="font-size:18px; color:#{}; cursor:pointer;" onclick="toggleFold('{}', this);">{}</strong> 
@@ -296,6 +328,7 @@ def append_to_output(html_output, url, http_status_code, response_headers, nmap_
             </td>
         </tr>
     """.format(
+        (http_status_code//100),
         http_status_code_color,
         element_class_name,
         http_status_code,

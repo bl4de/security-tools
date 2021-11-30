@@ -578,7 +578,7 @@ case "$cmd" in
         echo -e "$BLUE:: ANDROID ::$CLR"
         echo -e "\t$CYAN jadx $GRAY[.apk FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.apk file in JADX GUI"
         echo -e "\t$CYAN dex_to_jar $GRAY[.dex file]$CLR\t\t\t\t -> exports .dex file into .jar"
-        echo -e "\t$CYAN apk $GRAY[.apk FILE]$CLR\t\t\t\t\t -> extracts APK file and run apktool on it"
+        echo -e "\t$CYAN apk $GRAY[.apk FILE]$CLR\t\t\t\t -> extracts APK file and run apktool on it"
         echo -e "\t$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
         echo -e "$BLUE:: WEB ::$CLR"
         echo -e "\t$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH]$CLR\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
