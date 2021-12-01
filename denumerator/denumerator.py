@@ -487,7 +487,7 @@ def main():
         "-c", "--code", help="Show only selected HTTP response status codes, comma separated", default='200,206,301,302,403,422,500'
     )
     parser.add_argument(
-        "-n", "--nmap", help="use nmap for port scanning (slows down the whole eenumeration A LOT, so be warned!)", default=100
+        "-n", "--nmap", help="use nmap for port scanning (slows down the whole enumeration A LOT, so be warned!)", default=100
     )
     parser.add_argument(
         "-p", "--ports", help="--top-ports option for nmap (default = 100)", default=100

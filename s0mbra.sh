@@ -237,8 +237,14 @@ nfs_enum() {
 # if RPC on port 111 shows in rpcinfo that nfs on port 2049 is available
 # we can enumerate nfs shares available:
 subdomenum() {
-    echo -e "$BLUE[+] Running subdomain enumeration and HTTP(S) web servers discovery on $1 scope file..."
+    echo -e "$BLUE[+] Running subdomain enumeration and HTTP(S) web servers discovery on $1 scope file...$CLR\n"
     enumeratescope $1 $2
+    echo -e "\n[+] Done."
+}
+
+htpx() {
+    echo -e "$BLUE[+] Running httpx enumeration on $1 domain(s) file...$CLR\n"
+    httpx -silent -status-code -web-server -tech-detect -l $1 -mc 200,403,500
     echo -e "\n[+] Done."
 }
 
@@ -465,6 +471,9 @@ case "$cmd" in
     subdomenum)
         subdomenum "$2" "$3"
     ;;
+    htpx)
+        htpx "$2"
+    ;;
     full_nmap_scan)
         full_nmap_scan "$2" "$3"
     ;;
@@ -550,6 +559,7 @@ case "$cmd" in
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}\n"
         echo -e "$BLUE:: RECON ::$CLR"
         echo -e "\t$CYAN subdomenum $GRAY[SCOPE_FILE] [OUTPUT_DIR]$CLR\t\t -> full scope subdomain enumeration + HTTP(S) denumerator on all identified domains"
+        echo -e "\t$CYAN htpx $GRAY[DOMAINS_LIST] $CLR\t\t\t\t -> httpx against DOMAINS_LIST, matching 200, 403 and 500 + stack, web server discovery"
         echo -e "\t$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
         echo -e "\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A on found open ports"
         echo -e "\t$CYAN nmap_vuln_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A --script=vulscan/vulscan.nse on found open ports"
