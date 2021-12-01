@@ -142,24 +142,6 @@ javascript_sca() {
     echo -e "\n\n[+]Done."
 }
 
-# exposes folder with Linux PrivEsc tools on localhost:9119
-privesc_tools_linux() {
-    cd "$HACKING_HOME"/tools/Linux-tools || exit
-    echo -e "$BLUE[+] Available tools:$CLR"
-    tree -L 2 .
-    echo -e "$BLUE[+] Starting HTTP server on port 9119...$CLR"
-    http 9119
-}
-
-# exposes folder with Windows PrivEsc tools on localhost:9119
-privesc_tools_windows() {
-    cd "$HACKING_HOME"/tools/Windows || exit
-    echo -e "$BLUE[+] Available tools:$CLR"
-    ls -lR .
-    echo -e "$BLUE[+] Starting HTTP server on port 9119...$CLR"
-    http 9119
-}
-
 # enumerates SMB shares on [IP] - port 445 has to be open
 smb_enum() {
     if [[ -z $2 ]]; then
@@ -243,8 +225,8 @@ subdomenum() {
 }
 
 htpx() {
-    echo -e "$BLUE[+] Running httpx enumeration on $1 domain(s) file...$CLR\n"
-    httpx -silent -status-code -web-server -tech-detect -l $1 -mc 200,403,500
+    echo -e "$BLUE[+] Running httpx enumeration on $1 domain(s) file; save output to $2...$CLR\n"
+    httpx -silent -status-code -web-server -tech-detect -l $1 -mc 200,403,500 -o $2
     echo -e "\n[+] Done."
 }
 
@@ -424,30 +406,6 @@ generate_shells() {
     echo -e "$NEWLINE"
 }
 
-php7() {
-    echo -e "$BLUE[+] Switching PHP version to 7.x ...\n$YELLOW"
-    brew unlink php@8.0 && brew link --force php@7.4
-    echo -e "$BLUE[+] Changing httpd.conf...$YELLOW"
-    sudo cp /private/etc/apache2/httpd.conf.php7 /private/etc/apache2/httpd.conf
-    echo -e "$BLUE[+] Restarting Apache...$YELLOW"
-    sudo apachectl -k restart
-    echo -e "$BLUE[+] All done, current PHP version is:\n$GREEN"
-    php -v
-    echo -e "$CLR"
-}
-
-php8() {
-    echo -e "$BLUE[+] Switching PHP version to 8.x ...\n$YELLOW"
-    brew unlink php@7.4 && brew link --force php@8.0
-    echo -e "$BLUE[+] Changing httpd.conf...$YELLOW"
-    sudo cp /private/etc/apache2/httpd.conf.php8 /private/etc/apache2/httpd.conf
-    echo -e "$BLUE[+] Restarting Apache...$YELLOW"
-    sudo apachectl -k restart
-    echo -e "$BLUE[+] All done, current PHP version is:\n$GREEN"
-    php -v
-    echo -e "$CLR"
-}
-
 pwn() {
     echo -e "$BLUE[+] Running automated recon on $1...\n    Puede tomar un poco tiempo, tienes que ser paciente... ;)  $YELLOW"
 }
@@ -458,12 +416,6 @@ clear
 case "$cmd" in
     pwn)
         pwn "$2"
-    ;;
-    php7)
-        php7
-    ;;
-    php8)
-        php8
     ;;
     set_ip)
         set_ip "$2"
@@ -516,12 +468,6 @@ case "$cmd" in
     decompile_jar)
         decompile_jar "$2"
     ;;
-    privesc_tools_linux)
-        privesc_tools_linux
-    ;;
-    privesc_tools_windows)
-        privesc_tools_windows
-    ;;
     smb_enum)
         smb_enum "$2" "$3" "$4"
     ;;
@@ -559,7 +505,7 @@ case "$cmd" in
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}\n"
         echo -e "$BLUE:: RECON ::$CLR"
         echo -e "\t$CYAN subdomenum $GRAY[SCOPE_FILE] [OUTPUT_DIR]$CLR\t\t -> full scope subdomain enumeration + HTTP(S) denumerator on all identified domains"
-        echo -e "\t$CYAN htpx $GRAY[DOMAINS_LIST] $CLR\t\t\t\t -> httpx against DOMAINS_LIST, matching 200, 403 and 500 + stack, web server discovery"
+        echo -e "\t$CYAN htpx $GRAY[DOMAINS_LIST] [OUTPUT_FILE] $CLR\t\t -> httpx against DOMAINS_LIST, matching 200, 403 and 500 + stack, web server discovery"
         echo -e "\t$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
         echo -e "\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A on found open ports"
         echo -e "\t$CYAN nmap_vuln_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A --script=vulscan/vulscan.nse on found open ports"
@@ -569,8 +515,6 @@ case "$cmd" in
         echo -e "\t$CYAN s3go $GRAY[bucket] [key]$CLR\t\t\t\t -> get object identified by [key] from AWS S3 [bucket]"
         echo -e "$BLUE:: PENTEST TOOLS ::$CLR"
         echo -e "\t$CYAN http $GRAY[PORT]$CLR\t\t\t\t\t -> runs HTTP server on [PORT] TCP port"
-        echo -e "\t$CYAN privesc_tools_linux $CLR\t\t\t\t -> runs HTTP server on port 9119 in directory with Linux PrivEsc tools"
-        echo -e "\t$CYAN privesc_tools_windows $CLR\t\t\t\t -> runs HTTP server on port 9119 in directory with Windows PrivEsc tools"
         echo -e "\t$CYAN generate_shells $GRAY[IP] [PORT] $CLR\t\t\t -> generates ready-to-use reverse shells in various languages for given IP:PORT"
         echo -e "$BLUE:: SMB SUITE ::$CLR"
         echo -e "\t$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR\t\t -> enumerates SMB shares on [IP] as [USER] (eg. null) (445 port has to be open)"
@@ -593,10 +537,8 @@ case "$cmd" in
         echo -e "$BLUE:: WEB ::$CLR"
         echo -e "\t$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH]$CLR\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
         echo -e "\t$CYAN fufu $GRAY[URL] [HTTP RESPONSE CODE(S)]$CLR\t\t -> web application enumeration with starter.txt"
-        echo -e "$BLUE:: MISC ::$CLR"
-        echo -e "\t$CYAN php7 $CLR\t\t\t\t\t\t -> switch PHP to version 7.x"
-        echo -e "\t$CYAN php8 $CLR\t\t\t\t\t\t -> switch PHP to version 8.x"
-        echo -e "\n\n--------------------------------------------------------------------------------------------------------------"
+        
+        echo -e "\n--------------------------------------------------------------------------------------------------------------"
         echo -e "$GREEN Hack The Planet!\n$CLR"
     ;;
 esac
