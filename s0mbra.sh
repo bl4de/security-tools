@@ -230,6 +230,40 @@ htpx() {
     echo -e "\n[+] Done."
 }
 
+recon() {
+    TMPDIR=$(pwd)
+    START_TIME=$(date)
+    echo -e "$BLUE[+] Running quick, dirty recon on $1 domain(s) file: subfinder + httpx + ffuf on 200 OK...$CLR\n"
+
+    # subfinder
+    echo -e "\n$GREEN--> subfinder$CLR\n"
+    subfinder -d $1 -o $TMPDIR/s0mbra_recon_subfinder.tmp
+
+    # nmap
+    echo -e "\n$GREEN--> nmap$CLR\n"
+    nmap -iL $TMPDIR/s0mbra_recon_subfinder.tmp --top-ports 1000 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_recon_nmap.tmp -oX $TMPDIR/s0mbra_recon_nmap.xml
+
+    # httpx
+    echo -e "\n$GREEN--> httpx$CLR\n"
+    httpx -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_httpx.tmp
+
+    # ffuf
+    echo -e "\n$GREEN--> ffuf$CLR\n"
+    for url in $(cat $TMPDIR/s0mbra_httpx.tmp | grep "200" | cut -d' ' -f1); 
+    do 
+        ffuf -ac -c -w $DICT_HOME/starter.txt -u $url/FUZZ -mc=200,301,302,403,422,500
+        ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $url/FUZZ/ -mc=200,301,302,403,422,500;
+    done
+
+    END_TIME=$(date)
+    echo -e "\n$GREEN[+] Finished!"
+    echo -e "\nstarted at: $RED  $START_TIME $GREEN"
+    echo -e "finished at: $RED $END_TIME $GREEN\n"
+    echo -e "  subfinder output file -> $GRAY $TMPDIR/s0mbra_subfinder.tmp$GREEN"
+    echo -e "  httpx output file -> $GRAY $TMPDIR/s0mbra_httpx.tmp$GREEN"
+    echo -e "  nmap output file -> $GRAY $TMPDIR/s0mbra_recon_nmap.tmp"
+    echo -e "\n$BLUE[+] Done."
+}
 # checking AWS S3 bucket
 s3() {
     echo -e "$BLUE[+] Checking AWS S3 $1 bucket$CLR"
@@ -349,18 +383,18 @@ abe() {
 
 fu() {
     clear
-    echo -e "$BLUE[+] Enumerate web resources on $1 with $2.txt dictionary; matching HTTP 200,422,500...$CLR"
+    echo -e "$BLUE[+] Enumerate web resources on $1 with $2.txt dictionary; matching HTTP 200,301,302,403,422,500...$CLR"
     if [[ -n $3 ]]; then
         if [[ $3 == "/" ]]; then
             # if $3 arg passed to fu equals / - add at the end of the path (for dir enumerations where sometimes
             # dir path has to end with / to be identified
-            ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ/ -mc 200,422,500 -H "X-Hackerone: bl4de"
+            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ/ -mc 200,301,302,403,422,500 -H "X-Hackerone: bl4de"
         else
             # if $3 arg is not /, treat it as file extension to enumerate files:
-            ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ.$3 -mc 200,422,500 -H "X-Hackerone: bl4de"
+            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ.$3 -mc 200,301,302,403,422,500 -H "X-Hackerone: bl4de"
         fi
     else
-        ffuf -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc 200,422,500 -H "X-Hackerone: bl4de"
+        ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc 200,301,302,403,422,500 -H "X-Hackerone: bl4de"
     fi
     echo -e "$BLUE\n[+] Done! $CLR"
 }
@@ -368,7 +402,7 @@ fu() {
 fufu() {
     clear
     echo -e "$BLUE[+] Enumerate web resources on $1 with starter.txt dictionary; matching HTTP $2...$CLR"
-    ffuf -c -w /Users/bl4de/hacking/dictionaries/starter.txt -u $1FUZZ -mc $2 -H "X-Hackerone: bl4de"   
+    ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/starter.txt -u $1FUZZ -mc $2 -H "X-Hackerone: bl4de"   
     echo -e "$BLUE\n[+] Done! $CLR"
 }
 
@@ -425,6 +459,9 @@ case "$cmd" in
     ;;
     htpx)
         htpx "$2"
+    ;;
+    recon)
+        recon "$2"
     ;;
     full_nmap_scan)
         full_nmap_scan "$2" "$3"
@@ -504,6 +541,7 @@ case "$cmd" in
         echo -e "--------------------------------------------------------------------------------------------------------------"
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}\n"
         echo -e "$BLUE:: RECON ::$CLR"
+        echo -e "\t$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t\t\t -> basic recon: subfinder + httpx on DOMAIN"
         echo -e "\t$CYAN subdomenum $GRAY[SCOPE_FILE] [OUTPUT_DIR]$CLR\t\t -> full scope subdomain enumeration + HTTP(S) denumerator on all identified domains"
         echo -e "\t$CYAN htpx $GRAY[DOMAINS_LIST] [OUTPUT_FILE] $CLR\t\t -> httpx against DOMAINS_LIST, matching 200, 403 and 500 + stack, web server discovery"
         echo -e "\t$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
