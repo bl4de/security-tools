@@ -245,14 +245,14 @@ recon() {
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_httpx.tmp
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_httpx.tmp
 
     # ffuf
     echo -e "\n$GREEN--> ffuf$CLR\n"
     for url in $(cat $TMPDIR/s0mbra_httpx.tmp | grep "200" | cut -d' ' -f1); 
     do 
-        ffuf -ac -c -w $DICT_HOME/starter.txt -u $url/FUZZ -mc=200,301,302,403,422,500
-        ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $url/FUZZ/ -mc=200,301,302,403,422,500;
+        ffuf -ac -c -w $DICT_HOME/starter.txt -u $url/FUZZ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
+        ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $url/FUZZ/ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de";
     done
 
     END_TIME=$(date)
@@ -388,13 +388,13 @@ fu() {
         if [[ $3 == "/" ]]; then
             # if $3 arg passed to fu equals / - add at the end of the path (for dir enumerations where sometimes
             # dir path has to end with / to be identified
-            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ/ -mc 200,301,302,403,422,500 -H "X-Hackerone: bl4de"
+            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ/ -mc 200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
         else
             # if $3 arg is not /, treat it as file extension to enumerate files:
-            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ.$3 -mc 200,301,302,403,422,500 -H "X-Hackerone: bl4de"
+            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ.$3 -mc 200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
         fi
     else
-        ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc 200,301,302,403,422,500 -H "X-Hackerone: bl4de"
+        ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc 200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
     fi
     echo -e "$BLUE\n[+] Done! $CLR"
 }
