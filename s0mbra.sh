@@ -234,22 +234,22 @@ recon() {
     echo -e "\n$GREEN--> subfinder$CLR\n"
     subfinder -d $1 -o $TMPDIR/s0mbra_recon_subfinder.tmp
 
-    # nmap
-    echo -e "\n$GREEN--> nmap (top 1000 ports)$CLR\n"
-    nmap -iL $TMPDIR/s0mbra_recon_subfinder.tmp --top-ports 1000 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_recon_nmap.tmp -oX $TMPDIR/s0mbra_recon_nmap.xml
+    # # nmap
+    # echo -e "\n$GREEN--> nmap (top 1000 ports)$CLR\n"
+    # nmap -iL $TMPDIR/s0mbra_recon_subfinder.tmp --top-ports 100 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_recon_nmap.tmp -oX $TMPDIR/s0mbra_recon_nmap.xml
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_httpx.tmp
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_recon_httpx.tmp
 
     # ffuf
     echo -e "\n$GREEN--> ffuf + nuclei on HTTP 200 from httpx$CLR\n"
-    for url in $(cat $TMPDIR/s0mbra_httpx.tmp | grep "200" | cut -d' ' -f1); 
-    do 
-        ffuf -ac -c -w $DICT_HOME/starter.txt -u $url/FUZZ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
-        ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $url/FUZZ/ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de";
-        nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -u $url -o $TMPDIR/nuclei_output_file_0$ITERATOR.log
-        ITERATOR=$(( $ITERATOR+1 ))
+    for url in $(cat $TMPDIR/s0mbra_recon_httpx.tmp | grep "200" | cut -d' ' -f1); 
+    do
+        NAME=$(echo $url | cut -d'/' -f3)
+        ffuf -ac -c -w $DICT_HOME/starter.txt -u $url/FUZZ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$NAME.log
+        ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $url/FUZZ/ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$NAME.log
+        nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -u $url -o $TMPDIR/s0mbra_recon_nuclei_$NAME.log;
     done
 
     END_TIME=$(date)
@@ -536,7 +536,7 @@ case "$cmd" in
         echo -e "--------------------------------------------------------------------------------------------------------------"
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}\n"
         echo -e "$BLUE:: RECON ::$CLR"
-        echo -e "\t$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t -> basic recon: subfinder + nmap + httpx + ffuf + nuclei (one tool at the time on all hosts)"
+        echo -e "\t$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t\t\t -> basic recon: subfinder + nmap + httpx + ffuf + nuclei (one tool at the time on all hosts)"
         echo -e "\t$CYAN htpx $GRAY[DOMAINS_LIST] [OUTPUT_FILE] $CLR\t\t -> httpx against DOMAINS_LIST, matching 200, 403 and 500 + stack, web server discovery"
         echo -e "\t$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
         echo -e "\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A on found open ports"
