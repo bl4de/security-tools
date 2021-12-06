@@ -216,31 +216,26 @@ nfs_enum() {
     echo -e "\n[+] Done."
 }
 
-# if RPC on port 111 shows in rpcinfo that nfs on port 2049 is available
-# we can enumerate nfs shares available:
-subdomenum() {
-    echo -e "$BLUE[+] Running subdomain enumeration and HTTP(S) web servers discovery on $1 scope file...$CLR\n"
-    enumeratescope $1 $2
-    echo -e "\n[+] Done."
-}
-
+# executes httpx on the list of host(s)
 htpx() {
     echo -e "$BLUE[+] Running httpx enumeration on $1 domain(s) file; save output to $2...$CLR\n"
     httpx -silent -status-code -web-server -tech-detect -l $1 -mc 200,403,500 -o $2
     echo -e "\n[+] Done."
 }
 
+# automated recon: subfinder + nmap + httpx + ffuf | on domain
 recon() {
     TMPDIR=$(pwd)
+    ITERATOR=1
     START_TIME=$(date)
-    echo -e "$BLUE[+] Running quick, dirty recon on $1 domain(s) file: subfinder + httpx + ffuf on 200 OK...$CLR\n"
+    echo -e "$BLUE[+] Running quick, dirty recon on $1 domain: subfinder + httpx + ffuf on 200 OK...$CLR\n"
 
     # subfinder
     echo -e "\n$GREEN--> subfinder$CLR\n"
     subfinder -d $1 -o $TMPDIR/s0mbra_recon_subfinder.tmp
 
     # nmap
-    echo -e "\n$GREEN--> nmap$CLR\n"
+    echo -e "\n$GREEN--> nmap (top 1000 ports)$CLR\n"
     nmap -iL $TMPDIR/s0mbra_recon_subfinder.tmp --top-ports 1000 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_recon_nmap.tmp -oX $TMPDIR/s0mbra_recon_nmap.xml
 
     # httpx
@@ -248,11 +243,13 @@ recon() {
     httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_httpx.tmp
 
     # ffuf
-    echo -e "\n$GREEN--> ffuf$CLR\n"
+    echo -e "\n$GREEN--> ffuf + nuclei on HTTP 200 from httpx$CLR\n"
     for url in $(cat $TMPDIR/s0mbra_httpx.tmp | grep "200" | cut -d' ' -f1); 
     do 
         ffuf -ac -c -w $DICT_HOME/starter.txt -u $url/FUZZ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
         ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $url/FUZZ/ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de";
+        nuclei -v -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -u $url -o $TMPDIR/nuclei_output_file_0$ITERATOR.log
+        ITERATOR=$(( $ITERATOR+1 ))
     done
 
     END_TIME=$(date)
@@ -264,6 +261,7 @@ recon() {
     echo -e "  nmap output file -> $GRAY $TMPDIR/s0mbra_recon_nmap.tmp"
     echo -e "\n$BLUE[+] Done."
 }
+
 # checking AWS S3 bucket
 s3() {
     echo -e "$BLUE[+] Checking AWS S3 $1 bucket$CLR"
@@ -454,9 +452,6 @@ case "$cmd" in
     set_ip)
         set_ip "$2"
     ;;
-    subdomenum)
-        subdomenum "$2" "$3"
-    ;;
     htpx)
         htpx "$2"
     ;;
@@ -541,8 +536,7 @@ case "$cmd" in
         echo -e "--------------------------------------------------------------------------------------------------------------"
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}\n"
         echo -e "$BLUE:: RECON ::$CLR"
-        echo -e "\t$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t\t\t -> basic recon: subfinder + httpx on DOMAIN"
-        echo -e "\t$CYAN subdomenum $GRAY[SCOPE_FILE] [OUTPUT_DIR]$CLR\t\t -> full scope subdomain enumeration + HTTP(S) denumerator on all identified domains"
+        echo -e "\t$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t -> basic recon: subfinder + nmap + httpx + ffuf + nuclei (one tool at the time on all hosts)"
         echo -e "\t$CYAN htpx $GRAY[DOMAINS_LIST] [OUTPUT_FILE] $CLR\t\t -> httpx against DOMAINS_LIST, matching 200, 403 and 500 + stack, web server discovery"
         echo -e "\t$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
         echo -e "\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A on found open ports"
