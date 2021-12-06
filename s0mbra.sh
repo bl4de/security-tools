@@ -248,7 +248,7 @@ recon() {
     do 
         ffuf -ac -c -w $DICT_HOME/starter.txt -u $url/FUZZ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
         ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $url/FUZZ/ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de";
-        nuclei -v -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -u $url -o $TMPDIR/nuclei_output_file_0$ITERATOR.log
+        nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -u $url -o $TMPDIR/nuclei_output_file_0$ITERATOR.log
         ITERATOR=$(( $ITERATOR+1 ))
     done
 
