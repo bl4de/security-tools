@@ -234,9 +234,9 @@ recon() {
     echo -e "\n$GREEN--> subfinder$CLR\n"
     subfinder -d $1 -o $TMPDIR/s0mbra_recon_subfinder.tmp
 
-    # # nmap
-    # echo -e "\n$GREEN--> nmap (top 1000 ports)$CLR\n"
-    # nmap -iL $TMPDIR/s0mbra_recon_subfinder.tmp --top-ports 100 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_recon_nmap.tmp -oX $TMPDIR/s0mbra_recon_nmap.xml
+    # nmap
+    echo -e "\n$GREEN--> nmap (top 1000 ports)$CLR\n"
+    nmap -iL $TMPDIR/s0mbra_recon_subfinder.tmp --top-ports 100 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_recon_nmap.tmp -oX $TMPDIR/s0mbra_recon_nmap.xml
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
