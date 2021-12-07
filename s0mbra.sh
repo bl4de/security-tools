@@ -381,26 +381,23 @@ abe() {
 
 fu() {
     clear
-    echo -e "$BLUE[+] Enumerate web resources on $1 with $2.txt dictionary; matching HTTP 200,301,302,403,422,500...$CLR"
+    # adjust here to add/remove HTTP response status code(s) to match on:
+    HTTP_RESP_CODES=200,206,301,302,403,500
+    
+    echo -e "$BLUE[+] Enumerate web resources on $1 with $2.txt dictionary matching $HTTP_RESP_CODES ...$CLR"
+    
     if [[ -n $3 ]]; then
         if [[ $3 == "/" ]]; then
             # if $3 arg passed to fu equals / - add at the end of the path (for dir enumerations where sometimes
             # dir path has to end with / to be identified
-            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ/ -mc 200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
+            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ/ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
         else
             # if $3 arg is not /, treat it as file extension to enumerate files:
-            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ.$3 -mc 200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
+            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ.$3 -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
         fi
     else
-        ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc 200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
+        ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
     fi
-    echo -e "$BLUE\n[+] Done! $CLR"
-}
-
-fufu() {
-    clear
-    echo -e "$BLUE[+] Enumerate web resources on $1 with starter.txt dictionary; matching HTTP $2...$CLR"
-    ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/starter.txt -u $1FUZZ -mc $2 -H "X-Hackerone: bl4de"   
     echo -e "$BLUE\n[+] Done! $CLR"
 }
 
@@ -521,9 +518,6 @@ case "$cmd" in
     fu)
         fu "$2" "$3" "$4"
     ;;
-    fufu)
-        fufu "$2" "$3"
-    ;;
     s3go)
         s3go "$2" "$3"
     ;;
@@ -567,8 +561,7 @@ case "$cmd" in
         echo -e "\t$CYAN apk $GRAY[.apk FILE]$CLR\t\t\t\t -> extracts APK file and run apktool on it"
         echo -e "\t$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
         echo -e "$BLUE:: WEB ::$CLR"
-        echo -e "\t$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH]$CLR\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
-        echo -e "\t$CYAN fufu $GRAY[URL] [HTTP RESPONSE CODE(S)]$CLR\t\t -> web application enumeration with starter.txt"
+        echo -e "\t$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
         
         echo -e "\n--------------------------------------------------------------------------------------------------------------"
         echo -e "$GREEN Hack The Planet!\n$CLR"
