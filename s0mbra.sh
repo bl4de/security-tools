@@ -226,7 +226,6 @@ htpx() {
 # automated recon: subfinder + nmap + httpx + ffuf | on domain
 recon() {
     TMPDIR=$(pwd)
-    ITERATOR=1
     START_TIME=$(date)
     echo -e "$BLUE[+] Running quick, dirty recon on $1 domain: subfinder + httpx + ffuf on 200 OK...$CLR\n"
 
@@ -259,7 +258,38 @@ recon() {
     echo -e "  subfinder output file -> $GRAY $TMPDIR/s0mbra_subfinder.tmp$GREEN"
     echo -e "  httpx output file -> $GRAY $TMPDIR/s0mbra_httpx.tmp$GREEN"
     echo -e "  nmap output file -> $GRAY $TMPDIR/s0mbra_recon_nmap.tmp"
-    echo -e "\n$BLUE[+] Done."
+    echo -e "\n$BLUE[+] Done.$CLR"
+}
+
+# does recon on URL: nmap, ffuf, nuclei, other smaller tools, ...?
+# pass ONLY hostname (without protocol prefix)
+ransack() {
+    HOSTNAME=$1
+    TMPDIR=$(pwd)
+    START_TIME=$(date)
+    echo -e "$BLUE[+] Running bruteforce, dirty recon on $HOSTNAME : nmap + ffuf + nuclei...$CLR\n"
+
+    # onaws
+    echo -e "\n$GREEN--> onaws? $CLR\n"
+    onaws $HOSTNAME
+
+    # nmap
+    echo -e "\n$GREEN--> nmap (top 1000 ports + versioon discovery + nse scripts)$CLR\n"
+    nmap --top-ports 1000 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_nmap_$HOSTNAME.tmp $HOSTNAME
+
+    # ffuf
+    ffuf -ac -c -w $DICT_HOME/starter.txt -u https://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$HOSTNAME.log
+    ffuf -ac -c -w $DICT_HOME/lowercase.txt -u https://$HOSTNAME/FUZZ/ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$HOSTNAME.log
+    
+    # nuclei
+    nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -u $HOSTNAME -o $TMPDIR/s0mbra_nuclei_$HOSTNAME.log;
+
+    END_TIME=$(date)
+    echo -e "\n$GREEN[+] Finished!"
+    echo -e "\nstarted at: $RED  $START_TIME $GREEN"
+    echo -e "finished at: $RED $END_TIME $GREEN\n"
+    
+    echo -e "\n$BLUE[+] Done.$CLR"
 }
 
 # checking AWS S3 bucket
@@ -455,6 +485,9 @@ case "$cmd" in
     recon)
         recon "$2"
     ;;
+    ransack)
+        ransack "$2"
+    ;;
     full_nmap_scan)
         full_nmap_scan "$2" "$3"
     ;;
@@ -531,6 +564,7 @@ case "$cmd" in
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}\n"
         echo -e "$BLUE:: RECON ::$CLR"
         echo -e "\t$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t\t\t -> basic recon: subfinder + nmap + httpx + ffuf + nuclei (one tool at the time on all hosts)"
+        echo -e "\t$CYAN ransack $GRAY[HOST]$CLR\t\t\t\t\t -> bruteforce recon on host: nmap (top 1000 ports) + ffuf + nuclei"
         echo -e "\t$CYAN htpx $GRAY[DOMAINS_LIST] [OUTPUT_FILE] $CLR\t\t -> httpx against DOMAINS_LIST, matching 200, 403 and 500 + stack, web server discovery"
         echo -e "\t$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
         echo -e "\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A on found open ports"
