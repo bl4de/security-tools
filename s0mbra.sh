@@ -277,6 +277,10 @@ ransack() {
     echo -e "\n$GREEN--> nmap (top 1000 ports + versioon discovery + nse scripts)$CLR\n"
     nmap --top-ports 1000 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_nmap_$HOSTNAME.tmp $HOSTNAME
 
+    # nikto
+    echo -e "\n$GREEN--> nikto (max. 10 minutes) $CLR\n"
+    nikto -host https://$HOSTNAME -404code 404,301,302,304 -maxtime 10m -o $TMPDIR/s0mbra_nikto_$HOSTNAME.log -Format txt -useragent "bl4de/HackerOne"
+
     # ffuf
     ffuf -ac -c -w $DICT_HOME/starter.txt -u https://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$HOSTNAME.log
     ffuf -ac -c -w $DICT_HOME/lowercase.txt -u https://$HOSTNAME/FUZZ/ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$HOSTNAME.log
