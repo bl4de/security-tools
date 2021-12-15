@@ -306,18 +306,18 @@ kiterunner() {
 
 # Python Static Source Code analysis
 pysast() {
-    FILE_NAME=$1
-    echo -e "$BLUE[+] Running pyflakes against $FILE_NAME $CLR\n"
-    python3 -m pyflakes $FILE_NAME
+    DIR_NAME=$1
+    echo -e "$BLUE[+] Running pyflakes against $DIR_NAME $CLR\n"
+    python3 -m pyflakes $DIR_NAME
 
-    echo -e "$BLUE[+] Running mypy against $FILE_NAME $CLR\n"
-    python3 -m mypy $FILE_NAME
+    echo -e "$BLUE[+] Running mypy against $DIR_NAME $CLR\n"
+    python3 -m mypy $DIR_NAME
 
-    echo -e "\n$BLUE[+] Running bandit against $FILE_NAME $CLR\n"
-    python3 -m bandit -r $FILE_NAME
+    echo -e "\n$BLUE[+] Running bandit against $DIR_NAME $CLR\n"
+    python3 -m bandit -r $DIR_NAME
 
-    echo -e "\n$BLUE[+] Running vulture against $FILE_NAME $CLR\n"
-    python3 -m vulture $FILE_NAME
+    echo -e "\n$BLUE[+] Running vulture against $DIR_NAME $CLR\n"
+    python3 -m vulture $DIR_NAME
 
     echo -e "\n$BLUE[+] Done.$CLR"
 }
