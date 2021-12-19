@@ -43,26 +43,6 @@ full_nmap_scan() {
     echo -e "$BLUE\n[+] Done! $CLR"
 }
 
-# --script=vulscan/vulscan.nse
-# requires: https://github.com/scipag/vulscan
-nmap_vuln_scan() {
-    if [[ -z "$2" ]]; then 
-        echo -e "$BLUE[+] Running full nmap scan with vulnerability scanning against all ports on $1"
-        echo -e "   Will probably take a while, so go grab some coffee or something.... $CYAN"
-        ports=$(nmap -p- $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
-        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CYAN"
-        nmap -p"$ports" -sV -sC -A -n --script=vulscan/vulscan.nse "$1" -oN ./"$1".log -oX ./"$1".xml
-    else
-        echo -e "$BLUE[+] Running full nmap scan with vulnerability scanning  against $2 port(s) on $1 ..."
-        echo -e "   Will probably take a while, so go grab some coffee or something...."
-        echo -e "   ...search open ports... $CYAN"
-        ports=$(nmap --top-ports "$2" $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
-        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CYAN"
-        nmap -p"$ports" -sV -sC -A -n --script=vulscan/vulscan.nse "$1" -oN ./"$1".log -oX ./"$1".xml
-    fi
-
-    echo -e "$BLUE\n[+] Done! $CLR"
-}
 
 # runs --top-ports $2 against IP
 quick_nmap_scan() {
@@ -539,9 +519,6 @@ case "$cmd" in
     quick_nmap_scan)
         quick_nmap_scan "$2" "$3"
     ;;
-    nmap_vuln_scan)
-        nmap_vuln_scan "$2" "$3"
-    ;;
     http)
         http "$2"
     ;;
@@ -617,7 +594,6 @@ case "$cmd" in
         echo -e "\t$CYAN htpx $GRAY[DOMAINS_LIST] [OUTPUT_FILE] $CLR\t\t -> httpx against DOMAINS_LIST, matching 200, 403 and 500 + stack, web server discovery"
         echo -e "\t$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
         echo -e "\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A on found open ports"
-        echo -e "\t$CYAN nmap_vuln_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A --script=vulscan/vulscan.nse on found open ports"
         echo -e "\t$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
         echo -e "$BLUE:: AMAZON AWS S3 ::$CLR"
         echo -e "\t$CYAN s3 $GRAY[bucket]$CLR\t\t\t\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
