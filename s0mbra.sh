@@ -254,7 +254,13 @@ recon() {
 # pass ONLY hostname (without protocol prefix)
 ransack() {
     HOSTNAME=$1
-    PROTO=$2
+
+    if [[ -z $2 ]]; then
+        PROTO='https'
+    else
+        PROTO=$2
+    fi
+    
     rm -rf $(pwd)/s0mbra
     mkdir -vp $(pwd)/s0mbra
     TMPDIR=$(pwd)/s0mbra
@@ -279,7 +285,7 @@ ransack() {
     ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $PROTO://$HOSTNAME/FUZZ/ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$HOSTNAME.log
     
     # nuclei
-    nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -u $PROTO://$HOSTNAME -o $TMPDIR/s0mbra_nuclei_$HOSTNAME.log;
+    nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -exclude-severity info -u $PROTO://$HOSTNAME -o $TMPDIR/s0mbra_nuclei_$HOSTNAME.log
 
     END_TIME=$(date)
     echo -e "\n$GREEN[+] Finished!"
