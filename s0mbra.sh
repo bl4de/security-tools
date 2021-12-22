@@ -28,15 +28,15 @@ set_ip() {
 # runs $2 port(s) against IP; then -sV -sC -A against every open port found
 full_nmap_scan() {
     if [[ -z "$2" ]]; then 
-        echo -e "$BLUE[+] Running full nmap scan against all ports on $1 ...$CYAN"
+        echo -e "$BLUE[+] Running full nmap scan against all ports on $1 ...$CLR"
         ports=$(nmap -p- $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
-        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CYAN"
+        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CLR"
         nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log -oX ./"$1".xml
     else
-        echo -e "$BLUE[+] Running full nmap scan against $2 port(s) on $1 ..."
-        echo -e "   ...search open ports...$CYAN"
+        echo -e "$BLUE[+] Running full nmap scan against $2 port(s) on $1 ...$CLR"
+        echo -e "   ...search open ports...$CLR"
         ports=$(nmap --top-ports "$2" $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
-        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CYAN"
+        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CLR"
         nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log -oX ./"$1".xml
     fi
 
@@ -252,9 +252,19 @@ recon() {
 # pass ONLY hostname (without protocol prefix)
 ransack() {
     HOSTNAME=$1
-    TMPDIR=$(pwd)
+
+    if [[ -z $2 ]]; then
+        PROTO='https'
+    else
+        PROTO=$2
+    fi
+    
+    rm -rf $(pwd)/s0mbra
+    mkdir -vp $(pwd)/s0mbra
+    TMPDIR=$(pwd)/s0mbra
+
     START_TIME=$(date)
-    echo -e "$BLUE[+] Running bruteforce, dirty recon on $HOSTNAME : nmap + ffuf + nuclei...$CLR\n"
+    echo -e "$BLUE[+] Running bruteforced, dirty, noisy as hell recon on $PROTO://$HOSTNAME : nmap + ffuf + nuclei...$CLR"
 
     # onaws
     echo -e "\n$GREEN--> onaws? $CLR\n"
@@ -262,18 +272,18 @@ ransack() {
 
     # nmap
     echo -e "\n$GREEN--> nmap (top 1000 ports + versioon discovery + nse scripts)$CLR\n"
-    nmap --top-ports 1000 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_nmap_$HOSTNAME.tmp $HOSTNAME
+    nmap --top-ports 10000 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_nmap_$HOSTNAME.tmp $HOSTNAME
 
     # nikto
     echo -e "\n$GREEN--> nikto (max. 10 minutes) $CLR\n"
-    nikto -host https://$HOSTNAME -404code 404,301,302,304 -maxtime 10m -o $TMPDIR/s0mbra_nikto_$HOSTNAME.log -Format txt -useragent "bl4de/HackerOne"
+    nikto -host $PROTO://$HOSTNAME -404code 404,301,302,304 -maxtime 10m -o $TMPDIR/s0mbra_nikto_$HOSTNAME.log -Format txt -useragent "bl4de/HackerOne"
 
     # ffuf
-    ffuf -ac -c -w $DICT_HOME/starter.txt -u https://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$HOSTNAME.log
-    ffuf -ac -c -w $DICT_HOME/lowercase.txt -u https://$HOSTNAME/FUZZ/ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$HOSTNAME.log
+    ffuf -ac -c -w $DICT_HOME/starter.txt -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$HOSTNAME.log
+    ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $PROTO://$HOSTNAME/FUZZ/ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$HOSTNAME.log
     
     # nuclei
-    nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -u $HOSTNAME -o $TMPDIR/s0mbra_nuclei_$HOSTNAME.log;
+    nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -exclude-severity info -u $PROTO://$HOSTNAME -o $TMPDIR/s0mbra_nuclei_$HOSTNAME.log
 
     END_TIME=$(date)
     echo -e "\n$GREEN[+] Finished!"
@@ -503,7 +513,7 @@ case "$cmd" in
         recon "$2"
     ;;
     ransack)
-        ransack "$2"
+        ransack "$2" "$3"
     ;;
     kiterunner)
         kiterunner "$2"
@@ -587,7 +597,7 @@ case "$cmd" in
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}\n"
         echo -e "$BLUE:: RECON ::$CLR"
         echo -e "\t$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t\t\t -> basic recon: subfinder + nmap + httpx + ffuf + nuclei (one tool at the time on all hosts)"
-        echo -e "\t$CYAN ransack $GRAY[HOST]$CLR\t\t\t\t\t -> bruteforce recon on host: nmap (top 1000 ports) + nikto + ffuf + nuclei"
+        echo -e "\t$CYAN ransack $GRAY[HOST] [PROTO http/https]$CLR\t\t -> bruteforce recon on host: nmap (top 1000 ports) + nikto + ffuf + nuclei"
         echo -e "\t$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "\t$CYAN htpx $GRAY[DOMAINS_LIST] [OUTPUT_FILE] $CLR\t\t -> httpx against DOMAINS_LIST, matching 200, 403 and 500 + stack, web server discovery"
         echo -e "\t$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
