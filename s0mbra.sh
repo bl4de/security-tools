@@ -43,7 +43,6 @@ full_nmap_scan() {
     echo -e "$BLUE\n[+] Done! $CLR"
 }
 
-
 # runs --top-ports $2 against IP
 quick_nmap_scan() {
     if [[ -z "$2" ]]; then 
@@ -114,7 +113,6 @@ npm_scan() {
     fi
     echo -e "\n\n[+]Done."
 }
-
 
 # static code analysis of npm module installed in ~/node_modules
 # with nodestructor and semgrep
