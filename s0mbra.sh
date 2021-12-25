@@ -101,18 +101,6 @@ ssh_to_john() {
     rockyou_john "$1".hash
 }
 
-# static code analysis of npm module installed in ~/node_modules
-# with nodestructor and semgrep
-npm_scan() {
-    echo -e "$BLUE[+] Starting static code analysis of $1 module with nodestructor and semgrep...$CLR"
-    nodestructor -r ~/node_modules/"$1" --verbose --skip-test-files
-    semgrep --lang javascript --config "$HACKING_HOME"/tools/semgrep-rules/contrib/nodejsscan/ "$HOME"/node_modules/"$1"/*.js
-    exitcode=$(ls "$HOME"/node_modules/"$1"/*/ >/dev/null 2>&1)
-    if [ "$exitcode" == 0 ]; then
-        semgrep --lang javascript --config "$HACKING_HOME"/tools/semgrep-rules/contrib/nodejsscan/ "$HOME"/node_modules/"$1"/**/*.js
-    fi
-    echo -e "\n\n[+]Done."
-}
 
 # static code analysis of npm module installed in ~/node_modules
 # with nodestructor and semgrep
@@ -122,12 +110,6 @@ snyktest() {
     echo -e "\n\n[+]Done."
 }
 
-# static code analysis of single JavaScript code
-javascript_sca() {
-    echo -e "$BLUE[+] Starting static code analysis of $1 file with nodestructor and semgrep...$CLR"
-    nodestructor --include-browser-patterns --include-urls "$1"
-    echo -e "\n\n[+]Done."
-}
 
 # enumerates SMB shares on [IP] - port 445 has to be open
 smb_enum() {
@@ -539,14 +521,8 @@ case "$cmd" in
     ssh_to_john)
         ssh_to_john "$2"
     ;;
-    npm_scan)
-        npm_scan "$2"
-    ;;
     snyktest)
         snyktest
-    ;;
-    javascript_sca)
-        javascript_sca "$2"
     ;;
     dex_to_jar)
         dex_to_jar "$2"
@@ -618,12 +594,11 @@ case "$cmd" in
         echo -e "\t$CYAN rockyou_john $GRAY[TYPE] [HASHES]$CLR\t\t\t -> runs john+rockyou against [HASHES] file with hashes of type [TYPE]"
         echo -e "\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR\t\t\t\t -> id_rsa to JTR SSH hash file for SSH key password cracking"
         echo -e "\t$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t -> crack ZIP password"
-        echo -e "$BLUE:: STATIC CODE ANALYSIS ::$CLR"
-        echo -e "\t$CYAN npm_scan $GRAY[MODULE_NAME]\t\t$YELLOW(JavaScript)$CLR\t -> static code analysis of MODULE_NAME npm module with nodestructor"
+        echo -e "$BLUE:: SAST ::$CLR"
         echo -e "\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR\t -> runs snyk test on DIR (this should be root of Node app, where package.json exists)"
-        echo -e "\t$CYAN javascript_sca $GRAY[FILE_NAME]\t$YELLOW(JavaScript)$CLR\t -> static code analysis of single JavaScript file with nodestructor"
-        echo -e "\t$CYAN decompile_jar $GRAY[.jar FILE]\t$YELLOW(Java)$CLR\t\t -> open FILE.jar file in JD-Gui"
         echo -e "\t$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR\t -> Static Code Analysis of Python file with pyflakes, mypy, bandit and vulture"
+        echo -e "$BLUE:: RE ::$CLR"
+        echo -e "\t$CYAN decompile_jar $GRAY[.jar FILE]\t$YELLOW(Java)$CLR\t\t -> open FILE.jar file in JD-Gui"
         echo -e "$BLUE:: ANDROID ::$CLR"
         echo -e "\t$CYAN jadx $GRAY[.apk FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.apk file in JADX GUI"
         echo -e "\t$CYAN dex_to_jar $GRAY[.dex file]$CLR\t\t\t\t -> exports .dex file into .jar"
