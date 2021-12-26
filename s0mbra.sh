@@ -101,6 +101,13 @@ ssh_to_john() {
     rockyou_john "$1".hash
 }
 
+# runs unminify on $1 JavaScript file
+um() {
+    FILENAME=$1
+    echo -e "$BLUE[+] Unminify $FILENAME...$CLR"
+    unminify $FILENAME > unmimified.js
+    echo -e "\n\n[+]Done."
+}
 
 # static code analysis of npm module installed in ~/node_modules
 # with nodestructor and semgrep
@@ -109,7 +116,6 @@ snyktest() {
     snyk test
     echo -e "\n\n[+]Done."
 }
-
 
 # enumerates SMB shares on [IP] - port 445 has to be open
 smb_enum() {
@@ -521,6 +527,9 @@ case "$cmd" in
     ssh_to_john)
         ssh_to_john "$2"
     ;;
+    um)
+        um "$2"
+    ;;
     snyktest)
         snyktest
     ;;
@@ -595,6 +604,7 @@ case "$cmd" in
         echo -e "\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR\t\t\t\t -> id_rsa to JTR SSH hash file for SSH key password cracking"
         echo -e "\t$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t -> crack ZIP password"
         echo -e "$BLUE:: SAST ::$CLR"
+        echo -e "\t$CYAN um $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t -> un-minifies JS file"
         echo -e "\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR\t -> runs snyk test on DIR (this should be root of Node app, where package.json exists)"
         echo -e "\t$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR\t -> Static Code Analysis of Python file with pyflakes, mypy, bandit and vulture"
         echo -e "$BLUE:: RE ::$CLR"
