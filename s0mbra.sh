@@ -223,7 +223,7 @@ recon() {
         NAME=$(echo $url | cut -d'/' -f3)
         ffuf -ac -c -w $DICT_HOME/starter.txt -u $url/FUZZ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$NAME.log
         ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $url/FUZZ/ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$NAME.log
-        nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -u $url -o $TMPDIR/s0mbra_recon_nuclei_$NAME.log;
+        nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -exclude-severity info -u $url -o $TMPDIR/s0mbra_recon_nuclei_$NAME.log;
     done
 
     END_TIME=$(date)
