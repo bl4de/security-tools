@@ -206,7 +206,7 @@ recon() {
 
     # subfinder
     echo -e "\n$GREEN--> subfinder$CLR\n"
-    subfinder -d $1 -o $TMPDIR/s0mbra_recon_subfinder.tmp
+    subfinder -nW -all -v -d $1 -o $TMPDIR/s0mbra_recon_subfinder.tmp
 
     # nmap
     echo -e "\n$GREEN--> nmap (top 1000 ports)$CLR\n"
