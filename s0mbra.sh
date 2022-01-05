@@ -198,6 +198,23 @@ htpx() {
     echo -e "$BLUE[s0mbra] Done."
 }
 
+# quick subdomain enum + available HTTP server(s) - to find out if a program is 
+# actually worth to look into :D
+lookaround() {
+    TMPDIR=$(pwd)
+    echo -e "$BLUE[s0mbra] Let's see what we've got here...$CLR\n"
+
+    # subfinder
+    echo -e "\n$GREEN--> subfinder$CLR\n"
+    subfinder -nW -all -v -d $1 -o $TMPDIR/s0mbra_recon_subfinder.tmp
+
+    # httpx
+    echo -e "\n$GREEN--> httpx$CLR\n"
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_recon_httpx.tmp
+
+    echo -e "\n$BLUE[s0mbra] Done.$CLR"
+}
+
 # automated recon: subfinder + nmap + httpx + ffuf | on domain
 recon() {
     TMPDIR=$(pwd)
@@ -497,6 +514,9 @@ case "$cmd" in
     htpx)
         htpx "$2"
     ;;
+    lookaround)
+        lookaround "$2"
+    ;;
     recon)
         recon "$2"
     ;;
@@ -581,6 +601,7 @@ case "$cmd" in
         echo -e "--------------------------------------------------------------------------------------------------------------"
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}\n"
         echo -e "$BLUE:: RECON ::$CLR"
+        echo -e "\t$CYAN lookaround $GRAY[DOMAIN]$CLR\t\t\t\t -> just look around... (subfinder + httpx on discovered hosts)"
         echo -e "\t$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t\t\t -> basic recon: subfinder + nmap + httpx + ffuf + nuclei (one tool at the time on all hosts)"
         echo -e "\t$CYAN ransack $GRAY[HOST] [PROTO http/https]$CLR\t\t -> bruteforce recon on host: nmap (top 1000 ports) + nikto + ffuf + nuclei"
         echo -e "\t$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
