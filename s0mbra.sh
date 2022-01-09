@@ -29,13 +29,13 @@ set_ip() {
 full_nmap_scan() {
     if [[ -z "$2" ]]; then 
         echo -e "$BLUE[s0mbra] Running full nmap scan against all ports on $1 ...$CLR"
-        ports=$(nmap -p- $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
+        ports=$(nmap -p- --min-rate=1000 -T4 $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
         echo -e "$BLUE[s0mbra] running version detection + nse scripts against $ports...$CLR"
         nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log -oX ./"$1".xml
     else
         echo -e "$BLUE[s0mbra] Running full nmap scan against $2 port(s) on $1 ...$CLR"
         echo -e "   ...search open ports...$CLR"
-        ports=$(nmap --top-ports "$2" $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
+        ports=$(nmap --top-ports "$2" --min-rate=1000 -T4 $1 | grep open | cut -d'/' -f 1 | tr '\n' ',')
         echo -e "$BLUE[s0mbra] running version detection + nse scripts against $ports...$CLR"
         nmap -p"$ports" -sV -sC -A -n "$1" -oN ./"$1".log -oX ./"$1".xml
     fi
@@ -47,10 +47,10 @@ full_nmap_scan() {
 quick_nmap_scan() {
     if [[ -z "$2" ]]; then 
         echo -e "$BLUE[s0mbra] Running nmap scan against all ports on $1 ...$CYAN"
-        nmap -p- $1 
+        nmap -p- --min-rate=1000 -T4 $1 
     else
         echo -e "$BLUE[s0mbra] Running nmap scan against top $2 ports on $1 ...$CYAN"
-        nmap --top-ports $2 $1
+        nmap --top-ports $2 --min-rate=1000 -T4 $1
     fi
     
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
@@ -227,7 +227,7 @@ recon() {
 
     # nmap
     echo -e "\n$GREEN--> nmap (top 1000 ports)$CLR\n"
-    nmap -iL $TMPDIR/s0mbra_recon_subfinder.tmp --top-ports 100 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_recon_nmap.tmp -oX $TMPDIR/s0mbra_recon_nmap.xml
+    nmap --min-rate=1000 -T4 -iL $TMPDIR/s0mbra_recon_subfinder.tmp --top-ports 100 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_recon_nmap.tmp -oX $TMPDIR/s0mbra_recon_nmap.xml
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
