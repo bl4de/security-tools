@@ -233,7 +233,7 @@ recon() {
     echo -e "\n$GREEN--> httpx$CLR\n"
     httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_recon_httpx.tmp
 
-    # ffuf
+    # ffuf - starter + lowercase enumeration
     echo -e "\n$GREEN--> ffuf + nuclei on HTTP 200 from httpx$CLR\n"
     for url in $(cat $TMPDIR/s0mbra_recon_httpx.tmp | grep "200" | cut -d' ' -f1); 
     do
@@ -282,6 +282,11 @@ ransack() {
     # nikto
     echo -e "\n$GREEN--> nikto (max. 10 minutes) $CLR\n"
     nikto -host $PROTO://$HOSTNAME -404code 404,301,302,304 -maxtime 10m -o $TMPDIR/s0mbra_nikto_$HOSTNAME.log -Format txt -useragent "bl4de/HackerOne"
+
+    # vhosts enumeration
+    ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ.$HOSTNAME" -o $TMPDIR/s0mbra_recon_ffuf_vhosts_fullnames_$HOSTNAME.log
+
+    ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ" -o $TMPDIR/s0mbra_recon_ffuf_vhosts_$HOSTNAME.log
 
     # ffuf
     ffuf -ac -c -w $DICT_HOME/starter.txt -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$HOSTNAME.log
