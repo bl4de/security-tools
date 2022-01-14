@@ -105,8 +105,8 @@ ssh_to_john() {
 um() {
     FILENAME=$1
     echo -e "$BLUE[s0mbra] Unminify $FILENAME...$CLR"
-    unminify $FILENAME > unmimified.js
-    echo -e "\n\n[s0mbra]Done."
+    unminify $FILENAME > unmimified.$FILENAME
+    echo -e "$BLUE[s0mbra] Done."
 }
 
 # static code analysis of npm module installed in ~/node_modules
