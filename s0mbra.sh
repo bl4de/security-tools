@@ -70,6 +70,7 @@ http() {
         PORT=$1    
     fi
     python3 -m http.server $PORT
+    echo -e "\n$BLUE[s0mbra] Done."
 }
 
 # runs john with rockyou.txt against hash type [FORMAT] and file [HASHES]
@@ -82,6 +83,7 @@ rockyou_john() {
         "$HACKING_HOME"/tools/jtr/run/john --wordlist="$HACKING_HOME"/dictionaries/rockyou.txt "$1"
     fi
     cat "$HACKING_HOME"/tools/jtr/run/john.pot
+    echo -e "\n$BLUE[s0mbra] Done."
 }
 
 # ZIP password cracking with rockyou.txt
@@ -90,6 +92,7 @@ rockyou_zip() {
     "$HACKING_HOME"/tools/jtr/run/zip2john "$1" | cut -d ':' -f 2 > ./hashes.txt
     echo -e "$BLUE[s0mbra] Starting $MAGENTA hashcat $BLUE (using $YELLOW rockyou.txt $BLUE dictionary against $YELLOW hashes.txt $BLUE file)...$CLR"
     hashcat -m 13600 ./hashes.txt ~/hacking/dictionaries/rockyou.txt
+    echo -e "\n$BLUE[s0mbra] Done."
 }
 
 # converts id_rsa to JTR format for cracking SSH key
@@ -99,6 +102,7 @@ ssh_to_john() {
     echo -e "$BLUE[s0mbra] We have a hash.\n"
     echo -e "$BLUE[s0mbra] Let's now crack it!"
     rockyou_john "$1".hash
+    echo -e "\n$BLUE[s0mbra] Done."
 }
 
 # runs unminify on $1 JavaScript file
@@ -106,7 +110,7 @@ um() {
     FILENAME=$1
     echo -e "$BLUE[s0mbra] Unminify $FILENAME...$CLR"
     unminify $FILENAME > unmimified.$FILENAME
-    echo -e "$BLUE[s0mbra] Done."
+    echo -e "\n$BLUE[s0mbra] Done."
 }
 
 # static code analysis of npm module installed in ~/node_modules
@@ -114,7 +118,7 @@ um() {
 snyktest() {
     echo -e "$BLUE[s0mbra] Starting snyk test in current directory...$CLR"
     snyk test
-    echo -e "$BLUE[s0mbra] Done."
+    echo -e "\n$BLUE[s0mbra] Done."
 }
 
 # enumerates SMB shares on [IP] - port 445 has to be open
@@ -140,7 +144,7 @@ smb_enum() {
         smbmap -H "$IP" -u "$username" -p "$password" -R "$d" >> "$1"__shares_listings
     done
     rm -f __disks
-    echo -e "$BLUE[s0mbra] Done."
+    echo -e "\n$BLUE[s0mbra] Done."
 }
 
 # download file from SMB share
@@ -161,7 +165,7 @@ smb_get_file() {
     echo -e "$GREEN"
     smbmap -H "$1" -u "$2" -p "$3" --download "$4"
     echo -e "$CLR"
-    echo -e "$BLUE[s0mbra] Done."
+    echo -e "\n$BLUE[s0mbra] Done."
 }
 
 # mounts SMB share at ./mnt/shares
@@ -172,7 +176,7 @@ smb_mount() {
     mount_smbfs "//$3@$1/$2" ./mnt/shares
     echo -e "$YELLOW\n[s0mbra] Locally available shares:\n.$CLR"
     ls -l ./mnt/shares
-    echo -e "$BLUE[s0mbra] Done."
+    echo -e "\n$BLUE[s0mbra] Done."
 }
 
 # umounts from ./mnt/shares and delete it
@@ -180,7 +184,7 @@ smb_umount() {
     echo -e "$BLUE[s0mbra] Unmounting SMB share(s) from ./mnt/shares...$CLR"
     umount ./mnt/shares
     rm -rf ./mnt
-    echo -e "$BLUE[s0mbra] Done."
+    echo -e "\n$BLUE[s0mbra] Done."
 }
 
 # if RPC on port 111 shows in rpcinfo that nfs on port 2049 is available
@@ -188,14 +192,14 @@ smb_umount() {
 nfs_enum() {
     echo -e "$BLUE[s0mbra] Enumerating nfs shares (TCP 2049) on $1...$CLR"
     nmap -Pn -p 111 --script=nfs-ls,nfs-statfs,nfs-showmount "$1"
-    echo -e "$BLUE[s0mbra] Done."
+    echo -e "\n$BLUE[s0mbra] Done."
 }
 
 # executes httpx on the list of host(s)
 htpx() {
     echo -e "$BLUE[s0mbra] Running httpx enumeration on $1 domain(s) file; save output to $2...$CLR\n"
     httpx -silent -status-code -web-server -tech-detect -l $1 -mc 200,403,500 -o $2
-    echo -e "$BLUE[s0mbra] Done."
+    echo -e "\n$BLUE[s0mbra] Done."
 }
 
 # quick subdomain enum + available HTTP server(s) - to find out if a program is 
@@ -378,7 +382,7 @@ s3() {
     elif [[ "$?" != 0 ]]; then
         echo -e "\n$RED- nope, can't grant control with --grant-full-control ... :/$CLR"
     fi
-    echo -e "$BLUE[s0mbra] Done."
+    echo -e "\n$BLUE[s0mbra] Done."
 }
 
 s3go() {
