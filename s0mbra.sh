@@ -8,7 +8,7 @@
 HACKING_HOME="/Users/bl4de/hacking"
 
 GRAY='\033[1;30m'
-RED=' $CLR'
+RED='\033[1;31m'
 GREEN='\033[1;32m'
 LIGHTGREEN='\033[32m'
 YELLOW='\033[1;33m'
@@ -402,12 +402,14 @@ s3go() {
     elif [[ "$?" != 0 ]]; then
         echo -e "\n$RED- can't get $2 :/$CLR"
     fi
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
 dex_to_jar() {
     clear
     echo -e "$BLUE[s0mbra] Exporting $1 into .jar...$CLR"
-    d2j-dex2jar  --force $1
+    d2j-dex2jar --force $1
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
 decompile_jar() {
@@ -432,6 +434,7 @@ apk() {
     elif [[ "$?" != 0 ]]; then
         echo -e "\n$RED- unzipping .apk failed :/... :/$CLR"
     fi
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
 abe() {
@@ -448,6 +451,7 @@ abe() {
     elif [[ "$?" != 0 ]]; then
         echo -e "\n$RED- Damn... :/$CLR"
     fi
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
 fu() {
@@ -506,10 +510,6 @@ generate_shells() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
-pwn() {
-    echo -e "$BLUE[s0mbra] Running automated recon on $1...\n    Puede tomar un poco tiempo, tienes que ser paciente... ;)  $YELLOW"
-}
-
 defcreds() {
     clear
     echo -e "$BLUE[s0mbra] Looking for default credentials for $1...$CLR"
@@ -521,9 +521,6 @@ cmd=$1
 clear
 
 case "$cmd" in
-    pwn)
-        pwn "$2"
-    ;;
     set_ip)
         set_ip "$2"
     ;;
