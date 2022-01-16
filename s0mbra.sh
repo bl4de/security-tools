@@ -517,7 +517,6 @@ defcreds() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
-
 cmd=$1
 clear
 
