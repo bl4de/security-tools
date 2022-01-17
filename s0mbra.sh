@@ -210,7 +210,7 @@ lookaround() {
 
     # subfinder
     echo -e "\n$GREEN--> subfinder$CLR\n"
-    subfinder -nW -all -v -d $1 -o $TMPDIR/s0mbra_recon_subfinder.tmp
+    subfinder -nW -all -v -dL $1 -o $TMPDIR/s0mbra_recon_subfinder.tmp
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
@@ -219,7 +219,7 @@ lookaround() {
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
-# automated recon: subfinder + nmap + httpx + ffuf | on domain
+# automated recon: subfinder + nmap + httpx + ffuf | on domain(s) -> save to scope file
 recon() {
     TMPDIR=$(pwd)
     START_TIME=$(date)
@@ -227,7 +227,7 @@ recon() {
 
     # subfinder
     echo -e "\n$GREEN--> subfinder$CLR\n"
-    subfinder -nW -all -v -d $1 -o $TMPDIR/s0mbra_recon_subfinder.tmp
+    subfinder -nW -all -v -dL $1 -o $TMPDIR/s0mbra_recon_subfinder.tmp
 
     # nmap
     echo -e "\n$GREEN--> nmap (top 1000 ports)$CLR\n"
@@ -511,9 +511,14 @@ generate_shells() {
 }
 
 defcreds() {
-    clear
     echo -e "$BLUE[s0mbra] Looking for default credentials for $1...$CLR"
     creds search $1
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
+b64() {
+    echo -e "$BLUE[s0mbra] Decoding Base64 string...$CLR"
+    echo $1 | base64 -D
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
@@ -602,6 +607,9 @@ case "$cmd" in
     s3)
         s3 "$2"
     ;;
+    b64)
+        b64 "$2"
+    ;;
     fu)
         fu "$2" "$3" "$4"
     ;;
@@ -640,7 +648,7 @@ case "$cmd" in
         echo -e "\t$CYAN rockyou_john $GRAY[TYPE] [HASHES]$CLR\t\t\t -> runs john+rockyou against [HASHES] file with hashes of type [TYPE]"
         echo -e "\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR\t\t\t\t -> id_rsa to JTR SSH hash file for SSH key password cracking"
         echo -e "\t$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t -> crack ZIP password"
-        echo -e "\t$CYAN defcreds $GRAY[DEVICE/SYSTEM]$CLR\t\t\t\t -> default credentials for DEVICE or SYSTEM"
+        echo -e "\t$CYAN defcreds $GRAY[DEVICE/SYSTEM]$CLR\t\t\t -> default credentials for DEVICE or SYSTEM"
         echo -e "$BLUE:: SAST ::$CLR"
         echo -e "\t$CYAN um $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t -> un-minifies JS file"
         echo -e "\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR\t -> runs snyk test on DIR (this should be root of Node app, where package.json exists)"
@@ -654,6 +662,7 @@ case "$cmd" in
         echo -e "\t$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t$YELLOW(Java)$CLR\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
         echo -e "$BLUE:: WEB ::$CLR"
         echo -e "\t$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
+        echo -e "\t$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t -> decodes Base64 string"
         
         echo -e "\n--------------------------------------------------------------------------------------------------------------"
         echo -e "$GREEN Hack The Planet!\n$CLR"
