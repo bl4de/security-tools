@@ -7,13 +7,16 @@
 
 HACKING_HOME="/Users/bl4de/hacking"
 
-GRAY='\033[1;30m'
+GRAY='\033[38;5;8m'
+GRAY_BG='\033[48;5;8m'
 RED='\033[1;31m'
 GREEN='\033[1;32m'
 LIGHTGREEN='\033[32m'
 YELLOW='\033[1;33m'
 BLUE='\033[1;34m'
+BLUE_BG='\033[48;5;4m'
 LIGHTBLUE='\033[34m'
+LIGHTBLUE_BG='\033[48;5;6m'
 MAGENTA='\033[1;35m'
 CYAN='\033[36m'
 
@@ -280,8 +283,8 @@ ransack() {
     onaws $HOSTNAME
 
     # nmap
-    echo -e "\n$GREEN--> nmap (top 1000 ports + versioon discovery + nse scripts)$CLR\n"
-    nmap --top-ports 10000 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_nmap_$HOSTNAME.tmp $HOSTNAME
+    echo -e "\n$GREEN--> nmap (top 100 ports + version discovery + nse scripts)$CLR\n"
+    nmap --top-ports 100 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_nmap_$HOSTNAME.tmp $HOSTNAME
 
     # nikto
     echo -e "\n$GREEN--> nikto (max. 10 minutes) $CLR\n"
@@ -623,8 +626,8 @@ case "$cmd" in
         clear
         echo -e "$GREEN I'm guessing there's no chance we can take care of this quietly, is there? - S0mbra$CLR"
         echo -e "--------------------------------------------------------------------------------------------------------------"
-        echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}\n"
-        echo -e "$BLUE:: RECON ::$CLR"
+        echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}$CLR\n"
+        echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN lookaround $GRAY[DOMAIN]$CLR\t\t\t\t -> just look around... (subfinder + httpx on discovered hosts)"
         echo -e "\t$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t\t\t -> basic recon: subfinder + nmap + httpx + ffuf + nuclei (one tool at the time on all hosts)"
         echo -e "\t$CYAN ransack $GRAY[HOST] [PROTO http/https]$CLR\t\t -> bruteforce recon on host: nmap (top 1000 ports) + nikto + ffuf + nuclei"
@@ -633,34 +636,34 @@ case "$cmd" in
         echo -e "\t$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
         echo -e "\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A on found open ports"
         echo -e "\t$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
-        echo -e "$BLUE:: CLOUD ::$CLR"
+        echo -e "$BLUE_BG:: CLOUD ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN s3 $GRAY[bucket]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
         echo -e "\t$CYAN s3go $GRAY[bucket] [key]$CLR\t\t$YELLOW(AWS)$CLR\t\t -> get object identified by [key] from AWS S3 [bucket]"
-        echo -e "$BLUE:: PENTEST TOOLS ::$CLR"
+        echo -e "$BLUE_BG:: PENTEST TOOLS ::\t\t\t\t\t$CLR"
         echo -e "\t$CYAN http $GRAY[PORT]$CLR\t\t\t\t\t -> runs HTTP server on [PORT] TCP port"
         echo -e "\t$CYAN generate_shells $GRAY[IP] [PORT] $CLR\t\t\t -> generates ready-to-use reverse shells in various languages for given IP:PORT"
-        echo -e "$BLUE:: SMB SUITE ::$CLR"
+        echo -e "$BLUE_BG:: SMB SUITE ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR\t\t -> enumerates SMB shares on [IP] as [USER] (eg. null) (445 port has to be open)"
         echo -e "\t$CYAN smb_get_file $GRAY[IP] [user] [password] [PATH] $CLR\t -> downloads file from SMB share [PATH] on [IP]"
         echo -e "\t$CYAN smb_mount $GRAY[IP] [SHARE] [USER]$CLR\t\t\t -> mounts SMB share at ./mnt/shares"
         echo -e "\t$CYAN smb_umount $CLR\t\t\t\t\t -> unmounts SMB share from ./mnt/shares and deletes it"
-        echo -e "$BLUE:: PASSWORDS CRACKIN' ::$CLR"
+        echo -e "$BLUE_BG:: PASSWORDS CRACKIN' ::\t\t\t\t$CLR"
         echo -e "\t$CYAN rockyou_john $GRAY[TYPE] [HASHES]$CLR\t\t\t -> runs john+rockyou against [HASHES] file with hashes of type [TYPE]"
         echo -e "\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR\t\t\t\t -> id_rsa to JTR SSH hash file for SSH key password cracking"
         echo -e "\t$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t -> crack ZIP password"
         echo -e "\t$CYAN defcreds $GRAY[DEVICE/SYSTEM]$CLR\t\t\t -> default credentials for DEVICE or SYSTEM"
-        echo -e "$BLUE:: SAST ::$CLR"
+        echo -e "$BLUE_BG:: SAST ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN um $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t -> un-minifies JS file"
         echo -e "\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR\t -> runs snyk test on DIR (this should be root of Node app, where package.json exists)"
         echo -e "\t$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR\t -> Static Code Analysis of Python file with pyflakes, mypy, bandit and vulture"
-        echo -e "$BLUE:: RE ::$CLR"
+        echo -e "$BLUE_BG:: RE ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN decompile_jar $GRAY[.jar FILE]\t$YELLOW(Java)$CLR\t\t -> open FILE.jar file in JD-Gui"
-        echo -e "$BLUE:: ANDROID ::$CLR"
+        echo -e "$BLUE_BG:: ANDROID ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN jadx $GRAY[.apk FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.apk file in JADX GUI"
         echo -e "\t$CYAN dex_to_jar $GRAY[.dex file]$CLR\t\t$YELLOW(Java)$CLR\t\t -> exports .dex file into .jar"
         echo -e "\t$CYAN apk $GRAY[.apk FILE]$CLR\t\t$YELLOW(Java)$CLR\t\t -> extracts APK file and run apktool on it"
         echo -e "\t$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t$YELLOW(Java)$CLR\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
-        echo -e "$BLUE:: WEB ::$CLR"
+        echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
         echo -e "\t$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t -> decodes Base64 string"
         
