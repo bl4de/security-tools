@@ -198,13 +198,6 @@ nfs_enum() {
     echo -e "\n$BLUE[s0mbra] Done."
 }
 
-# executes httpx on the list of host(s)
-htpx() {
-    echo -e "$BLUE[s0mbra] Running httpx enumeration on $1 domain(s) file; save output to $2...$CLR\n"
-    httpx -silent -status-code -web-server -tech-detect -l $1 -mc 200,403,500 -o $2
-    echo -e "\n$BLUE[s0mbra] Done."
-}
-
 # quick subdomain enum + available HTTP server(s) - to find out if a program is 
 # actually worth to look into :D
 lookaround() {
@@ -532,9 +525,6 @@ case "$cmd" in
     set_ip)
         set_ip "$2"
     ;;
-    htpx)
-        htpx "$2"
-    ;;
     lookaround)
         lookaround "$2"
     ;;
@@ -627,21 +617,23 @@ case "$cmd" in
         echo -e "$GREEN I'm guessing there's no chance we can take care of this quietly, is there? - S0mbra$CLR"
         echo -e "--------------------------------------------------------------------------------------------------------------"
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}$CLR\n"
-        echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t$CLR"
+        echo -e "$BLUE_BG:: BUG BOUNTY RECON ::\t\t\t\t\t$CLR"
         echo -e "\t$CYAN lookaround $GRAY[DOMAIN]$CLR\t\t\t\t -> just look around... (subfinder + httpx on discovered hosts)"
         echo -e "\t$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t\t\t -> basic recon: subfinder + nmap + httpx + ffuf + nuclei (one tool at the time on all hosts)"
         echo -e "\t$CYAN ransack $GRAY[HOST] [PROTO http/https]$CLR\t\t -> bruteforce recon on host: nmap (top 1000 ports) + nikto + ffuf + nuclei"
         echo -e "\t$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
-        echo -e "\t$CYAN htpx $GRAY[DOMAINS_LIST] [OUTPUT_FILE] $CLR\t\t -> httpx against DOMAINS_LIST, matching 200, 403 and 500 + stack, web server discovery"
-        echo -e "\t$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
-        echo -e "\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A on found open ports"
-        echo -e "\t$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
+        echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t$CLR"
+        echo -e "\t$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> webapp resource enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
+        echo -e "\t$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t -> decodes Base64 string"
         echo -e "$BLUE_BG:: CLOUD ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN s3 $GRAY[bucket]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
         echo -e "\t$CYAN s3go $GRAY[bucket] [key]$CLR\t\t$YELLOW(AWS)$CLR\t\t -> get object identified by [key] from AWS S3 [bucket]"
         echo -e "$BLUE_BG:: PENTEST TOOLS ::\t\t\t\t\t$CLR"
+        echo -e "\t$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
+        echo -e "\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to enumerate ports; -p- if no [PORTS] given; then -sV -sC -A on found open ports"
         echo -e "\t$CYAN http $GRAY[PORT]$CLR\t\t\t\t\t -> runs HTTP server on [PORT] TCP port"
         echo -e "\t$CYAN generate_shells $GRAY[IP] [PORT] $CLR\t\t\t -> generates ready-to-use reverse shells in various languages for given IP:PORT"
+        echo -e "\t$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
         echo -e "$BLUE_BG:: SMB SUITE ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR\t\t -> enumerates SMB shares on [IP] as [USER] (eg. null) (445 port has to be open)"
         echo -e "\t$CYAN smb_get_file $GRAY[IP] [user] [password] [PATH] $CLR\t -> downloads file from SMB share [PATH] on [IP]"
@@ -663,9 +655,6 @@ case "$cmd" in
         echo -e "\t$CYAN dex_to_jar $GRAY[.dex file]$CLR\t\t$YELLOW(Java)$CLR\t\t -> exports .dex file into .jar"
         echo -e "\t$CYAN apk $GRAY[.apk FILE]$CLR\t\t$YELLOW(Java)$CLR\t\t -> extracts APK file and run apktool on it"
         echo -e "\t$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t$YELLOW(Java)$CLR\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
-        echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t$CLR"
-        echo -e "\t$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> web application enumeration (DICT: starter, lowercase, wordlist)"
-        echo -e "\t$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t -> decodes Base64 string"
         
         echo -e "\n--------------------------------------------------------------------------------------------------------------"
         echo -e "$GREEN Hack The Planet!\n$CLR"
