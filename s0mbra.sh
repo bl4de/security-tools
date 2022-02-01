@@ -210,7 +210,7 @@ lookaround() {
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_recon_httpx.tmp
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "X-Bug-Bounty: HackerOne-bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_recon_httpx.tmp
 
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
@@ -231,16 +231,16 @@ recon() {
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_recon_httpx.tmp
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "X-Bug-Bounty: HackerOne-bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_recon_httpx.tmp
 
     # ffuf - starter + lowercase enumeration
     echo -e "\n$GREEN--> ffuf + nuclei on HTTP 200 from httpx$CLR\n"
     for url in $(cat $TMPDIR/s0mbra_recon_httpx.tmp | grep "200" | cut -d' ' -f1); 
     do
         NAME=$(echo $url | cut -d'/' -f3)
-        ffuf -ac -c -w $DICT_HOME/starter.txt -u $url/FUZZ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$NAME.log
-        ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $url/FUZZ/ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$NAME.log
-        nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -exclude-severity info -u $url -o $TMPDIR/s0mbra_recon_nuclei_$NAME.log;
+        ffuf -ac -c -w $DICT_HOME/starter.txt -u $url/FUZZ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "X-Bug-Bounty: HackerOne-bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$NAME.log
+        ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $url/FUZZ/ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "X-Bug-Bounty: HackerOne-bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$NAME.log
+        nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "X-Bug-Bounty: HackerOne-bl4de" -exclude-severity info -u $url -o $TMPDIR/s0mbra_recon_nuclei_$NAME.log;
     done
 
     END_TIME=$(date)
@@ -284,13 +284,13 @@ ransack() {
     nikto -host $PROTO://$HOSTNAME -404code 404,301,302,304 -maxtime 10m -o $TMPDIR/s0mbra_nikto_$HOSTNAME.log -Format txt -useragent "bl4de/HackerOne"
 
     # vhosts enumeration
-    ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ.$HOSTNAME" -o $TMPDIR/s0mbra_recon_ffuf_vhosts_fullnames_$HOSTNAME.log
+    ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "X-Bug-Bounty: HackerOne-bl4de" -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ.$HOSTNAME" -o $TMPDIR/s0mbra_recon_ffuf_vhosts_fullnames_$HOSTNAME.log
 
-    ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ" -o $TMPDIR/s0mbra_recon_ffuf_vhosts_$HOSTNAME.log
+    ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "X-Bug-Bounty: HackerOne-bl4de" -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ" -o $TMPDIR/s0mbra_recon_ffuf_vhosts_$HOSTNAME.log
 
     # ffuf
-    ffuf -ac -c -w $DICT_HOME/starter.txt -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$HOSTNAME.log
-    ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $PROTO://$HOSTNAME/FUZZ/ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$HOSTNAME.log
+    ffuf -ac -c -w $DICT_HOME/starter.txt -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "X-Bug-Bounty: HackerOne-bl4de" -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$HOSTNAME.log
+    ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $PROTO://$HOSTNAME/FUZZ/ -mc=200,206,301,302,403,422,429,500 -H "X-Bug-Bounty: HackerOne-bl4de" -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$HOSTNAME.log
     
     # nuclei
     nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -exclude-severity info -u $PROTO://$HOSTNAME -o $TMPDIR/s0mbra_nuclei_$HOSTNAME.log
@@ -301,6 +301,28 @@ ransack() {
     echo -e "finished at: $RED $END_TIME $GREEN\n"
     
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
+}
+
+fu() {
+    clear
+    # adjust here to add/remove HTTP response status code(s) to match on:
+    HTTP_RESP_CODES=200,206,301,302,403,500
+    
+    echo -e "$BLUE[s0mbra] Enumerate web resources on $1 with $2.txt dictionary matching $HTTP_RESP_CODES ...$CLR"
+    
+    if [[ -n $3 ]]; then
+        if [[ $3 == "/" ]]; then
+            # if $3 arg passed to fu equals / - add at the end of the path (for dir enumerations where sometimes
+            # dir path has to end with / to be identified
+            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ/ -mc $HTTP_RESP_CODES -H "X-Bug-Bounty: HackerOne-bl4de" -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
+        else
+            # if $3 arg is not /, treat it as file extension to enumerate files:
+            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ.$3 -mc $HTTP_RESP_CODES -H "X-Bug-Bounty: HackerOne-bl4de" -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
+        fi
+    else
+        ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc $HTTP_RESP_CODES -H "X-Bug-Bounty: HackerOne-bl4de" -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
+    fi
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
 kiterunner() {
@@ -446,28 +468,6 @@ abe() {
         ls -l $1_extracted
     elif [[ "$?" != 0 ]]; then
         echo -e "\n$RED- Damn... :/$CLR"
-    fi
-    echo -e "$BLUE\n[s0mbra] Done! $CLR"
-}
-
-fu() {
-    clear
-    # adjust here to add/remove HTTP response status code(s) to match on:
-    HTTP_RESP_CODES=200,206,301,302,403,500
-    
-    echo -e "$BLUE[s0mbra] Enumerate web resources on $1 with $2.txt dictionary matching $HTTP_RESP_CODES ...$CLR"
-    
-    if [[ -n $3 ]]; then
-        if [[ $3 == "/" ]]; then
-            # if $3 arg passed to fu equals / - add at the end of the path (for dir enumerations where sometimes
-            # dir path has to end with / to be identified
-            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ/ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
-        else
-            # if $3 arg is not /, treat it as file extension to enumerate files:
-            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ.$3 -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
-        fi
-    else
-        ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
     fi
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
