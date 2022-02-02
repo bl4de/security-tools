@@ -650,7 +650,7 @@ case "$cmd" in
         echo -e "\t$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> webapp resource enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
-        echo -e "\t$CYAN fufilter $GRAY[URL] [DICT] [SIZE] [*EXT/*ENDSLASH.]$CLR\t\t -> webapp resource enumeration with ffuf; filter out resp. size SIZE (DICT: starter, lowercase, wordlist etc.)"
+        echo -e "\t$CYAN fufilter $GRAY[URL] [DICT] [SIZE] [*EXT/*ENDSLASH.]$CLR\t -> webapp resource enumeration with ffuf; filter out resp. size SIZE (DICT: starter, lowercase, wordlist etc.)"
         echo -e "\t$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t -> decodes Base64 string"
         echo -e "$BLUE_BG:: CLOUD ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN s3 $GRAY[bucket]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
