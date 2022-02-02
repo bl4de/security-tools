@@ -202,6 +202,7 @@ nfs_enum() {
 # actually worth to look into :D
 lookaround() {
     TMPDIR=$(pwd)
+    START_TIME=$(date)
     echo -e "$BLUE[s0mbra] Let's see what we've got here...$CLR\n"
 
     # subfinder
@@ -212,6 +213,11 @@ lookaround() {
     echo -e "\n$GREEN--> httpx$CLR\n"
     httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "X-Bug-Bounty: HackerOne-bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_recon_httpx.tmp
 
+    END_TIME=$(date)
+    echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
+    echo -e "finished at: $RED $END_TIME $GREEN\n"
+    echo -e "  $GRAY subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_subfinder.tmp` | cut -d" " -f 1) $GRAY subdomains"
+    echo -e "  $GRAY httpx found \t\t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_httpx.tmp` | cut -d" " -f 1) $GRAY active web servers $GREEN"
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
