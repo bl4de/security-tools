@@ -699,7 +699,7 @@ case "$cmd" in
         echo -e "$BLUE_BG:: BUG BOUNTY RECON ::\t\t\t\t\t$CLR"
         echo -e "\t$CYAN lookaround $GRAY[DOMAIN]$CLR\t\t\t\t -> just look around... (subfinder + httpx on discovered hosts)"
         echo -e "\t$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t\t\t -> basic recon: subfinder + nmap + httpx + ffuf + nuclei (one tool at the time on all hosts)"
-        echo -e "\t$CYAN ransack $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t\t -> recon; options: nmap|nikto|vhosts|ffuf|feroxbuster|nuclei|x8"
+        echo -e "\t$CYAN ransack $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap|nikto|vhosts|ffuf|feroxbuster|nuclei|x8"
         echo -e "\t$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> webapp resource enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
