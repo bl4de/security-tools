@@ -288,7 +288,7 @@ ransack() {
     TMPDIR=$(pwd)/s0mbra
 
     START_TIME=$(date)
-    echo -e "$BLUE[s0mbra] Running bruteforced, dirty, noisy as hell recon on $PROTO://$HOSTNAME : nmap + ffuf + nuclei...$CLR"
+    echo -e "$BLUE[s0mbra] Running bruteforced, dirty, noisy as hell recon on $PROTO://$HOSTNAME \n\t using selected options: $2...$CLR"
 
     # onaws
     echo -e "\n$GREEN--> onaws? $CLR\n"
@@ -301,7 +301,7 @@ ransack() {
     fi
 
     # nikto
-    if [[ $NIKTO == "1" ]]; then
+    if [[ $NIKTO -eq "1" ]]; then
         echo -e "\n$GREEN--> nikto (max. 10 minutes) $CLR\n"
         nikto -host $PROTO://$HOSTNAME -404code 404,301,302,304 -maxtime 10m -o $TMPDIR/s0mbra_nikto_$HOSTNAME.log -Format txt -useragent "bl4de/HackerOne"
     fi
@@ -321,7 +321,7 @@ ransack() {
 
     # feroxbuster
     if [[ $FEROXBUSTER -eq "1" ]]; then
-        feroxbuster -f -d 1 --insecure -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" --url $PROTO://$HOSTNAME -w $DICT_HOME/wordlist.txt
+        feroxbuster -f -d 1 --insecure -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" --url $PROTO://$HOSTNAME -w $DICT_HOME/wordlist.txt --output $TMPDIR/s0mbra_feroxbuster_$HOSTNAME.log
     fi
 
     # nuclei
@@ -369,8 +369,8 @@ api_fuzz() {
     echo -e "$BLUE[s0mbra] Fuzzing $1 API with httpie using endpoints file $2...$CLR"
     
     for endpoint in $(cat $2); do
-        https --print=HBh --all --follow POST https://$1/$2 payload=data
-        https --print=HBh --all --follow PUT https://$1/$2 payload=data
+        https --print=HBh --all --follow POST https://$1/$endpoint payload=data
+        https --print=HBh --all --follow PUT https://$1/$endpoint payload=data
     done
  
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
@@ -605,7 +605,7 @@ case "$cmd" in
         recon "$2"
     ;;
     ransack)
-        ransack "$2" "$3"
+        ransack "$2" "$3" "$4"
     ;;
     kiterunner)
         kiterunner "$2"
