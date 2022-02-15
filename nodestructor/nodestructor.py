@@ -3,13 +3,12 @@
 # nodestructor
 # Node.js application static code analysis tool
 #
-# bl4de | bloorq@gmail.com | Twitter: @_bl4de
 # pylint: disable=W1401
 # pylint: disable=C
 """
 nodestructor.py - static code analysis for Node.js applications
 by bl4de
-GitHub: bl4de | Twitter: @_bl4de | hackerone.com/bl4de  bloorq@gmail.com
+GitHub: bl4de | hackerone.com/bl4de | bloorq AT gmail.com
 """
 
 
@@ -18,13 +17,12 @@ some ideas:
 https://attacker-codeninja.github.io/2021-08-24-code-review-notes-from-bug-bounty-bootcamp/
 
 """
-import os
+
+
 import re
+import os
 import argparse
-
 from imports.beautyConsole import beautyConsole
-
-
 banner = r"""
 
                     (                )                    )
@@ -218,12 +216,12 @@ def show_banner():
     print(beautyConsole.getColor("white"))
 
 
-def printcodeline(_line, i, _fn, _message, _code, verbose):
+def printcodeline(_line, i, _fn, _message, _code, verbose, fname=None):
     """
     Formats and prints line of output
     """
     _fn = _fn.replace("*", "").replace("\\", "").replace(".(", '(')[0:len(_fn)]
-    print("::  line %d :: \33[33;1m%s\33[0m %s " % (i, _fn, _message))
+    print("{}:{} :: \33[33;1m{}\33[0m {} ".format(fname, i, _fn, _message))
 
     if verbose:
         if i > 3:
@@ -296,7 +294,7 @@ def perform_code_analysis(src, pattern="", verbose=False):
                     print_filename = False
                 patterns_found_in_file += 1
                 printcodeline(_line, i, __pattern,
-                              ' code pattern identified: ', _code, verbose)
+                              ' code pattern identified: ', _code, verbose, _file.name)
 
             # URL searching
             if identify_urls == True:
@@ -305,7 +303,7 @@ def perform_code_analysis(src, pattern="", verbose=False):
                     # show each unique URL only once
                     if __url not in urls:
                         printcodeline(__url, i, __url,
-                                      ' URL found: ', _code, verbose)
+                                      ' URL found: ', _code, verbose,  _file.name)
                         urls.append(__url)
 
     if patterns_found_in_file > 0:

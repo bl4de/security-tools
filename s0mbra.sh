@@ -8,7 +8,6 @@
 HACKING_HOME="/Users/bl4de/hacking"
 
 GRAY='\033[38;5;8m'
-GRAY_BG='\033[48;5;8m'
 RED='\033[1;31m'
 GREEN='\033[1;32m'
 LIGHTGREEN='\033[32m'
