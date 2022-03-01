@@ -64,7 +64,9 @@ nodejs_patterns = [
     ".*fork\(",
     ".*setImmediate\(",
     ".*newBuffer\(",
-    ".*\.constructor\("
+    ".*\.constructor\(",
+    ".*mysql\.createConnection\(",
+    ".*\.query\(",
 ]
 
 npm_patterns = [
