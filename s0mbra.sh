@@ -502,7 +502,7 @@ dex_to_jar() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
-decompile_jar() {
+unjar() {
     clear
     echo -e "$BLUE[s0mbra] Opening $1 in JD-Gui...$CLR"
     java -jar /Users/bl4de/hacking/tools/Java_Decompilers/jd-gui-1.6.3.jar $1
@@ -651,8 +651,8 @@ case "$cmd" in
     abe)
         abe "$2"
     ;;
-    decompile_jar)
-        decompile_jar "$2"
+    unjar)
+        unjar "$2"
     ;;
     smb_enum)
         smb_enum "$2" "$3" "$4"
@@ -729,7 +729,7 @@ case "$cmd" in
         echo -e "\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR\t -> runs snyk test on DIR (this should be root of Node app, where package.json exists)"
         echo -e "\t$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR\t -> Static Code Analysis of Python file with pyflakes, mypy, bandit and vulture"
         echo -e "$BLUE_BG:: RE ::\t\t\t\t\t\t$CLR"
-        echo -e "\t$CYAN decompile_jar $GRAY[.jar FILE]\t$YELLOW(Java)$CLR\t\t -> open FILE.jar file in JD-Gui"
+        echo -e "\t$CYAN unjar $GRAY[.jar FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.jar file in JD-Gui"
         echo -e "$BLUE_BG:: ANDROID ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN jadx $GRAY[.apk FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.apk file in JADX GUI"
         echo -e "\t$CYAN dex_to_jar $GRAY[.dex file]$CLR\t\t$YELLOW(Java)$CLR\t\t -> exports .dex file into .jar"
