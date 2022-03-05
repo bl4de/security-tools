@@ -508,6 +508,13 @@ unjar() {
     java -jar /Users/bl4de/hacking/tools/Java_Decompilers/jd-gui-1.6.3.jar $1
 }
 
+disass() {
+    clear
+    echo -e "$BLUE[s0mbra] Disassembling $1, saving to 1.asm..."
+    objdump -d -x86-asm-syntax=intel $1 > 1.asm
+    echo -e "\n$BLUE[s0mbra] Done."
+}
+
 jadx() {
     clear
     echo -e "$BLUE[s0mbra] Opening $1 in JADX...$CLR"
@@ -654,6 +661,9 @@ case "$cmd" in
     unjar)
         unjar "$2"
     ;;
+    disass)
+        disass "$2"
+    ;;
     smb_enum)
         smb_enum "$2" "$3" "$4"
     ;;
@@ -729,6 +739,7 @@ case "$cmd" in
         echo -e "\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR\t -> runs snyk test on DIR (this should be root of Node app, where package.json exists)"
         echo -e "\t$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR\t -> Static Code Analysis of Python file with pyflakes, mypy, bandit and vulture"
         echo -e "$BLUE_BG:: RE ::\t\t\t\t\t\t$CLR"
+        echo -e "\t$CYAN disass $GRAY[BINARY]\t\t$YELLOW(asm)$CLR\t\t -> disassembels BINARY and saves to 1.asm in the same directory"
         echo -e "\t$CYAN unjar $GRAY[.jar FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.jar file in JD-Gui"
         echo -e "$BLUE_BG:: ANDROID ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN jadx $GRAY[.apk FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.apk file in JADX GUI"
