@@ -53,18 +53,6 @@ exploitableFunctionsDesc = {
         "Code Injection, RCE",
         "medium"
     ],
-    "include()": [
-        "The include statement includes and evaluates the specified file.",
-        "",
-        "Code Injection, RCE",
-        "high"
-    ],
-    "require()": [
-        "The include statement includes and evaluates the specified file.",
-        "",
-        "Code Injection, RCE",
-        "high"
-    ],
     "passthru()": [
         "Execute an external program and display raw output",
         "passthru ( string $command [, int &$return_var ] ) : void",
