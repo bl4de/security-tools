@@ -7,12 +7,10 @@ exploitableFunctions = [
     "popen(",
     "pcntl_exec(",
     "eval(",
-    "arse_str(", # use arse_str(, because somehow, parse_str causes "IndexError: list index out of range" o_O
+    "arse_str(",
     "parse_url(",
     "preg_replace(",
     "create_function(",
-    "include(",
-    "require(",
     "passthru(",
     "shell_exec(",
     "popen(",
