@@ -42,13 +42,13 @@ class PefEngine:
     implements pef engine
     """
 
-    def __init__(self, recursive, verbose, critical, sql, filename, pattern):
+    def __init__(self, recursive, verbose, level, sql, filename, pattern):
         """
         constructor
         """
         self.recursive = recursive  # recursive scan files in folder(s)
         self.verbose = verbose      # show prev/next lines
-        self.critical = critical    # scan only for critical set of functions
+        self.level = level          # scan only for level set of functions
         self.sql = sql              # scan for inline SQL queries
         self.filename = filename    # name of file/folder to scan
         self.pattern = pattern      # pattern(s) to look for, if set
@@ -97,7 +97,7 @@ class PefEngine:
                 total += 1
                 self.print_code_line(l, i, fn + (')' if '(' in fn else ''), prev_line,
                                      next_line, prev_prev_line, next_next_line, self.severity,
-                                     verbose)
+                                     verbose, self.level)
         else:
             if fn in line or atfn in line:
                 self.header_printed = self.header_print(
@@ -105,10 +105,10 @@ class PefEngine:
                 total += 1
                 self.print_code_line(l, i, fn + (')' if '(' in fn else ''), prev_line,
                                      next_line, prev_prev_line, next_next_line, self.severity,
-                                     verbose)
+                                     verbose, self.level)
         return total
 
-    def print_code_line(self, _line, i, fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", severity=None, verbose=False):
+    def print_code_line(self, _line, i, fn, prev_line="", next_line="", prev_prev_line="", next_next_line="", severity="", verbose=False, level='ALL'):
         """
         prints formatted code line
         """
@@ -118,15 +118,6 @@ class PefEngine:
             "high": "red"
         }
 
-        if len(_line) > 255:
-            _line = _line[:120] + \
-                f" (...truncated -> line is {len(_line)} characters long)"
-        if verbose == True:
-            print("line %d :: \33[33;1m%s\33[0m " % (i, fn))
-        else:
-            print("{}line {} :: {}{} ".format(beautyConsole.getColor(
-                "white"), i, beautyConsole.getColor("grey"), _line.strip()[:255]))
-
         # print legend only if there i sentry in pefdocs.py
         if fn and fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
             impact = pefdocs.exploitableFunctionsDesc.get(fn.strip())[3]
@@ -135,36 +126,46 @@ class PefEngine:
             syntax = pefdocs.exploitableFunctionsDesc.get(fn.strip())[1]
             vuln_class = pefdocs.exploitableFunctionsDesc.get(fn.strip())[2]
 
-            if verbose == True:
-                print("\n  {}{}{}".format(beautyConsole.getColor(
-                    "white"), description, beautyConsole.getSpecialChar("endline")))
-                print("  {}{}{}".format(beautyConsole.getColor(
-                    "grey"), syntax, beautyConsole.getSpecialChar("endline")))
-                print("  Potential impact: {}{}{}".format(beautyConsole.getColor(
-                    impact_color[impact]), vuln_class, beautyConsole.getSpecialChar("endline")))
+            if impact.upper() == level.upper() or level == 'ALL':
+                if len(_line) > 255:
+                    _line = _line[:120] + \
+                        f" (...truncated -> line is {len(_line)} characters long)"
+                if verbose == True:
+                    print("line %d :: \33[33;1m%s\33[0m " % (i, fn))
+                else:
+                    print("{}line {} :: {}{} ".format(beautyConsole.getColor(
+                        "white"), i, beautyConsole.getColor("grey"), _line.strip()[:255]))
+
+                if verbose == True:
+                    print("\n  {}{}{}".format(beautyConsole.getColor(
+                        "white"), description, beautyConsole.getSpecialChar("endline")))
+                    print("  {}{}{}".format(beautyConsole.getColor(
+                        "grey"), syntax, beautyConsole.getSpecialChar("endline")))
+                    print("  Potential impact: {}{}{}".format(beautyConsole.getColor(
+                        impact_color[impact]), vuln_class, beautyConsole.getSpecialChar("endline")))
 
             if impact not in severity.keys():
                 severity[impact] = 1
             else:
                 severity[impact] = severity[impact] + 1
 
-        if verbose == True:
-            print()
-            if prev_prev_line:
-                print(str(i-2) + "  " + beautyConsole.getColor("grey") + prev_prev_line +
+            if verbose == True:
+                print()
+                if prev_prev_line:
+                    print(str(i-2) + "  " + beautyConsole.getColor("grey") + prev_prev_line +
+                          beautyConsole.getSpecialChar("endline"))
+                if prev_line:
+                    print(str(i-1) + "  " + beautyConsole.getColor("grey") + prev_line +
+                          beautyConsole.getSpecialChar("endline"))
+                print(str(i) + "  " + beautyConsole.getColor("green") + _line.rstrip() +
                       beautyConsole.getSpecialChar("endline"))
-            if prev_line:
-                print(str(i-1) + "  " + beautyConsole.getColor("grey") + prev_line +
-                      beautyConsole.getSpecialChar("endline"))
-            print(str(i) + "  " + beautyConsole.getColor("green") + _line.rstrip() +
-                  beautyConsole.getSpecialChar("endline"))
-            if next_line:
-                print(str(i+1) + "  " + beautyConsole.getColor("grey") + next_line +
-                      beautyConsole.getSpecialChar("endline"))
-            if next_next_line:
-                print(str(i+2) + "  " + beautyConsole.getColor("grey") + next_next_line +
-                      beautyConsole.getSpecialChar("endline"))
-            print()
+                if next_line:
+                    print(str(i+1) + "  " + beautyConsole.getColor("grey") + next_line +
+                          beautyConsole.getSpecialChar("endline"))
+                if next_next_line:
+                    print(str(i+2) + "  " + beautyConsole.getColor("grey") + next_next_line +
+                          beautyConsole.getSpecialChar("endline"))
+                print()
             return
 
     def main(self, src):
@@ -195,8 +196,8 @@ class PefEngine:
 
             i += 1
             line = l.rstrip()
-            if self.critical:
-                for fn in pefdefs.critical:
+            if self.level:
+                for fn in pefdefs.exploitableFunctions:
                     total = self.analyse_line(l, i, fn, f, line, prev_line,
                                               next_line, prev_prev_line, next_next_line, verbose, total)
             else:
@@ -204,7 +205,7 @@ class PefEngine:
                     total = self.analyse_line(l, i, fn, f, line, prev_line,
                                               next_line, prev_prev_line, next_next_line, verbose, total)
 
-            if self.critical == False and not self.pattern:
+            if self.level == False and not self.pattern:
                 for dp in pefdefs.fileInclude:
                     total = self.analyse_line(l, i, dp, f, line, prev_line,
                                               next_line, prev_prev_line, next_next_line, verbose, total)
@@ -278,7 +279,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-r", "--recursive", help="scan PHP files recursively in directory pointed by -f/--file", action="store_true")
     parser.add_argument(
-        "-c", "--critical", help="look only for critical functions", action="store_true")
+        "-l", "--level", help="severity level: ALL, LOW, MEDIUM or level; default - ALL")
     parser.add_argument(
         "-p", "--pattern", help="look only for particular code pattern(s)")
     parser.add_argument(
@@ -293,14 +294,14 @@ if __name__ == "__main__":
 
     verbose = True if args.verbose else False
     sql = True if args.sql else False
-    critical = True if args.critical else False
+    level = args.level if args.level else 'ALL'
     pattern = args.pattern.split(',') if args.pattern else []
     filename = args.file
 
     try:
         # main orutine starts here
         engine = PefEngine(args.recursive, verbose,
-                           critical, sql, filename, pattern)
+                           level, sql, filename, pattern)
         engine.run()
     except IndexError as e:
         print("IndexError in {}: {}".format(filename, e))
@@ -310,6 +311,8 @@ if __name__ == "__main__":
         print("Requested file not found, check the path :)")
     except IsADirectoryError as e:
         print(f"{filename} is a directory and requires -r flag")
+    except UnicodeDecodeError as e:
+        pass
     except Exception as e:
         print("Unexpected error:")
         print(type(e))
