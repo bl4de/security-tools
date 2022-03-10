@@ -115,7 +115,8 @@ class PefEngine:
         impact_color = {
             "low": "green",
             "medium": "yellow",
-            "high": "red"
+            "high": "red",
+            "critical": "red"
         }
 
         # print legend only if there i sentry in pefdocs.py
@@ -258,6 +259,8 @@ class PefEngine:
 
         SUMMARY = "{}==>  {}:\t {}"
 
+        print(SUMMARY.format(
+            beautyConsole.getColor("red"), "CRITICAL", self.severity.get("critical")))
         print(SUMMARY.format(
             beautyConsole.getColor("red"), "HIGH", self.severity.get("high")))
         print(SUMMARY.format(beautyConsole.getColor(

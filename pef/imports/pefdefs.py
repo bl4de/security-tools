@@ -90,32 +90,6 @@ exploitableFunctions = [
     "file_put_contents("
 ]
 
-# only high severity functions, for quick scan of large codebase
-# to find oversighted leading to RCE, LFI, Command Injections, SQLi etc.
-critical = [
-    "system(",
-    "exec(",
-    "popen(",
-    "pcntl_exec(",
-    "eval(",
-    "passthru(",
-    "shell_exec(",
-    "extract(",
-    "putenv(",
-    "unserialize(",
-    "readfile(",
-    "file_get_contents(",
-    "mysql_query(",
-    "mssql_query(",
-    "sqlite_query(",
-    "pg_query(",
-    "__wakeup(",
-    "__destruct(",
-    "__sleep(",
-    "__call(",
-    "__callStatic(",
-    "file_put_contents("
-]
 
 # dangerous global(s)
 globalVars = [

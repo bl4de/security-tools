@@ -9,13 +9,13 @@ exploitableFunctionsDesc = {
         "Allows to execute system command passed as an argument",
         "system ( string $command [, int &$return_var ] ) : string",
         "RCE",
-        "high"
+        "critical"
     ],
     "exec()": [
         "exec - Execute an external program",
         "exec ( string $command [, array &$output [, int &$return_var ]] ) : string",
         "RCE",
-        "high"
+        "critical"
     ],
     "call_user_func_array()": [
         "Call a callback with an array of parameters",
@@ -39,7 +39,7 @@ exploitableFunctionsDesc = {
         "Evaluate a string as PHP code",
         "eval ( string $code ) : mixed",
         "RCE",
-        "high"
+        "critical"
     ],
     "preg_replace()": [
         "Perform a regular expression search and replace. Searches subject for matches to pattern and replaces them with replacement",
@@ -57,13 +57,13 @@ exploitableFunctionsDesc = {
         "Execute an external program and display raw output",
         "passthru ( string $command [, int &$return_var ] ) : void",
         "RCE",
-        "high"
+        "critical"
     ],
     "shell_exec()": [
         "Execute command via shell and return the complete output as a string. This function is identical to the backtick operator.",
         "shell_exec ( string $cmd ) : string",
         "RCE",
-        "high"
+        "critical"
     ],
     "popen()": [
         "Opens process file pointer. Opens a pipe to a process executed by forking the command given by command.",
@@ -81,13 +81,13 @@ exploitableFunctionsDesc = {
         "Executes the program with the given arguments.",
         "pcntl_exec ( string $path [, array $args [, array $envs ]] ) : void",
         "RCE",
-        "high"
+        "critical"
     ],
     "extract()": [
         "Import variables into the current symbol table from an array",
         "extract ( array &$array [, int $flags = EXTR_OVERWRITE [, string $prefix = NULL ]] ) : int",
         "Code Injection",
-        "medium"
+        "high"
     ],
     "ini_set()": [
         "Sets the value of the given configuration option. The configuration option will keep this new value during the script's execution, and will be restored at the script's ending.",
@@ -159,13 +159,13 @@ exploitableFunctionsDesc = {
         "Reads a file and writes it to the output buffer.",
         "readfile ( string $filename [, bool $use_include_path = FALSE [, resource $context ]] ) : int",
         "Code Injection, LFI, RFI",
-        "medium"
+        "high"
     ],
     "file_get_contents()": [
         "This function is similar to file(), except that file_get_contents() returns the file in a string, starting at the specified offset up to maxlen bytes. On failure, file_get_contents() will return FALSE.",
         "file_get_contents ( string $filename [, bool $use_include_path = FALSE [, resource $context [, int $offset = 0 [, int $maxlen ]]]] ) : string",
         "Code Injection, LFI, RFI",
-        "medium"
+        "high"
     ],
     "show_source()": [
         "(Alias for highlight_file()) Prints out or returns a syntax highlighted version of the code contained in filename using the colors defined in the built-in syntax highlighter for PHP.",
@@ -405,7 +405,7 @@ exploitableFunctionsDesc = {
         "unserialize() checks if your class has a function with the magic name __destruct(). If so, that function is executed after unserialization",
         "__destruct ( void ) : void",
         "Object Injection; RCE via unserialize() + POP gadget chain",
-        "medium"
+        "high"
     ],
     "__wakeup()": [
         "serialize() checks if your class has a function with the magic name __wakeup(). If so, that function is executed prior to any serialization",
