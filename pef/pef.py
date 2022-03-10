@@ -176,8 +176,6 @@ class PefEngine:
         f = open(src, "r")
         i = 0
         total = 0
-        filenamelength = len(src)
-        linelength = 97
         all_lines = f.readlines()
 
         self.header_printed = False
@@ -226,7 +224,7 @@ class PefEngine:
 
         if total > 0:
             print(beautyConsole.getColor("red") +
-                  "Found %d interesting entries\n" % (total) +
+                  "\nFound %d interesting entries\n" % (total) +
                   beautyConsole.getSpecialChar("endline"))
 
         return total  # return how many findings in current file
