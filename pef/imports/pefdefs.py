@@ -87,21 +87,12 @@ exploitableFunctions = [
     "__destruct(",
     "__sleep(",
     "filter_var(",
-    "file_put_contents("
-]
-
-
-# dangerous global(s)
-globalVars = [
+    "file_put_contents(",
     "$_POST",
     "$_GET",
     "$_COOKIE",
     "$_REQUEST",
-    "$_SERVER"
-]
-
-# dangerous patterns - LFI/RFI
-fileInclude = [
+    "$_SERVER",
     "include($_GET",
     "require($_GET",
     "include_once($_GET",
@@ -109,22 +100,14 @@ fileInclude = [
     "include($_REQUEST",
     "require($_REQUEST",
     "include_once($_REQUEST",
-    "require_once($_REQUEST"
-]
-
-# reflected properties which might leads to eg. XSS
-reflectedProperties = [
+    "require_once($_REQUEST",
     "$_SERVER[\"PHP_SELF\"]",
     "$_SERVER[\"SERVER_ADDR\"]",
     "$_SERVER[\"SERVER_NAME\"]",
     "$_SERVER[\"REMOTE_ADDR\"]",
     "$_SERVER[\"REMOTE_HOST\"]",
     "$_SERVER[\"REQUEST_URI\"]",
-    "$_SERVER[\"HTTP_USER_AGENT\"]"
-]
-
-# other patterns
-otherPatterns = [
+    "$_SERVER[\"HTTP_USER_AGENT\"]",
     "SELECT.*FROM",
     "INSERT.*INTO",
     "UPDATE.*",
