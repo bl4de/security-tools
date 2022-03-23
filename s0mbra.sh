@@ -241,13 +241,12 @@ recon() {
     httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_recon_httpx.tmp
 
     # ffuf - starter + lowercase enumeration
-    echo -e "\n$GREEN--> ffuf + nuclei on HTTP 200 from httpx$CLR\n"
+    echo -e "\n$GREEN--> ffuf on HTTP 200 from httpx$CLR\n"
     for url in $(cat $TMPDIR/s0mbra_recon_httpx.tmp | grep "200" | cut -d' ' -f1); 
     do
         NAME=$(echo $url | cut -d'/' -f3)
         ffuf -ac -c -w $DICT_HOME/starter.txt -u $url/FUZZ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$NAME.log
         ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $url/FUZZ/ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$NAME.log
-        nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -exclude-severity info -u $url -o $TMPDIR/s0mbra_recon_nuclei_$NAME.log;
     done
 
     END_TIME=$(date)
@@ -260,7 +259,7 @@ recon() {
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
-# does recon on URL: nmap, ffuf, nuclei, other smaller tools, ...?
+# does recon on URL: nmap, ffuf, other smaller tools, ...?
 # pass ONLY hostname (without protocol prefix)
 ransack() {
     HOSTNAME=$1
@@ -271,7 +270,6 @@ ransack() {
     VHOSTS=$(echo $2|grep 'vhosts'|wc -l)
     FFUF=$(echo $2|grep 'ffuf'|wc -l)
     FEROXBUSTER=$(echo $2|grep 'feroxbuster'|wc -l)
-    NUCLEI=$(echo $2|grep 'nuclei'|wc -l)
     X8=$(echo $2|grep 'x8'|wc -l)
 
     # set proto:
@@ -321,11 +319,6 @@ ransack() {
     # feroxbuster
     if [[ $FEROXBUSTER -eq "1" ]]; then
         feroxbuster -f -d 1 --insecure -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" --url $PROTO://$HOSTNAME -w $DICT_HOME/wordlist.txt --output $TMPDIR/s0mbra_feroxbuster_$HOSTNAME.log
-    fi
-
-    # nuclei
-    if [[ $NUCLEI -eq "1" ]]; then
-        nuclei -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -exclude-severity info -u $PROTO://$HOSTNAME -o $TMPDIR/s0mbra_nuclei_$HOSTNAME.log
     fi
 
     # x8
@@ -707,8 +700,8 @@ case "$cmd" in
         echo -e "Usage:\t$YELLOW s0mbra.sh {cmd} {arg1} {arg2}...{argN}$CLR\n"
         echo -e "$BLUE_BG:: BUG BOUNTY RECON ::\t\t\t\t\t$CLR"
         echo -e "\t$CYAN lookaround $GRAY[DOMAIN]$CLR\t\t\t\t -> just look around... (subfinder + httpx on discovered hosts)"
-        echo -e "\t$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t\t\t -> basic recon: subfinder + nmap + httpx + ffuf + nuclei (one tool at the time on all hosts)"
-        echo -e "\t$CYAN ransack $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap|nikto|vhosts|ffuf|feroxbuster|nuclei|x8"
+        echo -e "\t$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t\t\t -> basic recon: subfinder + nmap + httpx + ffuf (one tool at the time on all hosts)"
+        echo -e "\t$CYAN ransack $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap|nikto|vhosts|ffuf|feroxbuster|x8"
         echo -e "\t$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> webapp resource enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
