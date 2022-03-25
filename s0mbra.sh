@@ -516,8 +516,9 @@ jadx() {
 
 gql() {
     clear
-    echo -e "$BLUE[s0mbra] Running GraphQL-Cop against $1...$CLR"
+    echo -e "$BLUE[s0mbra] Running GraphQL-Cop against $1...$CYAN"
     python3 /Users/bl4de/hacking/tools/graphql-cop/graphql-cop.py -t $1
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
 apk() {
@@ -646,7 +647,7 @@ case "$cmd" in
         snyktest
     ;;
     gql)
-        gql
+        gql "$2"
     ;;
     dex_to_jar)
         dex_to_jar "$2"
