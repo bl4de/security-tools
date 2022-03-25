@@ -514,6 +514,12 @@ jadx() {
     /Users/bl4de/hacking/tools/Java_Decompilers/jadx/bin/jadx-gui $1
 }
 
+gql() {
+    clear
+    echo -e "$BLUE[s0mbra] Running GraphQL-Cop against $1...$CLR"
+    python3 /Users/bl4de/hacking/tools/graphql-cop/graphql-cop.py -t $1
+}
+
 apk() {
     clear
     echo -e "$BLUE[s0mbra] OK, let's see this APK...$CLR"
@@ -639,6 +645,9 @@ case "$cmd" in
     snyktest)
         snyktest
     ;;
+    gql)
+        gql
+    ;;
     dex_to_jar)
         dex_to_jar "$2"
     ;;
@@ -708,6 +717,7 @@ case "$cmd" in
         echo -e "\t$CYAN fufilter $GRAY[URL] [DICT] [SIZE] [*EXT/*ENDSLASH.]$CLR\t -> webapp resource enumeration with ffuf; filter out resp. size SIZE (DICT: starter, lowercase, wordlist etc.)"
         echo -e "\t$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t -> decodes Base64 string"
         echo -e "\t$CYAN apifuzz $GRAY[BASE_HREF] [ENDPOINTS]$CLR\t\t -> fuzzing API endpoints with httpie"
+        echo -e "\t$CYAN gql $GRAY[TARGET_URL]$CLR\t\t$YELLOW(GraphQL)$CLR\t -> checking GraphQL endpoint for known vulnerabilities with graphql-cop"
         echo -e "$BLUE_BG:: CLOUD ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN s3 $GRAY[bucket]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
         echo -e "\t$CYAN s3go $GRAY[bucket] [key]$CLR\t\t$YELLOW(AWS)$CLR\t\t -> get object identified by [key] from AWS S3 [bucket]"
