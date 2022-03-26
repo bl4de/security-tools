@@ -504,7 +504,7 @@ unjar() {
 disass() {
     clear
     echo -e "$BLUE[s0mbra] Disassembling $1, saving to 1.asm..."
-    objdump -d -x86-asm-syntax=intel $1 > 1.asm
+    objdump -d --arch-name=x86-64 -M intel $1 > 1.asm
     echo -e "\n$BLUE[s0mbra] Done."
 }
 
