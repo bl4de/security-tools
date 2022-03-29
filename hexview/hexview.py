@@ -182,7 +182,6 @@ def char_type(c):
     """
     Returns char type depends on its ASCII code
     """
-    print(c)
     if 32 < ord(c) < 128:
         return ASCII
     if ord(c) <= 16:
@@ -263,6 +262,7 @@ def format_chunk(chunk, start, stop, df_chunk=False, dec=False):
                 "{} ".format(make_color(c, df_c))
                 for c, df_c in itertools.izip(chunk[start:stop], df_chunk[start:stop])
             )
+        print("TU: ", [c for c in chunk[start:stop]])
         return " ".join("{} ".format(make_color(c)) for c in chunk[start:stop])
 
 
