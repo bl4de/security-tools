@@ -533,6 +533,13 @@ gql() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+php_sast() {
+    clear
+    echo -e "$BLUE[s0mbra] Running phpcs against $1...$CYAN"
+    phpcs --colors -vs $1
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
 apk() {
     clear
     echo -e "$BLUE[s0mbra] OK, let's see this APK...$CLR"
@@ -658,6 +665,9 @@ case "$cmd" in
     snyktest)
         snyktest
     ;;
+    phpsast)
+        php_sast "$2"
+    ;;
     gql)
         gql "$2"
     ;;
@@ -754,6 +764,7 @@ case "$cmd" in
         echo -e "\t$CYAN um $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t -> un-minifies JS file"
         echo -e "\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR\t -> runs snyk test on DIR (this should be root of Node app, where package.json exists)"
         echo -e "\t$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR\t -> Static Code Analysis of Python file with pyflakes, mypy, bandit and vulture"
+        echo -e "\t$CYAN phpsast $GRAY[DIR]\t\t\t$YELLOW(PHP)$CLR\t\t -> Static Code Analysis of PHP dir(s)/file(s) with phpcs"
         echo -e "$BLUE_BG:: RE ::\t\t\t\t\t\t$CLR"
         echo -e "\t$CYAN disass $GRAY[BINARY]\t\t$YELLOW(asm)$CLR\t\t -> disassembels BINARY and saves to 1.asm in the same directory"
         echo -e "\t$CYAN unjar $GRAY[.jar FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.jar file in JD-Gui"
