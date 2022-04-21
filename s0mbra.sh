@@ -500,6 +500,7 @@ s3go() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# coverts .dex file to .jar archive
 dex_to_jar() {
     clear
     echo -e "$BLUE[s0mbra] Exporting $1 into .jar...$CLR"
@@ -507,12 +508,14 @@ dex_to_jar() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# unpack .jar archive
 unjar() {
     clear
     echo -e "$BLUE[s0mbra] Opening $1 in JD-Gui...$CLR"
     java -jar /Users/bl4de/hacking/tools/Java_Decompilers/jd-gui-1.6.3.jar $1
 }
 
+# runs disassembly agains binary
 disass() {
     clear
     echo -e "$BLUE[s0mbra] Disassembling $1, saving to 1.asm..."
@@ -520,12 +523,14 @@ disass() {
     echo -e "\n$BLUE[s0mbra] Done."
 }
 
+# runs Java decompiler jadx
 jadx() {
     clear
     echo -e "$BLUE[s0mbra] Opening $1 in JADX...$CLR"
     /Users/bl4de/hacking/tools/Java_Decompilers/jadx/bin/jadx-gui $1
 }
 
+# executes graphql-cop against GraphQL endpoint
 gql() {
     clear
     echo -e "$BLUE[s0mbra] Running GraphQL-Cop against $1...$CYAN"
@@ -533,6 +538,7 @@ gql() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# runs PHP SAST tools against PHP application
 php_sast() {
     clear
     echo -e "$BLUE[s0mbra] Running phpcs against $1...$CYAN"
@@ -540,6 +546,7 @@ php_sast() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# deso stuff with Android APK file
 apk() {
     clear
     echo -e "$BLUE[s0mbra] OK, let's see this APK...$CLR"
@@ -553,6 +560,7 @@ apk() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# extracts Androind .ab archive
 abe() {
     clear
     echo -e "$BLUE[s0mbra] Extracting $1.ab backup into $1.tar...$CLR"
@@ -570,6 +578,7 @@ abe() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# generates reverse shells in various languages for given IP:PORT
 generate_shells() {
     clear
     port=$2
@@ -604,18 +613,21 @@ generate_shells() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# looks for default credentials in service/software/hardware
 defcreds() {
     echo -e "$BLUE[s0mbra] Looking for default credentials for $1...$CLR"
     creds search $1
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# decodes Base64 string
 b64() {
     echo -e "$BLUE[s0mbra] Decoding Base64 string...$CLR"
     echo $1 | base64 -D
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+### menu
 cmd=$1
 clear
 
