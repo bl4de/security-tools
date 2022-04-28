@@ -61,14 +61,10 @@ nodejs_patterns = [
     ".*\sFunction\(",
     ".*spawn\(",
     ".*fork\(",
-    ".*setImmediate\(",
     ".*newBuffer\(",
     ".*\.constructor\(",
     ".*mysql\.createConnection\(",
     ".*\.query\(",
-]
-
-npm_patterns = [
     ".*serialize\(",
     ".*unserialize\("
 ]
