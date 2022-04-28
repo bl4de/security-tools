@@ -59,7 +59,6 @@ nodejs_patterns = [
     ".*child_process",
     ".*child_process.exec\(",
     ".*\sFunction\(",
-    ".*execFile\(",
     ".*spawn\(",
     ".*fork\(",
     ".*setImmediate\(",
