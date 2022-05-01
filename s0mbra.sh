@@ -118,9 +118,11 @@ um() {
 # static code analysis of npm module installed in ~/node_modules
 # with nodestructor and semgrep
 snyktest() {
+    echo -e "$BLUE[s0mbra] Run npm audit first, just in case...$CLR"
+    npm audit .
     echo -e "$BLUE[s0mbra] Starting snyk test in current directory...$CLR"
     snyk test
-    echo -e "\n$BLUE[s0mbra] Done."
+    echo -e "$BLUE[s0mbra] Done."
 }
 
 # enumerates SMB shares on [IP] - port 445 has to be open
