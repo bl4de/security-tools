@@ -118,9 +118,10 @@ um() {
 # static code analysis of npm module installed in ~/node_modules
 # with nodestructor and semgrep
 snyktest() {
-    echo -e "$BLUE[s0mbra] Run npm audit first, just in case...$CLR"
+    echo -e "$BLUE[s0mbra] Auditing Node application using:\n -> npm audit\n -> snyk\n$CLR"
+    echo -e "$BLUE[s0mbra] Running npm audit...$CLR"
     npm audit .
-    echo -e "$BLUE[s0mbra] Starting snyk test in current directory...$CLR"
+    echo -e "$BLUE[s0mbra] Running snyk test...$CLR"
     snyk test
     echo -e "$BLUE[s0mbra] Done."
 }
