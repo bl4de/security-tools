@@ -119,9 +119,9 @@ um() {
 # with nodestructor and semgrep
 snyktest() {
     echo -e "$BLUE[s0mbra] Auditing Node application using:\n -> npm audit\n -> snyk\n$CLR"
-    echo -e "$BLUE[s0mbra] Running npm audit...$CLR"
+    echo -e "$BLUE[s0mbra] Running npm audit$CLR"
     npm audit .
-    echo -e "$BLUE[s0mbra] Running snyk test...$CLR"
+    echo -e "$BLUE[s0mbra] Running snyk test$CLR"
     snyk test
     echo -e "$BLUE[s0mbra] Done."
 }
