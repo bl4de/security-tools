@@ -237,6 +237,41 @@ lookaround() {
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
+# quick lookaround, but for single domain - no need to create scope file
+takealook() {
+    TMPDIR=$(pwd)
+    START_TIME=$(date)
+    DOMAIN=$1
+    echo -e "$BLUE[s0mbra] Let's see what we've got here...$CLR\n"
+
+    # sublister
+    echo -e "\n$GREEN--> sublister$CLR\n"
+    sublister -v -d $DOMAIN -o "$TMPDIR/s0mbra_recon_sublister_$DOMAIN.tmp"
+    
+    # subfinder
+    echo -e "\n$GREEN--> subfinder$CLR\n"
+    subfinder -nW -all -v -d $DOMAIN -o $TMPDIR/s0mbra_recon_subfinder.tmp
+
+    # prepare list of uniqe subdomains
+    cat s0mbra_recon_sub* > step1
+    sed 's/<BR>/#/g' step1 | tr '#' '\n' > step2
+    sort -u -k 1 step2 > s0mbra_recon_subdomains_final.tmp
+    rm -f step*
+
+    # httpx
+    echo -e "\n$GREEN--> httpx$CLR\n"
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subdomains_final.tmp -o $TMPDIR/s0mbra_recon_httpx.tmp
+
+    END_TIME=$(date)
+    echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
+    echo -e "finished at: $RED $END_TIME $GREEN\n"
+    echo -e "  $GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_subdomains_final.tmp` | cut -d" " -f 1) $GRAY subdomains"
+    echo -e "  $GRAY httpx found \t\t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_httpx.tmp` | cut -d" " -f 1) $GRAY active web servers $GREEN"
+    echo -e "  $GRAY HTTP servers responding 200 OK: $CLR\n"
+    grep 200 $TMPDIR/s0mbra_recon_httpx.tmp
+    echo -e "\n$BLUE[s0mbra] Done.$CLR"
+}
+
 # automated recon: subfinder + nmap + httpx + ffuf | on domain(s) -> save to scope file
 recon() {
     TMPDIR=$(pwd)
@@ -641,6 +676,9 @@ case "$cmd" in
     lookaround)
         lookaround "$2"
     ;;
+    takealook)
+        takealook "$2"
+    ;;
     recon)
         recon "$2"
     ;;
@@ -744,7 +782,8 @@ case "$cmd" in
         clear
         echo -e "$GREEN I'm guessing there's no chance we can take care of this quietly, is there? - S0mbra$CLR"
         echo -e "$BLUE_BG:: BUG BOUNTY RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN lookaround $GRAY[DOMAIN]$CLR\t\t\t\t -> just look around... (subfinder + httpx on discovered hosts)"
+        echo -e "$CYAN lookaround $GRAY[SCOPE_FILE]$CLR\t\t\t\t -> just look around... (subfinder + httpx on discovered hosts from scope file)"
+        echo -e "$CYAN takealook $GRAY[DOMAIN]$CLR\t\t\t\t -> lookaround, but for single domain (no scope file needed)"
         echo -e "$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t\t\t -> basic recon: subfinder + nmap + httpx + ffuf (one tool at the time on all hosts)"
         echo -e "$CYAN ransack $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap|nikto|vhosts|ffuf|feroxbuster|x8"
         echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
