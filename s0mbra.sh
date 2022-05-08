@@ -418,28 +418,6 @@ api_fuzz() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
-fufilter() {
-    clear
-    # adjust here to add/remove HTTP response status code(s) to match on:
-    HTTP_RESP_CODES=200,206,301,302,403,500
-    
-    echo -e "$BLUE[s0mbra] Enumerate web resources on $1 with $2.txt dictionary matching $HTTP_RESP_CODES... (filter size: $3) $CLR"
-    
-    if [[ -n $4 ]]; then
-        if [[ $4 == "/" ]]; then
-            # if $3 arg passed to fu equals / - add at the end of the path (for dir enumerations where sometimes
-            # dir path has to end with / to be identified
-            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ/ -mc $HTTP_RESP_CODES -H -fs $3 "X-Bug-Bounty: HackerOne-bl4de" -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
-        else
-            # if $3 arg is not /, treat it as file extension to enumerate files:
-            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ.$4 -mc $HTTP_RESP_CODES -fs $3 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
-        fi
-    else
-        ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc $HTTP_RESP_CODES -fs $3 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
-    fi
-    echo -e "$BLUE\n[s0mbra] Done! $CLR"
-}
-
 kiterunner() {
     HOSTNAME=$1
     echo -e "$BLUE[s0mbra] Running kiterunner using apis file...$CLR\n"
@@ -766,9 +744,6 @@ case "$cmd" in
     fu)
         fu "$2" "$3" "$4"
     ;;
-    fufilter)
-        fufilter "$2" "$3" "$4" "$5"
-    ;;
     apifuzz)
         api_fuzz "$2" "$3"
     ;;
@@ -789,7 +764,6 @@ case "$cmd" in
         echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> webapp resource enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
-        echo -e "$CYAN fufilter $GRAY[URL] [DICT] [SIZE] [*EXT/*ENDSLASH.]$CLR\t -> webapp resource enumeration with ffuf; filter out resp. size SIZE (DICT: starter, lowercase, wordlist etc.)"
         echo -e "$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t -> decodes Base64 string"
         echo -e "$CYAN apifuzz $GRAY[BASE_HREF] [ENDPOINTS]$CLR\t\t -> fuzzing API endpoints with httpie"
         echo -e "$CYAN gql $GRAY[TARGET_URL]$CLR\t\t$YELLOW(GraphQL)$CLR\t -> checking GraphQL endpoint for known vulnerabilities with graphql-cop"
