@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin//env python3
 ### github.com/bl4de | hackerone.com/bl4de                      ###
 
 import sys
@@ -13,22 +13,22 @@ usage: ./hasher.py [string_to_hash]
 
 
 def usage():
-    print description
+    print(description)
     exit(0)
+
 
 def hex_encode(s):
     enc = ''
     for c in s:
-        enc = enc + (str(hex(ord(c))).replace('0x',''))
+        enc = enc + (str(hex(c)).replace('0x', ''))
     return enc
 
 
 def main(s):
-    print "SHA1\t\t{}".format(hashlib.sha1(s).hexdigest())
-    print "MD5 \t\t{}".format(hashlib.md5(s).hexdigest())
-    print "Base64 \t\t{}".format(base64.b64encode(s))
-    print "URL-encoded \t{}".format(urllib.pathname2url(s))
-    print "HEX encoded \t{}".format(hex_encode(s))
+    print("SHA1\t\t{}".format(hashlib.sha1(s.encode('utf-8')).hexdigest()))
+    print("MD5 \t\t{}".format(hashlib.md5(s.encode('utf-8')).hexdigest()))
+    print("Base64 \t\t{}".format(base64.b64encode(s.encode('utf-8'))))
+    print("HEX encoded \t{}".format(hex_encode(s.encode('utf-8'))))
 
 
 if __name__ == "__main__":
