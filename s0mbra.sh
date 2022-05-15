@@ -272,46 +272,9 @@ takealook() {
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
-# automated recon: subfinder + nmap + httpx + ffuf | on domain(s) -> save to scope file
-recon() {
-    TMPDIR=$(pwd)
-    START_TIME=$(date)
-    echo -e "$BLUE[s0mbra] Running quick, dirty recon on $1 domain: subfinder + httpx + ffuf on 200 OK...$CLR\n"
-
-    # subfinder
-    echo -e "\n$GREEN--> subfinder$CLR\n"
-    subfinder -nW -all -v -dL $1 -o $TMPDIR/s0mbra_recon_subfinder.tmp
-
-    # nmap
-    echo -e "\n$GREEN--> nmap (top 1000 ports)$CLR\n"
-    nmap --min-rate=1000 -T4 -iL $TMPDIR/s0mbra_recon_subfinder.tmp --top-ports 100 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_recon_nmap.tmp -oX $TMPDIR/s0mbra_recon_nmap.xml
-
-    # httpx
-    echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subfinder.tmp -o $TMPDIR/s0mbra_recon_httpx.tmp
-
-    # ffuf - starter + lowercase enumeration
-    echo -e "\n$GREEN--> ffuf on HTTP 200 from httpx$CLR\n"
-    for url in $(cat $TMPDIR/s0mbra_recon_httpx.tmp | grep "200" | cut -d' ' -f1); 
-    do
-        NAME=$(echo $url | cut -d'/' -f3)
-        ffuf -ac -c -w $DICT_HOME/starter.txt -u $url/FUZZ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$NAME.log
-        ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $url/FUZZ/ -mc=200,301,302,403,422,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$NAME.log
-    done
-
-    END_TIME=$(date)
-    echo -e "\n$GREEN[s0mbra] Finished!"
-    echo -e "\nstarted at: $RED  $START_TIME $GREEN"
-    echo -e "finished at: $RED $END_TIME $GREEN\n"
-    echo -e "  subfinder output file -> $GRAY $TMPDIR/s0mbra_subfinder.tmp$GREEN"
-    echo -e "  httpx output file -> $GRAY $TMPDIR/s0mbra_httpx.tmp$GREEN"
-    echo -e "  nmap output file -> $GRAY $TMPDIR/s0mbra_recon_nmap.tmp"
-    echo -e "\n$BLUE[s0mbra] Done.$CLR"
-}
-
 # does recon on URL: nmap, ffuf, other smaller tools, ...?
 # pass ONLY hostname (without protocol prefix)
-ransack() {
+recon() {
     HOSTNAME=$1
 
     # set options:
@@ -658,10 +621,7 @@ case "$cmd" in
         takealook "$2"
     ;;
     recon)
-        recon "$2"
-    ;;
-    ransack)
-        ransack "$2" "$3" "$4"
+        recon "$2" "$3" "$4"
     ;;
     kiterunner)
         kiterunner "$2"
@@ -755,12 +715,10 @@ case "$cmd" in
     ;;
     *)
         clear
-        echo -e "$GREEN I'm guessing there's no chance we can take care of this quietly, is there? - S0mbra$CLR"
         echo -e "$BLUE_BG:: BUG BOUNTY RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN lookaround $GRAY[SCOPE_FILE]$CLR\t\t\t -> just look around... (subfinder + httpx on discovered hosts from scope file)"
         echo -e "$CYAN takealook $GRAY[DOMAIN]$CLR\t\t\t\t -> lookaround, but for single domain (no scope file needed)"
-        echo -e "$CYAN recon $GRAY[DOMAIN]$CLR\t\t\t\t\t -> basic recon: subfinder + nmap + httpx + ffuf (one tool at the time on all hosts)"
-        echo -e "$CYAN ransack $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap|nikto|vhosts|ffuf|feroxbuster|x8"
+        echo -e "$CYAN recon $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap|nikto|vhosts|ffuf|feroxbuster|x8"
         echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> webapp resource enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
