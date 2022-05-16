@@ -606,6 +606,18 @@ b64() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# executes HTTP requests to most common HTTP ports
+get() {
+    PORTS=(80 280 443 591)
+    echo -e "$BLUE[s0mbra] GETing most common HTTP ports on $1...$CLR"
+    for PORT in "${PORTS[@]}"; do
+        echo -e "$YELLOW[s0mbra] Executing HTTP request to port $PORT...$CLR"
+        curl -I -m 10 https://$1:$PORT
+        echo
+    done
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
 ### menu
 cmd=$1
 clear
@@ -704,6 +716,9 @@ case "$cmd" in
     fu)
         fu "$2" "$3" "$4"
     ;;
+    get)
+        get "$2"
+    ;;
     apifuzz)
         api_fuzz "$2" "$3"
     ;;
@@ -722,6 +737,7 @@ case "$cmd" in
         echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> webapp resource enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
+        echo -e "$CYAN get $GRAY[HOST]$CLR\t\t\t\t\t -> executes HTTP requests to HOST on most popular HTTP ports"
         echo -e "$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t -> decodes Base64 string"
         echo -e "$CYAN apifuzz $GRAY[BASE_HREF] [ENDPOINTS]$CLR\t\t -> fuzzing API endpoints with httpie"
         echo -e "$CYAN gql $GRAY[TARGET_URL]$CLR\t\t$YELLOW(GraphQL)$CLR\t -> checking GraphQL endpoint for known vulnerabilities with graphql-cop"
