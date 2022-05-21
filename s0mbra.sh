@@ -265,9 +265,9 @@ takealook() {
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
     echo -e "finished at: $RED $END_TIME $GREEN\n"
-    echo -e "  $GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_subdomains_final.tmp` | cut -d" " -f 1) $GRAY subdomains"
-    echo -e "  $GRAY httpx found \t\t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_httpx.tmp` | cut -d" " -f 1) $GRAY active web servers $GREEN"
-    echo -e "  $GRAY HTTP servers responding 200 OK: $CLR\n"
+    echo -e "$GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_subdomains_final.tmp` | cut -d" " -f 1) $GRAY subdomains"
+    echo -e "$GRAY httpx found \t\t\t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_httpx.tmp` | cut -d" " -f 1) $GRAY active web servers $GREEN"
+    echo -e "$GREEN\nHTTP servers responding 200 OK: $CLR\n"
     grep 200 $TMPDIR/s0mbra_recon_httpx.tmp
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
