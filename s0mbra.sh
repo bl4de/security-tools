@@ -277,14 +277,25 @@ takealook() {
 recon() {
     HOSTNAME=$1
 
-    # set options:
-    NMAP=$(echo $2|grep 'nmap'|wc -l)
-    NIKTO=$(echo $2|grep 'nikto'|wc -l)
-    VHOSTS=$(echo $2|grep 'vhosts'|wc -l)
-    FFUF=$(echo $2|grep 'ffuf'|wc -l)
-    FEROXBUSTER=$(echo $2|grep 'feroxbuster'|wc -l)
-    X8=$(echo $2|grep 'x8'|wc -l)
-    SUBDOMANIZER=$(echo $2|grep 'subdomanizer'|wc -l)
+    # set proto:
+    if [[ -z $2 ]]; then
+        # default options:
+        NMAP="1"
+        NIKTO="1"
+        FFUF="1"
+        FEROXBUSTER="1"
+        X8="1"
+        SUBDOMANIZER="1"
+    else
+        # set options:
+        NMAP=$(echo $2|grep 'nmap'|wc -l)
+        NIKTO=$(echo $2|grep 'nikto'|wc -l)
+        VHOSTS=$(echo $2|grep 'vhosts'|wc -l)
+        FFUF=$(echo $2|grep 'ffuf'|wc -l)
+        FEROXBUSTER=$(echo $2|grep 'feroxbuster'|wc -l)
+        X8=$(echo $2|grep 'x8'|wc -l)
+        SUBDOMANIZER=$(echo $2|grep 'subdomanizer'|wc -l)
+    fi
 
     # set proto:
     if [[ -z $3 ]]; then
