@@ -284,6 +284,7 @@ recon() {
     FFUF=$(echo $2|grep 'ffuf'|wc -l)
     FEROXBUSTER=$(echo $2|grep 'feroxbuster'|wc -l)
     X8=$(echo $2|grep 'x8'|wc -l)
+    SUBDOMANIZER=$(echo $2|grep 'subdomanizer'|wc -l)
 
     # set proto:
     if [[ -z $3 ]]; then
@@ -337,6 +338,12 @@ recon() {
     # x8
     if [[ $X8 -eq "1" ]]; then
         x8 -u $PROTO://$HOSTNAME/ -w $DICT_HOME/urlparams.txt -c 10
+    fi
+
+    # subdomanizer
+    if [[ $SUBDOMANIZER -eq "1" ]]; then
+        echo -e "\n$GREEN--> SubDomanizer$CLR\n"
+        subdomanizer --url $PROTO://$HOSTNAME/
     fi
 
     END_TIME=$(date)
@@ -733,7 +740,7 @@ case "$cmd" in
         echo -e "$BLUE_BG:: BUG BOUNTY RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN lookaround $GRAY[SCOPE_FILE]$CLR\t\t\t -> just look around... (subfinder + httpx on discovered hosts from scope file)"
         echo -e "$CYAN takealook $GRAY[DOMAIN]$CLR\t\t\t\t -> lookaround, but for single domain (no scope file needed)"
-        echo -e "$CYAN recon $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap|nikto|vhosts|ffuf|feroxbuster|x8"
+        echo -e "$CYAN recon $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap,nikto,vhosts,ffuf,feroxbuster,x8,subdomanizer"
         echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> webapp resource enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
