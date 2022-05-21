@@ -608,7 +608,7 @@ b64() {
 
 # executes HTTP requests to most common HTTP ports
 get() {
-    PORTS=(80 280 443 591)
+    PORTS=(80 280 443 591 593 981 1311 2480 3000 4567 5104 5985 7000 7001 7002 8000 8008 8080 8222 8443 8530 9080 9443 12443 16080 18091 18092)
     echo -e "$BLUE[s0mbra] GETing most common HTTP ports on $1...$CLR"
     for PORT in "${PORTS[@]}"; do
         echo -e "$YELLOW[s0mbra] Executing HTTP request to port $PORT...$CLR"
