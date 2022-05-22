@@ -624,6 +624,13 @@ b64() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# hash/encode string
+hshr() {
+    echo -e "$BLUE[s0mbra] Hash/encoode $1...$CLR"
+    hasher $1
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
 # executes HTTP requests to most common HTTP ports
 get() {
     PORTS=(80 280 443 591 593 981 1311 2480 3000 4567 5104 5985 7000 7001 7002 8000 8008 8080 8222 8443 8530 9080 9443 12443 16080 18091 18092)
@@ -731,6 +738,9 @@ case "$cmd" in
     b64)
         b64 "$2"
     ;;
+    hasher)
+        hshr "$2"
+    ;;
     fu)
         fu "$2" "$3" "$4"
     ;;
@@ -748,16 +758,15 @@ case "$cmd" in
     ;;
     *)
         clear
-        echo -e "$BLUE_BG:: BUG BOUNTY RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
+        echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN lookaround $GRAY[SCOPE_FILE]$CLR\t\t\t -> just look around... (subfinder + httpx on discovered hosts from scope file)"
         echo -e "$CYAN takealook $GRAY[DOMAIN]$CLR\t\t\t\t -> lookaround, but for single domain (no scope file needed)"
         echo -e "$CYAN recon $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap,nikto,vhosts,ffuf,feroxbuster,x8,subdomanizer"
-        echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> webapp resource enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
         echo -e "$CYAN get $GRAY[HOST]$CLR\t\t\t\t\t -> executes HTTP requests to HOST on most popular HTTP ports"
-        echo -e "$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t -> decodes Base64 string"
-        echo -e "$CYAN apifuzz $GRAY[BASE_HREF] [ENDPOINTS]$CLR\t\t -> fuzzing API endpoints with httpie"
+        echo -e "$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(RESTapi)$CLR\t -> fuzzing API endpoints with httpie"
+        echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(RESTapi)$CLR\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "$CYAN gql $GRAY[TARGET_URL]$CLR\t\t$YELLOW(GraphQL)$CLR\t -> checking GraphQL endpoint for known vulnerabilities with graphql-cop"
         echo -e "$BLUE_BG:: CLOUD ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN s3 $GRAY[bucket]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
@@ -791,6 +800,10 @@ case "$cmd" in
         echo -e "$CYAN dex_to_jar $GRAY[.dex file]$CLR\t\t$YELLOW(Java)$CLR\t\t -> exports .dex file into .jar"
         echo -e "$CYAN apk $GRAY[.apk FILE]$CLR\t\t$YELLOW(Java)$CLR\t\t -> extracts APK file and run apktool on it"
         echo -e "$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t$YELLOW(Java)$CLR\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
+        echo -e "$BLUE_BG:: UTILS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
+        echo -e "$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t -> decodes Base64 string"
+        echo -e "$CYAN hasher $GRAY[STRING]$CLR\t\t\t\t -> hash/encode string (md5, sha1, base64, hex encoded)"
+
         echo -e "$CLR"
     ;;
 esac
