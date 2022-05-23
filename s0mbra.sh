@@ -637,6 +637,8 @@ get() {
     echo -e "$BLUE[s0mbra] GETing most common HTTP ports on $1...$CLR"
     for PORT in "${PORTS[@]}"; do
         echo -e "$YELLOW[s0mbra] Executing HTTP request to port $PORT...$CLR"
+        curl -I -m 10 http://$1:$PORT
+        echo -e "$YELLOW[s0mbra] Executing HTTPS request to port $PORT...$CLR"
         curl -I -m 10 https://$1:$PORT
         echo
     done
