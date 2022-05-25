@@ -376,13 +376,13 @@ fu() {
         if [[ $3 == "/" ]]; then
             # if $3 arg passed to fu equals / - add at the end of the path (for dir enumerations where sometimes
             # dir path has to end with / to be identified
-            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ/ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
+            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1/FUZZ/ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
         else
             # if $3 arg is not /, treat it as file extension to enumerate files:
-            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ.$3 -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
+            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1/FUZZ.$3 -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
         fi
     else
-        ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1FUZZ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
+        ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1/FUZZ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
     fi
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
