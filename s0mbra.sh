@@ -387,6 +387,16 @@ fu() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+#extracts API endpoint urls (eg. "/api/user/create")
+endpoints() {
+    clear
+    FILE=$1
+    PATH=$2
+    echo -e "$BLUE[s0mbra] Extracting API endpoints from $FILE...$CLR"
+    grep --color -n "$PATH" $1
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
 api_fuzz() {
     clear
     echo -e "$BLUE[s0mbra] Fuzzing $1 API with httpie using endpoints file $2...$CLR"
@@ -749,6 +759,9 @@ case "$cmd" in
     get)
         get "$2"
     ;;
+    endpoints)
+        endpoints "$2" "$3"
+    ;;
     apifuzz)
         api_fuzz "$2" "$3"
     ;;
@@ -767,6 +780,7 @@ case "$cmd" in
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> webapp resource enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
         echo -e "$CYAN get $GRAY[HOST]$CLR\t\t\t\t\t -> executes HTTP requests to HOST on most popular HTTP ports"
+        echo -e "$CYAN endpoints $GRAY[FILE] [PATH]$CLR\t$YELLOW(RESTapi)$CLR\t -> extracts API endpoints from FILE, which conatins PATH (eg. /api/ -> /api/user/delete)"
         echo -e "$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(RESTapi)$CLR\t -> fuzzing API endpoints with httpie"
         echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(RESTapi)$CLR\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "$CYAN gql $GRAY[TARGET_URL]$CLR\t\t$YELLOW(GraphQL)$CLR\t -> checking GraphQL endpoint for known vulnerabilities with graphql-cop"
