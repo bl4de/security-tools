@@ -507,6 +507,14 @@ s3go() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+
+s3ls() {
+    clear
+    echo -e "$BLUE[s0mbra] Listing $2 folder on $1 bucket...$CLR"
+    aws s3 ls "s3://$1/$2/" 2> /dev/null
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
 # coverts .dex file to .jar archive
 dex_to_jar() {
     clear
@@ -768,6 +776,9 @@ case "$cmd" in
     s3go)
         s3go "$2" "$3"
     ;;
+    s3ls)
+        s3ls "$2" "$3"
+    ;;
     generate_shells)
         generate_shells "$2" "$3"
     ;;
@@ -787,6 +798,7 @@ case "$cmd" in
         echo -e "$BLUE_BG:: CLOUD ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN s3 $GRAY[bucket]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
         echo -e "$CYAN s3go $GRAY[bucket] [key]$CLR\t\t$YELLOW(AWS)$CLR\t\t -> get object identified by [key] from AWS S3 [bucket]"
+        echo -e "$CYAN s3ls $GRAY[bucket] [folder]$CLR\t\t$YELLOW(AWS)$CLR\t\t -> list content of [folder] on S3 [bucket] - requires READ permissions (check with s3)"
         echo -e "$BLUE_BG:: PENTEST TOOLS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
         echo -e "$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS]/-p- to enumerate; -sV -sC -A on found ports"
