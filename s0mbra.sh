@@ -393,7 +393,7 @@ endpoints() {
     FILE=$1
     PATH=$2
     echo -e "$BLUE[s0mbra] Extracting API endpoints from $FILE...$CLR"
-    grep --color -n "$PATH" $1
+    /usr/bin/grep --color -n -e "$PATH" $FILE
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
