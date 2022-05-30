@@ -487,7 +487,8 @@ s3() {
     echo -e "\n$BLUE[s0mbra] Done."
 }
 
-s3go() {
+# downloads file from S3 directory
+s3get() {
     clear
     echo -e "$BLUE[s0mbra] Getting $2 from $1 bucket...$CLR"
 
@@ -507,7 +508,28 @@ s3go() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# uploads file to S3 directory
+s3gput() {
+    clear
+    echo -e "$BLUE[s0mbra] Uploading $2 to $1...$CLR"
 
+    # aws s3api get-object-acl --bucket "$1" --key "$2" 2> /dev/null
+    # if [[ "$?" == 0 ]]; then
+    #     echo -e "\n$GREEN+ We can read ACL of $3$CLR"
+    # elif [[ "$?" != 0 ]]; then
+    #     echo -e "\n$RED- can't check $2 ACL... :/$CLR"
+    # fi
+
+    # aws s3api get-object --bucket "$1" --key "$2" "$1".downloaded 2> /dev/null
+    # if [[ "$?" == 0 ]]; then
+    #     echo -e "\n$GREEN+  $2 downloaded in current directory as $2.downloaded$CLR"
+    # elif [[ "$?" != 0 ]]; then
+    #     echo -e "\n$RED- can't get $2 :/$CLR"
+    # fi
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
+# Lists content of the folder on S3 bucket
 s3ls() {
     clear
     echo -e "$BLUE[s0mbra] Listing $2 folder on $1 bucket...$CLR"
@@ -773,8 +795,8 @@ case "$cmd" in
     apifuzz)
         api_fuzz "$2" "$3"
     ;;
-    s3go)
-        s3go "$2" "$3"
+    s3get)
+        s3get "$2" "$3"
     ;;
     s3ls)
         s3ls "$2" "$3"
@@ -797,7 +819,7 @@ case "$cmd" in
         echo -e "$CYAN gql $GRAY[TARGET_URL]$CLR\t\t$YELLOW(GraphQL)$CLR\t -> checking GraphQL endpoint for known vulnerabilities with graphql-cop"
         echo -e "$BLUE_BG:: CLOUD ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN s3 $GRAY[bucket]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
-        echo -e "$CYAN s3go $GRAY[bucket] [key]$CLR\t\t$YELLOW(AWS)$CLR\t\t -> get object identified by [key] from AWS S3 [bucket]"
+        echo -e "$CYAN s3get $GRAY[bucket] [key]$CLR\t\t$YELLOW(AWS)$CLR\t\t -> get object identified by [key] from AWS S3 [bucket]"
         echo -e "$CYAN s3ls $GRAY[bucket] [folder]$CLR\t\t$YELLOW(AWS)$CLR\t\t -> list content of [folder] on S3 [bucket] - requires READ permissions (check with s3)"
         echo -e "$BLUE_BG:: PENTEST TOOLS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
