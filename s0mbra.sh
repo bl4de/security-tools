@@ -685,6 +685,60 @@ get() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# enumerates available HTTP methods on host
+methods() {
+    METHODS=(
+        OPTIONS
+        GET
+        HEAD
+        POST
+        PUT
+        DELETE
+        TRACE
+        PURGE
+        CONNECT
+        PROPFIND
+        PROPPATCH
+        MKCOL
+        COPY
+        MOVE
+        LOCK
+        UNLOCK
+        VERSION-CONTROL
+        REPORT
+        CHECKOUT
+        CHECKIN
+        UNCHECKOUT
+        MKWORKSPACE
+        UPDATE
+        LABEL
+        MERGE
+        BASELINE-CONTROL
+        MKACTIVITY
+        ORDERPATCH
+        ACL
+        PATCH
+        SEARCH
+        ARBITRARY
+        BIND
+        LINK
+        MKCALENDAR
+        MKREDIRECTREF
+        PRI
+        QUERY
+        REBIND
+        UNBIND
+        UNLINK
+        UPDATEREDIRECTREF)
+    echo -e "$BLUE[s0mbra] Enumerate available HTTP methods on $1...$CLR"
+    for HTTP_METHOD in "${METHODS[@]}"; do
+        echo -e "$YELLOW[s0mbra] Executing $HTTP_METHOD / HTTP/1.1...$CLR"
+        curl -sI -X $HTTP_METHOD -H "User-Agent: HackerOne/bl4de" -H "X-Hackerone: bl4de" -H "Content-Type: application/json" $1
+        echo
+    done
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
 ### menu
 cmd=$1
 clear
@@ -789,6 +843,9 @@ case "$cmd" in
     get)
         get "$2"
     ;;
+    methods)
+        methods "$2"
+    ;;
     endpoints)
         endpoints "$2" "$3"
     ;;
@@ -811,8 +868,9 @@ case "$cmd" in
         echo -e "$CYAN takealook $GRAY[DOMAIN]$CLR\t\t\t\t -> lookaround, but for single domain (no scope file needed)"
         echo -e "$CYAN recon $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap,nikto,vhosts,ffuf,feroxbuster,x8,subdomanizer"
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> webapp resource enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
+        echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> dirs and files enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
         echo -e "$CYAN get $GRAY[HOST]$CLR\t\t\t\t\t -> executes HTTP requests to HOST on most popular HTTP ports"
+        echo -e "$CYAN methods $GRAY[HOST]$CLR\t\t\t\t\t -> enumerates HTTP methods on HOST"
         echo -e "$CYAN endpoints $GRAY[FILE] [PATH]$CLR\t$YELLOW(RESTapi)$CLR\t -> extracts API endpoints from FILE, which conatins PATH (eg. /api/ -> /api/user/delete)"
         echo -e "$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(RESTapi)$CLR\t -> fuzzing API endpoints with httpie"
         echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(RESTapi)$CLR\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
