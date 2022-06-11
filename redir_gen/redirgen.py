@@ -3,7 +3,6 @@
 
 import re
 import argparse
-import string
 
 
 def generate(payload, target, dest, param=None) -> str:
@@ -16,6 +15,14 @@ def generate(payload, target, dest, param=None) -> str:
     # if param:
     #     payload = re.sub("PARAM", param, payload)
     return payload
+
+
+def save_output(output: str) -> None:
+    '''
+        Saves output to file defined as out param
+    '''
+    with open(output, "w") as handle:
+        [handle.write(f"{x.rstrip()}\n") for x in payloads]
 
 
 parser = argparse.ArgumentParser()
@@ -44,5 +51,4 @@ for payload in templates:
     payloads.append(payload)
 
 if args.output:
-    with open(args.output, "w")as handle:
-        [handle.write(f"{x.rstrip()}\n") for x in payloads]
+    save_output(args.output)
