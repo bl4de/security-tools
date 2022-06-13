@@ -1,4 +1,4 @@
 security-tools
 ==============
 
-Collection of simple security tools created in Python.
+Small security related tools created in Python and Bash for CTF players, bug bounty hunters, pentesters and developers.
