@@ -537,6 +537,14 @@ s3ls() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# Lists content of the folder on S3 bucket
+discloS3() {
+    clear
+    echo -e "$BLUE[s0mbra] Execute bucket-disclose.sh against $1...$CLR"
+    bucket-disclose $1 DEBUG
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
 # coverts .dex file to .jar archive
 dex_to_jar() {
     clear
@@ -858,6 +866,9 @@ case "$cmd" in
     s3ls)
         s3ls "$2" "$3"
     ;;
+    discloS3)
+        discloS3 "$2"
+    ;;
     generate_shells)
         generate_shells "$2" "$3"
     ;;
@@ -876,9 +887,10 @@ case "$cmd" in
         echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(RESTapi)$CLR\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "$CYAN gql $GRAY[TARGET_URL]$CLR\t\t$YELLOW(GraphQL)$CLR\t -> checking GraphQL endpoint for known vulnerabilities with graphql-cop"
         echo -e "$BLUE_BG:: CLOUD ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN s3 $GRAY[bucket]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
-        echo -e "$CYAN s3get $GRAY[bucket] [key]$CLR\t\t$YELLOW(AWS)$CLR\t\t -> get object identified by [key] from AWS S3 [bucket]"
-        echo -e "$CYAN s3ls $GRAY[bucket] [folder]$CLR\t\t$YELLOW(AWS)$CLR\t\t -> list content of [folder] on S3 [bucket] - requires READ permissions (check with s3)"
+        echo -e "$CYAN discloS3 $GRAY[URL]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t -> runs bucket-disclose.sh against [URL]"
+        echo -e "$CYAN s3 $GRAY[BUCKET]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
+        echo -e "$CYAN s3get $GRAY[BUCKET] [key]$CLR\t\t$YELLOW(AWS)$CLR\t\t -> get object identified by [key] from AWS S3 [BUCKET]"
+        echo -e "$CYAN s3ls $GRAY[BUCKET] [folder]$CLR\t\t$YELLOW(AWS)$CLR\t\t -> list content of [folder] on S3 [BUCKET] - requires READ permissions (check with s3)"
         echo -e "$BLUE_BG:: PENTEST TOOLS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
         echo -e "$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS]/-p- to enumerate; -sV -sC -A on found ports"

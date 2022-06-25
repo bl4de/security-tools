@@ -13,8 +13,6 @@ _timeout="20"
 #you need a valid key, since the errors happens after it validates that the key exist. we do not need the secret key, only access key
 _aws_key=$AWS_KEY
 
-echo $_aws_key
-
 H_ACCEPT="accept-language: en-US,en;q=0.9,sv;q=0.8,zh-TW;q=0.7,zh;q=0.6,fi;q=0.5,it;q=0.4,de;q=0.3"
 H_AGENT="user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.146 Safari/537.36"
 
