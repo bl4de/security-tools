@@ -432,6 +432,9 @@ pysast() {
     echo -e "\n$BLUE[s0mbra] Running vulture against $DIR_NAME $CLR\n"
     python3 -m vulture $DIR_NAME
 
+    echo -e "\n$BLUE[s0mbra] Running graudit against $DIR_NAME $CLR\n"
+    graudit $1
+
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
@@ -588,6 +591,7 @@ php_sast() {
     clear
     echo -e "$BLUE[s0mbra] Running phpcs against $1...$CYAN"
     phpcs --colors -vs $1
+    graudit $1
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
