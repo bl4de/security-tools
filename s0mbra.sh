@@ -238,7 +238,7 @@ lookaround() {
 }
 
 # quick lookaround, but for single domain - no need to create scope file
-takealook() {
+peek() {
     TMPDIR=$(pwd)
     START_TIME=$(date)
     DOMAIN=$1
@@ -762,8 +762,8 @@ case "$cmd" in
     lookaround)
         lookaround "$2"
     ;;
-    takealook)
-        takealook "$2"
+    peek)
+        peek "$2"
     ;;
     recon)
         recon "$2" "$3" "$4"
@@ -880,7 +880,7 @@ case "$cmd" in
         clear
         echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN lookaround $GRAY[SCOPE_FILE]$CLR\t\t\t -> just look around... (subfinder + httpx on discovered hosts from scope file)"
-        echo -e "$CYAN takealook $GRAY[DOMAIN]$CLR\t\t\t\t -> lookaround, but for single domain (no scope file needed)"
+        echo -e "$CYAN peek $GRAY[DOMAIN]$CLR\t\t\t\t\t -> lookaround, but for single domain (no scope file needed)"
         echo -e "$CYAN recon $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap,nikto,vhosts,ffuf,feroxbuster,x8,subdomanizer"
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> dirs and files enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
@@ -900,11 +900,11 @@ case "$cmd" in
         echo -e "$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS]/-p- to enumerate; -sV -sC -A on found ports"
         echo -e "$CYAN http $GRAY[PORT]$CLR\t\t\t\t\t -> runs HTTP server on [PORT] TCP port"
         echo -e "$CYAN generate_shells $GRAY[IP] [PORT] $CLR\t\t\t -> generates ready-to-use reverse shells in various languages for given IP:PORT"
-        echo -e "$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
-        echo -e "$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR\t\t -> enumerates SMB shares on [IP] as [USER] (eg. null) (445 port has to be open)"
-        echo -e "$CYAN smb_get_file $GRAY[IP] [user] [password] [PATH] $CLR\t -> downloads file from SMB share [PATH] on [IP]"
-        echo -e "$CYAN smb_mount $GRAY[IP] [SHARE] [USER]$CLR\t\t\t -> mounts SMB share at ./mnt/shares"
-        echo -e "$CYAN smb_umount $CLR\t\t\t\t\t -> unmounts SMB share from ./mnt/shares and deletes it"
+        # echo -e "$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
+        # echo -e "$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR\t\t -> enumerates SMB shares on [IP] as [USER] (eg. null) (445 port has to be open)"
+        # echo -e "$CYAN smb_get_file $GRAY[IP] [user] [password] [PATH] $CLR\t -> downloads file from SMB share [PATH] on [IP]"
+        # echo -e "$CYAN smb_mount $GRAY[IP] [SHARE] [USER]$CLR\t\t\t -> mounts SMB share at ./mnt/shares"
+        # echo -e "$CYAN smb_umount $CLR\t\t\t\t\t -> unmounts SMB share from ./mnt/shares and deletes it"
         echo -e "$BLUE_BG:: PASSWORDS CRACKIN' ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN rockyou_john $GRAY[TYPE] [HASHES]$CLR\t\t\t -> runs john+rockyou against [HASHES] file with hashes of type [TYPE]"
         echo -e "$CYAN ssh_to_john $GRAY[ID_RSA]$CLR\t\t\t\t -> id_rsa to JTR SSH hash file for SSH key password cracking"
