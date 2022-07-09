@@ -1,9 +1,5 @@
 #!/bin/bash
 # shellcheck disable=SC1087,SC2181,SC2162,SC2013
-###  S0mbra  ###
-# BugBounty/CTF/PenTest/Hacking suite 
-# collection of various wrappers, multi-commands, tips&tricks, shortcuts etc.
-# CTX: bl4de@wearehackerone.com
 
 HACKING_HOME="/Users/bl4de/hacking"
 
@@ -21,11 +17,6 @@ CYAN='\033[36m'
 
 CLR='\033[0m'
 NEWLINE='\n'
-
-# config commands
-set_ip() {
-    export IP="$1"
-}
 
 # runs $2 port(s) against IP; then -sV -sC -A against every open port found
 full_nmap_scan() {
