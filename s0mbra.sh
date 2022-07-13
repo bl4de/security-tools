@@ -837,7 +837,7 @@ case "$cmd" in
     b64)
         b64 "$2"
     ;;
-    hasher)
+    hashme)
         hshr "$2"
     ;;
     fu)
@@ -915,7 +915,7 @@ case "$cmd" in
         echo -e "$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t$YELLOW(Java)$CLR\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
         echo -e "$BLUE_BG:: UTILS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t -> decodes Base64 string"
-        echo -e "$CYAN hasher $GRAY[STRING]$CLR\t\t\t\t -> hash/encode string (md5, sha1, base64, hex encoded)"
+        echo -e "$CYAN hashme $GRAY[STRING]$CLR\t\t\t\t -> hash/encode string (md5, sha1, base64, hex encoded)"
 
         echo -e "$CLR"
     ;;
