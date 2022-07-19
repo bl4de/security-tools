@@ -72,7 +72,8 @@ nodejs_patterns = [
     ".*mysql\.createConnection\(",
     ".*\.query\(",
     ".*serialize\(",
-    ".*unserialize\("
+    ".*unserialize\(",
+    ".*__proto__"
 ]
 
 browser_patterns = [
@@ -185,7 +186,7 @@ browser_patterns = [
 url_regex = re.compile("(https|http):\/\/[a-zA-Z0-9#=\-\?\&\/\.]+")
 urls = []
 
-patterns = nodejs_patterns + npm_patterns
+patterns = nodejs_patterns
 total_files = 0
 patterns_identified = 0
 files_with_identified_patterns = 0
@@ -297,7 +298,7 @@ def perform_code_analysis(src, pattern="", verbose=False):
                     print_filename = False
                 patterns_found_in_file += 1
                 printcodeline(_line, i, __pattern,
-                              ' code pattern identified: ', _code, verbose, _file.name)
+                              ' pattern found ', _code, verbose, _file.name)
 
             # URL searching
             if identify_urls == True:
