@@ -690,9 +690,9 @@ get() {
     PORTS=(80 280 443 591 593 981 1311 2480 3000 4567 5104 5985 7000 7001 7002 8000 8008 8080 8222 8443 8530 9080 9443 12443 16080 18091 18092)
     echo -e "$BLUE[s0mbra] GETing most common HTTP ports on $1...$CLR"
     for PORT in "${PORTS[@]}"; do
-        echo -e "$YELLOW[s0mbra] Executing HTTP request to port $PORT...$CLR"
+        echo -e "$YELLOW\n[s0mbra] Executing HTTP request to port $PORT...$CLR"
         curl -I -m 10 http://$1:$PORT
-        echo -e "$YELLOW[s0mbra] Executing HTTPS request to port $PORT...$CLR"
+        echo -e "$YELLOW\n[s0mbra] Executing HTTPS request to port $PORT...$CLR"
         curl -I -m 10 https://$1:$PORT
         echo
     done
@@ -747,7 +747,11 @@ methods() {
     echo -e "$BLUE[s0mbra] Enumerate available HTTP methods on $1...$CLR"
     for HTTP_METHOD in "${METHODS[@]}"; do
         echo -e "$YELLOW[s0mbra] Executing $HTTP_METHOD / HTTP/1.1...$CLR"
-        curl -sI -X $HTTP_METHOD -H "User-Agent: HackerOne/bl4de" -H "X-Hackerone: bl4de" -H "Content-Type: application/json" $1
+        if [[ -z $2 ]]; then
+            curl -sI -X $HTTP_METHOD -H "User-Agent: HackerOne/bl4de" -H "X-Hackerone: bl4de" -H "Content-Type: application/json" $1 | grep HTTP
+        else
+            curl -sI -X $HTTP_METHOD -H "User-Agent: HackerOne/bl4de" -H "X-Hackerone: bl4de" -H "Content-Type: application/json" $1
+        fi
         echo
     done
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
@@ -858,7 +862,7 @@ case "$cmd" in
         get "$2"
     ;;
     methods)
-        methods "$2"
+        methods "$2" "$3"
     ;;
     endpoints)
         endpoints "$2" "$3"
@@ -887,7 +891,7 @@ case "$cmd" in
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT or /] [HTTP RESP.]$CLR\t -> dirs and files enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
         echo -e "$CYAN get $GRAY[HOST]$CLR\t\t\t\t\t -> executes HTTP requests to HOST on most popular HTTP ports"
-        echo -e "$CYAN methods $GRAY[HOST]$CLR\t\t\t\t\t -> enumerates HTTP methods on HOST"
+        echo -e "$CYAN methods $GRAY[HOST] [*SHOW RESP. HEADERS]$CLR\t\t -> enumerates HTTP methods on HOST"
         echo -e "$CYAN endpoints $GRAY[FILE] [PATH]$CLR\t$YELLOW(RESTapi)$CLR\t -> extracts API endpoints from FILE, which conatins PATH (eg. /api/ -> /api/user/delete)"
         echo -e "$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(RESTapi)$CLR\t -> fuzzing API endpoints with httpie"
         echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(RESTapi)$CLR\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
