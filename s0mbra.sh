@@ -375,8 +375,13 @@ fu() {
             # dir path has to end with / to be identified
             ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1/FUZZ/ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
         else
-            # if $3 arg is not /, treat it as file extension to enumerate files:
-            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1/FUZZ.$3 -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
+            if [[ $3 == "-" ]]; then
+                # if $3 equals - (dash) that means we should ignore it at all
+                ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1/FUZZ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
+            else
+                # if $3 arg is not /, treat it as file extension to enumerate files:
+                ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1/FUZZ.$3 -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
+            fi
         fi
     else
         ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$2.txt -u $1/FUZZ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
