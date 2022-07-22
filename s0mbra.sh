@@ -277,6 +277,7 @@ recon() {
         FEROXBUSTER="1"
         X8="1"
         SUBDOMANIZER="1"
+        SELECTED_OPTIONS="nmap, nikto, ffuf, feroxbuster, x8, subdomanizer"
     else
         # set options:
         NMAP=$(echo $2|grep 'nmap'|wc -l)
@@ -286,6 +287,7 @@ recon() {
         FEROXBUSTER=$(echo $2|grep 'feroxbuster'|wc -l)
         X8=$(echo $2|grep 'x8'|wc -l)
         SUBDOMANIZER=$(echo $2|grep 'subdomanizer'|wc -l)
+        SELECTED_OPTIONS=$2
     fi
 
     # set proto:
@@ -301,7 +303,7 @@ recon() {
     TMPDIR=$(pwd)/s0mbra
 
     START_TIME=$(date)
-    echo -e "$BLUE[s0mbra] Running bruteforced, dirty, noisy as hell recon on $PROTO://$HOSTNAME \n\t using selected options: $2...$CLR"
+    echo -e "$BLUE[s0mbra] Running bruteforced, dirty, noisy as hell recon on $PROTO://$HOSTNAME \n\t using selected options: $SELECTED_OPTIONS...$CLR"
 
     # onaws
     echo -e "\n$GREEN--> onaws? $CLR\n"
@@ -358,8 +360,12 @@ recon() {
 
 fu() {
     clear
-    # adjust here to add/remove HTTP response status code(s) to match on:
-    HTTP_RESP_CODES=200,206,301,302,403,500
+    # set response status code(s) to match on:
+    if [[ -z $4 ]]; then
+        HTTP_RESP_CODES=200,206,301,302,403,500
+    else
+        HTTP_RESP_CODES=$4
+    fi
     
     echo -e "$BLUE[s0mbra] Enumerate web resources on $1 with $2.txt dictionary matching $HTTP_RESP_CODES...$CLR"
     
@@ -841,7 +847,7 @@ case "$cmd" in
         hshr "$2"
     ;;
     fu)
-        fu "$2" "$3" "$4"
+        fu "$2" "$3" "$4" "$5"
     ;;
     get)
         get "$2"
@@ -874,7 +880,7 @@ case "$cmd" in
         echo -e "$CYAN peek $GRAY[DOMAIN]$CLR\t\t\t\t\t -> lookaround, but for single domain (no scope file needed)"
         echo -e "$CYAN recon $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap,nikto,vhosts,ffuf,feroxbuster,x8,subdomanizer"
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT/*ENDSLASH.]$CLR\t\t -> dirs and files enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
+        echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT or /] [HTTP RESP.]$CLR\t -> dirs and files enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
         echo -e "$CYAN get $GRAY[HOST]$CLR\t\t\t\t\t -> executes HTTP requests to HOST on most popular HTTP ports"
         echo -e "$CYAN methods $GRAY[HOST]$CLR\t\t\t\t\t -> enumerates HTTP methods on HOST"
         echo -e "$CYAN endpoints $GRAY[FILE] [PATH]$CLR\t$YELLOW(RESTapi)$CLR\t -> extracts API endpoints from FILE, which conatins PATH (eg. /api/ -> /api/user/delete)"
@@ -916,7 +922,6 @@ case "$cmd" in
         echo -e "$BLUE_BG:: UTILS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t -> decodes Base64 string"
         echo -e "$CYAN hashme $GRAY[STRING]$CLR\t\t\t\t -> hash/encode string (md5, sha1, base64, hex encoded)"
-
         echo -e "$CLR"
     ;;
 esac
