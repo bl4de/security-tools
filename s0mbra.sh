@@ -201,30 +201,30 @@ lookaround() {
     # sublister
     echo -e "\n$GREEN--> sublister$CLR\n"
     for domain in $(cat scope); do
-        sublister -v -d $domain -o "$TMPDIR/s0mbra_recon_sublister_$domain.tmp"
+        sublister -v -d $domain -o "$TMPDIR/s0mbra_recon_sublister_$domain.log"
     done
     
     # subfinder
     echo -e "\n$GREEN--> subfinder$CLR\n"
-    subfinder -nW -all -v -dL $1 -o $TMPDIR/s0mbra_recon_subfinder.tmp
+    subfinder -nW -all -v -dL $1 -o $TMPDIR/s0mbra_recon_subfinder.log
 
     # prepare list of uniqe subdomains
     cat s0mbra_recon_sub* > step1
     sed 's/<BR>/#/g' step1 | tr '#' '\n' > step2
-    sort -u -k 1 step2 > s0mbra_recon_subdomains_final.tmp
+    sort -u -k 1 step2 > s0mbra_recon_subdomains_final.log
     rm -f step*
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subdomains_final.tmp -o $TMPDIR/s0mbra_recon_httpx.tmp
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subdomains_final.log -o $TMPDIR/s0mbra_recon_httpx.log
 
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
     echo -e "finished at: $RED $END_TIME $GREEN\n"
-    echo -e "  $GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_subdomains_final.tmp` | cut -d" " -f 1) $GRAY subdomains"
-    echo -e "  $GRAY httpx found \t\t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_httpx.tmp` | cut -d" " -f 1) $GRAY active web servers $GREEN"
+    echo -e "  $GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
+    echo -e "  $GRAY httpx found \t\t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_httpx.log` | cut -d" " -f 1) $GRAY active web servers $GREEN"
     echo -e "  $GRAY HTTP servers responding 200 OK: $CLR\n"
-    grep 200 $TMPDIR/s0mbra_recon_httpx.tmp
+    grep 200 $TMPDIR/s0mbra_recon_httpx.log
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
@@ -237,29 +237,29 @@ peek() {
 
     # sublister
     echo -e "\n$GREEN--> sublister$CLR\n"
-    sublister -v -d $DOMAIN -o "$TMPDIR/s0mbra_recon_sublister_$DOMAIN.tmp"
+    sublister -v -d $DOMAIN -o "$TMPDIR/s0mbra_recon_sublister_$DOMAIN.log"
     
     # subfinder
     echo -e "\n$GREEN--> subfinder$CLR\n"
-    subfinder -nW -all -v -d $DOMAIN -o $TMPDIR/s0mbra_recon_subfinder.tmp
+    subfinder -nW -all -v -d $DOMAIN -o $TMPDIR/s0mbra_recon_subfinder.log
 
     # prepare list of uniqe subdomains
     cat s0mbra_recon_sub* > step1
     sed 's/<BR>/#/g' step1 | tr '#' '\n' > step2
-    sort -u -k 1 step2 > s0mbra_recon_subdomains_final.tmp
+    sort -u -k 1 step2 > s0mbra_recon_subdomains_final.log
     rm -f step*
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subdomains_final.tmp -o $TMPDIR/s0mbra_recon_httpx.tmp
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subdomains_final.log -o $TMPDIR/s0mbra_recon_httpx.log
 
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
     echo -e "finished at: $RED $END_TIME $GREEN\n"
-    echo -e "$GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_subdomains_final.tmp` | cut -d" " -f 1) $GRAY subdomains"
-    echo -e "$GRAY httpx found \t\t\t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_httpx.tmp` | cut -d" " -f 1) $GRAY active web servers $GREEN"
+    echo -e "$GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
+    echo -e "$GRAY httpx found \t\t\t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_httpx.log` | cut -d" " -f 1) $GRAY active web servers $GREEN"
     echo -e "$GREEN\nHTTP servers responding 200 OK: $CLR\n"
-    grep 200 $TMPDIR/s0mbra_recon_httpx.tmp
+    grep 200 $TMPDIR/s0mbra_recon_httpx.log
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
@@ -312,7 +312,7 @@ recon() {
     # nmap
     if [[ $NMAP -eq "1" ]]; then
         echo -e "\n$GREEN--> nmap (top 100 ports + version discovery + nse scripts)$CLR\n"
-        nmap --top-ports 100 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_nmap_$HOSTNAME.tmp $HOSTNAME
+        nmap --top-ports 100 -n --disable-arp-ping -sV -A -oN $TMPDIR/s0mbra_nmap_$HOSTNAME.log $HOSTNAME
     fi
 
     # nikto
