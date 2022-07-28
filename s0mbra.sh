@@ -767,7 +767,6 @@ methods() {
 
 ### menu
 cmd=$1
-clear
 
 case "$cmd" in
     set_ip)
