@@ -693,20 +693,6 @@ hshr() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
-# executes HTTP requests to most common HTTP ports
-get() {
-    PORTS=(80 280 443 591 593 981 1311 2480 3000 4567 5104 5985 7000 7001 7002 8000 8008 8080 8222 8443 8530 9080 9443 12443 16080 18091 18092)
-    echo -e "$BLUE[s0mbra] GETing most common HTTP ports on $1...$CLR"
-    for PORT in "${PORTS[@]}"; do
-        echo -e "$YELLOW\n[s0mbra] Executing HTTP request to port $PORT...$CLR"
-        curl -I -m 10 http://$1:$PORT
-        echo -e "$YELLOW\n[s0mbra] Executing HTTPS request to port $PORT...$CLR"
-        curl -I -m 10 https://$1:$PORT
-        echo
-    done
-    echo -e "$BLUE\n[s0mbra] Done! $CLR"
-}
-
 # enumerates available HTTP methods on host
 methods() {
     METHODS=(
@@ -865,9 +851,6 @@ case "$cmd" in
     fu)
         fu "$2" "$3" "$4" "$5"
     ;;
-    get)
-        get "$2"
-    ;;
     methods)
         methods "$2" "$3"
     ;;
@@ -897,7 +880,6 @@ case "$cmd" in
         echo -e "$CYAN recon $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap,nikto,vhosts,ffuf,feroxbuster,x8,subdomanizer"
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT or /] [HTTP RESP.]$CLR\t -> dirs and files enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
-        echo -e "$CYAN get $GRAY[HOST]$CLR\t\t\t\t\t -> executes HTTP requests to HOST on most popular HTTP ports"
         echo -e "$CYAN methods $GRAY[HOST] [*SHOW RESP. HEADERS]$CLR\t\t -> enumerates HTTP methods on HOST"
         echo -e "$BLUE_BG:: API ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN endpoints $GRAY[FILE] [PATH]$CLR\t$YELLOW(REST)$CLR\t\t -> extracts API endpoints from FILE, which conatins PATH (eg. /api/ -> /api/user/delete)"
