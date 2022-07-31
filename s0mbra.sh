@@ -145,21 +145,21 @@ smb_enum() {
 
 # download file from SMB share
 smb_get_file() {
-    if [[ -z $2 ]]; then
-        username='NULL'
-    elif [[ -n $2 ]]; then
-        username="$2"
-    fi
-
     if [[ -z $3 ]]; then
-        password=''
+        username='NULL'
     elif [[ -n $3 ]]; then
-        password="$3"
+        username="$3"
     fi
 
-    echo -e "$BLUE[s0mbra] Downloading file $4 from $1...$CLR"
+    if [[ -z $4 ]]; then
+        password=''
+    elif [[ -n $4 ]]; then
+        password="$4"
+    fi
+
+    echo -e "$BLUE[s0mbra] Downloading file $2 from $1...$CLR"
     echo -e "$GREEN"
-    smbmap -H "$1" -u "$2" -p "$3" --download "$4"
+    smbmap -H "$1" -u "$3" -p "$4" --download "$2"
     echo -e "$CLR"
     echo -e "\n$BLUE[s0mbra] Done."
 }
@@ -882,7 +882,7 @@ case "$cmd" in
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT or /] [HTTP RESP.]$CLR\t -> dirs and files enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
         echo -e "$CYAN methods $GRAY[HOST] [*SHOW RESP. HEADERS]$CLR\t\t -> enumerates HTTP methods on HOST"
         echo -e "$BLUE_BG:: API ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN endpoints $GRAY[FILE] [PATH]$CLR\t$YELLOW(REST)$CLR\t\t -> extracts API endpoints from FILE, which conatins PATH (eg. /api/ -> /api/user/delete)"
+        echo -e "$CYAN endpoints $GRAY[FILE] [PATH]$CLR\t$YELLOW(REST)$CLR\t\t -> extracts API endpoints from FILE, which contains PATH (eg. /api/ -> /api/user/delete)"
         echo -e "$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(REST)$CLR\t\t -> fuzzing API endpoints with httpie"
         echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(REST)$CLR\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "$CYAN gql $GRAY[TARGET_URL]$CLR\t\t$YELLOW(GraphQL)$CLR\t -> checking GraphQL endpoint for known vulnerabilities with graphql-cop"
@@ -896,11 +896,11 @@ case "$cmd" in
         echo -e "$CYAN full_nmap_scan $GRAY[IP] [*PORTS]$CLR\t\t\t -> nmap --top-ports [PORTS]/-p- to enumerate; -sV -sC -A on found ports"
         echo -e "$CYAN http $GRAY[PORT]$CLR\t\t\t\t\t -> runs HTTP server on [PORT] TCP port"
         echo -e "$CYAN generate_shells $GRAY[IP] [PORT] $CLR\t\t\t -> generates ready-to-use reverse shells in various languages for given IP:PORT"
-        # echo -e "$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
-        # echo -e "$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR\t\t -> enumerates SMB shares on [IP] as [USER] (eg. null) (445 port has to be open)"
-        # echo -e "$CYAN smb_get_file $GRAY[IP] [user] [password] [PATH] $CLR\t -> downloads file from SMB share [PATH] on [IP]"
-        # echo -e "$CYAN smb_mount $GRAY[IP] [SHARE] [USER]$CLR\t\t\t -> mounts SMB share at ./mnt/shares"
-        # echo -e "$CYAN smb_umount $CLR\t\t\t\t\t -> unmounts SMB share from ./mnt/shares and deletes it"
+        echo -e "$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
+        echo -e "$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR\t\t -> enumerates SMB shares on [IP] as [USER] (eg. null) (445 port has to be open)"
+        echo -e "$CYAN smb_get_file $GRAY[IP] [PATH] [user] [*password] $CLR\t -> downloads file from SMB share [PATH] on [IP]"
+        echo -e "$CYAN smb_mount $GRAY[IP] [SHARE] [USER]$CLR\t\t\t -> mounts SMB share at ./mnt/shares"
+        echo -e "$CYAN smb_umount $CLR\t\t\t\t\t -> unmounts SMB share from ./mnt/shares and deletes it"
         echo -e "$BLUE_BG:: PASSWORDS CRACKIN' ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN rockyou_john $GRAY[TYPE] [HASHES]$CLR\t\t\t -> runs john+rockyou against [HASHES] file with hashes of type [TYPE]"
         echo -e "$CYAN ssh_to_john $GRAY[ID_RSA]$CLR\t\t\t\t -> id_rsa to JTR SSH hash file for SSH key password cracking"
