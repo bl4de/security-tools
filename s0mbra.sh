@@ -397,16 +397,6 @@ fu() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
-#extracts API endpoint urls (eg. "/api/user/create")
-endpoints() {
-    clear
-    FILE=$1
-    PATH=$2
-    echo -e "$BLUE[s0mbra] Extracting API endpoints from $FILE...$CLR"
-    /usr/bin/grep --color -n -e "$PATH" $FILE
-    echo -e "$BLUE\n[s0mbra] Done! $CLR"
-}
-
 api_fuzz() {
     clear
     echo -e "$BLUE[s0mbra] Fuzzing $1 API with httpie using endpoints file $2...$CLR"
@@ -693,64 +683,6 @@ hshr() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
-# enumerates available HTTP methods on host
-methods() {
-    METHODS=(
-        OPTIONS
-        GET
-        HEAD
-        POST
-        PUT
-        DELETE
-        TRACE
-        PURGE
-        CONNECT
-        PROPFIND
-        PROPPATCH
-        MKCOL
-        COPY
-        MOVE
-        LOCK
-        UNLOCK
-        VERSION-CONTROL
-        REPORT
-        CHECKOUT
-        CHECKIN
-        UNCHECKOUT
-        MKWORKSPACE
-        UPDATE
-        LABEL
-        MERGE
-        BASELINE-CONTROL
-        MKACTIVITY
-        ORDERPATCH
-        ACL
-        PATCH
-        SEARCH
-        ARBITRARY
-        BIND
-        LINK
-        MKCALENDAR
-        MKREDIRECTREF
-        PRI
-        QUERY
-        REBIND
-        UNBIND
-        UNLINK
-        UPDATEREDIRECTREF)
-    echo -e "$BLUE[s0mbra] Enumerate available HTTP methods on $1...$CLR"
-    for HTTP_METHOD in "${METHODS[@]}"; do
-        echo -e "$YELLOW[s0mbra] Executing $HTTP_METHOD / HTTP/1.1...$CLR"
-        if [[ -z $2 ]]; then
-            curl -sI -X $HTTP_METHOD -H "User-Agent: HackerOne/bl4de" -H "X-Hackerone: bl4de" -H "Content-Type: application/json" $1 | grep HTTP
-        else
-            curl -sI -X $HTTP_METHOD -H "User-Agent: HackerOne/bl4de" -H "X-Hackerone: bl4de" -H "Content-Type: application/json" $1
-        fi
-        echo
-    done
-    echo -e "$BLUE\n[s0mbra] Done! $CLR"
-}
-
 ### menu
 cmd=$1
 
@@ -851,12 +783,6 @@ case "$cmd" in
     fu)
         fu "$2" "$3" "$4" "$5"
     ;;
-    methods)
-        methods "$2" "$3"
-    ;;
-    endpoints)
-        endpoints "$2" "$3"
-    ;;
     apifuzz)
         api_fuzz "$2" "$3"
     ;;
@@ -878,11 +804,8 @@ case "$cmd" in
         echo -e "$CYAN lookaround $GRAY[SCOPE_FILE]$CLR\t\t\t -> just look around... (subfinder + httpx on discovered hosts from scope file)"
         echo -e "$CYAN peek $GRAY[DOMAIN]$CLR\t\t\t\t\t -> lookaround, but for single domain (no scope file needed)"
         echo -e "$CYAN recon $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap,nikto,vhosts,ffuf,feroxbuster,x8,subdomanizer"
-        echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
+        echo -e "$BLUE_BG:: WEB,APIs ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT or /] [HTTP RESP.]$CLR\t -> dirs and files enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
-        echo -e "$CYAN methods $GRAY[HOST] [*SHOW RESP. HEADERS]$CLR\t\t -> enumerates HTTP methods on HOST"
-        echo -e "$BLUE_BG:: API ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN endpoints $GRAY[FILE] [PATH]$CLR\t$YELLOW(REST)$CLR\t\t -> extracts API endpoints from FILE, which contains PATH (eg. /api/ -> /api/user/delete)"
         echo -e "$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(REST)$CLR\t\t -> fuzzing API endpoints with httpie"
         echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(REST)$CLR\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "$CYAN gql $GRAY[TARGET_URL]$CLR\t\t$YELLOW(GraphQL)$CLR\t -> checking GraphQL endpoint for known vulnerabilities with graphql-cop"
