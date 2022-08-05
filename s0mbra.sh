@@ -216,7 +216,7 @@ lookaround() {
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subdomains_final.log -o $TMPDIR/s0mbra_recon_httpx.log
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -ip -cname -cdn -l $TMPDIR/s0mbra_recon_subdomains_final.log -o $TMPDIR/s0mbra_recon_httpx.log
 
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
@@ -251,7 +251,7 @@ peek() {
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -l $TMPDIR/s0mbra_recon_subdomains_final.log -o $TMPDIR/s0mbra_recon_httpx.log
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -ip -cname -cdn -l $TMPDIR/s0mbra_recon_subdomains_final.log -o $TMPDIR/s0mbra_recon_httpx.log
 
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
@@ -277,14 +277,13 @@ recon() {
         FEROXBUSTER="1"
         X8="1"
         SUBDOMANIZER="1"
-        SELECTED_OPTIONS="nmap, nikto, ffuf, feroxbuster, x8, subdomanizer"
+        SELECTED_OPTIONS="nmap, nikto, ffuf, x8, subdomanizer"
     else
         # set options:
         NMAP=$(echo $2|grep 'nmap'|wc -l)
         NIKTO=$(echo $2|grep 'nikto'|wc -l)
         VHOSTS=$(echo $2|grep 'vhosts'|wc -l)
         FFUF=$(echo $2|grep 'ffuf'|wc -l)
-        FEROXBUSTER=$(echo $2|grep 'feroxbuster'|wc -l)
         X8=$(echo $2|grep 'x8'|wc -l)
         SUBDOMANIZER=$(echo $2|grep 'subdomanizer'|wc -l)
         SELECTED_OPTIONS=$2
@@ -332,11 +331,6 @@ recon() {
     if [[ $FFUF -eq "1" ]]; then
         ffuf -ac -c -w $DICT_HOME/starter.txt -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$HOSTNAME.log
         ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $PROTO://$HOSTNAME/FUZZ/ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$HOSTNAME.log
-    fi
-
-    # feroxbuster
-    if [[ $FEROXBUSTER -eq "1" ]]; then
-        feroxbuster -f -d 1 --insecure -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" --url $PROTO://$HOSTNAME -w $DICT_HOME/wordlist.txt --output $TMPDIR/s0mbra_feroxbuster_$HOSTNAME.log
     fi
 
     # x8
@@ -803,7 +797,7 @@ case "$cmd" in
         echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN lookaround $GRAY[SCOPE_FILE]$CLR\t\t\t -> just look around... (subfinder + httpx on discovered hosts from scope file)"
         echo -e "$CYAN peek $GRAY[DOMAIN]$CLR\t\t\t\t\t -> lookaround, but for single domain (no scope file needed)"
-        echo -e "$CYAN recon $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap,nikto,vhosts,ffuf,feroxbuster,x8,subdomanizer"
+        echo -e "$CYAN recon $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap,nikto,vhosts,ffuf,x8,subdomanizer"
         echo -e "$BLUE_BG:: WEB,APIs ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT or /] [HTTP RESP.]$CLR\t -> dirs and files enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
         echo -e "$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(REST)$CLR\t\t -> fuzzing API endpoints with httpie"
