@@ -230,10 +230,13 @@ lookaround() {
 
 # quick lookaround, but for single domain - no need to create scope file
 peek() {
-    TMPDIR=$(pwd)
+    TMPDIR=$(pwd)/$1
+    if [[ ! -d $TMPDIR ]]; then
+        mkdir -p $TMPDIR
+    fi
     START_TIME=$(date)
     DOMAIN=$1
-    echo -e "$BLUE[s0mbra] Let's see what we've got here...$CLR\n"
+    echo -e "$BLUE[s0mbra] Let's see what have we got here...$CLR\n"
 
     # sublister
     echo -e "\n$GREEN--> sublister$CLR\n"
@@ -244,14 +247,19 @@ peek() {
     subfinder -nW -all -v -d $DOMAIN -o $TMPDIR/s0mbra_recon_subfinder.log
 
     # prepare list of uniqe subdomains
-    cat s0mbra_recon_sub* > step1
-    sed 's/<BR>/#/g' step1 | tr '#' '\n' > step2
-    sort -u -k 1 step2 > s0mbra_recon_subdomains_final.log
-    rm -f step*
+    cat $TMPDIR/s0mbra_recon_sub* > $TMPDIR/step1
+    sed 's/<BR>/#/g' $TMPDIR/step1 | tr '#' '\n' > $TMPDIR/step2
+    sort -u -k 1 $TMPDIR/step2 > $TMPDIR/s0mbra_recon_subdomains_final.log
+    rm -f $TMPDIR/step*
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
     httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -ip -cname -cdn -l $TMPDIR/s0mbra_recon_subdomains_final.log -o $TMPDIR/s0mbra_recon_httpx.log
+
+    # cleanup
+    echo -e "\n$BLUE[s0mbra] Remove temporary files...\n"
+    rm -f $TMPDIR/s0mbra_recon_sublister_$DOMAIN.log
+    rm -f $TMPDIR/s0mbra_recon_subfinder.log
 
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
