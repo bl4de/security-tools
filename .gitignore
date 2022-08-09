@@ -1,17 +1,13 @@
 .idea/
-sword/output.html
-sword/output.txt
+.vscode
 dev/
 .DS_Store
-cco.pyc pefdefs.pyc
 imports/*.pyc
 htmlanalyzer/index.html
-sword/OUTPUT
 /dirscan/10000folders.txt
 /dirscan/1000folders.txt
 *.pyc
 *.log
-.vscode
-
 .history/
 .env
+vendor/
