@@ -592,9 +592,9 @@ gql() {
 php_sast() {
     clear
     echo -e "$BLUE[s0mbra] Running phpcs against $1...$CYAN"
-    phpcs --colors -vs $1
-    graudit $1
     ./vendor/bin/phpstan analyse $1
+    graudit $1
+    phpcs --colors -vs $1
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
