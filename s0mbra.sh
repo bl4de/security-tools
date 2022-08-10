@@ -598,6 +598,14 @@ php_sast() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# runs Ruby SAST tools against Ruby application
+ruby_sast() {
+    clear
+    echo -e "$BLUE[s0mbra] Running brakeman against $1...$CYAN"
+    brakeman $1
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
 # deso stuff with Android APK file
 apk() {
     clear
@@ -801,6 +809,9 @@ case "$cmd" in
     generate_shells)
         generate_shells "$2" "$3"
     ;;
+    rubysast)
+        ruby_sast "$2"
+    ;;
     *)
         clear
         echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
@@ -837,6 +848,7 @@ case "$cmd" in
         echo -e "$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR\t -> runs snyk test on DIR (this should be root of Node app, where package.json exists)"
         echo -e "$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR\t -> Static Code Analysis of Python file with pyflakes, mypy, bandit and vulture"
         echo -e "$CYAN phpsast $GRAY[DIR]\t\t\t$YELLOW(PHP)$CLR\t\t -> Static Code Analysis of PHP dir(s)/file(s) with phpcs"
+        echo -e "$CYAN rubysast $GRAY[DIR]\t\t\t$YELLOW(Ruby)$CLR\t\t -> Static Code Analysis of Ruby dir(s)/file(s) with brakeman"
         echo -e "$CYAN disass $GRAY[BINARY]\t\t$YELLOW(asm)$CLR\t\t -> disassembels BINARY and saves to 1.asm in the same directory"
         echo -e "$CYAN unjar $GRAY[.jar FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.jar file in JD-Gui"
         echo -e "$BLUE_BG:: ANDROID ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
