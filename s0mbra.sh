@@ -843,7 +843,7 @@ case "$cmd" in
         echo -e "$CYAN ssh_to_john $GRAY[ID_RSA]$CLR\t\t\t\t -> id_rsa to JTR SSH hash file for SSH key password cracking"
         echo -e "$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t -> crack ZIP password"
         echo -e "$CYAN defcreds $GRAY[DEVICE/SYSTEM]$CLR\t\t\t -> default credentials for DEVICE or SYSTEM"
-        echo -e "$BLUE_BG:: SOURCE CODE ANALYSIS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
+        echo -e "$BLUE_BG:: STATIC APPLICATION SECURITY TESTING ::\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN um $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t -> un-minifies JS file"
         echo -e "$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR\t -> runs snyk test on DIR (this should be root of Node app, where package.json exists)"
         echo -e "$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR\t -> Static Code Analysis of Python file with pyflakes, mypy, bandit and vulture"
