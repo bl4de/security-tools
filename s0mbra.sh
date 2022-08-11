@@ -818,7 +818,7 @@ case "$cmd" in
         echo -e "$CYAN lookaround $GRAY[SCOPE_FILE]$CLR\t\t\t -> just look around... (subfinder + httpx on discovered hosts from scope file)"
         echo -e "$CYAN peek $GRAY[DOMAIN]$CLR\t\t\t\t\t -> lookaround, but for single domain (no scope file needed)"
         echo -e "$CYAN recon $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap,nikto,vhosts,ffuf,x8,subdomanizer"
-        echo -e "$BLUE_BG:: WEB,APIs ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
+        echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT or /] [HTTP RESP.]$CLR\t -> dirs and files enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
         echo -e "$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(REST)$CLR\t\t -> fuzzing API endpoints with httpie"
         echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(REST)$CLR\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
