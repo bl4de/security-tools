@@ -859,6 +859,7 @@ case "$cmd" in
         echo -e "$BLUE_BG:: UTILS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t -> decodes Base64 string"
         echo -e "$CYAN hashme $GRAY[STRING]$CLR\t\t\t\t -> hash/encode string (md5, sha1, base64, hex encoded)"
+        echo -e "$BLUE_BG\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CLR"
     ;;
 esac
