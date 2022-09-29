@@ -438,6 +438,8 @@ pysast() {
     echo -e "\n$BLUE[s0mbra] Running graudit against $DIR_NAME $CLR\n"
     graudit $1
 
+    # cleanup
+    rm -rf .mypy_cache
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
