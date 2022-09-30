@@ -10,6 +10,15 @@ hasher.py - hash string using SHA1, MD5, Base64, Hex, Encode URL etc.
 usage: ./hasher.py [string_to_hash]
 """
 
+colors = {
+    "WHITE": '\33[37m',
+    "GREEN": '\33[32m',
+    "MAGENTA": '\33[35m',
+    "CYAN": '\33[36m',
+    "GREY": '\33[90m',
+    "LIGHTGREY": '\33[37m'
+}
+
 
 def usage():
     '''
@@ -33,19 +42,22 @@ def main(s):
     '''
     prints all hashes for provided string
     '''
-    algorithms_available = ['blake2s', 'blake2b', 'sha224',
-                            'sha256', 'sha512', 'sha384', 'sha1', 'md5']
-    print("\nHASH:\n")
+    algorithms_available = ['md5', 'sha1', 'sha224', 'sha256', 'sha384',
+                            'sha512', 'blake2s', 'blake2b']
+    print(f"\n{colors['GREEN']}HASHES:{colors['WHITE']}\n")
     for h in algorithms_available:
         if hasattr(hashlib, h):
             try:
                 h_method = getattr(hashlib, h)
-                print(f"{h}\t\t{h_method(s.encode('utf-8')).hexdigest()}")
+                print(
+                    f"{colors['GREY']}{h}\t\t{colors['CYAN']}{h_method(s.encode('utf-8')).hexdigest()}")
             except TypeError as e:
                 pass
-    print("\nENCODE:\n")
-    print("Base64 \t\t{}".format(base64.b64encode(s.encode('utf-8'))))
-    print("HEX encoded \t{}".format(hex_encode(s.encode('utf-8'))))
+    print(f"\n{colors['GREEN']}ENCODE:{colors['WHITE']}\n")
+    print(
+        f"{colors['GREY']}Base64 \t\t{colors['CYAN']}{base64.b64encode(s.encode('utf-8'))}")
+    print(
+        f"{colors['GREY']}HEX encoded \t{colors['CYAN']}{hex_encode(s.encode('utf-8'))}")
 
 
 if __name__ == "__main__":
