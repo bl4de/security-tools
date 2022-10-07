@@ -51,7 +51,8 @@ quick_nmap_scan() {
 
 # runs Python 3 built-in HTTP server on [PORT]
 http() {
-    echo -e "$BLUE[s0mbra] Running Simple HTTP Server in current directory on port $1$CLR"
+    STACK=$2
+    echo -e "$BLUE[s0mbra] Running $STACK HTTP Server in current directory on port $1$CLR"
     echo -e "$GRAY\navailable network interfaces:$YELLOW"
     ifconfig | grep -e 'inet\s' |cut -d' ' -f 2
     echo -e "$GRAY\navailable files/folders in SERVER ROOT: $CLR"
@@ -62,7 +63,15 @@ http() {
     else
         PORT=$1    
     fi
-    python3 -m http.server $PORT
+
+    case "$STACK" in
+        python)
+            python3 -m http.server $PORT
+        ;;
+        php)
+            php -S 127.0.0.1:$PORT
+        ;;
+    esac
     echo -e "\n$BLUE[s0mbra] Done."
 }
 
@@ -726,7 +735,7 @@ case "$cmd" in
         quick_nmap_scan "$2" "$3"
     ;;
     http)
-        http "$2"
+        http "$2" "$3"
     ;;
     rockyou_john)
         rockyou_john "$2" "$3"
@@ -834,7 +843,7 @@ case "$cmd" in
         echo -e "$BLUE_BG:: PENTEST TOOLS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]\t$LIGHTGREEN(nmap)$CLR\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
         echo -e "$CYAN full_nmap_scan $GRAY[IP] [*PORTS]\t$LIGHTGREEN(nmap)$CLR\t\t -> nmap --top-ports [PORTS]/-p- to enumerate; -sV -sC -A on found ports"
-        echo -e "$CYAN http $GRAY[PORT]$CLR\t\t\t\t\t -> runs HTTP server on [PORT] TCP port"
+        echo -e "$CYAN http $GRAY[PORT] [STACK]$CLR\t\t\t\t -> runs HTTP server on [PORT] TCP port; STACK: python,php"
         echo -e "$CYAN generate_shells $GRAY[IP] [PORT] $CLR\t\t\t -> generates ready-to-use reverse shells in various languages for given IP:PORT"
         echo -e "$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
         echo -e "$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR\t\t -> enumerates SMB shares on [IP] as [USER] (eg. null) (445 port has to be open)"
