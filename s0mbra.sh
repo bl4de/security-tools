@@ -267,9 +267,9 @@ peek() {
 
     # cleanup
     echo -e "\n$BLUE[s0mbra] Remove temporary files...\n"
-    rm -f $TMPDIR/s0mbra_recon_sublister_$DOMAIN.log
-    rm -f $TMPDIR/s0mbra_recon_subfinder.log
-    cd $TMPDIR && rm -f hm*
+    rm -rf $TMPDIR/s0mbra_recon_sublister_$DOMAIN.log
+    rm -rf $TMPDIR/s0mbra_recon_subfinder.log
+    cd $TMPDIR && rm -rf hm*
 
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
