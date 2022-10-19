@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from netaddr import *
-import ctfpwn
+import requests
 import json
 import time
 import os
@@ -20,10 +20,10 @@ def process(cidr, logfile):
         url = 'https://www.virustotal.com/vtapi/v2/ip-address/report?apikey={}&ip={}'.format(
             virus_total_api_key, str(ip))
 
-        resp = ctfpwn.http_get(url)
+        resp = requests.get(url)
 
-        if resp:
-            domains = json.loads(resp)
+        if resp.status_code == 200:
+            domains = json.loads(resp.text)
 
             if (domains['response_code'] == 0):
                 print("[-] Empty response for {}".format(str(ip)))
