@@ -340,15 +340,15 @@ recon() {
 
     if [[ $VHOSTS -eq "1" ]]; then
         # vhosts enumeration
-        ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ.$HOSTNAME" -o $TMPDIR/s0mbra_recon_ffuf_vhosts_fullnames_$HOSTNAME.log
+        ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ.$HOSTNAME" -o $TMPDIR/s0mbra_recon_ffuf_vhosts_fullnames_$HOSTNAME.log
     
-        ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ" -o $TMPDIR/s0mbra_recon_ffuf_vhosts_$HOSTNAME.log
+        ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ" -o $TMPDIR/s0mbra_recon_ffuf_vhosts_$HOSTNAME.log
     fi
 
     # ffuf
     if [[ $FFUF -eq "1" ]]; then
-        ffuf -ac -c -w $DICT_HOME/starter.txt -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$HOSTNAME.log
-        ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $PROTO://$HOSTNAME/FUZZ/ -mc=200,206,301,302,403,422,429,500 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$HOSTNAME.log
+        ffuf -ac -c -w $DICT_HOME/starter.txt -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$HOSTNAME.log
+        ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $PROTO://$HOSTNAME/FUZZ/ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$HOSTNAME.log
     fi
 
     # x8
@@ -382,7 +382,7 @@ fu() {
 
     # set response status code(s) to match on:
     if [[ -z $4 ]]; then
-        HTTP_RESP_CODES=200,206,301,302,403,500
+        HTTP_RESP_CODES=200,206,301,302,500
     else
         HTTP_RESP_CODES=$4
     fi
