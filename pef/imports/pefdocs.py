@@ -466,5 +466,29 @@ exploitableFunctionsDesc = {
         "This is likely a raw SQL query, which can be filled with user provided input or not implemented as prepared statement",
         "SQL Injection",
         "medium"
+    ],
+    "$_POST": [
+        "$_POST reference found",
+        "",
+        "",
+        "critical"
+    ],
+    "$_GET": [
+        "$_GET reference found",
+        "",
+        "",
+        "critical"
+    ],
+    "$_REQUEST": [
+        "$_REQUEST reference found",
+        "",
+        "",
+        "critical"
+    ],
+    "$_COOKIES": [
+        "$_COOKIES reference found",
+        "",
+        "",
+        "critical"
     ]
 }

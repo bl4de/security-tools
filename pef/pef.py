@@ -117,7 +117,6 @@ class PefEngine:
         f = open(src, "r", encoding="ISO-8859-1")
         i = 0
         all_lines = f.readlines()
-
         for l in all_lines:
             i += 1
             line = l.rstrip()
