@@ -149,7 +149,8 @@ class PefEngine:
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
-        description=sys.modules[__name__].__doc__
+        description=sys.modules[__name__].__doc__,
+        add_help=True
     )
     filename = '.'  # initial value for file/dir to scan is current directory
 
@@ -158,7 +159,10 @@ if __name__ == "__main__":
     parser.add_argument(
         "-l", "--level", help="severity level: ALL, LOW, MEDIUM, HIGH or CRITICAL; default - ALL")
     parser.add_argument(
-        "-f", "--file", help="File or directory name to scan (if directory name is provided, make sure -r/--recursive is set)")
+        "-f",
+        "--file",
+        help="File or directory name to scan (if directory name is provided, make sure -r/--recursive is set)",
+        required=True)
     args = parser.parse_args()
 
     level = args.level.upper() if args.level else 'ALL'
