@@ -96,7 +96,7 @@ class PefEngine:
             impact = pefdocs.exploitableFunctionsDesc.get(fn.strip())[3]
             vuln_class = pefdocs.exploitableFunctionsDesc.get(fn.strip())[2]
 
-            if impact.upper() == level.upper() or level == 'ALL':
+            if (impact.upper() in level.upper()) or level == 'ALL':
                 if len(_line) > 255:
                     _line = _line[:120] + \
                         f" (...truncated -> line is {len(_line)} characters long)"
