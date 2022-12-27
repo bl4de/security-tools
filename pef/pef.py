@@ -181,7 +181,7 @@ class PefEngine:
 
         if occurence found, output is printed
         """
-
+        res = None
         # there has to be space before function call; prevents from false-positives strings contains PHP function names
         atfn = "@{}".format(fn)
         fn = "{}".format(fn)
@@ -189,9 +189,9 @@ class PefEngine:
         # @ prevents from output being echoed
 
         if fn in line or atfn in line:
-            self.print_code_line(f.name, l, i, fn + (')' if '(' in fn else ''), self.severity,
-                                 self.level)
-        return
+            res = self.print_code_line(
+                f.name, l, i, fn + (')' if '(' in fn else ''), self.severity, self.level)
+        return res
 
     def print_code_line(self, file_name, _line, i, fn, severity="", level='ALL'):
         """
@@ -204,6 +204,7 @@ class PefEngine:
             "critical": "red"
         }
 
+        found = 0
         # print legend only if there i sentry in pefdocs.py
         if fn and fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
             impact = pefdocs.exploitableFunctionsDesc.get(fn.strip())[3]
@@ -216,12 +217,12 @@ class PefEngine:
                 else:
                     print("{}{}:{}{} -> {}{}".format(beautyConsole.getColor(
                         "white"), file_name, i, beautyConsole.getColor(impact_color[impact]), _line.strip()[:255], beautyConsole.getColor("grey"), vuln_class))
-
+                found += 1
             if impact not in severity.keys():
                 severity[impact] = 1
             else:
                 severity[impact] = severity[impact] + 1
-            return
+            return found > 0
 
     def main(self, src):
         """
@@ -229,32 +230,37 @@ class PefEngine:
         """
         f = open(src, "r", encoding="ISO-8859-1")
         i = 0
+        res = None
         all_lines = f.readlines()
         for l in all_lines:
             i += 1
             line = l.rstrip()
             if self.level:
                 for fn in exploitableFunctions:
-                    self.analyse_line(l, i, fn, f, line)
-
-        return  # return how many findings in current file
+                    if self.analyse_line(l, i, fn, f, line) == True:
+                        res = True
+        return res  # return how many findings in current file
 
     def run(self):
         """
         runs scanning
         """
+        print(
+            f"\n{beautyConsole.getColor('green')}>>> RESULTS <<<{beautyConsole.getColor('gray')}")
         if self.recursive:
             for root, subdirs, files in os.walk(self.filename):
+                prev_filename = ""
                 for f in files:
                     extension = f.split('.')[-1:][0]
                     if extension in ['php', 'inc', 'php3', 'php4', 'php5', 'phtml']:
                         self.scanned_files = self.scanned_files + 1
                         res = self.main(os.path.join(root, f))
+                        if res is not None and f != prev_filename:
+                            print(f">>> {f} <<<\t{'-' * (115 - len(f))}\n\n")
+                            prev_filename = f
         else:
             self.scanned_files = self.scanned_files + 1
             self.found_entries = self.main(self.filename)
-
-        print(beautyConsole.getColor("white") + "-" * 100)
         print("\n")
 
 
