@@ -267,9 +267,9 @@ peek() {
 
     # cleanup
     echo -e "\n$BLUE[s0mbra] Remove temporary files...\n"
-    rm -rf $TMPDIR/s0mbra_recon_sublister_$DOMAIN.log
-    rm -rf $TMPDIR/s0mbra_recon_subfinder.log
-    cd $TMPDIR && rm -rf hm*
+    rm -f $TMPDIR/s0mbra_recon_sublister_$DOMAIN.log
+    rm -f $TMPDIR/s0mbra_recon_subfinder.log
+    rm -rf $TMPDIR/h*
 
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
@@ -394,6 +394,8 @@ fu() {
             # if $3 arg passed to fu equals / - add at the end of the path (for dir enumerations where sometimes
             # dir path has to end with / to be identified
             ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$SELECTED_DICT.txt -u $1/FUZZ/ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
+        elif [[ $3 == "-" ]]; then
+            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$SELECTED_DICT.txt -u $1/FUZZ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
         else
             if [[ $3 == "-" ]]; then
                 # if $3 equals - (dash) that means we should ignore it at all
@@ -831,7 +833,7 @@ case "$cmd" in
         echo -e "$CYAN peek $GRAY[DOMAIN]$CLR\t\t\t\t\t -> lookaround, but for single domain (no scope file needed)"
         echo -e "$CYAN recon $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap,nikto,vhosts,ffuf,x8,subdomanizer"
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT or /] [HTTP RESP.]$CLR\t -> dirs and files enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
+        echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT,/ or -] [HTTP RESP.]$CLR\t -> dirs and files enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
         echo -e "$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(REST)$CLR\t\t -> fuzzing API endpoints with httpie"
         echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(REST)$CLR\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
         echo -e "$CYAN gql $GRAY[TARGET_URL]$CLR\t\t$YELLOW(GraphQL)$CLR\t -> checking GraphQL endpoint for known vulnerabilities with graphql-cop"

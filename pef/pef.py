@@ -200,7 +200,7 @@ class PefEngine:
         impact_color = {
             "low": "green",
             "medium": "yellow",
-            "high": "red",
+            "high": "yellow",
             "critical": "red"
         }
 
@@ -215,7 +215,7 @@ class PefEngine:
                     _line = _line[:120] + \
                         f" (...truncated -> line is {len(_line)} characters long)"
                 else:
-                    print("{}{}:{}{} -> {}{}".format(beautyConsole.getColor(
+                    print("{}{}:{}{}\t{}{}".format(beautyConsole.getColor(
                         "white"), file_name, i, beautyConsole.getColor(impact_color[impact]), _line.strip()[:255], beautyConsole.getColor("grey"), vuln_class))
                 found += 1
             if impact not in severity.keys():
@@ -236,9 +236,10 @@ class PefEngine:
             i += 1
             line = l.rstrip()
             if self.level:
-                for fn in exploitableFunctions:
-                    if self.analyse_line(l, i, fn, f, line) == True:
-                        res = True
+                if not self.is_comment(line):
+                    for fn in exploitableFunctions:
+                        if self.analyse_line(l, i, fn, f, line) == True:
+                            res = True
         return res  # return how many findings in current file
 
     def run(self):
@@ -263,6 +264,12 @@ class PefEngine:
             self.found_entries = self.main(self.filename)
         print("\n")
 
+    def is_comment(self, line: str) -> bool:
+        """
+        If line is a comment, we should ignore it
+        """
+        line = re.sub(r"\s+", "", line)
+        return line.startswith("/") or line.startswith("*")
 
 # main program
 if __name__ == "__main__":
