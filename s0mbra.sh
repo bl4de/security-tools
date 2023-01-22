@@ -10,8 +10,6 @@ LIGHTGREEN='\033[32m'
 YELLOW='\033[1;33m'
 BLUE='\033[1;34m'
 BLUE_BG='\033[48;5;4m'
-LIGHTBLUE='\033[34m'
-LIGHTBLUE_BG='\033[48;5;6m'
 MAGENTA='\033[1;35m'
 CYAN='\033[36m'
 
@@ -202,7 +200,7 @@ nfs_enum() {
 
 # quick subdomain enum + available HTTP server(s) - to find out if a program is 
 # actually worth to look into :D
-lookaround() {
+scope() {
     TMPDIR=$(pwd)
     START_TIME=$(date)
     echo -e "$BLUE[s0mbra] Let's see what we've got here...$CLR\n"
@@ -237,7 +235,7 @@ lookaround() {
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
-# quick lookaround, but for single domain - no need to create scope file
+# quick scope, but for single domain - no need to create scope file
 peek() {
     TMPDIR=$(pwd)/$1
     if [[ ! -d $TMPDIR ]]; then
@@ -602,6 +600,14 @@ gql() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# executes graphw00f fingerprint against GraphQL endpoint
+graphw00f() {
+    clear
+    echo -e "$BLUE[s0mbra] Fingerprinting $1 GraphQL endpoint with graphw00f...$CYAN"
+    python3 /Users/bl4de/hacking/tools/graphw00f/main.py -d -f -t $1
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
 # runs PHP SAST tools against PHP application
 php_sast() {
     clear
@@ -715,8 +721,8 @@ case "$cmd" in
     set_ip)
         set_ip "$2"
     ;;
-    lookaround)
-        lookaround "$2"
+    scope)
+        scope "$2"
     ;;
     peek)
         peek "$2"
@@ -762,6 +768,9 @@ case "$cmd" in
     ;;
     gql)
         gql "$2"
+    ;;
+    graphw00f)
+        graphw00f "$2"
     ;;
     dex_to_jar)
         dex_to_jar "$2"
@@ -829,50 +838,39 @@ case "$cmd" in
     *)
         clear
         echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN lookaround $GRAY[SCOPE_FILE]$CLR\t\t\t -> just look around... (subfinder + httpx on discovered hosts from scope file)"
-        echo -e "$CYAN peek $GRAY[DOMAIN]$CLR\t\t\t\t\t -> lookaround, but for single domain (no scope file needed)"
-        echo -e "$CYAN recon $GRAY[HOST] [OPTIONS] [PROTO http/https]$CLR\t -> recon; options: nmap,nikto,vhosts,ffuf,x8,subdomanizer"
+        echo -e "$CYAN scope $GRAY[SCOPE_FILE]$CLR\t\t\t\t$CYAN recon $GRAY[HOST] [OPTIONS:nmap,nikto,vhosts,ffuf,x8,subdomanizer] [PROTO http/https]$CLR"
+        echo -e "$CYAN peek $GRAY[DOMAIN]$CLR"
+
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT,/ or -] [HTTP RESP.]$CLR\t -> dirs and files enumeration with ffuf (DICT: starter, lowercase, wordlist etc.)"
-        echo -e "$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(REST)$CLR\t\t -> fuzzing API endpoints with httpie"
-        echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(REST)$CLR\t\t -> runs kiterunner against apis file on [HOST] (create apis file first ;) )"
-        echo -e "$CYAN gql $GRAY[TARGET_URL]$CLR\t\t$YELLOW(GraphQL)$CLR\t -> checking GraphQL endpoint for known vulnerabilities with graphql-cop"
+        echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT,/ or -] [HTTP RESP.]$CLR\t$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(REST)$CLR"
+        echo -e "$CYAN graphw00f $GRAY[HOST]$CLR\t\t$YELLOW(GraphQl)$CLR\t$CYAN gql $GRAY[TARGET_URL]$CLR\t\t$YELLOW(GraphQL)$CLR"
+        echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(REST)$CLR"
+
         echo -e "$BLUE_BG:: CLOUD ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN discloS3 $GRAY[URL]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t -> runs bucket-disclose.sh against [URL]"
-        echo -e "$CYAN s3 $GRAY[BUCKET]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t -> checks privileges on AWS S3 bucket (ls, cp, mv etc.)"
-        echo -e "$CYAN s3get $GRAY[BUCKET] [key]$CLR\t\t$YELLOW(AWS)$CLR\t\t -> get object identified by [key] from AWS S3 [BUCKET]"
-        echo -e "$CYAN s3ls $GRAY[BUCKET] [folder]$CLR\t\t$YELLOW(AWS)$CLR\t\t -> list content of [folder] on S3 [BUCKET] - requires READ permissions (check with s3)"
+        echo -e "$CYAN discloS3 $GRAY[URL]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t$CYAN s3 $GRAY[BUCKET]$CLR\t\t\t$YELLOW(AWS)$CLR"
+        echo -e "$CYAN s3get $GRAY[BUCKET] [key]$CLR\t\t$YELLOW(AWS)$CLR\t\t$CYAN s3ls $GRAY[BUCKET] [folder]$CLR\t\t$YELLOW(AWS)$CLR"
+
         echo -e "$BLUE_BG:: PENTEST TOOLS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]\t$LIGHTGREEN(nmap)$CLR\t\t -> nmap --top-ports [PORTS] to quickly enumerate open N-ports"
-        echo -e "$CYAN full_nmap_scan $GRAY[IP] [*PORTS]\t$LIGHTGREEN(nmap)$CLR\t\t -> nmap --top-ports [PORTS]/-p- to enumerate; -sV -sC -A on found ports"
-        echo -e "$CYAN http $GRAY[PORT] [STACK]$CLR\t\t\t\t -> runs HTTP server on [PORT] TCP port; STACK: python,php"
-        echo -e "$CYAN generate_shells $GRAY[IP] [PORT] $CLR\t\t\t -> generates ready-to-use reverse shells in various languages for given IP:PORT"
-        echo -e "$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t -> enumerates nfs shares on [IP] (2049 port has to be open/listed in rpcinfo)"
-        echo -e "$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR\t\t -> enumerates SMB shares on [IP] as [USER] (eg. null) (445 port has to be open)"
-        echo -e "$CYAN smb_get_file $GRAY[IP] [PATH] [user] [*password] $CLR\t -> downloads file from SMB share [PATH] on [IP]"
-        echo -e "$CYAN smb_mount $GRAY[IP] [SHARE] [USER]$CLR\t\t\t -> mounts SMB share at ./mnt/shares"
-        echo -e "$CYAN smb_umount $CLR\t\t\t\t\t -> unmounts SMB share from ./mnt/shares and deletes it"
+        echo -e "$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]\t$LIGHTGREEN(nmap)$CLR\t\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]\t$LIGHTGREEN(nmap)$CLR"
+        echo -e "$CYAN http $GRAY[PORT] [STACK]$CLR\t\t\t\t$CYAN generate_shells $GRAY[IP] [PORT] $CLR"
+        echo -e "$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR"
+        echo -e "$CYAN smb_get_file $GRAY[IP] [PATH] [user] [*password] $CLR\t$CYAN smb_mount $GRAY[IP] [SHARE] [USER]$CLR"
+        echo -e "$CYAN smb_umount $CLR"
+        
         echo -e "$BLUE_BG:: PASSWORDS CRACKIN' ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN rockyou_john $GRAY[TYPE] [HASHES]$CLR\t\t\t -> runs john+rockyou against [HASHES] file with hashes of type [TYPE]"
-        echo -e "$CYAN ssh_to_john $GRAY[ID_RSA]$CLR\t\t\t\t -> id_rsa to JTR SSH hash file for SSH key password cracking"
-        echo -e "$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t -> crack ZIP password"
-        echo -e "$CYAN defcreds $GRAY[DEVICE/SYSTEM]$CLR\t\t\t -> default credentials for DEVICE or SYSTEM"
-        echo -e "$BLUE_BG:: STATIC APPLICATION SECURITY TESTING ::\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN um $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t -> un-minifies JS file"
-        echo -e "$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR\t -> runs snyk test on DIR (this should be root of Node app, where package.json exists)"
-        echo -e "$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR\t -> Static Code Analysis of Python file with pyflakes, mypy, bandit and vulture"
-        echo -e "$CYAN phpsast $GRAY[DIR]\t\t\t$YELLOW(PHP)$CLR\t\t -> Static Code Analysis of PHP dir(s)/file(s) with phpcs"
-        echo -e "$CYAN rubysast $GRAY[DIR]\t\t\t$YELLOW(Ruby)$CLR\t\t -> Static Code Analysis of Ruby dir(s)/file(s) with brakeman"
-        echo -e "$CYAN disass $GRAY[BINARY]\t\t$YELLOW(asm)$CLR\t\t -> disassembels BINARY and saves to 1.asm in the same directory"
+        echo -e "$CYAN rockyou_john $GRAY[TYPE] [HASHES]$CLR\t\t\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR"
+        echo -e "$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t$CYAN defcreds $GRAY[DEVICE/SYSTEM]$CLR"
+        
+        echo -e "$BLUE_BG:: STATIC CODE ANALYSIS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
+        echo -e "$CYAN um $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR"
+        echo -e "$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR\t$CYAN phpsast $GRAY[DIR]\t\t\t$YELLOW(PHP)$CLR"
+        echo -e "$CYAN rubysast $GRAY[DIR]\t\t\t$YELLOW(Ruby)$CLR\t\t$CYAN disass $GRAY[BINARY]\t\t$YELLOW(asm)$CLR"
         echo -e "$CYAN unjar $GRAY[.jar FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.jar file in JD-Gui"
         echo -e "$BLUE_BG:: ANDROID ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN jadx $GRAY[.apk FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.apk file in JADX GUI"
-        echo -e "$CYAN dex_to_jar $GRAY[.dex file]$CLR\t\t$YELLOW(Java)$CLR\t\t -> exports .dex file into .jar"
-        echo -e "$CYAN apk $GRAY[.apk FILE]$CLR\t\t$YELLOW(Java)$CLR\t\t -> extracts APK file and run apktool on it"
-        echo -e "$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t$YELLOW(Java)$CLR\t\t -> extracts Android .ab backup file into .tar (with android-backup-extractor)"
+        echo -e "$CYAN jadx $GRAY[.apk FILE]\t\t$YELLOW(Java)$CLR\t\t$CYAN dex_to_jar $GRAY[.dex file]$CLR\t\t$YELLOW(Java)$CLR"
+        echo -e "$CYAN apk $GRAY[.apk FILE]$CLR\t\t$YELLOW(Java)$CLR\t\t$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t$YELLOW(Java)$CLR"
         echo -e "$BLUE_BG:: UTILS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t -> decodes Base64 string"
-        echo -e "$CYAN hashme $GRAY[STRING]$CLR\t\t\t\t -> hash/encode string (md5, sha1, base64, hex encoded)"
+        echo -e "$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t$CYAN hashme $GRAY[STRING]$CLR"
         echo -e "$CLR"
     ;;
 esac
