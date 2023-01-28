@@ -865,7 +865,7 @@ case "$cmd" in
         echo -e "$CYAN um $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR"
         echo -e "$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR\t$CYAN phpsast $GRAY[DIR]\t\t\t$YELLOW(PHP)$CLR"
         echo -e "$CYAN rubysast $GRAY[DIR]\t\t\t$YELLOW(Ruby)$CLR\t\t$CYAN disass $GRAY[BINARY]\t\t$YELLOW(asm)$CLR"
-        echo -e "$CYAN unjar $GRAY[.jar FILE]\t\t$YELLOW(Java)$CLR\t\t -> open FILE.jar file in JD-Gui"
+        echo -e "$CYAN unjar $GRAY[.jar FILE]\t\t$YELLOW(Java)$CLR"
         echo -e "$BLUE_BG:: ANDROID ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN jadx $GRAY[.apk FILE]\t\t$YELLOW(Java)$CLR\t\t$CYAN dex_to_jar $GRAY[.dex file]$CLR\t\t$YELLOW(Java)$CLR"
         echo -e "$CYAN apk $GRAY[.apk FILE]$CLR\t\t$YELLOW(Java)$CLR\t\t$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t$YELLOW(Java)$CLR"
