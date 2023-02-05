@@ -626,7 +626,7 @@ ruby_sast() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
-# deso stuff with Android APK file
+# does stuff with Android APK file
 apk() {
     clear
     echo -e "$BLUE[s0mbra] OK, let's see this APK...$CLR"
@@ -637,6 +637,14 @@ apk() {
     elif [[ "$?" != 0 ]]; then
         echo -e "\n$RED- unzipping .apk failed :/... :/$CLR"
     fi
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
+# xreate Android Studio project from Android apk file
+apk_to_studio() {
+    clear
+    echo -e "$BLUE[s0mbra] Creating Android Studio project from APK file...$YELLOW"
+    /Users/bl4de/hacking/tools/Java_Decompilers/jadx/bin/jadx --deobf -e -d out "$1"
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
@@ -792,6 +800,9 @@ case "$cmd" in
     apk)
         apk "$2"
     ;;
+    apk_to_studio)
+        apk_to_studio "$2"
+    ;;
     abe)
         abe "$2"
     ;;
@@ -880,6 +891,7 @@ case "$cmd" in
         echo -e "$BLUE_BG:: ANDROID ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN jadx $GRAY[.apk FILE]\t\t$YELLOW(Java)$CLR\t\t$CYAN dex_to_jar $GRAY[.dex file]$CLR\t\t$YELLOW(Java)$CLR"
         echo -e "$CYAN apk $GRAY[.apk FILE]$CLR\t\t$YELLOW(Java)$CLR\t\t$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t$YELLOW(Java)$CLR"
+        echo -e "$CYAN apk_to_studio $GRAY[.apk FILE]$CLR\t$YELLOW(Java)$CLR"
         echo -e "$BLUE_BG:: UTILS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t$CYAN hashme $GRAY[STRING]$CLR"
         echo -e "$CLR"
