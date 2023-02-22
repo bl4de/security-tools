@@ -652,7 +652,7 @@ apk_to_studio() {
 abe() {
     clear
     echo -e "$BLUE[s0mbra] Extracting $1.ab backup into $1.tar...$CLR"
-    java -jar /Users/bl4de/hacking/tools/Java_Decompilers/android-backup-extractor/build/libs/abe.jar unpack $1.ab $1.tar
+    java -jar /Users/bl4de/hacking/tools/Java_Decompilers/android-backup-extractor/build/libs/abe.jar unpack $1 $1.tar
     if [[ "$?" == 0 ]]; then
         echo -e "\n$GREEN[s0mbra] Success! $1.ab unpacked and $1.tar was created..."
         echo -e "[s0mbra] Let's untar some files, shall we?$CLR"

