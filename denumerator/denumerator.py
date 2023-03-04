@@ -475,7 +475,7 @@ def main():
     allowed_http_responses = []
 
     parser.add_argument(
-        "-f", "--file", help="File with list of hostnames to check (-t/--target will be ignored")
+        "-f", "--file", help="File with list of hostnames to check (-t/--target will be ignored)")
     parser.add_argument(
         "-t", "--target", help="Target domain - will use crt.sh to perform subdomain enumeration (-f/--file will be ignored)")
     parser.add_argument(
