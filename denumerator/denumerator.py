@@ -312,7 +312,9 @@ def append_to_output(html_output, url, http_status_code, response_headers, nmap_
         </tr>
         <tr class="http_code_{} {} fold">
             <td style="width:35%; margin-right:20px; border-right: 1px solid #0c0c0c; width:480px;">
-                <img style="width:360px; border:1px solid #cecece; margin:10px;" src="{}" />
+                <a href="{}" target="_blank" title="Click to open fullsize screenshot in new tab">
+                    <img style="width:360px; border:1px solid #cecece; margin:10px;" src="{}" />
+                </a>
             </td>
 
             <td style="width:35%; margin-right:20px; border-right: 1px solid #0c0c0c;"">
