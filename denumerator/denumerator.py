@@ -479,7 +479,7 @@ def main():
     parser.add_argument(
         "-t", "--target", help="Target domain - will use crt.sh to perform subdomain enumeration (-f/--file will be ignored)")
     parser.add_argument(
-        "-s", "--success", help="Show all responses, including exceptions")
+        "-s", "--success", help="Show all responses, including exceptions", action='store_true')
     parser.add_argument(
         "-o", "--output", help="Path to text output file with all domains with identified web servers")
     parser.add_argument(
@@ -488,7 +488,7 @@ def main():
         "-c", "--code", help="Show only selected HTTP response status codes, comma separated", default='200,206,301,302,403,422,500'
     )
     parser.add_argument(
-        "-n", "--nmap", help="use nmap for port scanning (slows down the whole enumeration A LOT, so be warned!)", default=100
+        "-n", "--nmap", help="use nmap for port scanning (slows down the whole enumeration A LOT, so be warned!)", action='store_true'
     )
     parser.add_argument(
         "-p", "--ports", help="--top-ports option for nmap (default = 100)", default=100
