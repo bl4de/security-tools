@@ -340,6 +340,7 @@ def append_to_output(html_output, url, http_status_code, response_headers, nmap_
         (http_status_code//100),
         element_class_name,
         screenshot_name,
+        screenshot_name,
         response_headers_html,
         ip_html,
         nmap_html
