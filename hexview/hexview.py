@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/local/homebrew/bin/python3
 """
 based on: "Tutorial: Making your own Hex Dump Program" by DrapsTV
 https://www.youtube.com/watch?v=B8nRrw_M_nk&index=1&list=WL
@@ -262,7 +262,6 @@ def format_chunk(chunk, start, stop, df_chunk=False, dec=False):
                 "{} ".format(make_color(c, df_c))
                 for c, df_c in itertools.izip(chunk[start:stop], df_chunk[start:stop])
             )
-        print("TU: ", [c for c in chunk[start:stop]])
         return " ".join("{} ".format(make_color(c)) for c in chunk[start:stop])
 
 
