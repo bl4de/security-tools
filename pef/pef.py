@@ -25,6 +25,7 @@ from imports.beautyConsole import beautyConsole
 
 # exploitable functions
 exploitableFunctions = [
+    "`",
     "system(",
     "exec(",
     "popen(",
@@ -43,7 +44,6 @@ exploitableFunctions = [
     "putenv(",
     "ini_set(",
     "mail(",
-    "header(",
     "unserialize(",
     "assert(",
     "call_user_func(",
@@ -75,7 +75,6 @@ exploitableFunctions = [
     "print(",
     "printf(",
     "ldap_search(",
-    "header(",
     "sqlite_",
     "sqlite_query(",
     "pg_",
@@ -183,14 +182,16 @@ class PefEngine:
         """
         res = None
         # there has to be space before function call; prevents from false-positives strings contains PHP function names
-        atfn = "@{}".format(fn)
-        fn = "{}".format(fn)
+        atfn = f"@{fn}"
+        fn = f"{fn}"
         # also, it has to checked agains @ at the beginning of the function name
         # @ prevents from output being echoed
-
         if fn in line or atfn in line:
-            res = self.print_code_line(
-                f.name, l, i, fn + (')' if '(' in fn else ''), self.severity, self.level)
+            if fn == "`":
+                res = self.print_code_line(f.name, l, i, fn, self.severity, self.level)
+            else:
+                res = self.print_code_line(
+                    f.name, l, i, fn + (')' if '(' in fn else ''), self.severity, self.level)
         return res
 
     def print_code_line(self, file_name, _line, i, fn, severity="", level='ALL'):
@@ -215,8 +216,8 @@ class PefEngine:
                     _line = _line[:120] + \
                         f" (...truncated -> line is {len(_line)} characters long)"
                 else:
-                    print("{}{}:{}{}\t{}{}".format(beautyConsole.getColor(
-                        "white"), file_name, i, beautyConsole.getColor(impact_color[impact]), _line.strip()[:255], beautyConsole.getColor("grey"), vuln_class))
+                    print("{}{}:{}\t{}{}\t{}\t{}{}".format(beautyConsole.getColor(
+                        "white"), file_name, i, beautyConsole.getColor("grey"), vuln_class, beautyConsole.getColor(impact_color[impact]), _line.strip()[:255], beautyConsole.getColor("grey")))
                 found += 1
             if impact not in severity.keys():
                 severity[impact] = 1

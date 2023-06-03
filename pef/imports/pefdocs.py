@@ -5,6 +5,12 @@
 # 2nd element - syntax
 # 3rd element - possible vulnerability classes
 exploitableFunctionsDesc = {
+    "`": [
+        "Allows to execute system command",
+        "`$command`",
+        "RCE",
+        "critical" 
+    ],
     "system()": [
         "Allows to execute system command passed as an argument",
         "system ( string $command [, int &$return_var ] ) : string",
