@@ -216,8 +216,7 @@ class PefEngine:
                     _line = _line[:120] + \
                         f" (...truncated -> line is {len(_line)} characters long)"
                 else:
-                    print("{}{}:{}\t{}{}\t{}\t{}{}".format(beautyConsole.getColor(
-                        "white"), file_name, i, beautyConsole.getColor("grey"), vuln_class, beautyConsole.getColor(impact_color[impact]), _line.strip()[:255], beautyConsole.getColor("grey")))
+                    print("{}{}:{}\t{}{}{}{}".format(beautyConsole.getColor("white"), file_name, i, beautyConsole.getColor(impact_color[impact]), beautyConsole.getColor(impact_color[impact]), _line.strip()[:255], beautyConsole.getColor("grey")))
                 found += 1
             if impact not in severity.keys():
                 severity[impact] = 1
