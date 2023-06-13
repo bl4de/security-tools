@@ -589,9 +589,11 @@ jadx() {
     /Users/bl4de/hacking/tools/Java_Decompilers/jadx/bin/jadx-gui $1
 }
 
-# executes graphql-cop against GraphQL endpoint
+# executes grpahw00f graphql-cop against GraphQL endpoint
 gql() {
     clear
+    echo -e "$BLUE[s0mbra] Fingerprinting GraphQl endpoints on $1...$CYAN"
+    python3 /Users/bl4de/hacking/tools/graphw00f/main.py -d -f -t $1
     echo -e "$BLUE[s0mbra] Running GraphQL-Cop against $1...$CYAN"
     python3 /Users/bl4de/hacking/tools/graphql-cop/graphql-cop.py -t $1
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
