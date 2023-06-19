@@ -78,7 +78,7 @@ rockyou_john() {
     echo -e "$BLUE[s0mbra] Running john with rockyou dictionary against $1 of type $2$CLR"
     echo > "$HACKING_HOME"/tools/jtr/run/john.pot
     if [[ -n $2 ]]; then
-        "$HACKING_HOME"/tools/jtr/run/john --wordlist="$HACKING_HOME"/dictionaries/rockyou.txt "$1" --format="$2"
+        "$HACKING_HOME"/tools/jtr/run/john --wordlist="$HACKING_HOME"/dictionaries/rockyou.txt --format="$2" "$1" 
         elif [[ -z $2 ]]; then
         "$HACKING_HOME"/tools/jtr/run/john --wordlist="$HACKING_HOME"/dictionaries/rockyou.txt "$1"
     fi
@@ -879,7 +879,7 @@ case "$cmd" in
         echo -e "$CYAN smb_umount $CLR"
         
         echo -e "$BLUE_BG:: PASSWORDS CRACKIN' ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN rockyou_john $GRAY[TYPE] [HASHES]$CLR\t\t\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR"
+        echo -e "$CYAN rockyou_john $GRAY[HASHES] [FORMAT]$CLR\t\t\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR"
         echo -e "$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t$CYAN defcreds $GRAY[DEVICE/SYSTEM]$CLR"
         
         echo -e "$BLUE_BG:: STATIC CODE ANALYSIS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
