@@ -86,6 +86,13 @@ rockyou_john() {
     echo -e "\n$BLUE[s0mbra] Done."
 }
 
+# show JTR's pot file
+john_pot() {
+    echo -e "$BLUE[s0mbra] Joghn The Ripper pot file:$GRAY"
+    cat "$HACKING_HOME"/tools/jtr/run/john.pot
+    echo -e "\n$BLUE[s0mbra] Done."
+}
+
 # ZIP password cracking with rockyou.txt
 rockyou_zip() {
     echo -e "$BLUE[s0mbra] Running $MAGENTA zip2john $BLUE and prepare hash for hashcat..."
@@ -769,6 +776,9 @@ case "$cmd" in
     rockyou_zip)
         rockyou_zip "$2"
     ;;
+    john_pot)
+        john_pot
+    ;;
     ssh_to_john)
         ssh_to_john "$2"
     ;;
@@ -879,8 +889,9 @@ case "$cmd" in
         echo -e "$CYAN smb_umount $CLR"
         
         echo -e "$BLUE_BG:: PASSWORDS CRACKIN' ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN rockyou_john $GRAY[HASHES] [FORMAT]$CLR\t\t\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR"
+        echo -e "$CYAN rockyou_john $GRAY[HASHES][FORMAT]$CLR\t\t\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR"
         echo -e "$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t$CYAN defcreds $GRAY[DEVICE/SYSTEM]$CLR"
+        echo -e "$CYAN john_pot$CLR"
         
         echo -e "$BLUE_BG:: STATIC CODE ANALYSIS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN um $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR"
