@@ -113,7 +113,7 @@ ssh_to_john() {
 }
 
 # runs unminify on $1 JavaScript file
-um() {
+unmin() {
     FILENAME=$1
     echo -e "$BLUE[s0mbra] Unminify $FILENAME...$CLR"
     unminify $FILENAME > unmimified.$FILENAME
@@ -783,8 +783,8 @@ case "$cmd" in
     defcreds)
         defcreds "$2"
     ;;
-    um)
-        um "$2"
+    unmin)
+        unmin "$2"
     ;;
     snyktest)
         snyktest
@@ -892,7 +892,7 @@ case "$cmd" in
         echo -e "$CYAN john_pot$CLR"
         
         echo -e "$BLUE_BG:: STATIC CODE ANALYSIS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN um $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR"
+        echo -e "$CYAN unmin $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR"
         echo -e "$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR\t$CYAN phpsast $GRAY[DIR]\t\t\t$YELLOW(PHP)$CLR"
         echo -e "$CYAN rubysast $GRAY[DIR]\t\t\t$YELLOW(Ruby)$CLR\t\t$CYAN disass $GRAY[BINARY]\t\t$YELLOW(asm)$CLR"
         echo -e "$CYAN unjar $GRAY[.jar FILE]\t\t$YELLOW(Java)$CLR"
