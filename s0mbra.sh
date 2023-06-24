@@ -296,16 +296,14 @@ recon() {
         NIKTO="1"
         FFUF="1"
         FEROXBUSTER="1"
-        X8="1"
         SUBDOMANIZER="1"
-        SELECTED_OPTIONS="nmap, nikto, ffuf, x8, subdomanizer"
+        SELECTED_OPTIONS="nmap, nikto, ffuf, subdomanizer"
     else
         # set options:
         NMAP=$(echo $2|grep 'nmap'|wc -l)
         NIKTO=$(echo $2|grep 'nikto'|wc -l)
         VHOSTS=$(echo $2|grep 'vhosts'|wc -l)
         FFUF=$(echo $2|grep 'ffuf'|wc -l)
-        X8=$(echo $2|grep 'x8'|wc -l)
         SUBDOMANIZER=$(echo $2|grep 'subdomanizer'|wc -l)
         SELECTED_OPTIONS=$2
     fi
@@ -352,11 +350,6 @@ recon() {
     if [[ $FFUF -eq "1" ]]; then
         ffuf -ac -c -w $DICT_HOME/starter.txt -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$HOSTNAME.log
         ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $PROTO://$HOSTNAME/FUZZ/ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$HOSTNAME.log
-    fi
-
-    # x8
-    if [[ $X8 -eq "1" ]]; then
-        x8 -u $PROTO://$HOSTNAME/ -w $DICT_HOME/urlparams.txt -c 10
     fi
 
     # subdomanizer
@@ -867,7 +860,7 @@ case "$cmd" in
     *)
         clear
         echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN scope $GRAY[SCOPE_FILE]$CLR\t\t\t\t$CYAN recon $GRAY[HOST] [OPTIONS:nmap,nikto,vhosts,ffuf,x8,subdomanizer] [PROTO http/https]$CLR"
+        echo -e "$CYAN scope $GRAY[SCOPE_FILE]$CLR\t\t\t\t$CYAN recon $GRAY[HOST] [OPTIONS:nmap,nikto,vhosts,ffuf,subdomanizer] [PROTO http/https]$CLR"
         echo -e "$CYAN peek $GRAY[DOMAIN]$CLR"
 
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
