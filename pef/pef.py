@@ -154,14 +154,15 @@ class PefEngine:
     implements pef engine
     """
 
-    def __init__(self, recursive, level, filename):
+    def __init__(self, recursive, level, filename, skip_vendor=False):
         """
         constructor
         """
         self.recursive = recursive  # recursive scan files in folder(s)
         self.level = level          # scan only for level set of functions
         self.filename = filename    # name of file/folder to scan
-
+        self.skip_vendor = skip_vendor
+        
         self.scanned_files = 0    # number of scanned files in total
         self.found_entries = 0    # total number of findings
 
@@ -250,6 +251,8 @@ class PefEngine:
             f"\n{beautyConsole.getColor('green')}>>> RESULTS <<<{beautyConsole.getColor('gray')}")
         if self.recursive:
             for root, subdirs, files in os.walk(self.filename):
+                if self.skip_vendor is True and "vendor" in root:
+                    continue
                 prev_filename = ""
                 for f in files:
                     extension = f.split('.')[-1:][0]
@@ -283,6 +286,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "-r", "--recursive", help="scan PHP files recursively in directory pointed by -f/--file", action="store_true")
     parser.add_argument(
+        "-s", "--skip-vendor", help="exclude ./vendor folder", action="store_true")
+    parser.add_argument(
         "-l", "--level", help="severity level: ALL, LOW, MEDIUM, HIGH or CRITICAL; default - ALL")
     parser.add_argument(
         "-f",
@@ -295,5 +300,5 @@ if __name__ == "__main__":
     filename = args.file
 
     # main orutine starts here
-    engine = PefEngine(args.recursive, level, filename)
+    engine = PefEngine(args.recursive, level, filename, args.skip_vendor)
     engine.run()
