@@ -608,10 +608,8 @@ graphw00f() {
 # runs PHP SAST tools against PHP application
 php_sast() {
     clear
-    echo -e "$BLUE[s0mbra] Running phpcs against $1...$CYAN"
-    ./vendor/bin/phpstan analyse $1
-    graudit $1
-    phpcs --colors -vs $1
+    echo -e "$BLUE[s0mbra] Running static code analysis...$CYAN"
+    semgrep scan --config=auto --sarif -o ./semgrep.sarif $1
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 

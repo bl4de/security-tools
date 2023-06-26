@@ -210,7 +210,6 @@ class PefEngine:
         # print legend only if there i sentry in pefdocs.py
         if fn and fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
             impact = pefdocs.exploitableFunctionsDesc.get(fn.strip())[3]
-            vuln_class = pefdocs.exploitableFunctionsDesc.get(fn.strip())[2]
 
             if (impact.upper() in level.upper()) or level == 'ALL':
                 if len(_line) > 255:
