@@ -609,7 +609,7 @@ graphw00f() {
 php_sast() {
     clear
     echo -e "$BLUE[s0mbra] Running static code analysis...$CYAN"
-    semgrep scan --config=auto --severity ERROR --dataflow-traces --sarif -o ./semgrep.sarif $1
+    semgrep scan --config=auto --severity ERROR --dataflow-traces --sarif -o ./$1.sarif $1
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
