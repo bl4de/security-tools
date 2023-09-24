@@ -154,7 +154,7 @@ class PefEngine:
     implements pef engine
     """
 
-    def __init__(self, recursive, level, filename, skip_vendor=False):
+    def __init__(self, recursive, level, source_or_sink, filename, skip_vendor=False):
         """
         constructor
         """
@@ -162,7 +162,8 @@ class PefEngine:
         self.level = level          # scan only for level set of functions
         self.filename = filename    # name of file/folder to scan
         self.skip_vendor = skip_vendor
-        
+        self.source_or_sink = source_or_sink
+
         self.scanned_files = 0    # number of scanned files in total
         self.found_entries = 0    # total number of findings
 
@@ -189,13 +190,14 @@ class PefEngine:
         # @ prevents from output being echoed
         if fn in line or atfn in line:
             if fn == "`":
-                res = self.print_code_line(f.name, l, i, fn, self.severity, self.level)
+                res = self.print_code_line(
+                    f.name, l, i, fn, self.severity, self.level, self.source_or_sink)
             else:
                 res = self.print_code_line(
-                    f.name, l, i, fn + (')' if '(' in fn else ''), self.severity, self.level)
+                    f.name, l, i, fn + (')' if '(' in fn else ''), self.severity, self.level, self.source_or_sink)
         return res
 
-    def print_code_line(self, file_name, _line, i, fn, severity="", level='ALL'):
+    def print_code_line(self, file_name, _line, i, fn, severity="", level='ALL', source_or_sink='ALL'):
         """
         prints formatted code line
         """
@@ -209,15 +211,17 @@ class PefEngine:
         found = 0
         # print legend only if there i sentry in pefdocs.py
         if fn and fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
-            impact = pefdocs.exploitableFunctionsDesc.get(fn.strip())[3]
+            doc = pefdocs.exploitableFunctionsDesc.get(fn.strip())
+            impact = doc[3]
 
             if (impact.upper() in level.upper()) or level == 'ALL':
-                if len(_line) > 255:
-                    _line = _line[:120] + \
-                        f" (...truncated -> line is {len(_line)} characters long)"
-                else:
-                    print("{}{}:{}\t{}{}{}{}".format(beautyConsole.getColor("white"), file_name, i, beautyConsole.getColor(impact_color[impact]), beautyConsole.getColor(impact_color[impact]), _line.strip()[:255], beautyConsole.getColor("grey")))
-                found += 1
+                if len(doc) == 5 and source_or_sink == doc[4] or source_or_sink == 'ALL':
+                    if len(_line) > 255:
+                        _line = _line[:120] + \
+                            f" (...truncated -> line is {len(_line)} characters long)"
+                    print("{}{}:{}\t{}{}{}{}".format(beautyConsole.getColor("white"), file_name, i, beautyConsole.getColor(
+                        impact_color[impact]), beautyConsole.getColor(impact_color[impact]), _line.strip()[:255], beautyConsole.getColor("grey")))
+                    found += 1
             if impact not in severity.keys():
                 severity[impact] = 1
             else:
@@ -273,6 +277,7 @@ class PefEngine:
         line = re.sub(r"\s+", "", line)
         return line.startswith("/") or line.startswith("*")
 
+
 # main program
 if __name__ == "__main__":
 
@@ -289,6 +294,10 @@ if __name__ == "__main__":
     parser.add_argument(
         "-l", "--level", help="severity level: ALL, LOW, MEDIUM, HIGH or CRITICAL; default - ALL")
     parser.add_argument(
+        "-S", "--source", help="show only sources", action="store_true")
+    parser.add_argument(
+        "-K", "--sink", help="show only sinks", action="store_true")
+    parser.add_argument(
         "-f",
         "--file",
         help="File or directory name to scan (if directory name is provided, make sure -r/--recursive is set)",
@@ -296,8 +305,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     level = args.level.upper() if args.level else 'ALL'
+    source_or_sink = 'ALL'
+    if args.source:
+        source_or_sink = 'source'
+    if args.sink:
+        source_or_sink = 'sink'
+        
     filename = args.file
 
     # main orutine starts here
-    engine = PefEngine(args.recursive, level, filename, args.skip_vendor)
+    engine = PefEngine(args.recursive, level, source_or_sink, filename, args.skip_vendor)
     engine.run()

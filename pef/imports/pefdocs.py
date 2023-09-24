@@ -93,7 +93,8 @@ exploitableFunctionsDesc = {
         "Import variables into the current symbol table from an array",
         "extract ( array &$array [, int $flags = EXTR_OVERWRITE [, string $prefix = NULL ]] ) : int",
         "Code Injection",
-        "high"
+        "high",
+        "sink"
     ],
     "ini_set()": [
         "Sets the value of the given configuration option. The configuration option will keep this new value during the script's execution, and will be restored at the script's ending.",
