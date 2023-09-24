@@ -160,9 +160,9 @@ class PefEngine:
         """
         self.recursive = recursive  # recursive scan files in folder(s)
         self.level = level          # scan only for level set of functions
+        self.source_or_sink = source_or_sink # show only sinks or sources
         self.filename = filename    # name of file/folder to scan
         self.skip_vendor = skip_vendor
-        self.source_or_sink = source_or_sink
 
         self.scanned_files = 0    # number of scanned files in total
         self.found_entries = 0    # total number of findings
@@ -215,7 +215,7 @@ class PefEngine:
             impact = doc[3]
 
             if (impact.upper() in level.upper()) or level == 'ALL':
-                if len(doc) == 5 and source_or_sink == doc[4] or source_or_sink == 'ALL':
+                if (len(doc) == 5 and source_or_sink == doc[4]) or source_or_sink == 'ALL':
                     if len(_line) > 255:
                         _line = _line[:120] + \
                             f" (...truncated -> line is {len(_line)} characters long)"
@@ -235,6 +235,7 @@ class PefEngine:
         f = open(src, "r", encoding="ISO-8859-1")
         i = 0
         res = None
+        file_found = 0
         all_lines = f.readlines()
         for l in all_lines:
             i += 1
@@ -244,15 +245,17 @@ class PefEngine:
                     for fn in exploitableFunctions:
                         if self.analyse_line(l, i, fn, f, line) == True:
                             res = True
-        return res  # return how many findings in current file
+                            file_found += 1
+        return (res, file_found)  # return how many findings in current file
 
     def run(self):
         """
         runs scanning
         """
+        total_found = 0
         print(
             f"\n{beautyConsole.getColor('green')}>>> RESULTS <<<{beautyConsole.getColor('gray')}")
-        if self.recursive:
+        if os.path.isdir(self.filename) and self.recursive:
             for root, subdirs, files in os.walk(self.filename):
                 if self.skip_vendor is True and "vendor" in root:
                     continue
@@ -261,14 +264,16 @@ class PefEngine:
                     extension = f.split('.')[-1:][0]
                     if extension in ['php', 'inc', 'php3', 'php4', 'php5', 'phtml']:
                         self.scanned_files = self.scanned_files + 1
-                        res = self.main(os.path.join(root, f))
+                        (res, file_found) = self.main(os.path.join(root, f))
                         if res is not None and f != prev_filename:
                             print(f">>> {f} <<<\t{'-' * (115 - len(f))}\n\n")
                             prev_filename = f
+                            total_found += file_found
         else:
             self.scanned_files = self.scanned_files + 1
-            self.found_entries = self.main(self.filename)
-        print("\n")
+            (res, self.found_entries) = self.main(self.filename)
+        # print summary
+        print(f"{beautyConsole.getColor('white')}Total issues found: {total_found}")
 
     def is_comment(self, line: str) -> bool:
         """
@@ -310,9 +315,10 @@ if __name__ == "__main__":
         source_or_sink = 'source'
     if args.sink:
         source_or_sink = 'sink'
-        
+
     filename = args.file
 
     # main orutine starts here
-    engine = PefEngine(args.recursive, level, source_or_sink, filename, args.skip_vendor)
+    engine = PefEngine(args.recursive, level, source_or_sink,
+                       filename, args.skip_vendor)
     engine.run()
