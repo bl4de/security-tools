@@ -154,14 +154,14 @@ class PefEngine:
     implements pef engine
     """
 
-    def __init__(self, recursive, level, source_or_sink, filename, skip_vendor=False):
+    def __init__(self, level, source_or_sink, filename, dirs_to_scan, skip_vendor=False):
         """
         constructor
         """
-        self.recursive = recursive  # recursive scan files in folder(s)
         self.level = level          # scan only for level set of functions
         self.source_or_sink = source_or_sink # show only sinks or sources
         self.filename = filename    # name of file/folder to scan
+        self.dirs_to_scan = dirs_to_scan    # name(s) of dirs to scan
         self.skip_vendor = skip_vendor
 
         self.scanned_files = 0    # number of scanned files in total
@@ -255,10 +255,13 @@ class PefEngine:
         total_found = 0
         print(
             f"\n{beautyConsole.getColor('green')}>>> RESULTS <<<{beautyConsole.getColor('gray')}")
-        if os.path.isdir(self.filename) and self.recursive:
-            for root, subdirs, files in os.walk(self.filename):
+        
+        if os.path.isdir(self.filename):
+            for root, _, files in os.walk(self.filename):
                 if self.skip_vendor is True and "vendor" in root:
                     continue
+                # if self.dirs_to_scan and self.not_in_dirs_to_scan(root):
+                #     continue
                 prev_filename = ""
                 for f in files:
                     extension = f.split('.')[-1:][0]
@@ -282,7 +285,6 @@ class PefEngine:
         line = re.sub(r"\s+", "", line)
         return line.startswith("/") or line.startswith("*")
 
-
 # main program
 if __name__ == "__main__":
 
@@ -293,11 +295,9 @@ if __name__ == "__main__":
     filename = '.'  # initial value for file/dir to scan is current directory
 
     parser.add_argument(
-        "-r", "--recursive", help="scan PHP files recursively in directory pointed by -f/--file", action="store_true")
-    parser.add_argument(
         "-s", "--skip-vendor", help="exclude ./vendor folder", action="store_true")
     parser.add_argument(
-        "-l", "--level", help="severity level: ALL, LOW, MEDIUM, HIGH or CRITICAL; default - ALL")
+        "-l", "--level", help="severity level: ALL, LOW, MEDIUM, HIGH or CRITICAL; default: ALL")
     parser.add_argument(
         "-S", "--source", help="show only sources", action="store_true")
     parser.add_argument(
@@ -305,20 +305,27 @@ if __name__ == "__main__":
     parser.add_argument(
         "-f",
         "--file",
-        help="File or directory name to scan (if directory name is provided, make sure -r/--recursive is set)",
-        required=True)
+        help="File or directory name to scan",
+    )
+    parser.add_argument(
+        "-d",
+        "--dir",
+        help="List of directories to scan (mutually exclusive with -f flag)",
+    )
     args = parser.parse_args()
 
     level = args.level.upper() if args.level else 'ALL'
     source_or_sink = 'ALL'
+
     if args.source:
         source_or_sink = 'source'
     if args.sink:
         source_or_sink = 'sink'
 
+    dirs_to_scan = args.dir
     filename = args.file
 
     # main orutine starts here
-    engine = PefEngine(args.recursive, level, source_or_sink,
-                       filename, args.skip_vendor)
+    engine = PefEngine(level, source_or_sink,
+                       filename, dirs_to_scan, args.skip_vendor)
     engine.run()
