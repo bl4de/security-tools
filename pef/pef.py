@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 #
-# PHP Exploitable Functions/Vars Scanner
+# PHP source code advanced grep utility
 # bl4de | github.com/bl4de | hackerone.com/bl4de
 #
 
-# pylint: disable=C0103
+# pylint: disable=invalid-name, missing-class-docstring, import-error, too-few-public-methods, unused-import, no-self-use,missing-function-docstring,consider-using-enumerate,consider-iterating-dictionary
 
 # //TODO:
 # - allow to scan folder without subdirs
@@ -159,7 +159,7 @@ class PefEngine:
         constructor
         """
         self.level = level          # scan only for level set of functions
-        self.source_or_sink = source_or_sink # show only sinks or sources
+        self.source_or_sink = source_or_sink  # show only sinks or sources
         self.filename = filename    # name of file/folder to scan
         self.dirs_to_scan = dirs_to_scan    # name(s) of dirs to scan
         self.skip_vendor = skip_vendor
@@ -255,7 +255,7 @@ class PefEngine:
         total_found = 0
         print(
             f"\n{beautyConsole.getColor('green')}>>> RESULTS <<<{beautyConsole.getColor('gray')}")
-        
+
         if os.path.isdir(self.filename):
             for root, _, files in os.walk(self.filename):
                 if self.skip_vendor is True and "vendor" in root:
@@ -276,7 +276,7 @@ class PefEngine:
             self.scanned_files = self.scanned_files + 1
             (res, self.found_entries) = self.main(self.filename)
         # print summary
-        print(f"{beautyConsole.getColor('white')}Total issues found: {total_found}")
+        self.print_summary(total_found)
 
     def is_comment(self, line: str) -> bool:
         """
@@ -284,6 +284,15 @@ class PefEngine:
         """
         line = re.sub(r"\s+", "", line)
         return line.startswith("/") or line.startswith("*")
+
+    def print_summary(self, total_found: int) -> None:
+        """
+        prints summary at the bottom of search results
+        """
+        print(f"{beautyConsole.getColor('white')}Total issues found: {total_found}")
+        print(
+            f"{beautyConsole.getColor('white')}Cmd arguments: {' '.join(sys.argv[1:])}\n")
+
 
 # main program
 if __name__ == "__main__":
