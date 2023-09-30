@@ -6,11 +6,10 @@
 
 # pylint: disable=invalid-name, missing-class-docstring, import-error, too-few-public-methods, unused-import, no-self-use,missing-function-docstring,consider-using-enumerate,consider-iterating-dictionary
 
-# //TODO:
+# @TODO:
 # - allow to scan folder without subdirs
 # - allow to scan files by pattern, eg. *.php
 # - exclude 'echo' lines without HTML tags
-
 
 ## Sinks and Sources
 #
@@ -20,6 +19,19 @@
 # for an XXE, you need a code that parses an XML with a concrete configuration
 # for a DOM-XSS, you need a code that executes HTML or JavaScript
 #
+# When you are going sources to sinks, the process is:
+#
+# - you encounter a function call
+# - you find the definition
+# - repeat until the sink
+#
+# For sinks to sources, the process is:
+#
+# - you are in the function definition
+# - you find a call of this function.
+# - repeat until the source
+#
+
 import sys
 import os
 import re
