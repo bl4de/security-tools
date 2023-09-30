@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# PHP source code advanced grep utility
+# PHP source code grep tool
 # bl4de | github.com/bl4de | hackerone.com/bl4de
 #
 
@@ -12,9 +12,14 @@
 # - exclude 'echo' lines without HTML tags
 
 
-"""
-pef.py - PHP source code advanced grep utility
-"""
+## Sinks and Sources
+#
+# for an SQLi, you need a code that makes a raw query to the database
+# for an SSRF, you need a code that makes an HTTP request
+# for an LFI, you need a code that reads a file
+# for an XXE, you need a code that parses an XML with a concrete configuration
+# for a DOM-XSS, you need a code that executes HTML or JavaScript
+#
 import sys
 import os
 import re
@@ -253,8 +258,9 @@ class PefEngine:
         runs scanning
         """
         total_found = 0
+        os.system('clear')
         print(
-            f"\n{beautyConsole.getColor('green')}>>> RESULTS <<<{beautyConsole.getColor('gray')}")
+            f"{beautyConsole.getColor('green')}>>> RESULTS <<<{beautyConsole.getColor('gray')}\n")
 
         if os.path.isdir(self.filename):
             for root, _, files in os.walk(self.filename):
