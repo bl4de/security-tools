@@ -215,30 +215,30 @@ scope() {
     # sublister
     echo -e "\n$GREEN--> sublister$CLR\n"
     for domain in $(cat scope); do
-        sublister -v -d $domain -o "$TMPDIR/s0mbra_recon_sublister_$domain.log"
+        sublister -v -d $domain -o "$TMPDIR/sublister_$domain.log"
     done
     
     # subfinder
     echo -e "\n$GREEN--> subfinder$CLR\n"
-    subfinder -nW -all -v -dL $1 -o $TMPDIR/s0mbra_recon_subfinder.log
+    subfinder -nW -all -v -dL $1 -o $TMPDIR/subfinder.log
 
     # prepare list of uniqe subdomains
-    cat s0mbra_recon_sub* > step1
+    cat sub* > step1
     sed 's/<BR>/#/g' step1 | tr '#' '\n' > step2
-    sort -u -k 1 step2 > s0mbra_recon_subdomains_final.log
+    sort -u -k 1 step2 > subdomains_final.log
     rm -f step*
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -ip -cname -cdn -l $TMPDIR/s0mbra_recon_subdomains_final.log -o $TMPDIR/s0mbra_recon_httpx.log
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -ip -cname -cdn -l $TMPDIR/subdomains_final.log -o $TMPDIR/httpx.log
 
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
     echo -e "finished at: $RED $END_TIME $GREEN\n"
-    echo -e "  $GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
-    echo -e "  $GRAY httpx found \t\t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_httpx.log` | cut -d" " -f 1) $GRAY active web servers $GREEN"
+    echo -e "  $GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
+    echo -e "  $GRAY httpx found \t\t $YELLOW $(echo `wc -l $TMPDIR/httpx.log` | cut -d" " -f 1) $GRAY active web servers $GREEN"
     echo -e "  $GRAY HTTP servers responding 200 OK: $CLR\n"
-    grep 200 $TMPDIR/s0mbra_recon_httpx.log
+    grep 200 $TMPDIR/httpx.log
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
@@ -254,33 +254,33 @@ peek() {
 
     # sublister
     echo -e "\n$GREEN--> sublister$CLR\n"
-    sublister -v -d $DOMAIN -o "$TMPDIR/s0mbra_recon_sublister_$DOMAIN.log"
+    sublister -v -d $DOMAIN -o "$TMPDIR/sublister_$DOMAIN.log"
     
     # subfinder
     echo -e "\n$GREEN--> subfinder$CLR\n"
-    subfinder -nW -all -v -d $DOMAIN -o $TMPDIR/s0mbra_recon_subfinder.log
+    subfinder -nW -all -v -d $DOMAIN -o $TMPDIR/subfinder.log
 
     # prepare list of uniqe subdomains
-    cat $TMPDIR/s0mbra_recon_sub* > $TMPDIR/step1
+    cat $TMPDIR/sub* > $TMPDIR/step1
     sed 's/<BR>/#/g' $TMPDIR/step1 | tr '#' '\n' > $TMPDIR/step2
-    sort -u -k 1 $TMPDIR/step2 > $TMPDIR/s0mbra_recon_subdomains_final.log
+    sort -u -k 1 $TMPDIR/step2 > $TMPDIR/subdomains_final.log
     rm -f $TMPDIR/step*
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -ip -cname -cdn -l $TMPDIR/s0mbra_recon_subdomains_final.log -o $TMPDIR/s0mbra_recon_httpx.log
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -ip -cname -cdn -l $TMPDIR/subdomains_final.log -o $TMPDIR/httpx.log
 
     # cleanup
     echo -e "\n$BLUE[s0mbra] Remove temporary files...\n"
-    rm -f $TMPDIR/s0mbra_recon_sublister_$DOMAIN.log
-    rm -f $TMPDIR/s0mbra_recon_subfinder.log
+    rm -f $TMPDIR/sublister_$DOMAIN.log
+    rm -f $TMPDIR/subfinder.log
     rm -rf $TMPDIR/h*
 
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
     echo -e "finished at: $RED $END_TIME $GREEN\n"
-    echo -e "$GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
-    echo -e "$GRAY httpx found \t\t\t $YELLOW $(echo `wc -l $TMPDIR/s0mbra_recon_httpx.log` | cut -d" " -f 1) $GRAY active web servers $GREEN"
+    echo -e "$GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
+    echo -e "$GRAY httpx found \t\t\t $YELLOW $(echo `wc -l $TMPDIR/httpx.log` | cut -d" " -f 1) $GRAY active web servers $GREEN"
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
@@ -341,15 +341,15 @@ recon() {
 
     if [[ $VHOSTS -eq "1" ]]; then
         # vhosts enumeration
-        ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ.$HOSTNAME" -o $TMPDIR/s0mbra_recon_ffuf_vhosts_fullnames_$HOSTNAME.log
+        ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ.$HOSTNAME" -o $TMPDIR/ffuf_vhosts_fullnames_$HOSTNAME.log
     
-        ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ" -o $TMPDIR/s0mbra_recon_ffuf_vhosts_$HOSTNAME.log
+        ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ" -o $TMPDIR/ffuf_vhosts_$HOSTNAME.log
     fi
 
     # ffuf
     if [[ $FFUF -eq "1" ]]; then
-        ffuf -ac -c -w $DICT_HOME/starter.txt -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_starter_$HOSTNAME.log
-        ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $PROTO://$HOSTNAME/FUZZ/ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/s0mbra_recon_ffuf_lowercase_$HOSTNAME.log
+        ffuf -ac -c -w $DICT_HOME/starter.txt -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/ffuf_starter_$HOSTNAME.log
+        ffuf -ac -c -w $DICT_HOME/lowercase.txt -u $PROTO://$HOSTNAME/FUZZ/ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -o $TMPDIR/ffuf_lowercase_$HOSTNAME.log
     fi
 
     # subdomanizer
