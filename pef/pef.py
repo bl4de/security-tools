@@ -249,7 +249,7 @@ class PefEngine:
         """
         main engine loop
         """
-        f = open(src, "r", encoding="ISO-8859-1")
+        f = open(str(src), "r", encoding="ISO-8859-1")
         i = 0
         res = None
         file_found = 0
@@ -274,7 +274,7 @@ class PefEngine:
         print(
             f"{beautyConsole.getColor('green')}>>> RESULTS <<<{beautyConsole.getColor('gray')}\n")
 
-        if os.path.isdir(self.filename):
+        if os.path.isdir(str(self.filename)):
             for root, _, files in os.walk(self.filename):
                 if self.skip_vendor is True and "vendor" in root:
                     continue
