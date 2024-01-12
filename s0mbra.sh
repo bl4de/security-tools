@@ -295,7 +295,6 @@ recon() {
         NMAP="1"
         NIKTO="1"
         FFUF="1"
-        FEROXBUSTER="1"
         SUBDOMANIZER="1"
         SELECTED_OPTIONS="nmap, nikto, ffuf, subdomanizer"
     else
@@ -341,9 +340,7 @@ recon() {
 
     if [[ $VHOSTS -eq "1" ]]; then
         # vhosts enumeration
-        ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ.$HOSTNAME" -o $TMPDIR/ffuf_vhosts_fullnames_$HOSTNAME.log
-    
-        ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://$HOSTNAME/FUZZ -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ" -o $TMPDIR/ffuf_vhosts_$HOSTNAME.log
+        ffuf -ac -c -w $DICT_HOME/vhosts -u $PROTO://FUZZ.$HOSTNAME -mc=200,206,301,302,422,429 -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -H "Host: FUZZ.$HOSTNAME" -o $TMPDIR/ffuf_vhosts_fullnames_$HOSTNAME.log
     fi
 
     # ffuf
@@ -390,8 +387,6 @@ fu() {
             # if $3 arg passed to fu equals / - add at the end of the path (for dir enumerations where sometimes
             # dir path has to end with / to be identified
             ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$SELECTED_DICT.txt -u $1/FUZZ/ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
-        elif [[ $3 == "-" ]]; then
-            ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$SELECTED_DICT.txt -u $1/FUZZ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
         else
             if [[ $3 == "-" ]]; then
                 # if $3 equals - (dash) that means we should ignore it at all
