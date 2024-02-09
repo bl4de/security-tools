@@ -242,6 +242,20 @@ scope() {
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
+# OSINT
+photon() {
+    URL=$1
+    OUTPUT_DIR=$2
+    TMPDIR=$(pwd)/photon/$OUTPUT_DIR
+    if [[ ! -d $TMPDIR ]]; then
+        mkdir -p $TMPDIR
+    fi
+    echo -e "$BLUE[s0mbra] Let's do some OSINT stuff around $URL...$CLR\n"
+    /usr/local/homebrew/bin/python3 /Users/bl4de/hacking/tools/Photon/photon.py -u "$URL" -l 5 -t 10 -o "$TMPDIR"
+    ls -lRA "$TMPDIR"
+    echo -e "\n$BLUE[s0mbra] Done.$CLR"
+}
+
 # quick scope, but for single domain - no need to create scope file
 peek() {
     TMPDIR=$(pwd)/$1
@@ -736,6 +750,9 @@ case "$cmd" in
     peek)
         peek "$2"
     ;;
+    photon)
+        photon "$2" "$3"
+    ;;
     recon)
         recon "$2" "$3" "$4"
     ;;
@@ -854,7 +871,7 @@ case "$cmd" in
         clear
         echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN scope $GRAY[SCOPE_FILE]$CLR\t\t\t\t$CYAN recon $GRAY[HOST] [OPTIONS:nmap,nikto,vhosts,ffuf,subdomanizer] [PROTO http/https]$CLR"
-        echo -e "$CYAN peek $GRAY[DOMAIN]$CLR"
+        echo -e "$CYAN peek $GRAY[DOMAIN]$CLR\t\t\t\t\t$CYAN photon $GRAY[HOST] [OUTPUT_DIR]$CLR"
 
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT,/ or -] [HTTP RESP.]$CLR\t$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(REST)$CLR"
