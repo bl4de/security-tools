@@ -377,6 +377,20 @@ recon() {
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
+# runs GET parameter(s) discovery
+_arjun() {
+    clear
+    DICT_PATH="/Users/bl4de/hacking/dictionaries"
+    if [[ -z $2 ]]; then
+        SELECTED_DICT=urlparams_medium.txt
+    else
+        SELECTED_DICT=$2
+    fi
+    echo -e "$BLUE[s0mbra] Trying to discover GET params on $1 using $SELECTED_DICT...$GRAY"
+    arjun -u "$1" -w "$DICT_PATH/$SELECTED_DICT"
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
 fu() {
     clear
 
@@ -753,6 +767,9 @@ case "$cmd" in
     photon)
         photon "$2" "$3"
     ;;
+    arjun)
+        _arjun "$2" "$3"
+    ;;
     recon)
         recon "$2" "$3" "$4"
     ;;
@@ -876,8 +893,7 @@ case "$cmd" in
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT,/ or -] [HTTP RESP.]$CLR\t$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(REST)$CLR"
         echo -e "$CYAN graphw00f $GRAY[HOST]$CLR\t\t$YELLOW(GraphQl)$CLR\t$CYAN gql $GRAY[TARGET_URL]$CLR\t\t$YELLOW(GraphQL)$CLR"
-        echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(REST)$CLR"
-
+        echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(REST)$CRL\t\t$CYAN arjun $GRAY[HOST] [DICT]$CLR"
         echo -e "$BLUE_BG:: CLOUD ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN discloS3 $GRAY[URL]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t$CYAN s3 $GRAY[BUCKET]$CLR\t\t\t$YELLOW(AWS)$CLR"
         echo -e "$CYAN s3get $GRAY[BUCKET] [key]$CLR\t\t$YELLOW(AWS)$CLR\t\t$CYAN s3ls $GRAY[BUCKET] [folder]$CLR\t\t$YELLOW(AWS)$CLR"
