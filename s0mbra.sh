@@ -380,14 +380,13 @@ recon() {
 # runs GET parameter(s) discovery
 _arjun() {
     clear
-    DICT_PATH="/Users/bl4de/hacking/dictionaries"
     if [[ -z $2 ]]; then
-        SELECTED_DICT=urlparams_medium.txt
+        SELECTED_DICT=/Users/bl4de/hacking/dictionaries/urlparams_medium.txt
     else
-        SELECTED_DICT=$2
+        SELECTED_DICT="$2"
     fi
     echo -e "$BLUE[s0mbra] Trying to discover GET params on $1 using $SELECTED_DICT...$GRAY"
-    arjun -u "$1" -w "$DICT_PATH/$SELECTED_DICT"
+    arjun -u "$1" -w $SELECTED_DICT
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
