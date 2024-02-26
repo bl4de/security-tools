@@ -905,7 +905,7 @@ case "$cmd" in
         echo -e "$CYAN smb_umount $CLR"
         
         echo -e "$BLUE_BG:: PASSWORDS CRACKIN' ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN rockyou_john $GRAY[HASHES][FORMAT]$CLR\t\t\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR"
+        echo -e "$CYAN rockyou_john $GRAY[HASHES] [FORMAT]$CLR\t\t\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR"
         echo -e "$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t$CYAN defcreds $GRAY[DEVICE/SYSTEM]$CLR"
         echo -e "$CYAN john_pot$CLR"
         
