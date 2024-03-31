@@ -402,7 +402,7 @@ fu() {
 
     # set response status code(s) to match on:
     if [[ -z $4 ]]; then
-        HTTP_RESP_CODES=200,206,301,302,500
+        HTTP_RESP_CODES=200,206,301,302,401,500
     else
         HTTP_RESP_CODES=$4
     fi
