@@ -391,8 +391,6 @@ _arjun() {
 }
 
 fu() {
-    clear
-
     # use starter.txt as default dictionary
     if [[ -z $2 ]]; then
         SELECTED_DICT=starter
