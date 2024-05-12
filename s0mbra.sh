@@ -727,13 +727,6 @@ shells() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
-# looks for default credentials in service/software/hardware
-defcreds() {
-    echo -e "$BLUE[s0mbra] Looking for default credentials for $1...$CLR"
-    creds search $1
-    echo -e "$BLUE\n[s0mbra] Done! $CLR"
-}
-
 # decodes Base64 string
 b64() {
     echo -e "$BLUE[s0mbra] Decoding Base64 string...$CLR"
@@ -796,9 +789,6 @@ case "$cmd" in
     ;;
     ssh_to_john)
         ssh_to_john "$2"
-    ;;
-    defcreds)
-        defcreds "$2"
     ;;
     unmin)
         unmin "$2"
@@ -904,8 +894,7 @@ case "$cmd" in
         
         echo -e "$BLUE_BG:: PASSWORDS CRACKIN' ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN rockyou_john $GRAY[HASHES] [FORMAT]$CLR\t\t\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR"
-        echo -e "$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t$CYAN defcreds $GRAY[DEVICE/SYSTEM]$CLR"
-        echo -e "$CYAN john_pot$CLR"
+        echo -e "$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t$CYAN john_pot$CLR"
         
         echo -e "$BLUE_BG:: STATIC CODE ANALYSIS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN unmin $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR"
