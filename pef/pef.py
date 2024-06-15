@@ -171,20 +171,20 @@ class PefEngine:
     implements pef engine
     """
 
-    def __init__(self, level, source_or_sink, filename, dirs_to_scan, skip_vendor=False):
+    def __init__(self, level, source_or_sink, filename, skip_vendor, phpfunction):
         """
         constructor
         """
-        self.level = level          # scan only for level set of functions
+        self.level = level  # scan only for level set of functions
         self.source_or_sink = source_or_sink  # show only sinks or sources
-        self.filename = filename    # name of file/folder to scan
-        self.dirs_to_scan = dirs_to_scan    # name(s) of dirs to scan
+        self.filename = filename  # name of file/folder to scan
         self.skip_vendor = skip_vendor
+        self.phpfunction = '' if phpfunction is None else phpfunction
 
-        self.scanned_files = 0    # number of scanned files in total
-        self.found_entries = 0    # total number of findings
+        self.scanned_files = 0  # number of scanned files in total
+        self.found_entries = 0  # total number of findings
 
-        self.severity = {         # severity scale
+        self.severity = {  # severity scale
             "high": 0,
             "medium": 0,
             "low": 0
@@ -227,18 +227,24 @@ class PefEngine:
 
         found = 0
         # print legend only if there i sentry in pefdocs.py
+
         if fn and fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
             doc = pefdocs.exploitableFunctionsDesc.get(fn.strip())
             impact = doc[3]
 
             if (impact.upper() in level.upper()) or level == 'ALL':
-                if (len(doc) == 5 and source_or_sink == doc[4]) or source_or_sink == 'ALL':
-                    if len(_line) > 255:
-                        _line = _line[:120] + \
-                            f" (...truncated -> line is {len(_line)} characters long)"
-                    print("{}{}:{}\t{}{}{}{}".format(beautyConsole.getColor("white"), file_name, i, beautyConsole.getColor(
-                        impact_color[impact]), beautyConsole.getColor(impact_color[impact]), _line.strip()[:255], beautyConsole.getColor("grey")))
-                    found += 1
+                if self.phpfunction == '' or self.phpfunction in fn:
+                    if (len(doc) == 5 and source_or_sink == doc[4]) or source_or_sink == 'ALL':
+                        if len(_line) > 255:
+                            _line = _line[:120] + \
+                                    f" (...truncated -> line is {len(_line)} characters long)"
+                        print("{}{}:{}\t{}{}{}{}".format(beautyConsole.getColor("white"), file_name, i,
+                                                         beautyConsole.getColor(
+                                                             impact_color[impact]),
+                                                         beautyConsole.getColor(impact_color[impact]),
+                                                         _line.strip()[:255],
+                                                         beautyConsole.getColor("grey")))
+                found += 1
             if impact not in severity.keys():
                 severity[impact] = 1
             else:
@@ -271,6 +277,7 @@ class PefEngine:
         """
         total_found = 0
         os.system('clear')
+
         print(
             f"{beautyConsole.getColor('green')}>>> RESULTS <<<{beautyConsole.getColor('gray')}\n")
 
@@ -278,15 +285,13 @@ class PefEngine:
             for root, _, files in os.walk(self.filename):
                 if self.skip_vendor is True and "vendor" in root:
                     continue
-                # if self.dirs_to_scan and self.not_in_dirs_to_scan(root):
-                #     continue
                 prev_filename = ""
                 for f in files:
                     extension = f.split('.')[-1:][0]
                     if extension in ['php', 'inc', 'php3', 'php4', 'php5', 'phtml']:
                         self.scanned_files = self.scanned_files + 1
                         (res, file_found) = self.main(os.path.join(root, f))
-                        if res is not None and f != prev_filename:
+                        if self.phpfunction == '' and res is not None and f != prev_filename:
                             print(f">>> {f} <<<\t{'-' * (115 - len(f))}\n\n")
                             prev_filename = f
                             total_found += file_found
@@ -309,7 +314,7 @@ class PefEngine:
         """
         print(f"{beautyConsole.getColor('white')}Total issues found: {total_found}")
         print(
-            f"{beautyConsole.getColor('white')}Cmd arguments: {' '.join(sys.argv[1:])}\n")
+            f"\n{beautyConsole.getColor('grey')}Cmd arguments: {' '.join(sys.argv[1:])}\n")
 
 
 # main program
@@ -320,6 +325,7 @@ if __name__ == "__main__":
         add_help=True
     )
     filename = '.'  # initial value for file/dir to scan is current directory
+    phpfunction = ''
 
     parser.add_argument(
         "-s", "--skip-vendor", help="exclude ./vendor folder", action="store_true")
@@ -331,14 +337,15 @@ if __name__ == "__main__":
         "-K", "--sink", help="show only sinks", action="store_true")
     parser.add_argument(
         "-f",
-        "--file",
-        help="File or directory name to scan",
+        "--function",
+        help="Search for particular PHP function (eg. unserialize)",
     )
     parser.add_argument(
         "-d",
         "--dir",
-        help="List of directories to scan (mutually exclusive with -f flag)",
+        help="Directory to scan (or sinlge file, optionally)",
     )
+
     args = parser.parse_args()
 
     level = args.level.upper() if args.level else 'ALL'
@@ -349,10 +356,9 @@ if __name__ == "__main__":
     if args.sink:
         source_or_sink = 'sink'
 
-    dirs_to_scan = args.dir
-    filename = args.file
+    filename = args.dir
 
     # main orutine starts here
     engine = PefEngine(level, source_or_sink,
-                       filename, dirs_to_scan, args.skip_vendor)
+                       filename, args.skip_vendor, args.function)
     engine.run()
