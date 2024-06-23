@@ -32,6 +32,7 @@ full_nmap_scan() {
     fi
 
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
+    osascript -e 'display notification "nmap finished, choomba!" with title "s0mbra says:"'
 }
 
 # runs --top-ports $2 against IP
@@ -45,6 +46,7 @@ quick_nmap_scan() {
     fi
     
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
+    osascript -e 'display notification "nmap finished, choomba!" with title "s0mbra says:"'
 }
 
 # runs Python 3 built-in HTTP server on [PORT]
@@ -84,6 +86,7 @@ rockyou_john() {
     fi
     cat "$HACKING_HOME"/tools/jtr/run/john.pot
     echo -e "\n$BLUE[s0mbra] Done."
+    osascript -e 'display notification "our choom John has left the house..." with title "s0mbra says:"'
 }
 
 # show JTR's pot file
@@ -296,6 +299,7 @@ peek() {
     echo -e "$GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
     echo -e "$GRAY httpx found \t\t\t $YELLOW $(echo `wc -l $TMPDIR/httpx.log` | cut -d" " -f 1) $GRAY active web servers $GREEN"
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
+    osascript -e 'display notification "peek finished, choomba!" with title "s0mbra says:"'
 }
 
 # does recon on URL: nmap, ffuf, other smaller tools, ...?
@@ -425,6 +429,7 @@ fu() {
         ffuf -ac -c -w /Users/bl4de/hacking/dictionaries/$SELECTED_DICT.txt -u $1/FUZZ -mc $HTTP_RESP_CODES -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de"
     fi
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
+    osascript -e 'display notification "ffuf finished, choomba!" with title "s0mbra says:"'
 }
 
 api_fuzz() {

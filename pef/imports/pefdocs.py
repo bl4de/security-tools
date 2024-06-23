@@ -85,14 +85,14 @@ exploitableFunctionsDesc = {
         "Opens process file pointer. Opens a pipe to a process executed by forking the command given by command.",
         "popen ( string $command , string $mode ) : resource",
         "Code Injection",
-        "medium",
+        "high",
         "sink"
     ],
     "proc_open()": [
         "Execute a command and open file pointers for input/output. proc_open() is similar to popen() but provides a much greater degree of control over the program execution.",
         "proc_open ( string $cmd , array $descriptorspec , array &$pipes [, string $cwd = NULL [, array $env = NULL [, array $other_options = NULL ]]] ) : resource",
         "Code Injection",
-        "medium",
+        "high",
         "sink"
     ],
     "pcntl_exec()": [
@@ -538,28 +538,28 @@ exploitableFunctionsDesc = {
         "$_POST reference found",
         "",
         "",
-        "critical",
+        "high",
         "source"
     ],
     "$_GET": [
         "$_GET reference found",
         "",
         "",
-        "critical",
+        "high",
         "source"
     ],
     "$_REQUEST": [
         "$_REQUEST reference found",
         "",
         "",
-        "critical",
+        "high",
         "source"
     ],
     "$_COOKIES": [
         "$_COOKIES reference found",
         "",
         "",
-        "critical",
+        "high",
         "source"
     ]
 }
