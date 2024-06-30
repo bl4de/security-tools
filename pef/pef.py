@@ -171,7 +171,7 @@ class PefEngine:
     implements pef engine
     """
 
-    def __init__(self, level, source_or_sink, filename, skip_vendor, phpfunction):
+    def __init__(self, level, source_or_sink, filename, skip_vendor, phpfunction, verbose):
         """
         constructor
         """
@@ -180,7 +180,7 @@ class PefEngine:
         self.filename = filename  # name of file/folder to scan
         self.skip_vendor = skip_vendor
         self.phpfunction = '' if phpfunction is None else phpfunction
-
+        self.verbose = verbose
         self.scanned_files = 0  # number of scanned files in total
         self.found_entries = 0  # total number of findings
 
@@ -214,7 +214,7 @@ class PefEngine:
                     f.name, l, i, fn + (')' if '(' in fn else ''), self.severity, self.level, self.source_or_sink)
         return res
 
-    def print_code_line(self, file_name, _line, i, fn, severity="", level='ALL', source_or_sink='ALL'):
+    def print_code_line(self, file_name, _line, i, fn, severity="", level='ALL', source_or_sink='ALL', verbose=False):
         """
         prints formatted code line
         """
@@ -244,6 +244,8 @@ class PefEngine:
                                                          beautyConsole.getColor(impact_color[impact]),
                                                          _line.strip()[:255],
                                                          beautyConsole.getColor("grey")))
+                        if self.verbose:
+                            print(f"\t{doc[1]}\n\t{doc[0]}\n")
                 found += 1
             if impact not in severity.keys():
                 severity[impact] = 1
@@ -330,6 +332,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "-s", "--skip-vendor", help="exclude ./vendor folder", action="store_true")
     parser.add_argument(
+        "-v", "--verbose", help="show documentation", action="store_true")
+    parser.add_argument(
         "-l", "--level", help="severity level: ALL, LOW, MEDIUM, HIGH or CRITICAL; default: ALL")
     parser.add_argument(
         "-S", "--source", help="show only sources", action="store_true")
@@ -360,5 +364,5 @@ if __name__ == "__main__":
 
     # main orutine starts here
     engine = PefEngine(level, source_or_sink,
-                       filename, args.skip_vendor, args.function)
+                       filename, args.skip_vendor, args.function, args.verbose)
     engine.run()
