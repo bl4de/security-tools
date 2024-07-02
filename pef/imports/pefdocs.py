@@ -479,9 +479,37 @@ exploitableFunctionsDesc = {
         "medium",
         "sink"
     ],
+    "__serialize()": [
+        "checks if the class has a function with the magic name __serialize(). If so, that function is executed prior to any serialization. It must construct and return an associative array of key/value pairs that represent the serialized form of the object. If no array is returned a TypeError will be thrown.",
+        "public __sleep ( void ) : array",
+        "Object Injection; RCE via unserialize() + POP gadget chain",
+        "medium",
+        "sink"
+    ],
+    "__unserialize()": [
+        "checks for the presence of a function with the magic name __unserialize(). If present, this function will be passed the restored array that was returned from __serialize(). It may then restore the properties of the object from that array as appropriate.",
+        "public __sleep ( void ) : array",
+        "Object Injection; RCE via unserialize() + POP gadget chain",
+        "medium",
+        "sink"
+    ],
     "__call()": [
         "Triggered when invoking inaccessible methods in an object context",
         "public __call ( string $name , array $arguments ) : mixed",
+        "Object Injection; RCE via unserialize() + POP gadget chain",
+        "medium",
+        "sink"
+    ],
+    "__get()": [
+        "Is utilized for reading data from inaccessible (protected or private) or non-existing properties.",
+        "public __get ( string $name ) : mixed",
+        "Object Injection; RCE via unserialize() + POP gadget chain",
+        "medium",
+        "sink"
+    ],
+    "__set()": [
+        "Is run when writing data to inaccessible (protected or private) or non-existing properties.",
+        "public __set ( string $name, mixed $value ) : void",
         "Object Injection; RCE via unserialize() + POP gadget chain",
         "medium",
         "sink"
