@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # pylint: disable=invalid-name
 """
 @TODO
 - results summary
 """
-
 
 """
 --- dENUMerator ---
@@ -20,14 +19,15 @@ usage:
 $ ./denumerator.py [domain_list_file]
 """
 
-
 import argparse
+import json
 import os
 import subprocess
 import time
-import requests
-import json
 from datetime import datetime
+
+import requests
+
 welcome = """
 --- dENUMerator ---
 usage:
@@ -288,8 +288,8 @@ def append_to_output(html_output, url, http_status_code, response_headers, nmap_
             b"\n") if port.find(b"open") > 0]
         for port in open_ports:
             nmap_html = nmap_html + \
-                "<p style='font-weight: bold;'>{}</p>".format(
-                    port.decode("utf-8"))
+                        "<p style='font-weight: bold;'>{}</p>".format(
+                            port.decode("utf-8"))
     nmap_html = nmap_html + "</div>"
 
     # HTTP response headers
@@ -331,13 +331,13 @@ def append_to_output(html_output, url, http_status_code, response_headers, nmap_
             </td>
         </tr>
     """.format(
-        (http_status_code//100),
+        (http_status_code // 100),
         http_status_code_color,
         element_class_name,
         http_status_code,
         url,
         url,
-        (http_status_code//100),
+        (http_status_code // 100),
         element_class_name,
         screenshot_name,
         screenshot_name,
@@ -392,7 +392,8 @@ def send_request(proto, domain, output_file, html_output, allowed_http_responses
     return resp.status_code
 
 
-def enumerate_domains(domains, output_file, html_output, allowed_http_responses, nmap_top_ports, output_directory, show=False):
+def enumerate_domains(domains, output_file, html_output, allowed_http_responses, nmap_top_ports, output_directory,
+                      show=False):
     """
     enumerates domain from domains
     """
@@ -414,7 +415,8 @@ def enumerate_domains(domains, output_file, html_output, allowed_http_responses,
                 nmap_output = subprocess.run(
                     ["nmap", "--top-ports", str(nmap_top_ports), "-n", d], capture_output=True)
                 print('{}  nmap: '.format(colors['grey']), [port.decode("utf-8")
-                                                            for port in nmap_output.stdout.split(b"\n") if port.find(b"open") > 0], '{}'.format(colors['white']))
+                                                            for port in nmap_output.stdout.split(b"\n") if
+                                                            port.find(b"open") > 0], '{}'.format(colors['white']))
 
             send_request('http', d, output_file,
                          html_output, allowed_http_responses, nmap_output, ip, output_directory)
@@ -473,14 +475,14 @@ def enumerate_from_crt_sh(domain):
 
 
 def main():
-
     parser = argparse.ArgumentParser()
     allowed_http_responses = []
 
     parser.add_argument(
         "-f", "--file", help="File with list of hostnames to check (-t/--target will be ignored)")
     parser.add_argument(
-        "-t", "--target", help="Target domain - will use crt.sh to perform subdomain enumeration (-f/--file will be ignored)")
+        "-t", "--target",
+        help="Target domain - will use crt.sh to perform subdomain enumeration (-f/--file will be ignored)")
     parser.add_argument(
         "-s", "--success", help="Show all responses, including exceptions", action='store_true')
     parser.add_argument(
@@ -488,10 +490,12 @@ def main():
     parser.add_argument(
         "-d", "--dir", help="Output directory name (default: report/)")
     parser.add_argument(
-        "-c", "--code", help="Show only selected HTTP response status codes, comma separated", default='200,206,301,302,403,422,500'
+        "-c", "--code", help="Show only selected HTTP response status codes, comma separated",
+        default='200,206,301,302,403,422,500'
     )
     parser.add_argument(
-        "-n", "--nmap", help="use nmap for port scanning (slows down the whole enumeration A LOT, so be warned!)", action='store_true'
+        "-n", "--nmap", help="use nmap for port scanning (slows down the whole enumeration A LOT, so be warned!)",
+        action='store_true'
     )
     parser.add_argument(
         "-p", "--ports", help="--top-ports option for nmap (default = 100)", default=100
