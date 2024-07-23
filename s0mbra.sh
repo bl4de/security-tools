@@ -299,7 +299,7 @@ peek() {
     echo -e "$GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
     echo -e "$GRAY httpx found \t\t\t $YELLOW $(echo `wc -l $TMPDIR/httpx.log` | cut -d" " -f 1) $GRAY active web servers $GREEN"
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
-    osascript -e 'display notification "peek finished, choomba!" with title "s0mbra says:"'
+    osascript -e 'display notification "Hey choomba, peek finished!" with title "s0mbra says:"'
 }
 
 # does recon on URL: nmap, ffuf, other smaller tools, ...?
