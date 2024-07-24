@@ -32,10 +32,10 @@
 # - repeat until the source
 #
 
-import sys
+import argparse
 import os
 import re
-import argparse
+import sys
 
 from imports import pefdocs
 from imports.beautyConsole import beautyConsole
@@ -200,6 +200,7 @@ class PefEngine:
         if occurence found, output is printed
         """
         res = None
+        number_of_isses = 0
         # there has to be space before function call; prevents from false-positives strings contains PHP function names
         atfn = f"@{fn}"
         fn = f"{fn}"
@@ -211,8 +212,10 @@ class PefEngine:
                     f.name, l, i, fn, self.severity, self.level, self.source_or_sink)
             else:
                 res = self.print_code_line(
-                    f.name, l, i, fn + (')' if '(' in fn else ''), self.severity, self.level, self.source_or_sink)
-        return res
+                    f.name, l, i, fn + (')' if '(' in fn else ''), self.severity, self.level,
+                    self.source_or_sink)
+            number_of_isses = number_of_isses + 1 if res is not None else number_of_isses
+        return number_of_isses
 
     def print_code_line(self, file_name, _line, i, fn, severity="", level='ALL', source_or_sink='ALL', verbose=False):
         """
@@ -251,7 +254,7 @@ class PefEngine:
                 severity[impact] = 1
             else:
                 severity[impact] = severity[impact] + 1
-            return found > 0
+            return found
 
     def main(self, src):
         """
@@ -268,9 +271,10 @@ class PefEngine:
             if self.level:
                 if not self.is_comment(line):
                     for fn in exploitableFunctions:
-                        if self.analyse_line(l, i, fn, f, line) == True:
+                        number_of_issues = self.analyse_line(l, i, fn, f, line)
+                        if number_of_issues > 0:
                             res = True
-                            file_found += 1
+                            file_found += number_of_issues
         return (res, file_found)  # return how many findings in current file
 
     def run(self):
@@ -299,7 +303,7 @@ class PefEngine:
                             total_found += file_found
         else:
             self.scanned_files = self.scanned_files + 1
-            (res, self.found_entries) = self.main(self.filename)
+            (res, total_found) = self.main(self.filename)
         # print summary
         self.print_summary(total_found)
 
@@ -315,8 +319,8 @@ class PefEngine:
         prints summary at the bottom of search results
         """
         print(f"{beautyConsole.getColor('white')}Total issues found: {total_found}")
-        print(
-            f"\n{beautyConsole.getColor('grey')}Cmd arguments: {' '.join(sys.argv[1:])}\n")
+        print(f"\n{beautyConsole.getColor('grey')}Cmd arguments: {' '.join(sys.argv[1:])}")
+        print(f"{beautyConsole.getColor('grey')}Level: {self.level}\n")
 
 
 # main program
@@ -336,9 +340,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "-l", "--level", help="severity level: ALL, LOW, MEDIUM, HIGH or CRITICAL; default: ALL")
     parser.add_argument(
-        "-S", "--source", help="show only sources", action="store_true")
+        "-S", "--sources", help="show only sources", action="store_true")
     parser.add_argument(
-        "-K", "--sink", help="show only sinks", action="store_true")
+        "-K", "--sinks", help="show only sinks", action="store_true")
     parser.add_argument(
         "-f",
         "--function",
@@ -352,12 +356,12 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    level = args.level.upper() if args.level else 'ALL'
+    level = args.level.upper() if args.level else 'MEDIUM,HIGH,CRITICAL'
     source_or_sink = 'ALL'
 
-    if args.source:
+    if args.sources:
         source_or_sink = 'source'
-    if args.sink:
+    if args.sinks:
         source_or_sink = 'sink'
 
     filename = args.dir
