@@ -199,8 +199,8 @@ class PefEngine:
 
         if occurence found, output is printed
         """
-        res = None
-        number_of_isses = 0
+        total_number_of_isses = None
+        meets_criteria = 0
         # there has to be space before function call; prevents from false-positives strings contains PHP function names
         atfn = f"@{fn}"
         fn = f"{fn}"
@@ -208,16 +208,16 @@ class PefEngine:
         # @ prevents from output being echoed
         if fn in line or atfn in line:
             if fn == "`":
-                res = self.print_code_line(
+                total_number_of_isses = self.print_code_line(
                     f.name, l, i, fn, self.severity, self.level, self.source_or_sink)
             else:
-                res = self.print_code_line(
+                total_number_of_isses = self.print_code_line(
                     f.name, l, i, fn + (')' if '(' in fn else ''), self.severity, self.level,
                     self.source_or_sink)
-            number_of_isses = number_of_isses + 1 if res is not None else number_of_isses
-        return number_of_isses
+            meets_criteria = meets_criteria + 1 if total_number_of_isses is not None else meets_criteria
+        return (meets_criteria, total_number_of_isses)
 
-    def print_code_line(self, file_name, _line, i, fn, severity="", level='ALL', source_or_sink='ALL', verbose=False):
+    def print_code_line(self, file_name, _line, i, fn, severity="", level='ALL', source_or_sink='ALL'):
         """
         prints formatted code line
         """
@@ -228,7 +228,7 @@ class PefEngine:
             "critical": "red"
         }
 
-        found = 0
+        meets_criteria = 0
         # print legend only if there i sentry in pefdocs.py
 
         if fn and fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
@@ -249,12 +249,12 @@ class PefEngine:
                                                          beautyConsole.getColor("grey")))
                         if self.verbose:
                             print(f"\t{doc[1]}\n\t{doc[0]}\n")
-                found += 1
+                        meets_criteria += 1
             if impact not in severity.keys():
                 severity[impact] = 1
             else:
                 severity[impact] = severity[impact] + 1
-            return found
+            return meets_criteria
 
     def main(self, src):
         """
@@ -271,8 +271,8 @@ class PefEngine:
             if self.level:
                 if not self.is_comment(line):
                     for fn in exploitableFunctions:
-                        number_of_issues = self.analyse_line(l, i, fn, f, line)
-                        if number_of_issues > 0:
+                        (meets_criteria, number_of_issues) = self.analyse_line(l, i, fn, f, line)
+                        if number_of_issues is not None:
                             res = True
                             file_found += number_of_issues
         return (res, file_found)  # return how many findings in current file
@@ -291,16 +291,14 @@ class PefEngine:
             for root, _, files in os.walk(self.filename):
                 if self.skip_vendor is True and "vendor" in root:
                     continue
-                prev_filename = ""
                 for f in files:
                     extension = f.split('.')[-1:][0]
                     if extension in ['php', 'inc', 'php3', 'php4', 'php5', 'phtml']:
                         self.scanned_files = self.scanned_files + 1
                         (res, file_found) = self.main(os.path.join(root, f))
-                        if self.phpfunction == '' and res is not None and f != prev_filename:
+                        if file_found > 0:
                             print(f">>> {f} <<<\t{'-' * (115 - len(f))}\n\n")
-                            prev_filename = f
-                            total_found += file_found
+                        total_found += file_found
         else:
             self.scanned_files = self.scanned_files + 1
             (res, total_found) = self.main(self.filename)
@@ -318,7 +316,7 @@ class PefEngine:
         """
         prints summary at the bottom of search results
         """
-        print(f"{beautyConsole.getColor('white')}Total issues found: {total_found}")
+        print(f"{beautyConsole.getColor('white')}Issues found: {total_found}")
         print(f"\n{beautyConsole.getColor('grey')}Cmd arguments: {' '.join(sys.argv[1:])}")
         print(f"{beautyConsole.getColor('grey')}Level: {self.level}\n")
 
@@ -338,7 +336,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "-v", "--verbose", help="show documentation", action="store_true")
     parser.add_argument(
-        "-l", "--level", help="severity level: ALL, LOW, MEDIUM, HIGH or CRITICAL; default: ALL")
+        "-l", "--level",
+        help="severity: ALL, LOW, MEDIUM, HIGH or CRITICAL; default: ALL\nif -f is set, this setting is ignored")
     parser.add_argument(
         "-S", "--sources", help="show only sources", action="store_true")
     parser.add_argument(
@@ -357,6 +356,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     level = args.level.upper() if args.level else 'MEDIUM,HIGH,CRITICAL'
+
+    # if we are looking for a specific function, level is not taken into account
+    if args.function is not None:
+        level = 'ALL'
     source_or_sink = 'ALL'
 
     if args.sources:
