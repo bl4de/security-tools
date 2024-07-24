@@ -50,7 +50,7 @@ quick_nmap_scan() {
 }
 
 # runs Python 3 built-in HTTP server on [PORT]
-http() {
+http_server() {
     STACK=$2
     echo -e "$BLUE[s0mbra] Running $STACK HTTP Server in current directory on port $1$CLR"
     echo -e "$GRAY\navailable network interfaces:$YELLOW"
@@ -78,37 +78,37 @@ http() {
 # runs john with rockyou.txt against hash type [FORMAT] and file [HASHES]
 rockyou_john() {
     echo -e "$BLUE[s0mbra] Running john with rockyou dictionary against $1 of type $2$CLR"
-    echo > "$HACKING_HOME"/tools/jtr/run/john.pot
+    echo > "$HACKING_HOME"/tools/JohnTheRipper/run/john.pot
     if [[ -n $2 ]]; then
-        "$HACKING_HOME"/tools/jtr/run/john --wordlist="$HACKING_HOME"/dictionaries/rockyou.txt --format="$2" "$1" 
+        "$HACKING_HOME"/tools/JohnTheRipper/run/john --wordlist="$HACKING_HOME"/dictionaries/rockyou.txt --format="$2" "$1" 
         elif [[ -z $2 ]]; then
-        "$HACKING_HOME"/tools/jtr/run/john --wordlist="$HACKING_HOME"/dictionaries/rockyou.txt "$1"
+        "$HACKING_HOME"/tools/JohnTheRipper/run/john --wordlist="$HACKING_HOME"/dictionaries/rockyou.txt "$1"
     fi
-    cat "$HACKING_HOME"/tools/jtr/run/john.pot
+    cat "$HACKING_HOME"/tools/JohnTheRipper/run/john.pot
     echo -e "\n$BLUE[s0mbra] Done."
     osascript -e 'display notification "our choom John has left the house..." with title "s0mbra says:"'
 }
 
-# show JTR's pot file
+# show JohnTheRipper's pot file
 john_pot() {
     echo -e "$BLUE[s0mbra] Joghn The Ripper pot file:$GRAY"
-    cat "$HACKING_HOME"/tools/jtr/run/john.pot
+    cat "$HACKING_HOME"/tools/JohnTheRipper/run/john.pot
     echo -e "\n$BLUE[s0mbra] Done."
 }
 
 # ZIP password cracking with rockyou.txt
 rockyou_zip() {
     echo -e "$BLUE[s0mbra] Running $MAGENTA zip2john $BLUE and prepare hash for hashcat..."
-    "$HACKING_HOME"/tools/jtr/run/zip2john "$1" | cut -d ':' -f 2 > ./hashes.txt
+    "$HACKING_HOME"/tools/JohnTheRipper/run/zip2john "$1" | cut -d ':' -f 2 > ./hashes.txt
     echo -e "$BLUE[s0mbra] Starting $MAGENTA hashcat $BLUE (using $YELLOW rockyou.txt $BLUE dictionary against $YELLOW hashes.txt $BLUE file)...$CLR"
     hashcat -m 13600 ./hashes.txt ~/hacking/dictionaries/rockyou.txt
     echo -e "\n$BLUE[s0mbra] Done."
 }
 
-# converts id_rsa to JTR format for cracking SSH key
+# converts id_rsa to JohnTheRipper format for cracking SSH key
 ssh_to_john() {
-    echo -e "$BLUE[s0mbra] Converting SSH id_rsa key to JTR format to crack it$CLR"
-    python "$HACKING_HOME"/tools/jtr/run/sshng2john.py "$1" > "$1".hash
+    echo -e "$BLUE[s0mbra] Converting SSH id_rsa key to JohnTheRipper format to crack it$CLR"
+    python "$HACKING_HOME"/tools/JohnTheRipper/run/sshng2john.py "$1" > "$1".hash
     echo -e "$BLUE[s0mbra] We have a hash.\n"
     echo -e "$BLUE[s0mbra] Let's now crack it!"
     rockyou_john "$1".hash
@@ -245,20 +245,6 @@ scope() {
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
 }
 
-# OSINT
-photon() {
-    URL=$1
-    OUTPUT_DIR=$2
-    TMPDIR=$(pwd)/photon/$OUTPUT_DIR
-    if [[ ! -d $TMPDIR ]]; then
-        mkdir -p $TMPDIR
-    fi
-    echo -e "$BLUE[s0mbra] Let's do some OSINT stuff around $URL...$CLR\n"
-    /usr/local/homebrew/bin/python3 /Users/bl4de/hacking/tools/Photon/photon.py -u "$URL" -l 5 -t 10 -o "$TMPDIR"
-    ls -lRA "$TMPDIR"
-    echo -e "\n$BLUE[s0mbra] Done.$CLR"
-}
-
 # quick scope, but for single domain - no need to create scope file
 peek() {
     TMPDIR=$(pwd)/$1
@@ -379,19 +365,6 @@ recon() {
     echo -e "finished at: $RED $END_TIME $GREEN\n"
     
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
-}
-
-# runs GET parameter(s) discovery
-_arjun() {
-    clear
-    if [[ -z $2 ]]; then
-        SELECTED_DICT=/Users/bl4de/hacking/dictionaries/urlparams_medium.txt
-    else
-        SELECTED_DICT="$2"
-    fi
-    echo -e "$BLUE[s0mbra] Trying to discover GET params on $1 using $SELECTED_DICT...$GRAY"
-    arjun -u "$1" -w $SELECTED_DICT
-    echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
 fu() {
@@ -779,12 +752,6 @@ case "$cmd" in
     peek)
         peek "$2"
     ;;
-    photon)
-        photon "$2" "$3"
-    ;;
-    arjun)
-        _arjun "$2" "$3"
-    ;;
     recon)
         recon "$2" "$3" "$4"
     ;;
@@ -800,8 +767,8 @@ case "$cmd" in
     quick_nmap_scan)
         quick_nmap_scan "$2" "$3"
     ;;
-    http)
-        http "$2" "$3"
+    http_server)
+        http_server "$2" "$3"
     ;;
     rockyou_john)
         rockyou_john "$2" "$3"
@@ -909,26 +876,26 @@ case "$cmd" in
         clear
         echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN scope $GRAY[SCOPE_FILE]$CLR\t\t\t\t$CYAN recon $GRAY[HOST] [OPTIONS:nmap,nikto,vhosts,ffuf,subdomanizer] [PROTO http/https]$CLR"
-        echo -e "$CYAN peek $GRAY[DOMAIN]$CLR\t\t\t\t\t$CYAN photon $GRAY[HOST] [OUTPUT_DIR]$CLR"
+        echo -e "$CYAN peek $GRAY[DOMAIN]$CLR"
 
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT,/ or -] [HTTP RESP.]$CLR\t$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(REST)$CLR"
         echo -e "$CYAN graphw00f $GRAY[HOST]$CLR\t\t$YELLOW(GraphQl)$CLR\t$CYAN gql $GRAY[TARGET_URL]$CLR\t\t$YELLOW(GraphQL)$CLR"
-        echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(REST)$CRL\t\t$CYAN arjun $GRAY[HOST] [DICT]$CLR"
+        echo -e "$CYAN kiterunner $GRAY[HOST] (*apis)$CLR\t$YELLOW(REST)$CRL"
         echo -e "$BLUE_BG:: CLOUD ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN discloS3 $GRAY[URL]$CLR\t\t\t$YELLOW(AWS)$CLR\t\t$CYAN s3 $GRAY[BUCKET]$CLR\t\t\t$YELLOW(AWS)$CLR"
         echo -e "$CYAN s3get $GRAY[BUCKET] [key]$CLR\t\t$YELLOW(AWS)$CLR\t\t$CYAN s3ls $GRAY[BUCKET] [folder]$CLR\t\t$YELLOW(AWS)$CLR"
 
         echo -e "$BLUE_BG:: PENTEST TOOLS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN quick_nmap_scan $GRAY[IP] [*PORTS]\t$LIGHTGREEN(nmap)$CLR\t\t$CYAN full_nmap_scan $GRAY[IP] [*PORTS]\t$LIGHTGREEN(nmap)$CLR"
-        echo -e "$CYAN http $GRAY[PORT] [STACK]$CLR\t\t\t\t$CYAN shells $GRAY[IP] [PORT] $CLR"
+        echo -e "$CYAN http_server $GRAY[PORT] [STACK]$CLR\t\t\t$CYAN shells $GRAY[IP] [PORT] $CLR"
         echo -e "$CYAN nfs_enum $GRAY[IP]$CLR\t\t\t\t\t$CYAN smb_enum $GRAY[IP] [USER] [PASSWORD]$CLR"
         echo -e "$CYAN smb_get_file $GRAY[IP] [PATH] [user] [*password] $CLR\t$CYAN smb_mount $GRAY[IP] [SHARE] [USER]$CLR"
         echo -e "$CYAN smb_umount $CLR"
         
         echo -e "$BLUE_BG:: PASSWORDS CRACKIN' ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN rockyou_john $GRAY[HASHES] [FORMAT]$CLR\t\t\t$CYAN ssh_to_john $GRAY[ID_RSA]$CLR"
-        echo -e "$CYAN rockyou_zip $GRAY[ZIP file]$CLR\t\t\t\t$CYAN john_pot$CLR"
+        echo -e "$CYAN rockyou_john $GRAY[HASHES] [FORMAT]\t$LIGHTGREEN(JohnTheRipper)$CLR\t$CYAN ssh_to_john $GRAY[ID_RSA]\t\t$LIGHTGREEN(JohnTheRipper)$CLR"
+        echo -e "$CYAN rockyou_zip $GRAY[ZIP file]\t\t$LIGHTGREEN(JohnTheRipper)$CLR\t$CYAN john_pot\t\t\t$LIGHTGREEN(JohnTheRipper)$CLR"
         
         echo -e "$BLUE_BG:: STATIC CODE ANALYSIS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN unmin $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR"
