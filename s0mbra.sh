@@ -746,6 +746,13 @@ hshr() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# extract links and API endpoints from JavaScript file
+links() {
+    echo -e "$BLUE[s0mbra] Extracting links and API endpoints from $1...$CLR"
+    python /Users/bl4de/hacking/tools/LinkFinder/linkfinder.py -i $1 -o cli
+    echo -e "$BLUE\n[s0mbra] Done! $CLR"
+}
+
 ### menu
 cmd=$1
 
@@ -876,6 +883,9 @@ case "$cmd" in
     rubysast)
         ruby_sast "$2"
     ;;
+    links)
+        links "$2"
+    ;;
     *)
         clear
         echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
@@ -905,7 +915,7 @@ case "$cmd" in
         echo -e "$CYAN unmin $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR"
         echo -e "$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR\t$CYAN phpsast $GRAY[DIR]\t\t\t$YELLOW(PHP)$CLR"
         echo -e "$CYAN rubysast $GRAY[DIR]\t\t\t$YELLOW(Ruby)$CLR\t\t$CYAN disass $GRAY[BINARY]\t\t$YELLOW(asm)$CLR"
-        echo -e "$CYAN unjar $GRAY[.jar FILE]\t\t$YELLOW(Java)$CLR"
+        echo -e "$CYAN unjar $GRAY[.jar FILE]\t\t$YELLOW(Java)$CLR\t\t$CYAN links $GRAY[FILE|DIR|URL]\t\t$YELLOW(JavaScript)$CLR"
         echo -e "$BLUE_BG:: ANDROID ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN jadx $GRAY[.apk FILE]\t\t$YELLOW(Java)$CLR\t\t$CYAN dex_to_jar $GRAY[.dex file]$CLR\t\t$YELLOW(Java)$CLR"
         echo -e "$CYAN apk $GRAY[.apk FILE]$CLR\t\t$YELLOW(Java)$CLR\t\t$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t$YELLOW(Java)$CLR"
