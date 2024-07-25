@@ -201,20 +201,22 @@ class PefEngine:
         """
         total_number_of_isses = None
         meets_criteria = 0
-        # there has to be space before function call; prevents from false-positives strings contains PHP function names
+        tokens = [token for token in line.split(' ') if token is not '\n']
+
+        # check agains @ at the beginning of the function name
         atfn = f"@{fn}"
         fn = f"{fn}"
-        # also, it has to checked agains @ at the beginning of the function name
-        # @ prevents from output being echoed
-        if fn in line or atfn in line:
-            if fn == "`":
-                total_number_of_isses = self.print_code_line(
-                    f.name, l, i, fn, self.severity, self.level, self.source_or_sink)
-            else:
-                total_number_of_isses = self.print_code_line(
-                    f.name, l, i, fn + (')' if '(' in fn else ''), self.severity, self.level,
-                    self.source_or_sink)
-            meets_criteria = meets_criteria + 1 if total_number_of_isses is not None else meets_criteria
+
+        for token in tokens:
+            if token.startswith(fn) or token.startswith(atfn):
+                if fn == "`":
+                    total_number_of_isses = self.print_code_line(
+                        f.name, l, i, fn, self.severity, self.level, self.source_or_sink)
+                else:
+                    total_number_of_isses = self.print_code_line(
+                        f.name, l, i, fn + (')' if '(' in fn else ''), self.severity, self.level,
+                        self.source_or_sink)
+                meets_criteria = meets_criteria + 1 if total_number_of_isses is not None else meets_criteria
         return (meets_criteria, total_number_of_isses)
 
     def print_code_line(self, file_name, _line, i, fn, severity="", level='ALL', source_or_sink='ALL'):
