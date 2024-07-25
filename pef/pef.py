@@ -201,7 +201,7 @@ class PefEngine:
         """
         total_number_of_isses = None
         meets_criteria = 0
-        tokens = [token for token in line.split(' ') if token is not '\n']
+        tokens = [token for token in line.split(' ') if token != "\n"]
 
         # check agains @ at the beginning of the function name
         atfn = f"@{fn}"
