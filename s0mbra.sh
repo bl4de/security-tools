@@ -208,43 +208,6 @@ nfs_enum() {
     echo -e "\n$BLUE[s0mbra] Done."
 }
 
-# quick subdomain enum + available HTTP server(s) - to find out if a program is 
-# actually worth to look into :D
-scope() {
-    TMPDIR=$(pwd)
-    START_TIME=$(date)
-    echo -e "$BLUE[s0mbra] Let's see what we've got here...$CLR\n"
-
-    # sublister
-    echo -e "\n$GREEN--> sublister$CLR\n"
-    for domain in $(cat scope); do
-        sublister -v -d $domain -o "$TMPDIR/sublister_$domain.log"
-    done
-    
-    # subfinder
-    echo -e "\n$GREEN--> subfinder$CLR\n"
-    subfinder -nW -all -v -dL $1 -o $TMPDIR/subfinder.log
-
-    # prepare list of uniqe subdomains
-    cat sub* > step1
-    sed 's/<BR>/#/g' step1 | tr '#' '\n' > step2
-    sort -u -k 1 step2 > subdomains_final.log
-    rm -f step*
-
-    # httpx
-    echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -ip -cname -cdn -rl 20 -exclude-cdn -l $TMPDIR/subdomains_final.log -o $TMPDIR/httpx.log
-
-    END_TIME=$(date)
-    echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
-    echo -e "finished at: $RED $END_TIME $GREEN\n"
-    echo -e "  $GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
-    echo -e "  $GRAY httpx found \t\t $YELLOW $(echo `wc -l $TMPDIR/httpx.log` | cut -d" " -f 1) $GRAY active web servers $GREEN"
-    echo -e "  $GRAY HTTP servers responding 200 OK: $CLR\n"
-    grep 200 $TMPDIR/httpx.log
-    echo -e "\n$BLUE[s0mbra] Done.$CLR"
-}
-
 # quick scope, but for single domain - no need to create scope file
 peek() {
     TMPDIR=$(pwd)/$1
@@ -746,9 +709,6 @@ case "$cmd" in
     set_ip)
         set_ip "$2"
     ;;
-    scope)
-        scope "$2"
-    ;;
     peek)
         peek "$2"
     ;;
@@ -875,8 +835,7 @@ case "$cmd" in
     *)
         clear
         echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
-        echo -e "$CYAN scope $GRAY[SCOPE_FILE]$CLR\t\t\t\t$CYAN recon $GRAY[HOST] [OPTIONS:nmap,nikto,vhosts,ffuf,subdomanizer] [PROTO http/https]$CLR"
-        echo -e "$CYAN peek $GRAY[DOMAIN]$CLR"
+        echo -e "$CYAN peek $GRAY[DOMAIN]$CLR\t\t\t\t\t$CYAN recon $GRAY[HOST] [OPTIONS:nmap,nikto,vhosts,ffuf,subdomanizer] [PROTO http/https]$CLR"
 
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT,/ or -] [HTTP RESP.]$CLR\t$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(REST)$CLR"
