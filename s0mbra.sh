@@ -234,7 +234,7 @@ peek() {
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -silent -status-code -web-server -tech-detect -ip -cname -cdn -l $TMPDIR/subdomains_final.log -o $TMPDIR/httpx.log
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -fcdn cloudfront -v -stats -status-code -web-server -tech-detect -mc 200 -ip -cname -cdn -l $TMPDIR/subdomains_final.log -o $TMPDIR/httpx.log
 
     # cleanup
     echo -e "\n$BLUE[s0mbra] Remove temporary files...\n"
