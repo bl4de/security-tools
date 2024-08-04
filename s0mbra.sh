@@ -251,6 +251,26 @@ peek() {
     osascript -e 'display notification "Hey choom, peek finished!" with title "s0mbra says:"'
 }
 
+
+# httpx only list
+webservers() {
+    START_TIME=$(date)
+    # httpx
+    echo -e "\n$GREEN--> httpx$CLR\n"
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -fcdn cloudfront -v -stats -status-code -web-server -tech-detect -mc 200 -ip -cname -cdn -l subdomains_final.log -o httpx.log
+
+    # cleanup
+    echo -e "\n$BLUE[s0mbra] Remove temporary files...\n"
+    rm -rf httpx*
+
+    END_TIME=$(date)
+    echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
+    echo -e "finished at: $RED $END_TIME $GREEN\n"
+    echo -e "$GRAY httpx found \t\t\t $YELLOW $(echo `wc -l $TMPDIR/httpx.log` | cut -d" " -f 1) $GRAY 200 OKs web servers $GREEN"
+    echo -e "\n$BLUE[s0mbra] Done.$CLR"
+    osascript -e 'display notification "Hey choom, we have some webservers to hack!" with title "s0mbra says:"'
+}
+
 # does recon on URL: nmap, ffuf, other smaller tools, ...?
 # pass ONLY hostname (without protocol prefix)
 recon() {
@@ -712,6 +732,9 @@ case "$cmd" in
     peek)
         peek "$2"
     ;;
+    webservers)
+        webservers
+    ;;
     recon)
         recon "$2" "$3" "$4"
     ;;
@@ -836,6 +859,7 @@ case "$cmd" in
         clear
         echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN peek $GRAY[DOMAIN]$CLR\t\t\t\t\t$CYAN recon $GRAY[HOST] [OPTIONS:nmap,nikto,vhosts,ffuf,subdomanizer] [PROTO http/https]$CLR"
+        echo -e "$CYAN webservers $GRAY(uses subdomains_final.log in cwd)$CLR"
 
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT,/ or -] [HTTP RESP.]$CLR\t$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(REST)$CLR"
