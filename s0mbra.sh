@@ -587,14 +587,6 @@ graphw00f() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
-# runs PHP SAST tools against PHP application
-php_sast() {
-    clear
-    echo -e "$BLUE[s0mbra] Running static code analysis...$CYAN"
-    semgrep scan --config=auto --severity ERROR --dataflow-traces --sarif -o ./$1.sarif $1
-    echo -e "$BLUE\n[s0mbra] Done! $CLR"
-}
-
 # runs Ruby SAST tools against Ruby application
 ruby_sast() {
     clear
@@ -772,9 +764,6 @@ case "$cmd" in
     snyktest)
         snyktest
     ;;
-    phpsast)
-        php_sast "$2"
-    ;;
     gql)
         gql "$2"
     ;;
@@ -883,7 +872,7 @@ case "$cmd" in
         
         echo -e "$BLUE_BG:: STATIC CODE ANALYSIS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN unmin $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR"
-        echo -e "$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR\t$CYAN phpsast $GRAY[DIR]\t\t\t$YELLOW(PHP)$CLR"
+        echo -e "$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR"
         echo -e "$CYAN rubysast $GRAY[DIR]\t\t\t$YELLOW(Ruby)$CLR\t\t$CYAN disass $GRAY[BINARY]\t\t$YELLOW(asm)$CLR"
         echo -e "$CYAN unjar $GRAY[.jar FILE]\t\t$YELLOW(Java)$CLR\t\t$CYAN urls $GRAY[FILE|DIR|URL]\t\t$YELLOW(JavaScript)$CLR"
         echo -e "$CYAN secrets $GRAY[FILE|DIR|URL]\t\t$YELLOW(JavaScript)$CLR\t$CYAN endpoints $GRAY[FILE|DIR|URL]\t$YELLOW(JavaScript)$CLR"
