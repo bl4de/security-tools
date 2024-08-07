@@ -1,9 +1,10 @@
-from bs4 import BeautifulSoup
-import requests
-import requests.exceptions
+import re
 import urllib.parse
 from collections import deque
-import re
+
+import requests
+import requests.exceptions
+from bs4 import BeautifulSoup
 
 '''
 Vi.py - an automated script to extract all inteersting information from website
@@ -19,9 +20,6 @@ Vi.py - an automated script to extract all inteersting information from website
 - parse HTML for stuff
 - harvest useful information from any comment found (in HTML and JS alike)
 - other? (TBA)
-
-- add as a submodule (enabled by cmd option) to denumerator.py 
-  and perform full recon of every website found in scope
 '''
 
 
@@ -92,7 +90,7 @@ def recon(emails: set, javascript_files: set):
             parts = urllib.parse.urlsplit(url)
             base_url = '{0.scheme}://{0.netloc}'.format(parts)
 
-            path = url[:url.rfind('/')+1] if '/' in parts.path else url
+            path = url[:url.rfind('/') + 1] if '/' in parts.path else url
 
             print('[%d] Processing %s' % (count, url))
             try:
@@ -126,7 +124,6 @@ def recon(emails: set, javascript_files: set):
 
 
 if __name__ == "__main__":
-
     emails = set()
     javascript_files = set()
 
