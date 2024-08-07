@@ -1,7 +1,5 @@
 #!/usr/bin/python
-#
-# bl4de | <bloorq@gmail.com> | https://twitter.com/_bl4de
-#
+##
 # diggit - gets .git repository
 import argparse
 import os
@@ -32,29 +30,28 @@ def print_banner():
 def print_object_details(objtype, objcontent, objhash, objfilename):
     """Prints and saves object details/content"""
 
-    print "\n" + term["cyan"] + "#" * 12 + " " + objhash \
-          + " information " + "#" * 12 + term["endl"]
-    print "\n{0}[*] Object type: {3}{2}{1}{3}".format(
-        term["green"], objtype, term["red"], term["endl"])
-
+    print("\n" + term["cyan"] + "#" * 12 + " " + objhash
+          + " information " + "#" * 12 + term["endl"])
+    print("\n{0}[*] Object type: {3}{2}{1}{3}".format(
+        term["green"], objtype, term["red"], term["endl"]))
     if objfilename != "":
         global localgitrepo
         tmpfp = localgitrepo + "/" + objfilename
-        print "{0}[*] Object filename: {3}{2}{1}{3}".format(
-            term["green"], objfilename, term["red"], term["endl"])
-        print "{0}[*] Object saved in {2}:{1}".format(
-            term["green"], term["endl"], tmpfp)
+        print("{0}[*] Object filename: {3}{2}{1}{3}".format(
+            term["green"], objfilename, term["red"], term["endl"]))
+        print("{0}[*] Object saved in {2}:{1}".format(
+            term["green"], term["endl"], tmpfp))
         tmpfile = open(tmpfp, "w")
         tmpfile.write("// diggit.py by @bl4de | {} content\n".format(objhash))
         tmpfile.writelines(objcontent)
         tmpfile.close()
 
-    print "{0}[*] Object content:{1}\n".format(term["green"], term["endl"])
+    print("{0}[*] Object content:{1}\n".format(term["green"], term["endl"]))
     if len(objcontent) < 2048:
-        print "{0}{1}{2}".format(term["yellow"], objcontent, term["endl"])
+        print("{0}{1}{2}".format(term["yellow"], objcontent, term["endl"]))
     else:
-        print "{}[!] file too big to preview - {} kB{}".format(
-            term["red"], len(objcontent)/1024, term["endl"])
+        print("{}[!] file too big to preview - {} kB{}".format(
+            term["red"], len(objcontent)/1024, term["endl"]))
 
 
 def get_object_url(objhash):
@@ -115,7 +112,8 @@ if __name__ == "__main__":
     parser.add_argument('-t',
                         help='path to temporary Git folder on local machine')
     parser.add_argument('-o', help='object hash (SHA-1, all 40 characters)')
-    parser.add_argument('-r', default=False,
+    parser.add_argument('-r',
+                        action="store_true",
                         help='be recursive (if commit or tree hash '
                              'found get all blobs too). Default is \'False\'')
 
@@ -136,4 +134,4 @@ if __name__ == "__main__":
     if baseurl and objecthash:
         print_banner()
         save_git_object(args.u, args.o, berecursive, "")
-        print "\n" + term["cyan"] + "#" * 78 + term["endl"]
+        print("\n" + term["cyan"] + "#" * 78 + term["endl"])
