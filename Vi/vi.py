@@ -119,6 +119,8 @@ def recon(emails: set, javascript_files: set):
 
     for mail in emails:
         print(mail)
+    for url in urls:
+        print(url)
     for js_file in javascript_files:
         print(js_file)
 
