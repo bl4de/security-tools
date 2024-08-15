@@ -847,6 +847,7 @@ case "$cmd" in
     ;;
     *)
         clear
+        echo -e "$CLR"
         echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN peek $GRAY[DOMAIN]$CLR\t\t\t\t\t$CYAN recon $GRAY[HOST] [OPTIONS:nmap,nikto,vhosts,ffuf,subdomanizer] [PROTO http/https]$CLR"
         echo -e "$CYAN webservers $GRAY[SUBDOMAINS FILE]$CLR"
@@ -882,6 +883,7 @@ case "$cmd" in
         echo -e "$CYAN apk_to_studio $GRAY[.apk FILE]$CLR\t$YELLOW(Java)$CLR"
         echo -e "$BLUE_BG:: UTILS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN b64 $GRAY[STRING]$CLR\t\t\t\t\t$CYAN hashme $GRAY[STRING]$CLR"
+        echo -e "$CLR"
         echo -e "$CLR"
     ;;
 esac
