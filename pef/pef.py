@@ -318,7 +318,7 @@ class PefEngine:
         """
         prints summary at the bottom of search results
         """
-        print(f"{beautyConsole.getColor('white')}Issues found: {total_found}")
+        print(f"{beautyConsole.getColor('white')}Patterns found: {total_found}")
         print(f"\n{beautyConsole.getColor('grey')}Cmd arguments: {' '.join(sys.argv[1:])}")
         print(f"{beautyConsole.getColor('grey')}Level: {self.level}\n")
 
