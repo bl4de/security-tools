@@ -299,7 +299,7 @@ class PefEngine:
                         self.scanned_files = self.scanned_files + 1
                         (res, file_found) = self.main(os.path.join(root, f))
                         if file_found > 0:
-                            print(f">>> {f} <<<\t{'-' * (115 - len(f))}\n\n")
+                            print(f">>> {f} <<<\t{'-' * (115 - len(f))}\n")
                         total_found += file_found
         else:
             self.scanned_files = self.scanned_files + 1

@@ -262,7 +262,7 @@ webservers() {
     START_TIME=$(date)
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -fcdn cloudfront -v -stats -status-code -web-server -tech-detect -mc 200 -ip -cname -cdn -l $(pwd)/$SUBDOMAINS -o $(pwd)/httpx.log
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -fcdn cloudfront -v -stats -status-code -web-server -tech-detect -mc 200,403,500 -ip -cname -cdn -l $(pwd)/$SUBDOMAINS -o $(pwd)/httpx.log
 
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
