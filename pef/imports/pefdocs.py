@@ -85,7 +85,7 @@ exploitableFunctionsDesc = {
         "Opens process file pointer. Opens a pipe to a process executed by forking the command given by command.",
         "popen ( string $command , string $mode ) : resource",
         "Code Injection",
-        "high",
+        "critical",
         "sink"
     ],
     "proc_open()": [
@@ -145,7 +145,7 @@ exploitableFunctionsDesc = {
         "Calls the callback given by the first parameter and passes the remaining parameters as arguments.",
         "call_user_func ( callable $callback [, mixed $... ] ) : mixed",
         "Code Injection",
-        "medium",
+        "high",
         "sink"
     ],
     "ereg_replace()": [
@@ -531,7 +531,7 @@ exploitableFunctionsDesc = {
         "Write data to a file",
         "file_put_contents ( string $filename , mixed $data [, int $flags = 0 [, resource $context ]] ) : int",
         "Arbitrary file write",
-        "medium",
+        "high",
         "source"
     ],
     "SELECT.*FROM": [
