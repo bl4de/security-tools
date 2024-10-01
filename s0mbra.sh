@@ -217,11 +217,11 @@ peek() {
     START_TIME=$(date)
     DOMAIN=$1
     echo -e "$BLUE[s0mbra] Let's see what have we got here...$CLR\n"
-
-    # sublister
-    echo -e "\n$GREEN--> sublister$CLR\n"
-    sublister -v -d $DOMAIN -o "$TMPDIR/sublister_$DOMAIN.log"
     
+    ##
+    ## other subdomain enumeration tool(s) goes here...
+    ##
+
     # subfinder
     echo -e "\n$GREEN--> subfinder$CLR\n"
     subfinder -nW -all -v -d $DOMAIN -o $TMPDIR/subfinder.log
@@ -234,18 +234,17 @@ peek() {
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -fcdn cloudfront -v -stats -status-code -web-server -tech-detect -mc 200 -ip -cname -cdn -l $TMPDIR/subdomains_final.log -o $TMPDIR/httpx.log
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -fcdn cloudfront -v -stats -status-code -web-server -tech-detect -mc 200,301,302,403,500 -ip -cname -cdn -l $TMPDIR/subdomains_final.log -o $TMPDIR/httpx.log
 
     # cleanup
     echo -e "\n$BLUE[s0mbra] Remove temporary files...\n"
-    rm -f $TMPDIR/sublister_$DOMAIN.log
     rm -f $TMPDIR/subfinder.log
     rm -rf httpx*
 
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
     echo -e "finished at: $RED $END_TIME $GREEN\n"
-    echo -e "$GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
+    echo -e "$GRAY subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
     echo -e "$GRAY httpx found \t\t\t $YELLOW $(echo `wc -l $TMPDIR/httpx.log` | cut -d" " -f 1) $GRAY active web servers $GREEN"
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
     osascript -e 'display notification "Hey choom, peek finished!" with title "s0mbra says:"'
@@ -262,7 +261,7 @@ webservers() {
     START_TIME=$(date)
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -fcdn cloudfront -v -stats -status-code -web-server -tech-detect -mc 200,403,500 -ip -cname -cdn -l $(pwd)/$SUBDOMAINS -o $(pwd)/httpx.log
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -fcdn cloudfront -v -stats -status-code -web-server -tech-detect -mc 200,301,302,304,403,500 -ip -cname -cdn -l $(pwd)/$SUBDOMAINS -o $(pwd)/httpx.log
 
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
