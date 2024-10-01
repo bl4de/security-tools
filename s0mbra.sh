@@ -217,11 +217,11 @@ peek() {
     START_TIME=$(date)
     DOMAIN=$1
     echo -e "$BLUE[s0mbra] Let's see what have we got here...$CLR\n"
-    
-    ##
-    ## other subdomain enumeration tool(s) goes here...
-    ##
 
+    # sublister
+    echo -e "\n$GREEN--> sublister$CLR\n"
+    sublister -v -d $DOMAIN -o "$TMPDIR/sublister_$DOMAIN.log"
+    
     # subfinder
     echo -e "\n$GREEN--> subfinder$CLR\n"
     subfinder -nW -all -v -d $DOMAIN -o $TMPDIR/subfinder.log
@@ -238,13 +238,14 @@ peek() {
 
     # cleanup
     echo -e "\n$BLUE[s0mbra] Remove temporary files...\n"
+    rm -f $TMPDIR/sublister_$DOMAIN.log
     rm -f $TMPDIR/subfinder.log
     rm -rf httpx*
 
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
     echo -e "finished at: $RED $END_TIME $GREEN\n"
-    echo -e "$GRAY subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
+    echo -e "$GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
     echo -e "$GRAY httpx found \t\t\t $YELLOW $(echo `wc -l $TMPDIR/httpx.log` | cut -d" " -f 1) $GRAY active web servers $GREEN"
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
     osascript -e 'display notification "Hey choom, peek finished!" with title "s0mbra says:"'
