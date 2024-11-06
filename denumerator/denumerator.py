@@ -506,10 +506,7 @@ def main():
     if args.nmap:
         nmap = True
 
-    if args.dir:
-        output_directory = args.dir
-    else:
-        output_directory = DEFAULT_DIRECTORY
+    output_directory = _set_output_directory(args)
 
     if args.code:
         allowed_http_responses = args.code.split(',')
@@ -559,6 +556,13 @@ def main():
     # close output file
     if args.output:
         output_file.close()
+
+def _set_output_directory(args):
+    if args.dir:
+        output_directory = args.dir
+    else:
+        output_directory = DEFAULT_DIRECTORY
+    return output_directory
 
 
 if __name__ == "__main__":
