@@ -408,8 +408,6 @@ def enumerate_domains(domains, output_file, html_output, allowed_http_responses,
             # IP address
             ip = subprocess.run(
                 ["host", d], capture_output=True, timeout=15).stdout
-            nmap_output = ''
-
             nmap_output = _handle_nmap(nmap_top_ports, d)
 
             send_request('http', d, output_file,
@@ -440,6 +438,8 @@ def enumerate_domains(domains, output_file, html_output, allowed_http_responses,
             pass
 
 def _handle_nmap(nmap_top_ports, d):
+    nmap_output = ''
+
     if nmap == True:
                 # perform nmap scan
         nmap_output = subprocess.run(
