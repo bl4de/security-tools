@@ -25,7 +25,7 @@ def process(cidr, logfile):
         if resp.status_code == 200:
             domains = json.loads(resp.text)
 
-            if (domains['response_code'] == 0):
+            if domains['response_code'] == 0:
                 print("[-] Empty response for {}".format(str(ip)))
                 time.sleep(15)
                 continue
