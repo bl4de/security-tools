@@ -410,13 +410,7 @@ def enumerate_domains(domains, output_file, html_output, allowed_http_responses,
                 ["host", d], capture_output=True, timeout=15).stdout
             nmap_output = ''
 
-            if nmap == True:
-                # perform nmap scan
-                nmap_output = subprocess.run(
-                    ["nmap", "--top-ports", str(nmap_top_ports), "-n", d], capture_output=True)
-                print('{}  nmap: '.format(colors['grey']), [port.decode("utf-8")
-                                                            for port in nmap_output.stdout.split(b"\n") if
-                                                            port.find(b"open") > 0], '{}'.format(colors['white']))
+            nmap_output = _handle_nmap(nmap_top_ports, d)
 
             send_request('http', d, output_file,
                          html_output, allowed_http_responses, nmap_output, ip, output_directory)
@@ -442,12 +436,19 @@ def enumerate_domains(domains, output_file, html_output, allowed_http_responses,
         except requests.exceptions.TooManyRedirects:
             if show is True:
                 print('[-] {} probably went into redirects loop :('.format(d))
-        except UnicodeError:
-            pass
-        except subprocess.TimeoutExpired:
-            pass
         else:
             pass
+
+def _handle_nmap(nmap_top_ports, d):
+    if nmap == True:
+                # perform nmap scan
+        nmap_output = subprocess.run(
+                    ["nmap", "--top-ports", str(nmap_top_ports), "-n", d], capture_output=True)
+        print('{}  nmap: '.format(colors['grey']), [port.decode("utf-8")
+                                                            for port in nmap_output.stdout.split(b"\n") if
+                                                            port.find(b"open") > 0], '{}'.format(colors['white']))
+                                                    
+    return nmap_output
 
 
 def enumerate_from_crt_sh(domain):
