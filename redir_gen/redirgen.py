@@ -28,7 +28,9 @@ def save_output(output: str) -> None:
 parser = argparse.ArgumentParser()
 parser.add_argument("--target", "-t", action="store",
                     help="Enter the target address", required=True)
-parser.add_argument("--dest", "-d", action="store", help="Enter the address where you want to redirect to",
+parser.add_argument("--dest", "-d", 
+                    action="store", 
+                    help="Enter the address where you want to redirect to",
                     required=True)
 parser.add_argument("--output", "-o", action="store",
                     help="Enter output file name")
