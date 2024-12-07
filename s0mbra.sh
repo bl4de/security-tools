@@ -237,33 +237,18 @@ enum() {
     rm -f $TMPDIR/sublister_$DOMAIN.log
     rm -f $TMPDIR/subfinder.log
 
+    # httpx
+    echo -e "\n$GREEN--> httpx$CLR\n"
+    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -fcdn cloudfront -v -stats -status-code -web-server -tech-detect -mc 200,301,302,304,403,500 -ip -cname -cdn -l $TMPDIR/subdomains_final.log -o $TMPDIR/httpx.log
+
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
     echo -e "finished at: $RED $END_TIME $GREEN\n"
     echo -e "$GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
+    echo -e "$GRAY httpx found \t\t\t $YELLOW $(echo `wc -l $TMPDIR/httpx.log` | cut -d" " -f 1) $GRAY 200 OKs web servers $GREEN"
+
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
     osascript -e 'display notification "Hey choom, enum finished!" with title "s0mbra says:"'
-}
-
-
-# httpx only list
-webservers() {
-    if [[ -z $1 ]]; then
-        SUBDOMAINS="subdomains_final.log"
-    elif [[ -n $1 ]]; then
-        SUBDOMAINS="$1"
-    fi
-    START_TIME=$(date)
-    # httpx
-    echo -e "\n$GREEN--> httpx$CLR\n"
-    httpx -H "User-Agent: wearehackerone" -H "X-Hackerone: bl4de" -fcdn cloudfront -v -stats -status-code -web-server -tech-detect -mc 200,301,302,304,403,500 -ip -cname -cdn -l $(pwd)/$SUBDOMAINS -o $(pwd)/httpx.log
-
-    END_TIME=$(date)
-    echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
-    echo -e "finished at: $RED $END_TIME $GREEN\n"
-    echo -e "$GRAY httpx found \t\t\t $YELLOW $(echo `wc -l $(pwd)/httpx.log` | cut -d" " -f 1) $GRAY 200 OKs web servers $GREEN"
-    echo -e "\n$BLUE[s0mbra] Done.$CLR"
-    osascript -e 'display notification "Hey choom, we have some webservers to hack!" with title "s0mbra says:"'
 }
 
 # does recon on URL: nmap, ffuf, other smaller tools, ...?
@@ -719,9 +704,6 @@ case "$cmd" in
     enum)
         enum "$2"
     ;;
-    webservers)
-        webservers "$2"
-    ;;
     recon)
         recon "$2" "$3" "$4"
     ;;
@@ -844,7 +826,6 @@ case "$cmd" in
         echo -e "$CLR"
         echo -e "$BLUE_BG:: RECON ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN enum $GRAY[DOMAIN]$CLR\t\t\t\t\t$CYAN recon $GRAY[HOST] [OPTIONS:nmap,nikto,vhosts,ffuf,subdomanizer] [PROTO http/https]$CLR"
-        echo -e "$CYAN webservers $GRAY[SUBDOMAINS FILE]$CLR"
 
         echo -e "$BLUE_BG:: WEB ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN fu $GRAY[URL] [DICT] [*EXT,/ or -] [HTTP RESP.]$CLR\t$CYAN apifuzz $GRAY[BASE_URL] [ENDPOINTS]$CLR\t$YELLOW(REST)$CLR"

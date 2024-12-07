@@ -153,6 +153,10 @@ exploitableFunctions = [
     "DELETE.*FROM"
 ]
 
+# allowed scan levels
+ALLOWED_LEVELS = ['ALL', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL']
+DEFAULT_LEVELS = 'MEDIUM,HIGH,CRITICAL'
+
 
 def banner():
     """
@@ -334,30 +338,30 @@ if __name__ == "__main__":
     phpfunction = ''
 
     parser.add_argument(
-        "-s", "--skip-vendor", help="exclude ./vendor folder", action="store_true")
+        "-s", "--skip-vendor", help=f"exclude ./vendor folder", action="store_true")
     parser.add_argument(
-        "-v", "--verbose", help="show documentation", action="store_true")
+        "-v", "--verbose", help=f"show documentation", action="store_true")
     parser.add_argument(
         "-l", "--level",
-        help="severity: ALL, LOW, MEDIUM, HIGH or CRITICAL; default: ALL\nif -f is set, this setting is ignored")
+        help=f"severity: ALL, LOW, MEDIUM, HIGH or CRITICAL; default: {DEFAULT_LEVELS} if -f is set, this setting is ignored")
     parser.add_argument(
-        "-S", "--sources", help="show only sources", action="store_true")
+        "-S", "--sources", help=f"show only sources", action="store_true")
     parser.add_argument(
-        "-K", "--sinks", help="show only sinks", action="store_true")
+        "-K", "--sinks", help=f"show only sinks", action="store_true")
     parser.add_argument(
         "-f",
         "--function",
-        help="Search for particular PHP function (eg. unserialize)",
+        help=f"Search for particular PHP function (eg. unserialize)",
     )
     parser.add_argument(
         "-d",
         "--dir",
-        help="Directory to scan (or sinlge file, optionally)",
+        help=f"Directory to scan (or sinlge file, optionally)",
     )
 
     args = parser.parse_args()
 
-    level = args.level.upper() if args.level else 'MEDIUM,HIGH,CRITICAL'
+    level = args.level.upper() if args.level in ALLOWED_LEVELS else 'MEDIUM,HIGH,CRITICAL'
 
     # if we are looking for a specific function, level is not taken into account
     if args.function is not None:
