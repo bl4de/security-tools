@@ -341,9 +341,11 @@ if __name__ == "__main__":
         print(file_type(open(arguments.file, "rb").read(8)))
 
         with open(arguments.file, "rb") as infile:
+            valid_start = arguments.start is not None and int(arguments.start) > -1
+            valid_end = arguments.end is not None and (int(arguments.end) > 1)
             if (
-                arguments.start is not None and int(arguments.start) > -1
-                and arguments.end is not None and (int(arguments.end) > 1)
+                valid_start
+                and valid_end
                 and (
                     int(arguments.start, 16) > -
                     1 and int(arguments.end, 16) > int(arguments.start, 16)
