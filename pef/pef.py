@@ -376,7 +376,7 @@ if __name__ == "__main__":
     if args.dir is None:
         print(f"{beautyConsole.getColor('red')}No directory or file(s) to scan provided...")
         exit(0)
-        
+
     filename = args.dir
 
     # main orutine starts here

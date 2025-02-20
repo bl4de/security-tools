@@ -218,16 +218,17 @@ enum() {
     DOMAIN=$1
     echo -e "$BLUE[s0mbra] Let's see what have we got here...$CLR\n"
 
-    # sublister
-    echo -e "\n$GREEN--> sublister$CLR\n"
-    sublister -v -d $DOMAIN -o "$TMPDIR/sublister_$DOMAIN.log"
-    
+    # amass passive enum
+    echo -e "\n$GREEN--> amass (takes some time, so sit tight, Choom...)$CLR\n"
+    amass enum -passive -d $DOMAIN -o "$TMPDIR/amass.tmp"
+    cut -d' ' -f 1 "$TMPDIR/amass.tmp" | grep -e '[a-z]' | sort -u | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" | grep $DOMAIN > "$TMPDIR/enum_amass.log"
+
     # subfinder
     echo -e "\n$GREEN--> subfinder$CLR\n"
-    subfinder -nW -all -v -d $DOMAIN -o $TMPDIR/subfinder.log
+    subfinder -nW -all -v -d $DOMAIN -o $TMPDIR/enum_subfinder.log
 
     # prepare list of uniqe subdomains
-    cat $TMPDIR/sub* > $TMPDIR/step1
+    cat $TMPDIR/enum* > $TMPDIR/step1
     sed 's/<BR>/#/g' $TMPDIR/step1 | tr '#' '\n' > $TMPDIR/step2
     sort -u -k 1 $TMPDIR/step2 > $TMPDIR/subdomains_final.log
     rm -f $TMPDIR/step*
