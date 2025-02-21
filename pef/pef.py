@@ -361,7 +361,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    level = args.level.upper() if args.level in ALLOWED_LEVELS else 'MEDIUM,HIGH,CRITICAL'
+    level = args.level.upper() if args.level else 'HIGH,CRITICAL'
 
     # if we are looking for a specific function, level is not taken into account
     if args.function is not None:
