@@ -288,7 +288,6 @@ class PefEngine:
         runs scanning
         """
         total_found = 0
-        os.system('clear')
 
         print(
             f"{beautyConsole.getColor('green')}>>> RESULTS <<<{beautyConsole.getColor('gray')}\n")
