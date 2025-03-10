@@ -566,25 +566,32 @@ exploitableFunctionsDesc = {
         "$_POST reference found",
         "",
         "",
-        "high",
+        "critical",
         "source"
     ],
     "$_GET": [
         "$_GET reference found",
         "",
         "",
-        "high",
+        "critical",
         "source"
     ],
     "$_REQUEST": [
         "$_REQUEST reference found",
         "",
         "",
-        "high",
+        "critical",
         "source"
     ],
     "$_COOKIES": [
         "$_COOKIES reference found",
+        "",
+        "",
+        "high",
+        "source"
+    ],
+    "$_SESSION": [
+        "$_SESSION reference found",
         "",
         "",
         "high",
