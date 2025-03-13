@@ -163,9 +163,9 @@ def banner():
     Prints welcome banner with contact info
     """
     print(beautyConsole.getColor("green") + "\n\n", "-" * 100)
-    print("-" * 6, " PEF | PHP Exploitable Functions source code advanced grep utility",
+    print("-" * 6, " PEF | PHP Source Code grep tool",
           " " * 35, "-" * 16)
-    print("-" * 6, " GitHub: bl4de | Twitter: @_bl4de | bloorq@gmail.com ",
+    print("-" * 6, " https://github.com/bl4de ",
           " " * 22, "-" * 16)
     print("-" * 100, "\33[0m\n")
 
@@ -235,7 +235,7 @@ class PefEngine:
         }
 
         meets_criteria = 0
-        # print legend only if there i sentry in pefdocs.py
+        # print legend only if there is entry in pefdocs.py
 
         if fn and fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
             doc = pefdocs.exploitableFunctionsDesc.get(fn.strip())
@@ -323,7 +323,7 @@ class PefEngine:
         """
         print(f"{beautyConsole.getColor('white')}Patterns found: {total_found}")
         print(f"\n{beautyConsole.getColor('grey')}Cmd arguments: {' '.join(sys.argv[1:])}")
-        print(f"{beautyConsole.getColor('grey')}Level: {self.level}\n")
+        print(f"{beautyConsole.getColor('grey')}Level: {beautyConsole.getColor('green')}LOW,{beautyConsole.getColor('yellow')}MEDIUM,HIGH,{beautyConsole.getColor('red')}CRITICAL{beautyConsole.getColor('grey')}\n")
 
 
 # main program

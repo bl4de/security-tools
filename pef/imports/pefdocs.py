@@ -583,6 +583,20 @@ exploitableFunctionsDesc = {
         "critical",
         "source"
     ],
+    "$_FILES": [
+        "$_FILES reference found",
+        "",
+        "",
+        "high",
+        "source"
+    ],
+    "$_ENV": [
+        "$_ENV reference found",
+        "",
+        "",
+        "medium",
+        "source"
+    ],
     "$_COOKIES": [
         "$_COOKIES reference found",
         "",
