@@ -245,7 +245,7 @@ enum() {
     END_TIME=$(date)
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
     echo -e "finished at: $RED $END_TIME $GREEN\n"
-    echo -e "$GRAY sublister+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
+    echo -e "$GRAY amass+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
     echo -e "$GRAY httpx found \t\t\t $YELLOW $(echo `wc -l $TMPDIR/httpx.log` | cut -d" " -f 1) $GRAY 200 OKs web servers $GREEN"
 
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
