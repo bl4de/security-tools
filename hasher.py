@@ -61,7 +61,7 @@ def main(s):
 
 
 if __name__ == "__main__":
-    if (len(sys.argv) == 2):
+    if len(sys.argv) == 2:
         arguments = sys.argv[1:]
         main(arguments[0])
     else:

@@ -51,7 +51,6 @@ def parse_javascript_file(js_filename: str):
     '''
     TYPE = 'DEBUG'
     print(f"[{TYPE}] parsing {js_filename} for interesting stuff...")
-    pass
 
 
 def tear_off():
@@ -61,7 +60,6 @@ def tear_off():
     for js_filename in javascript_files:
         parse_javascript_file(js_filename)
 
-    pass
 
 
 def recon(emails: set, javascript_files: set):
