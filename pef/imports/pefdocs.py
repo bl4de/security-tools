@@ -608,7 +608,7 @@ exploitableFunctionsDesc = {
         "$_SESSION reference found",
         "",
         "",
-        "high",
+        "medium",
         "source"
     ]
 }

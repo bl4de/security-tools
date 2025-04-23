@@ -132,6 +132,7 @@ exploitableFunctions = [
     "$_COOKIE",
     "$_REQUEST",
     "$_SERVER",
+    "$_SESSION",
     "include($_GET",
     "require($_GET",
     "include_once($_GET",
