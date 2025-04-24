@@ -534,6 +534,13 @@ exploitableFunctionsDesc = {
         "high",
         "source"
     ],
+    "extractTo(": [
+        "Extract the complete archive or the given files to the specified destination. The default permissions for extracted files and directories give the widest possible access.",
+        "public ZipArchive::extractTo(string $pathto, array|string|null $files = null): bool",
+        "Arbitrary file write",
+        "medium",
+        "source"
+    ],
     "SELECT.*FROM": [
         "SQL syntax found.",
         "This is likely a raw SQL query, which can be filled with user provided input or not implemented as prepared statement",

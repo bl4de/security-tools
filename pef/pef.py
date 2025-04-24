@@ -127,6 +127,7 @@ exploitableFunctions = [
     "__sleep(",
     "filter_var(",
     "file_put_contents(",
+    "extractTo(",
     "$_POST",
     "$_GET",
     "$_COOKIE",
