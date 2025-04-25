@@ -130,7 +130,7 @@ exploitableFunctions = [
     "extractTo(",
     "$_POST",
     "$_GET",
-    "$_COOKIE",
+    "$_COOKIES",
     "$_REQUEST",
     "$_SERVER",
     "$_SESSION",
@@ -142,13 +142,6 @@ exploitableFunctions = [
     "require($_REQUEST",
     "include_once($_REQUEST",
     "require_once($_REQUEST",
-    "$_SERVER[\"PHP_SELF\"]",
-    "$_SERVER[\"SERVER_ADDR\"]",
-    "$_SERVER[\"SERVER_NAME\"]",
-    "$_SERVER[\"REMOTE_ADDR\"]",
-    "$_SERVER[\"REMOTE_HOST\"]",
-    "$_SERVER[\"REQUEST_URI\"]",
-    "$_SERVER[\"HTTP_USER_AGENT\"]",
     "SELECT.*FROM",
     "INSERT.*INTO",
     "UPDATE.*",
@@ -207,22 +200,16 @@ class PefEngine:
         """
         total_number_of_isses = None
         meets_criteria = 0
-        tokens = [token for token in line.split(' ') if token != "\n"]
 
-        # check agains @ at the beginning of the function name
-        atfn = f"@{fn}"
-        fn = f"{fn}"
-
-        for token in tokens:
-            if token.startswith(fn) or token.startswith(atfn):
-                if fn == "`":
-                    total_number_of_isses = self.print_code_line(
-                        f.name, l, i, fn, self.severity, self.level, self.source_or_sink)
-                else:
-                    total_number_of_isses = self.print_code_line(
-                        f.name, l, i, fn + (')' if '(' in fn else ''), self.severity, self.level,
-                        self.source_or_sink)
-                meets_criteria = meets_criteria + 1 if total_number_of_isses is not None else meets_criteria
+        if fn in line:
+            if fn == "`":
+                total_number_of_isses = self.print_code_line(
+                    f.name, l, i, fn, self.severity, self.level, self.source_or_sink)
+            else:
+                total_number_of_isses = self.print_code_line(
+                    f.name, l, i, fn + (')' if '(' in fn else ''), self.severity, self.level,
+                    self.source_or_sink)
+            meets_criteria = meets_criteria + 1 if total_number_of_isses is not None else meets_criteria
         return (meets_criteria, total_number_of_isses)
 
     def print_code_line(self, file_name, _line, i, fn, severity="", level='ALL', source_or_sink='ALL'):
@@ -230,8 +217,8 @@ class PefEngine:
         prints formatted code line
         """
         impact_color = {
-            "low": "green",
-            "medium": "yellow",
+            "low": "grey",
+            "medium": "green",
             "high": "yellow",
             "critical": "red"
         }
@@ -325,7 +312,7 @@ class PefEngine:
         """
         print(f"{beautyConsole.getColor('white')}Patterns found: {total_found}")
         print(f"\n{beautyConsole.getColor('grey')}Cmd arguments: {' '.join(sys.argv[1:])}")
-        print(f"{beautyConsole.getColor('grey')}Level: {beautyConsole.getColor('green')}LOW,{beautyConsole.getColor('yellow')}MEDIUM,HIGH,{beautyConsole.getColor('red')}CRITICAL{beautyConsole.getColor('grey')}\n")
+        print(f"{beautyConsole.getColor('grey')}Severity levels: {beautyConsole.getColor('grey')} LOW {beautyConsole.getColor('green')} MEDIUM {beautyConsole.getColor('yellow')} HIGH {beautyConsole.getColor('red')} CRITICAL{beautyConsole.getColor('grey')}\n")
 
 
 # main program

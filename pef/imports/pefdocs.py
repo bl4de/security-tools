@@ -617,5 +617,12 @@ exploitableFunctionsDesc = {
         "",
         "medium",
         "source"
+    ],
+    "$_SERVER": [
+        "$_SERVER reference found",
+        "",
+        "",
+        "medium",
+        "source"
     ]
 }
