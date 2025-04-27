@@ -408,15 +408,7 @@ def enumerate_domains(domains, output_file, html_output, allowed_http_responses,
             # IP address
             ip = subprocess.run(
                 ["host", d], capture_output=True, timeout=15).stdout
-            nmap_output = ''
-
-            if nmap == True:
-                # perform nmap scan
-                nmap_output = subprocess.run(
-                    ["nmap", "--top-ports", str(nmap_top_ports), "-n", d], capture_output=True)
-                print('{}  nmap: '.format(colors['grey']), [port.decode("utf-8")
-                                                            for port in nmap_output.stdout.split(b"\n") if
-                                                            port.find(b"open") > 0], '{}'.format(colors['white']))
+            nmap_output = _handle_nmap(nmap_top_ports, d)
 
             send_request('http', d, output_file,
                          html_output, allowed_http_responses, nmap_output, ip, output_directory)
@@ -442,12 +434,21 @@ def enumerate_domains(domains, output_file, html_output, allowed_http_responses,
         except requests.exceptions.TooManyRedirects:
             if show is True:
                 print('[-] {} probably went into redirects loop :('.format(d))
-        except UnicodeError:
-            pass
-        except subprocess.TimeoutExpired:
-            pass
         else:
             pass
+
+def _handle_nmap(nmap_top_ports, d):
+    nmap_output = ''
+
+    if nmap == True:
+                # perform nmap scan
+        nmap_output = subprocess.run(
+                    ["nmap", "--top-ports", str(nmap_top_ports), "-n", d], capture_output=True)
+        print('{}  nmap: '.format(colors['grey']), [port.decode("utf-8")
+                                                            for port in nmap_output.stdout.split(b"\n") if
+                                                            port.find(b"open") > 0], '{}'.format(colors['white']))
+                                                    
+    return nmap_output
 
 
 def enumerate_from_crt_sh(domain):
@@ -506,10 +507,7 @@ def main():
     if args.nmap:
         nmap = True
 
-    if args.dir:
-        output_directory = args.dir
-    else:
-        output_directory = DEFAULT_DIRECTORY
+    output_directory = _set_output_directory(args)
 
     if args.code:
         allowed_http_responses = args.code.split(',')
@@ -559,6 +557,13 @@ def main():
     # close output file
     if args.output:
         output_file.close()
+
+def _set_output_directory(args):
+    if args.dir:
+        output_directory = args.dir
+    else:
+        output_directory = DEFAULT_DIRECTORY
+    return output_directory
 
 
 if __name__ == "__main__":
