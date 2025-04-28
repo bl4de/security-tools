@@ -531,7 +531,7 @@ dex_to_jar() {
 unjar() {
     clear
     echo -e "$BLUE[s0mbra] Opening $1 in JD-Gui...$CLR"
-    /Users/bl4de/hacking/tools/Java_Decompilers/jadx/bin/jadx-gui $1
+    /Users/bl4de/hacking/tools/Java_Decompilers/jadx-1.5.1/bin/jadx-gui $1
 }
 
 # runs disassembly agains binary
