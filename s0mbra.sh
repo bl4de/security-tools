@@ -14,7 +14,6 @@ MAGENTA='\033[1;35m'
 CYAN='\033[36m'
 
 CLR='\033[0m'
-NEWLINE='\n'
 
 # runs $2 port(s) against IP; then -sV -sC -A against every open port found
 full_nmap_scan() {
@@ -237,6 +236,7 @@ enum() {
     echo -e "\n$BLUE[s0mbra] Remove temporary files...\n"
     rm -f $TMPDIR/sublister_$DOMAIN.log
     rm -f $TMPDIR/subfinder.log
+    rm -f $TMPDIR/amass.tmp
 
     # httpx
     echo -e "\n$GREEN--> httpx$CLR\n"
@@ -246,7 +246,7 @@ enum() {
     echo -e "$GREEN\nstarted at: $RED  $START_TIME $GREEN"
     echo -e "finished at: $RED $END_TIME $GREEN\n"
     echo -e "$GRAY amass+subfinder found \t $YELLOW $(echo `wc -l $TMPDIR/subdomains_final.log` | cut -d" " -f 1) $GRAY subdomains"
-    echo -e "$GRAY httpx found \t\t\t $YELLOW $(echo `wc -l $TMPDIR/httpx.log` | cut -d" " -f 1) $GRAY 200 OKs web servers $GREEN"
+    echo -e "$GRAY httpx found \t $YELLOW $(echo `wc -l $TMPDIR/httpx.log` | cut -d" " -f 1) $GRAY 200 OKs web servers $GREEN"
 
     echo -e "\n$BLUE[s0mbra] Done.$CLR"
     osascript -e 'display notification "Hey choom, enum finished!" with title "s0mbra says:"'
