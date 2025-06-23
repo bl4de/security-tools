@@ -38,10 +38,10 @@ full_nmap_scan() {
 quick_nmap_scan() {
     if [[ -z "$2" ]]; then 
         echo -e "$BLUE[s0mbra] Running nmap scan against all ports on $1 ...$CYAN"
-        nmap -p- --min-rate=1000 -T4 $1 
+        nmap -p- --min-rate=1000 -T4 "$1" 
     else
         echo -e "$BLUE[s0mbra] Running nmap scan against top $2 ports on $1 ...$CYAN"
-        nmap --top-ports $2 --min-rate=1000 -T4 $1
+        nmap --top-ports "$2" --min-rate=1000 -T4 "$1"
     fi
     
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
