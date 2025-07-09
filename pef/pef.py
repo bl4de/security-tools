@@ -37,143 +37,26 @@ import os
 import re
 import sys
 
-from imports import pefdocs
+from imports.pefdocs import exploitableFunctions, exploitableFunctionsDesc
 from imports.beautyConsole import beautyConsole
-
-# exploitable functions
-exploitableFunctions = [
-    "`",
-    "system(",
-    "exec(",
-    "popen(",
-    "pcntl_exec(",
-    "eval(",
-    "arse_str(",
-    "parse_url(",
-    "preg_replace(",
-    "create_function(",
-    "passthru(",
-    "shell_exec(",
-    "popen(",
-    "proc_open(",
-    "pcntl_exec(",
-    "extract(",
-    "putenv(",
-    "ini_set(",
-    "mail(",
-    "unserialize(",
-    "assert(",
-    "call_user_func(",
-    "call_user_func_array(",
-    "ereg_replace(",
-    "eregi_replace(",
-    "mb_ereg_replace(",
-    "mb_eregi_replace(",
-    "virtual",
-    "readfile(",
-    "file_get_contents(",
-    "show_source(",
-    "highlight_file(",
-    "fopen(",
-    "file(",
-    "fpassthru(",
-    "fsockopen(",
-    "gzopen(",
-    "gzread(",
-    "gzfile(",
-    "gzpassthru(",
-    "readgzfile(",
-    "mssql_query(",
-    "odbc_exec(",
-    "sqlsrv_query(",
-    "PDO::query(",
-    "move_uploaded_file(",
-    "echo",
-    "print(",
-    "printf(",
-    "ldap_search(",
-    "sqlite_",
-    "sqlite_query(",
-    "pg_",
-    "pg_query(",
-    "mysql_",
-    "mysql_query(",
-    "mysqli::query(",
-    "mysqli_",
-    "mysqli_query(",
-    "apache_setenv(",
-    "dl(",
-    "escapeshellarg(",
-    "escapeshellcmd(",
-    "extract(",
-    "get_cfg_var(",
-    "get_current_user(",
-    "getcwd(",
-    "getenv(",
-    "ini_restore(",
-    "ini_set(",
-    "passthru(",
-    "pcntl_exec(",
-    "php_uname(",
-    "phpinfo(",
-    "popen(",
-    "proc_open(",
-    "putenv(",
-    "symlink(",
-    "syslog(",
-    "curl_exec(",
-    "__wakeup(",
-    "__destruct(",
-    "__sleep(",
-    "filter_var(",
-    "file_put_contents(",
-    "extractTo(",
-    "$_POST",
-    "$_GET",
-    "$_COOKIES",
-    "$_REQUEST",
-    "$_SERVER",
-    "$_SESSION",
-    "include($_GET",
-    "require($_GET",
-    "include_once($_GET",
-    "require_once($_GET",
-    "include($_REQUEST",
-    "require($_REQUEST",
-    "include_once($_REQUEST",
-    "require_once($_REQUEST",
-    "SELECT.*FROM",
-    "INSERT.*INTO",
-    "UPDATE.*",
-    "DELETE.*FROM"
-]
 
 # allowed scan levels
 ALLOWED_LEVELS = ['ALL', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL']
 DEFAULT_LEVELS = 'MEDIUM,HIGH,CRITICAL'
 
-
-def banner():
-    """
-    Prints welcome banner with contact info
-    """
-    print(beautyConsole.getColor("green") + "\n\n", "-" * 100)
-    print("-" * 6, " PEF | PHP Source Code grep tool",
-          " " * 35, "-" * 16)
-    print("-" * 6, " https://github.com/bl4de ",
-          " " * 22, "-" * 16)
-    print("-" * 100, "\33[0m\n")
-
+ALLOWED_LANG = ['PHP', 'JavaScript']
+DEFAULT_LANG = 'PHP'
 
 class PefEngine:
     """
     implements pef engine
     """
 
-    def __init__(self, level, source_or_sink, filename, skip_vendor, phpfunction, verbose):
+    def __init__(self, lang, level, source_or_sink, filename, skip_vendor, phpfunction, verbose):
         """
         constructor
         """
+        self.lang = lang # selected language
         self.level = level  # scan only for level set of functions
         self.source_or_sink = source_or_sink  # show only sinks or sources
         self.filename = filename  # name of file/folder to scan
@@ -226,8 +109,8 @@ class PefEngine:
         meets_criteria = 0
         # print legend only if there is entry in pefdocs.py
 
-        if fn and fn.strip() in pefdocs.exploitableFunctionsDesc.keys():
-            doc = pefdocs.exploitableFunctionsDesc.get(fn.strip())
+        if fn and fn.strip() in exploitableFunctionsDesc[self.lang].keys():
+            doc = exploitableFunctionsDesc[self.lang].get(fn.strip())
             impact = doc[3]
 
             if (impact.upper() in level.upper()) or level == 'ALL':
@@ -265,7 +148,7 @@ class PefEngine:
             line = l.rstrip()
             if self.level:
                 if not self.is_comment(line):
-                    for fn in exploitableFunctions:
+                    for fn in exploitableFunctions[self.lang]:
                         (meets_criteria, number_of_issues) = self.analyse_line(l, i, fn, f, line)
                         if number_of_issues is not None:
                             res = True
@@ -315,40 +198,61 @@ class PefEngine:
         print(f"{beautyConsole.getColor('grey')}Severity levels: {beautyConsole.getColor('grey')} LOW {beautyConsole.getColor('green')} MEDIUM {beautyConsole.getColor('yellow')} HIGH {beautyConsole.getColor('red')} CRITICAL{beautyConsole.getColor('grey')}\n")
 
 
-# main program
-if __name__ == "__main__":
+def banner():
+    """
+    Prints welcome banner with contact info
+    """
+    print(beautyConsole.getColor("green") + "\n\n", "-" * 100)
+    print("-" * 6, " PEF | PHP Source Code grep tool",
+          " " * 35, "-" * 16)
+    print("-" * 6, " https://github.com/bl4de ",
+          " " * 22, "-" * 16)
+    print("-" * 100, "\33[0m\n")
 
+def parse_arguments():
+    """
+    Parses command line arguments
+    """
     parser = argparse.ArgumentParser(
-        description=sys.modules[__name__].__doc__,
+        description="PHP Source Code grep tool",
         add_help=True
     )
-    filename = '.'  # initial value for file/dir to scan is current directory
-    phpfunction = ''
-
     parser.add_argument(
-        "-s", "--skip-vendor", help=f"exclude ./vendor folder", action="store_true")
+        "-s", "--skip-vendor", help="exclude ./vendor folder", action="store_true")
     parser.add_argument(
-        "-v", "--verbose", help=f"show documentation", action="store_true")
+        "-v", "--verbose", help="show documentation", action="store_true")
     parser.add_argument(
         "-l", "--level",
-        help=f"severity: ALL, LOW, MEDIUM, HIGH or CRITICAL; default: {DEFAULT_LEVELS} if -f is set, this setting is ignored")
+        help=f"severity: ALL, LOW, MEDIUM, HIGH or CRITICAL; default: {DEFAULT_LEVELS}")
     parser.add_argument(
-        "-S", "--sources", help=f"show only sources", action="store_true")
+        "-L", "--lang",
+        help=f"language: PHP, JavaScript; default: {DEFAULT_LANG}")
     parser.add_argument(
-        "-K", "--sinks", help=f"show only sinks", action="store_true")
+        "-S", "--sources", help="show only sources", action="store_true")
+    parser.add_argument(
+        "-K", "--sinks", help="show only sinks", action="store_true")
     parser.add_argument(
         "-f",
         "--function",
-        help=f"Search for particular PHP function (eg. unserialize)",
+        help="Search for particular PHP function (eg. unserialize)",
     )
     parser.add_argument(
         "-d",
         "--dir",
-        help=f"Directory to scan (or sinlge file, optionally)",
+        help="Directory to scan (or single file, optionally)",
     )
+    return parser.parse_args()
 
-    args = parser.parse_args()
+# main program
+if __name__ == "__main__":
 
+    if len(sys.argv) == 1:
+        print(f"{beautyConsole.getColor('red')}No arguments provided, use -h for help")
+        exit(1)
+
+    args = parse_arguments()
+
+    lang = args.lang.lower() if args.lang else DEFAULT_LANG.lower()
     level = args.level.upper() if args.level else 'HIGH,CRITICAL'
 
     # if we are looking for a specific function, level is not taken into account
@@ -361,13 +265,19 @@ if __name__ == "__main__":
     if args.sinks:
         source_or_sink = 'sink'
 
+    # if no directory or file is provided, exit
     if args.dir is None:
         print(f"{beautyConsole.getColor('red')}No directory or file(s) to scan provided...")
-        exit(0)
+        exit(1)
+
+    # check if the langauge selected is available
+    if lang not in [l.lower() for l in ALLOWED_LANG]:
+        print(f"{beautyConsole.getColor('red')}Language {args.lang} is not supported, use one of: {', '.join(ALLOWED_LANG)}")
+        exit(1)
 
     filename = args.dir
 
     # main orutine starts here
-    engine = PefEngine(level, source_or_sink,
+    engine = PefEngine(lang, level, source_or_sink,
                        filename, args.skip_vendor, args.function, args.verbose)
     engine.run()
