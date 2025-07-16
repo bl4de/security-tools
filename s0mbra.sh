@@ -77,13 +77,13 @@ http_server() {
 # runs john with rockyou.txt against hash type [FORMAT] and file [HASHES]
 rockyou_john() {
     echo -e "$BLUE[s0mbra] Running john with rockyou dictionary against $1 of type $2$CLR"
-    echo > "$HACKING_HOME"/tools/JohnTheRipper/run/john.pot
+    echo > "$HACKING_HOME"/tools/jtr/run/john.pot
     if [[ -n $2 ]]; then
-        "$HACKING_HOME"/tools/JohnTheRipper/run/john --wordlist="$HACKING_HOME"/dictionaries/rockyou.txt --format="$2" "$1" 
+        "$HACKING_HOME"/tools/jtr/run/john --wordlist="$HACKING_HOME"/dictionaries/rockyou.txt --format="$2" "$1" 
         elif [[ -z $2 ]]; then
-        "$HACKING_HOME"/tools/JohnTheRipper/run/john --wordlist="$HACKING_HOME"/dictionaries/rockyou.txt "$1"
+        "$HACKING_HOME"/tools/jtr/run/john --wordlist="$HACKING_HOME"/dictionaries/rockyou.txt "$1"
     fi
-    cat "$HACKING_HOME"/tools/JohnTheRipper/run/john.pot
+    cat "$HACKING_HOME"/tools/jtr/run/john.pot
     echo -e "\n$BLUE[s0mbra] Done."
     osascript -e 'display notification "our choom John has left the house..." with title "s0mbra says:"'
 }
@@ -91,14 +91,14 @@ rockyou_john() {
 # show JohnTheRipper's pot file
 john_pot() {
     echo -e "$BLUE[s0mbra] Joghn The Ripper pot file:$GRAY"
-    cat "$HACKING_HOME"/tools/JohnTheRipper/run/john.pot
+    cat "$HACKING_HOME"/tools/jtr/run/john.pot
     echo -e "\n$BLUE[s0mbra] Done."
 }
 
 # ZIP password cracking with rockyou.txt
 rockyou_zip() {
     echo -e "$BLUE[s0mbra] Running $MAGENTA zip2john $BLUE and prepare hash for hashcat..."
-    "$HACKING_HOME"/tools/JohnTheRipper/run/zip2john "$1" | cut -d ':' -f 2 > ./hashes.txt
+    "$HACKING_HOME"/tools/jtr/run/zip2john "$1" | cut -d ':' -f 2 > ./hashes.txt
     echo -e "$BLUE[s0mbra] Starting $MAGENTA hashcat $BLUE (using $YELLOW rockyou.txt $BLUE dictionary against $YELLOW hashes.txt $BLUE file)...$CLR"
     hashcat -m 13600 ./hashes.txt ~/hacking/dictionaries/rockyou.txt
     echo -e "\n$BLUE[s0mbra] Done."
@@ -107,7 +107,7 @@ rockyou_zip() {
 # converts id_rsa to JohnTheRipper format for cracking SSH key
 ssh_to_john() {
     echo -e "$BLUE[s0mbra] Converting SSH id_rsa key to JohnTheRipper format to crack it$CLR"
-    python "$HACKING_HOME"/tools/JohnTheRipper/run/sshng2john.py "$1" > "$1".hash
+    python "$HACKING_HOME"/tools/jtr/run/sshng2john.py "$1" > "$1".hash
     echo -e "$BLUE[s0mbra] We have a hash.\n"
     echo -e "$BLUE[s0mbra] Let's now crack it!"
     rockyou_john "$1".hash
