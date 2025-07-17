@@ -4,6 +4,22 @@
 exploitableFunctions = {
     "javascript": [
         "eval(",
+        "document.URL",
+        "document.documentURI",
+        "document.baseURI",
+        "location",
+        "document.cookie",
+        "document.referrer",
+        "document.write(",
+        "innerHTML",
+        "outerHTML",
+        "insertAdjacentHTML(",
+        "location.host",
+        "location.href",
+        "location.search",
+        "Function(",
+        "textContent",
+        "innerText",
     ],
     "php": [
         "`",
@@ -124,6 +140,118 @@ exploitableFunctionsDesc = {
             "eval(script)",
             "RCE",
             "critical",
+            "sink"
+        ],
+        "document.URL": [
+            "The URL of the document",
+            "document.URL",
+            "SSRF, Filter Bypass",
+            "medium",
+            "source"
+        ],
+        "document.documentURI": [
+            "The documentURI property returns the URI of the document",
+            "document.documentURI",
+            "SSRF, Filter Bypass",
+            "medium",
+            "source"
+        ],
+        "document.baseURI": [
+            "The baseURI property returns the absolute base URI of the document",
+            "document.baseURI",
+            "SSRF, Filter Bypass",
+            "medium",
+            "source"
+        ],
+        "location": [
+            "The location property of the Window interface is a Location object, which represents the location (URL) of the object to which it is applied.",
+            "location",
+            "SSRF, Filter Bypass",
+            "medium",
+            "source"
+        ],
+        "document.cookie": [
+            "The cookie property of the Document interface represents the cookies of the current document.",
+            "document.cookie",
+            "XSS, CSRF, Cookie Injection",
+            "medium",
+            "source"
+        ],
+        "document.referrer": [
+            "The referrer property of the Document interface returns the address of the previous document from which the current document was accessed.",
+            "document.referrer",
+            "SSRF, Filter Bypass",
+            "medium",
+            "source"
+        ],
+        "document.write()": [
+            "The write() method of the Document interface writes a string of text to a document stream opened by document.open().",
+            "document.write(text)",
+            "XSS, HTML Injection, Content Injection etc.",
+            "high",
+            "sink"
+        ],
+        "innerHTML": [
+            "The innerHTML property of the Element interface gets or sets the HTML or XML markup contained within the element.",
+            "element.innerHTML",
+            "XSS, HTML Injection, Content Injection etc.",
+            "high",
+            "sink"
+        ],
+        "outerHTML": [
+            "The outerHTML property of the Element interface gets or sets the HTML or XML markup contained within the element, including the element itself.",
+            "element.outerHTML",
+            "XSS, HTML Injection, Content Injection etc.",
+            "high",
+            "sink"
+        ],
+        "insertAdjacentHTML": [
+            "The insertAdjacentHTML() method of the Element interface parses the specified text as HTML or XML and inserts the resulting nodes into the DOM tree at a specified position.",
+            "element.insertAdjacentHTML(position, text)",
+            "XSS, HTML Injection, Content Injection etc.",
+            "high",
+            "sink"
+        ],
+        "location.host": [
+            "The host property of the Location interface returns the host and port of the URL.",
+            "location.host",
+            "SSRF, Filter Bypass, Open Redirect",
+            "medium",
+            "sink"
+        ],
+        "location.href": [
+            "The href property of the Location interface gets or sets the entire URL.",
+            "location.href",
+            "SSRF, Filter Bypass, Open Redirect",
+            "medium",
+            "sink"
+        ],
+        "location.search": [
+            "The search property of the Location interface gets or sets the query string part of the URL.",
+            "location.search",
+            "SSRF, Filter Bypass",
+            "medium",
+            "sink"
+        ],
+        "Function()": [
+            "The Function() constructor creates a new Function object. Calling the constructor directly can create functions dynamically, but it is not recommended due to security and performance reasons.",
+            "new Function([arg1[, arg2[, ...argN]],] functionBody)",
+            "RCE",
+            "critical",
+            "sink"
+        ],
+        "textContent": [
+            "The textContent property of the Node interface represents the text content of the node and its descendants.",
+            "element.textContent",
+            "XSS, HTML Injection, Content Injection etc.",
+            "medium",
+            "sink"
+        ],
+        "innerText": [
+            "The innerText property of the Element interface represents the rendered text content of an element and its descendants.",
+            "element.innerText",
+            "XSS, HTML Injection, Content Injection etc.",
+            "medium",
             "sink"
         ]
     },
