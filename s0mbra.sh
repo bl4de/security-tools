@@ -675,26 +675,6 @@ hshr() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
-# extract links and API endpoints from JavaScript file
-urls() {
-    echo -e "$BLUE[s0mbra] Extracting URLs from $1...$CLR"
-    python /Users/bl4de/hacking/tools/LinkFinder/linkfinder.py -i "$1" -o cli | rg http | sort -u
-    echo -e "$BLUE\n[s0mbra] Done! $CLR"
-}
-
-endpoints() {
-    echo -e "$BLUE[s0mbra] Extracting URLs from $1...$CLR"
-    python /Users/bl4de/hacking/tools/LinkFinder/linkfinder.py -i "$1" -o cli | rg -v http | sort -u
-    echo -e "$BLUE\n[s0mbra] Done! $CLR"
-}
-
-# extract secrets from JavaScript file
-secrets() {
-    echo -e "$BLUE[s0mbra] Extracting secrets from $1...$CLR"
-    python /Users/bl4de/hacking/tools/SecretFinder/SecretFinder.py -i "$1" -o cli | sort -u
-    echo -e "$BLUE\n[s0mbra] Done! $CLR"
-}
-
 ### menu
 cmd=$1
 
@@ -813,15 +793,6 @@ case "$cmd" in
     rubysast)
         ruby_sast "$2"
     ;;
-    urls)
-        urls "$2"
-    ;;
-    endpoints)
-        endpoints "$2"
-    ;;
-    secrets)
-        secrets "$2"
-    ;;
     *)
         clear
         echo -e "$CLR"
@@ -850,9 +821,7 @@ case "$cmd" in
         echo -e "$BLUE_BG:: STATIC CODE ANALYSIS ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN unmin $GRAY[FILE]\t\t\t$YELLOW(JavaScript)$CLR\t$CYAN snyktest $GRAY[DIR]\t\t\t$YELLOW(JavaScript)$CLR"
         echo -e "$CYAN rubysast $GRAY[DIR]\t\t\t$YELLOW(Ruby)$CLR\t\t$CYAN disass $GRAY[BINARY]\t\t$YELLOW(asm)$CLR"
-        echo -e "$CYAN unjar $GRAY[.jar FILE]\t\t$YELLOW(Java)$CLR\t\t$CYAN urls $GRAY[FILE|DIR|URL]\t\t$YELLOW(JavaScript)$CLR"
-        echo -e "$CYAN secrets $GRAY[FILE|DIR|URL]\t\t$YELLOW(JavaScript)$CLR\t$CYAN endpoints $GRAY[FILE|DIR|URL]\t$YELLOW(JavaScript)$CLR"
-        echo -e "$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR"
+        echo -e "$CYAN unjar $GRAY[.jar FILE]\t\t$YELLOW(Java)$CLR\t\t$CYAN pysast $GRAY[DIR]\t\t\t$YELLOW(Python)$CLR"
         echo -e "$BLUE_BG:: ANDROID ::\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t$CLR"
         echo -e "$CYAN jadx $GRAY[.apk FILE]\t\t$YELLOW(Java)$CLR\t\t$CYAN dex_to_jar $GRAY[.dex file]$CLR\t\t$YELLOW(Java)$CLR"
         echo -e "$CYAN apk $GRAY[.apk FILE]$CLR\t\t$YELLOW(Java)$CLR\t\t$CYAN abe $GRAY[.ab FILE]$CLR\t\t\t$YELLOW(Java)$CLR"
