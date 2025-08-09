@@ -42,6 +42,7 @@ if __name__ == "__main__":
 
     start = sys.argv[1].split(".")
     stop = sys.argv[2].split(".")
-    print("\n[+] generating IP addresses in range from {} to {}...".format(sys.argv[1], sys.argv[2]))
+    print("\n[+] generating IP addresses in range from {} to {}...".format(sys.argv[1],
+                                                                            sys.argv[2]))
     generate(start, stop, f)
     print("[+] addresses generated...\n")

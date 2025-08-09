@@ -21,12 +21,6 @@ term = {
     "endl": '\33[0m'
 }
 
-
-def print_banner():
-    """Prints credits :)"""
-    pass
-
-
 def print_object_details(objtype, objcontent, objhash, objfilename):
     """Prints and saves object details/content"""
 
@@ -132,6 +126,5 @@ if __name__ == "__main__":
     parser.print_help()
 
     if baseurl and objecthash:
-        print_banner()
         save_git_object(args.u, args.o, berecursive, "")
         print("\n" + term["cyan"] + "#" * 78 + term["endl"])
