@@ -675,6 +675,14 @@ hshr() {
     echo -e "$BLUE\n[s0mbra] Done! $CLR"
 }
 
+# cat <<'-md-'
+# # s0mbra.sh - Recon and pentest tool
+
+# This script is a collection of various tools and functions for reconnaissance, pentesting, and code analysis
+# It provides functionalities for network scanning, web application testing, cloud storage enumeration, and more.
+
+# -md-
+
 ### menu
 cmd=$1
 
