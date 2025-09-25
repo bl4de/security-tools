@@ -234,8 +234,8 @@ enum() {
 
     # cleanup
     echo -e "\n$BLUE[s0mbra] Remove temporary files...\n"
-    rm -f $TMPDIR/sublister_$DOMAIN.log
-    rm -f $TMPDIR/subfinder.log
+    rm -f $TMPDIR/enum_amass.log
+    rm -f $TMPDIR/enum_subfinder.log
     rm -f $TMPDIR/amass.tmp
 
     # httpx
