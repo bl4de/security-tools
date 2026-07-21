@@ -270,7 +270,7 @@ if __name__ == "__main__":
         print(f"{beautyConsole.getColor('red')}No directory or file(s) to scan provided...")
         exit(1)
 
-    # check if the langauge selected is available
+    # check if the language selected is available
     if lang not in [l.lower() for l in ALLOWED_LANG]:
         print(f"{beautyConsole.getColor('red')}Language {args.lang} is not supported, use one of: {', '.join(ALLOWED_LANG)}")
         exit(1)
